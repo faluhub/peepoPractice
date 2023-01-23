@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "me.wurgo.peepopractice.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "client": [
+    "gui.TitleScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
