@@ -159,7 +159,7 @@ public abstract class PlayerlessScreenHandler {
                         itemStack7 = slot4.getStack();
                         itemStack8 = playerInventory.getCursorStack();
 
-                        if (itemStack7.isEmpty()) {
+                        if (itemStack7.isEmpty() && itemStack7.getCount() == 0) {
                             if (!itemStack8.isEmpty() && slot4.canInsert(itemStack8)) {
                                 q = j == 0 ? itemStack8.getCount() : 1;
                                 if (q > slot4.getMaxStackAmount(itemStack8)) {
