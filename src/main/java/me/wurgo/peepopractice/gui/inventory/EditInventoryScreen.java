@@ -102,6 +102,8 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
                         slot.takeStack(clickData == 0 ? 1 : slot.getStack().getMaxCount());
                     } else if (actionType == SlotActionType.THROW && !PeepoPractice.playerlessInventory.getCursorStack().isEmpty()) {
                         PeepoPractice.playerlessInventory.setCursorStack(ItemStack.EMPTY);
+                    } else if (this.handler != null) {
+                        this.handler.onSlotClick(slot == null ? invSlot : slot.id, clickData, actionType, PeepoPractice.playerlessInventory);
                     }
                 } else {
                     ItemStack itemStack10;
@@ -668,6 +670,11 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
                 return !this.hasStack();
             }
         }
+
+        @Override
+        public boolean canInsert(ItemStack stack) {
+            return false;
+        }
     }
 
     @Environment(EnvType.CLIENT)
@@ -676,6 +683,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
 
         public CreativeSlot(Slot slot, int invSlot, int x, int y) {
             super(slot.inventory, invSlot, x, y);
+            this.id = invSlot;
             this.slot = slot;
         }
 
