@@ -33,9 +33,7 @@ public class PeepoPractice {
     }
 
     static {
-        Map<Identifier, JsonElement> data = JsonDataReader.prepareData(ResourceDataType.LOOT_TABLES);
-
-        LOOT_CONDITION_MANAGER.reload(data);
-        LOOT_MANAGER.reload(data);
+        LOOT_CONDITION_MANAGER.reload();
+        LOOT_MANAGER.reload();
     }
 }

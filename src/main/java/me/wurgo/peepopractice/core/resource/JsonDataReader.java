@@ -17,20 +17,18 @@ public class JsonDataReader {
     private static final String FILE_SUFFIX;
     private static final int FILE_SUFFIX_LENGTH;
     private static final String DEFAULT_NAMESPACE;
-    private static final Gson GSON;
     private static final NamespaceResourceManager RESOURCE_MANAGER;
 
     static {
         FILE_SUFFIX = ".json";
         FILE_SUFFIX_LENGTH = FILE_SUFFIX.length();
         DEFAULT_NAMESPACE = "minecraft";
-        GSON = new Gson();
         RESOURCE_MANAGER = new NamespaceResourceManager(ResourceType.SERVER_DATA, DEFAULT_NAMESPACE);
 
         RESOURCE_MANAGER.addPack(new DefaultResourcePack());
     }
 
-    public static Map<Identifier, JsonElement> prepareData(ResourceDataType dataType) {
+    public static Map<Identifier, JsonElement> prepareData(Gson gson, ResourceDataType dataType) {
         Map<Identifier, JsonElement> map = Maps.newHashMap();
         int i = dataType.value.length() + 1;
 
@@ -51,7 +49,7 @@ public class JsonDataReader {
                         Throwable var14 = null;
 
                         try {
-                            JsonElement jsonElement = JsonHelper.deserialize(GSON, reader, JsonElement.class);
+                            JsonElement jsonElement = JsonHelper.deserialize(gson, reader, JsonElement.class);
                             if (jsonElement != null) {
                                 JsonElement jsonElement2 = map.put(identifier2, jsonElement);
                                 if (jsonElement2 != null) {

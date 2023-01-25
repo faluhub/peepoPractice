@@ -4,6 +4,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import me.wurgo.peepopractice.PeepoPractice;
+import me.wurgo.peepopractice.core.resource.JsonDataReader;
+import me.wurgo.peepopractice.core.resource.ResourceDataType;
 import net.minecraft.loot.*;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.condition.LootConditionManager;
@@ -25,7 +27,9 @@ public class SimpleLootManager extends LootManager {
         this.conditionManager = conditionManager;
     }
 
-    public void reload(Map<Identifier, JsonElement> map) {
+    public void reload() {
+        Map<Identifier, JsonElement> map = JsonDataReader.prepareData(GSON, ResourceDataType.LOOT_TABLES);
+
         ImmutableMap.Builder<Identifier, LootTable> builder = ImmutableMap.builder();
         JsonElement jsonElement = map.remove(LootTables.EMPTY);
         if (jsonElement != null) {
