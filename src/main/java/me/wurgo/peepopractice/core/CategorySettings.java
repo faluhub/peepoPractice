@@ -40,7 +40,7 @@ public class CategorySettings {
     }
 
     public static String getValue(String id) {
-        return getValue(id, PeepoPractice.category.settings);
+        return getValue(id, PeepoPractice.CATEGORY.settings);
     }
 
     public static String getValue(String id, List<CategorySettings> settings) {

@@ -53,6 +53,7 @@ public abstract class PlayerlessScreenHandler {
         }
     }
 
+    @SuppressWarnings("StatementWithEmptyBody")
     private void method_30010(int i, int j, SlotActionType slotActionType, PlayerlessInventory playerInventory) {
         ItemStack itemStack7;
         ItemStack itemStack8;

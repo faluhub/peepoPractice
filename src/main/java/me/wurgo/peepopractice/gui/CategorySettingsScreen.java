@@ -57,8 +57,8 @@ public class CategorySettingsScreen extends Screen {
                         new LiteralText("Edit Inventory"),
                         b -> {
                             if (this.client != null) {
-                                PeepoPractice.playerlessInventory = new PlayerlessInventory();
-                                PeepoPractice.playerlessPlayerScreenHandler = new PlayerlessPlayerScreenHandler();
+                                PeepoPractice.PLAYERLESS_INVENTORY = new PlayerlessInventory();
+                                PeepoPractice.PLAYERLESS_PLAYER_SCREEN_HANDLER = new PlayerlessPlayerScreenHandler();
                                 this.client.openScreen(new EditInventoryScreen());
                             }
                         }

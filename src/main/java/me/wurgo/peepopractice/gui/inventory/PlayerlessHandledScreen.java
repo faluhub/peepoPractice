@@ -83,6 +83,7 @@ public abstract class PlayerlessHandledScreen extends Screen {
         this.y = (this.height - this.backgroundHeight) / 2;
     }
 
+    @SuppressWarnings("deprecation")
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         int i = this.x;
         int j = this.y;
@@ -117,7 +118,7 @@ public abstract class PlayerlessHandledScreen extends Screen {
             }
         }
 
-        PlayerlessInventory playerInventory = PeepoPractice.playerlessInventory;
+        PlayerlessInventory playerInventory = PeepoPractice.PLAYERLESS_INVENTORY;
         ItemStack itemStack = this.touchDragStack.isEmpty() ? playerInventory.getCursorStack() : this.touchDragStack;
         if (!itemStack.isEmpty()) {
             r = this.touchDragStack.isEmpty() ? 8 : 16;
@@ -155,11 +156,12 @@ public abstract class PlayerlessHandledScreen extends Screen {
     }
 
     protected void drawMouseoverTooltip(MatrixStack matrices, int x, int y) {
-        if (PeepoPractice.playerlessInventory.getCursorStack().isEmpty() && this.focusedSlot != null && this.focusedSlot.hasStack()) {
+        if (PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack().isEmpty() && this.focusedSlot != null && this.focusedSlot.hasStack()) {
             this.renderTooltip(matrices, this.focusedSlot.getStack(), x, y);
         }
     }
 
+    @SuppressWarnings("deprecation")
     private void drawItem(ItemStack stack, int xPosition, int yPosition, String amountText) {
         RenderSystem.translatef(0.0F, 0.0F, 32.0F);
         this.setZOffset(200);
@@ -178,7 +180,7 @@ public abstract class PlayerlessHandledScreen extends Screen {
         ItemStack itemStack = slot.getStack();
         boolean bl = false;
         boolean bl2 = slot == this.touchDragSlotStart && !this.touchDragStack.isEmpty() && !this.touchIsRightClickDrag;
-        ItemStack itemStack2 = PeepoPractice.playerlessInventory.getCursorStack();
+        ItemStack itemStack2 = PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack();
         String string = null;
         if (slot == this.touchDragSlotStart && !this.touchDragStack.isEmpty() && this.touchIsRightClickDrag && !itemStack.isEmpty()) {
             itemStack = itemStack.copy();
@@ -230,7 +232,7 @@ public abstract class PlayerlessHandledScreen extends Screen {
     }
 
     private void calculateOffset() {
-        ItemStack itemStack = PeepoPractice.playerlessInventory.getCursorStack();
+        ItemStack itemStack = PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack();
         if (!itemStack.isEmpty() && this.isCursorDragging) {
             if (this.heldButtonType == 2) {
                 this.draggedStackRemainder = itemStack.getMaxCount();
@@ -290,7 +292,7 @@ public abstract class PlayerlessHandledScreen extends Screen {
                     k = -999;
                 }
 
-                if (this.client.options.touchscreen && bl2 && PeepoPractice.playerlessInventory.getCursorStack().isEmpty()) {
+                if (this.client.options.touchscreen && bl2 && PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack().isEmpty()) {
                     this.client.openScreen(null);
                     return true;
                 }
@@ -305,7 +307,7 @@ public abstract class PlayerlessHandledScreen extends Screen {
                             this.touchDragSlotStart = null;
                         }
                     } else if (!this.isCursorDragging) {
-                        if (PeepoPractice.playerlessInventory.getCursorStack().isEmpty()) {
+                        if (PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack().isEmpty()) {
                             if (this.client.options.keyPickItem.matchesMouse(button)) {
                                 this.onMouseClick(slot, k, button, SlotActionType.CLONE);
                             } else {
@@ -346,7 +348,7 @@ public abstract class PlayerlessHandledScreen extends Screen {
     }
 
     private void method_30107(int i) {
-        if (this.focusedSlot != null && PeepoPractice.playerlessInventory.getCursorStack().isEmpty()) {
+        if (this.focusedSlot != null && PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack().isEmpty()) {
             if (this.client != null && this.client.options.keySwapHands.matchesMouse(i)) {
                 this.onMouseClick(this.focusedSlot, this.focusedSlot.id, 40, SlotActionType.SWAP);
                 return;
@@ -367,7 +369,7 @@ public abstract class PlayerlessHandledScreen extends Screen {
 
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         Slot slot = this.getSlotAt(mouseX, mouseY);
-        ItemStack itemStack = PeepoPractice.playerlessInventory.getCursorStack();
+        ItemStack itemStack = PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack();
         if (this.touchDragSlotStart != null && this.client != null && this.client.options.touchscreen) {
             if (button == 0 || button == 1) {
                 if (this.touchDragStack.isEmpty()) {
@@ -456,7 +458,7 @@ public abstract class PlayerlessHandledScreen extends Screen {
                     if (k != -1 && !this.touchDragStack.isEmpty() && bl3) {
                         this.onMouseClick(this.touchDragSlotStart, this.touchDragSlotStart.id, button, SlotActionType.PICKUP);
                         this.onMouseClick(slot, k, 0, SlotActionType.PICKUP);
-                        if (PeepoPractice.playerlessInventory.getCursorStack().isEmpty()) {
+                        if (PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack().isEmpty()) {
                             this.touchDropReturningStack = ItemStack.EMPTY;
                         } else {
                             this.onMouseClick(this.touchDragSlotStart, this.touchDragSlotStart.id, button, SlotActionType.PICKUP);
@@ -487,7 +489,7 @@ public abstract class PlayerlessHandledScreen extends Screen {
                 }
 
                 this.onMouseClick(null, -999, ScreenHandler.packQuickCraftData(2, this.heldButtonType), SlotActionType.QUICK_CRAFT);
-            } else if (!PeepoPractice.playerlessInventory.getCursorStack().isEmpty()) {
+            } else if (!PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack().isEmpty()) {
                 if (this.client != null && this.client.options.keyPickItem.matchesMouse(button)) {
                     this.onMouseClick(slot, k, button, SlotActionType.CLONE);
                 } else {
@@ -501,7 +503,7 @@ public abstract class PlayerlessHandledScreen extends Screen {
             }
         }
 
-        if (PeepoPractice.playerlessInventory.getCursorStack().isEmpty()) {
+        if (PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack().isEmpty()) {
             this.lastButtonClickTime = 0L;
         }
 
@@ -547,7 +549,7 @@ public abstract class PlayerlessHandledScreen extends Screen {
     }
 
     protected boolean handleHotbarKeyPressed(int keyCode, int scanCode) {
-        if (this.client != null && PeepoPractice.playerlessInventory.getCursorStack().isEmpty() && this.focusedSlot != null) {
+        if (this.client != null && PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack().isEmpty() && this.focusedSlot != null) {
             if (this.client.options.keySwapHands.matchesKey(keyCode, scanCode)) {
                 this.onMouseClick(this.focusedSlot, this.focusedSlot.id, 40, SlotActionType.SWAP);
                 return true;

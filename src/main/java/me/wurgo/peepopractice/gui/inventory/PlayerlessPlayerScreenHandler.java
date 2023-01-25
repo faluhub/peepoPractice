@@ -26,19 +26,19 @@ public class PlayerlessPlayerScreenHandler extends PlayerlessScreenHandler {
 
     public PlayerlessPlayerScreenHandler() {
         this.onServer = false;
-        this.addSlot(new EditInventoryScreen.LockedSlot(PeepoPractice.playerlessInventory, 0, 154, 28));
+        this.addSlot(new EditInventoryScreen.LockedSlot(PeepoPractice.PLAYERLESS_INVENTORY, 0, 154, 28));
 
         int n;
         int m;
         for(n = 0; n < 2; ++n) {
             for(m = 0; m < 2; ++m) {
-                this.addSlot(new EditInventoryScreen.LockedSlot(PeepoPractice.playerlessInventory, m + n * 2, 98 + m * 18, 18 + n * 18));
+                this.addSlot(new EditInventoryScreen.LockedSlot(PeepoPractice.PLAYERLESS_INVENTORY, m + n * 2, 98 + m * 18, 18 + n * 18));
             }
         }
 
         for(n = 0; n < 4; ++n) {
             final EquipmentSlot equipmentSlot = EQUIPMENT_SLOT_ORDER[n];
-            this.addSlot(new Slot(PeepoPractice.playerlessInventory, 39 - n, 8, 8 + n * 18) {
+            this.addSlot(new Slot(PeepoPractice.PLAYERLESS_INVENTORY, 39 - n, 8, 8 + n * 18) {
                 public int getMaxStackAmount() {
                     return 1;
                 }
@@ -61,15 +61,15 @@ public class PlayerlessPlayerScreenHandler extends PlayerlessScreenHandler {
 
         for (n = 0; n < 3; ++n) {
             for (m = 0; m < 9; ++m) {
-                this.addSlot(new Slot(PeepoPractice.playerlessInventory, m + (n + 1) * 9, 8 + m * 18, 84 + n * 18));
+                this.addSlot(new Slot(PeepoPractice.PLAYERLESS_INVENTORY, m + (n + 1) * 9, 8 + m * 18, 84 + n * 18));
             }
         }
 
         for (n = 0; n < 9; ++n) {
-            this.addSlot(new Slot(PeepoPractice.playerlessInventory, n, 8 + n * 18, 142));
+            this.addSlot(new Slot(PeepoPractice.PLAYERLESS_INVENTORY, n, 8 + n * 18, 142));
         }
 
-        this.addSlot(new Slot(PeepoPractice.playerlessInventory, 40, 77, 62) {
+        this.addSlot(new Slot(PeepoPractice.PLAYERLESS_INVENTORY, 40, 77, 62) {
             @Environment(EnvType.CLIENT)
             public Pair<Identifier, Identifier> getBackgroundSprite() {
                 return Pair.of(PlayerlessPlayerScreenHandler.BLOCK_ATLAS_TEXTURE, PlayerlessPlayerScreenHandler.EMPTY_OFFHAND_ARMOR_SLOT);

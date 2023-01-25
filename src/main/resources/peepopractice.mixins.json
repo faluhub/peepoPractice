@@ -4,6 +4,13 @@
   "package": "me.wurgo.peepopractice.mixin",
   "compatibilityLevel": "JAVA_8",
   "client": [
+    "access.ItemEntryAccessor",
+    "access.LootConditionManagerAccessor",
+    "access.LootManagerAccessor",
+    "access.LootPoolAccessor",
+    "access.LootTableAccessor",
+
+    "gui.ItemStackMixin",
     "gui.TitleScreenMixin"
   ],
   "injectors": {

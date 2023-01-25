@@ -50,7 +50,7 @@ public class CategorySelectionScreen extends Screen {
                                     this.client.openScreen(this.parent);
                                 } else {
                                     if (this.selected != null) {
-                                        PeepoPractice.category = selected;
+                                        PeepoPractice.CATEGORY = selected;
                                         this.client.openScreen(new CreateWorldScreen(this));
                                     }
                                 }

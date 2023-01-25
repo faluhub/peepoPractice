@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "peepopractice",
   "version": "${version}",
-  "name": "peepoPractice",
+  "name": "PeepoPractice",
   "description": "peepoPractice",
   "authors": ["Wurgo"],
   "contact": {
@@ -12,6 +12,7 @@
   "icon": "assets/peepopractice/icon.png",
   "environment": "client",
   "mixins": ["peepopractice.mixins.json"],
+  "accessWidener": "peepopractice.accesswidener",
   "depends": {
     "minecraft": "1.16.1"
   }
