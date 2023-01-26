@@ -1,17 +1,20 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "me.wurgo.peepopractice.mixin",
-  "compatibilityLevel": "JAVA_8",
+  "package": "me.quesia.peepopractice.mixin",
+  "compatibilityLevel": "JAVA_10",
   "client": [
     "access.ItemEntryAccessor",
-    "access.LootConditionManagerAccessor",
-    "access.LootManagerAccessor",
     "access.LootPoolAccessor",
     "access.LootTableAccessor",
+    "access.ThreadExecutorAccessor",
+
+    "gui.renderer.ItemRendererMixin",
 
     "gui.ItemStackMixin",
-    "gui.TitleScreenMixin"
+    "gui.TitleScreenMixin",
+
+    "MinecraftClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -3,14 +3,20 @@
   "id": "peepopractice",
   "version": "${version}",
   "name": "PeepoPractice",
-  "description": "peepoPractice",
-  "authors": ["Wurgo"],
+  "description": "Practice mod (passion project)",
+  "authors": ["Quesia"],
+  "contributors": ["RedLime"],
   "contact": {
-    "homepage": "https://github.com/wurgo"
+    "homepage": "https://github.com/QuesiaSR"
   },
   "license": "MIT",
   "icon": "assets/peepopractice/icon.png",
   "environment": "client",
+  "entrypoints": {
+    "client": [
+      "me.quesia.peepopractice.PeepoPractice"
+    ]
+  },
   "mixins": ["peepopractice.mixins.json"],
   "accessWidener": "peepopractice.accesswidener",
   "depends": {
