@@ -42,6 +42,8 @@ public class CategorySettingsScreen extends Screen {
 
     @Override
     protected void init() {
+        this.descriptions.clear();
+
         int index = 1;
         int offsetX = 200;
         int offsetY = 20;
