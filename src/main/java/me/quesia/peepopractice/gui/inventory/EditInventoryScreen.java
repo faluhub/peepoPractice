@@ -744,8 +744,8 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
                     }
                 }
 
-                list2.add(new LiteralText(""));
-                list2.addAll(this.textRenderer.wrapLines(new LiteralText("Click on an enchantable item while holding this book to enchant it!").formatted(Formatting.YELLOW), 140));
+                list2.add(list2.size() - 2, new LiteralText(""));
+                list2.addAll(list2.size() - 2, this.textRenderer.wrapLines(new LiteralText("Click on an enchantable item while holding this book to enchant it!").formatted(Formatting.YELLOW), 140));
             }
 
             this.searchResultTags.forEach((identifier, tag) -> {
