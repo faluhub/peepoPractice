@@ -18,9 +18,8 @@ import java.util.List;
 
 public class CategorySelectionScreen extends Screen {
     public final List<PracticeCategory> categories;
-    public PracticeCategory selected;
-
     private final Screen parent;
+    PracticeCategory selected;
     private CategoryListWidget categoryListWidget;
     private ButtonWidget doneButton;
     private ButtonWidget configureButton;
