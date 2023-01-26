@@ -145,7 +145,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         PlayerlessInventory playerInventory;
         if (slot == null && selectedTab != ItemGroup.INVENTORY.getIndex() && actionType != SlotActionType.QUICK_CRAFT) {
             playerInventory = PeepoPractice.PLAYERLESS_INVENTORY;
-            if (!playerInventory.getCursorStack().isEmpty() && this.lastClickOutsideBounds) {
+            if (!playerInventory.getCursorStack().isEmpty()) {
                 if (clickData == 0) {
                     playerInventory.setCursorStack(ItemStack.EMPTY);
                 }
