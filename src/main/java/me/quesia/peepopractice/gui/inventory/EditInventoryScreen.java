@@ -37,6 +37,7 @@ import net.minecraft.tag.ItemTags;
 import net.minecraft.tag.Tag;
 import net.minecraft.tag.TagContainer;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.StringRenderable;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
@@ -116,8 +117,6 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
                 object.addProperty(String.valueOf(i), stack.toTag(tag).toString());
             }
         }
-
-        PeepoPractice.PLAYERLESS_INVENTORY.clear();
 
         PracticeWriter.INVENTORY_WRITER.put(this.category.id, object);
 
@@ -292,6 +291,15 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
                             }
                         }
                     }
+                }
+            } else if (
+                    this.deleteItemSlot != null
+                    && slot == this.deleteItemSlot
+                    && selectedTab == ItemGroup.INVENTORY.getIndex()
+                    && Screen.hasShiftDown()
+            ) {
+                for (int i = 0; i < this.playerInventory.size(); i++) {
+                    this.playerInventory.setStack(i, ItemStack.EMPTY);
                 }
             }
         }
@@ -717,22 +725,27 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
     protected void renderTooltip(MatrixStack matrices, ItemStack stack, int x, int y) {
         if (selectedTab == ItemGroup.SEARCH.getIndex() && this.client != null) {
             List<Text> list = stack.getTooltip(null, this.client.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.NORMAL);
-            List<Text> list2 = Lists.newArrayList(list);
+            List<StringRenderable> list2 = Lists.newArrayList(list);
             Item item = stack.getItem();
             ItemGroup itemGroup = item.getGroup();
-            if (itemGroup == null && item == Items.ENCHANTED_BOOK) {
-                Map<Enchantment, Integer> map = EnchantmentHelper.get(stack);
-                if (map.size() == 1) {
-                    Enchantment enchantment = map.keySet().iterator().next();
-                    ItemGroup[] var11 = ItemGroup.GROUPS;
+            if (item == Items.ENCHANTED_BOOK) {
+                if (itemGroup == null) {
+                    Map<Enchantment, Integer> map = EnchantmentHelper.get(stack);
+                    if (map.size() == 1) {
+                        Enchantment enchantment = map.keySet().iterator().next();
+                        ItemGroup[] var11 = ItemGroup.GROUPS;
 
-                    for (ItemGroup itemGroup2 : var11) {
-                        if (itemGroup2.containsEnchantments(enchantment.type)) {
-                            itemGroup = itemGroup2;
-                            break;
+                        for (ItemGroup itemGroup2 : var11) {
+                            if (itemGroup2.containsEnchantments(enchantment.type)) {
+                                itemGroup = itemGroup2;
+                                break;
+                            }
                         }
                     }
                 }
+
+                list2.add(new LiteralText(""));
+                list2.addAll(this.textRenderer.wrapLines(new LiteralText("Click on an enchantable item while holding this book to enchant it!").formatted(Formatting.YELLOW), 140));
             }
 
             this.searchResultTags.forEach((identifier, tag) -> {
