@@ -1,9 +1,9 @@
 package me.quesia.peepopractice.gui;
 
 import me.quesia.peepopractice.PeepoPractice;
-import me.quesia.peepopractice.core.CategorySettings;
-import me.quesia.peepopractice.core.CategoryUtils;
-import me.quesia.peepopractice.core.PracticeCategory;
+import me.quesia.peepopractice.core.category.CategorySettings;
+import me.quesia.peepopractice.core.category.PracticeCategory;
+import me.quesia.peepopractice.core.category.PracticeCategoryUtils;
 import me.quesia.peepopractice.gui.inventory.EditInventoryScreen;
 import me.quesia.peepopractice.gui.inventory.PlayerlessInventory;
 import me.quesia.peepopractice.gui.inventory.PlayerlessPlayerScreenHandler;
@@ -21,7 +21,7 @@ public class CategorySettingsScreen extends Screen {
     private final Map<ButtonWidget, String> descriptions = new HashMap<>();
 
     public CategorySettingsScreen(Screen parent, PracticeCategory category) {
-        super(new LiteralText("Configure (" + CategoryUtils.getName(category) + ")"));
+        super(new LiteralText("Configure (" + PracticeCategoryUtils.getName(category) + ")"));
 
         this.parent = parent;
         this.category = category;
@@ -68,32 +68,32 @@ public class CategorySettingsScreen extends Screen {
                 )
         );
 
-        for (CategorySettings setting : category.settings) {
-            String currentValue = CategorySettings.getValue(setting.id, category.settings);
+        for (CategorySettings setting : category.getSettings()) {
+            String currentValue = CategorySettings.getValue(setting.getId(), category.getSettings());
             ButtonWidget button = this.addButton(
                     new ButtonWidget(
                             this.width / 2 - btnWidth / 2 - offsetX,
                             this.height / 4 + spacingY * index + offsetY,
                             btnWidth,
                             20,
-                            new LiteralText(setting.label + ": " + currentValue),
+                            new LiteralText(setting.getLabel() + ": " + currentValue),
                             b -> {
-                                int currentIndex = this.getIndex(CategorySettings.getValue(setting.id, category.settings), setting.options);
+                                int currentIndex = this.getIndex(CategorySettings.getValue(setting.getId(), category.getSettings()), setting.getChoices());
                                 String next;
 
-                                try { next = setting.options.get(currentIndex + 1); }
-                                catch (IndexOutOfBoundsException ignored) { next = setting.options.get(0); }
+                                try { next = setting.getChoices().get(currentIndex + 1); }
+                                catch (IndexOutOfBoundsException ignored) { next = setting.getChoices().get(0); }
 
                                 this.descriptions.remove(b);
 
-                                b.setMessage(new LiteralText(setting.label + ": " + next));
-                                CategorySettings.setValue(setting.id, next);
+                                b.setMessage(new LiteralText(setting.getLabel() + ": " + next));
+                                CategorySettings.setValue(setting.getId(), next);
 
-                                this.descriptions.put(b, setting.description);
+                                this.descriptions.put(b, setting.getDescription());
                             }
                     )
             );
-            this.descriptions.put(button, setting.description);
+            this.descriptions.put(button, setting.getDescription());
 
             index++;
         }
@@ -126,13 +126,11 @@ public class CategorySettingsScreen extends Screen {
     @Override
     public void onClose() {
         if (this.client != null) {
-            this.client.openScreen(parent);
+            this.client.openScreen(this.parent);
 
             if (this.parent instanceof CategorySelectionScreen) {
                 ((CategorySelectionScreen) this.parent).selected = null;
             }
         }
-
-        super.onClose();
     }
 }

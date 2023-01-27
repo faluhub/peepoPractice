@@ -3,6 +3,7 @@ package me.quesia.peepopractice.core;
 import com.google.gson.*;
 import me.quesia.peepopractice.PeepoPractice;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.util.Util;
 
 import java.io.File;
 import java.io.FileReader;
@@ -42,15 +43,17 @@ public class PracticeWriter {
 
     private void write(JsonObject config) {
         this.create(this.file.getName());
-        try {
-            FileWriter writer = new FileWriter(this.file);
+        Util.getServerWorkerExecutor().execute(() -> {
+            try {
+                FileWriter writer = new FileWriter(this.file);
 
-            writer.write(new GsonBuilder().setPrettyPrinting().create().toJson(config));
-            writer.flush();
-            writer.close();
+                writer.write(new GsonBuilder().setPrettyPrinting().create().toJson(config));
+                writer.flush();
+                writer.close();
 
-            PeepoPractice.log("Saved file '" + this.file.getName() + "'. (Put)");
-        } catch (IOException ignored) {}
+                PeepoPractice.log("Saved file '" + this.file.getName() + "'. (Put)");
+            } catch (IOException ignored) {}
+        });
     }
 
     public JsonObject get() {

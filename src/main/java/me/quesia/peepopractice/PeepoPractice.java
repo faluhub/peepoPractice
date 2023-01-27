@@ -1,6 +1,6 @@
 package me.quesia.peepopractice;
 
-import me.quesia.peepopractice.core.PracticeCategory;
+import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.core.resource.LocalResourceManager;
 import me.quesia.peepopractice.gui.inventory.PlayerlessInventory;
 import me.quesia.peepopractice.gui.inventory.PlayerlessPlayerScreenHandler;

@@ -1,8 +1,9 @@
 package me.quesia.peepopractice.gui;
 
 import me.quesia.peepopractice.PeepoPractice;
-import me.quesia.peepopractice.core.CategoryUtils;
-import me.quesia.peepopractice.core.PracticeCategory;
+import me.quesia.peepopractice.core.category.PracticeCategories;
+import me.quesia.peepopractice.core.category.PracticeCategory;
+import me.quesia.peepopractice.core.category.PracticeCategoryUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
@@ -17,9 +18,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CategorySelectionScreen extends Screen {
-    public final List<PracticeCategory> categories;
     private final Screen parent;
-    PracticeCategory selected;
+    protected PracticeCategory selected;
     private CategoryListWidget categoryListWidget;
     private ButtonWidget doneButton;
     private ButtonWidget configureButton;
@@ -28,7 +28,22 @@ public class CategorySelectionScreen extends Screen {
         super(new LiteralText("Practice"));
 
         this.parent = parent;
-        this.categories = Arrays.asList(PracticeCategory.values());
+    }
+
+    @Override
+    public boolean shouldCloseOnEsc() {
+        if (this.selected != null) {
+            this.categoryListWidget.setSelected(null);
+            return false;
+        }
+
+        return super.shouldCloseOnEsc();
+    }
+
+    public void openConfig() {
+        if (this.client != null && this.selected != null) {
+            this.client.openScreen(new CategorySettingsScreen(this, this.selected));
+        }
     }
 
     @Override
@@ -49,7 +64,7 @@ public class CategorySelectionScreen extends Screen {
                                     this.client.openScreen(this.parent);
                                 } else {
                                     if (this.selected != null) {
-                                        PeepoPractice.CATEGORY = selected;
+                                        PeepoPractice.CATEGORY = this.selected;
                                         this.client.openScreen(new CreateWorldScreen(this));
                                     }
                                 }
@@ -64,11 +79,7 @@ public class CategorySelectionScreen extends Screen {
                         150,
                         20,
                         new LiteralText("Configure"),
-                        b -> {
-                            if (this.client != null && this.selected != null) {
-                                this.client.openScreen(new CategorySettingsScreen(this, this.selected));
-                            }
-                        }
+                        b -> openConfig()
                 )
         );
 
@@ -120,7 +131,7 @@ public class CategorySelectionScreen extends Screen {
                     18
             );
 
-            for (PracticeCategory category : CategorySelectionScreen.this.categories) {
+            for (PracticeCategory category : PracticeCategories.ALL) {
                 this.addEntry(new CategoryEntry(category));
             }
 
@@ -151,7 +162,7 @@ public class CategorySelectionScreen extends Screen {
             }
 
             public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-                Text label = new LiteralText(CategoryUtils.getName(this.category));
+                Text label = new LiteralText(PracticeCategoryUtils.getName(this.category));
 
                 CategorySelectionScreen.this.textRenderer.drawWithShadow(
                         matrices,
@@ -171,7 +182,9 @@ public class CategorySelectionScreen extends Screen {
             }
 
             public void onPressed() {
-                if (CategoryListWidget.this.getSelected() == this) { CategoryListWidget.this.setSelected(null); }
+                if (CategoryListWidget.this.getSelected() == this) {
+                    CategorySelectionScreen.this.openConfig();
+                }
                 else { CategoryListWidget.this.setSelected(this); }
             }
         }
