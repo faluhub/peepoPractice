@@ -71,6 +71,7 @@ public class PracticeWriter {
         return null;
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public void put(String element, String value) {
         JsonObject config = this.get();
 

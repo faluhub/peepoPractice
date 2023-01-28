@@ -69,7 +69,7 @@ public class CategorySettingsScreen extends Screen {
         );
 
         for (CategorySettings setting : category.getSettings()) {
-            String currentValue = CategorySettings.getValue(setting.getId(), category.getSettings());
+            String currentValue = CategorySettings.getValue(category, setting.getId());
             ButtonWidget button = this.addButton(
                     new ButtonWidget(
                             this.width / 2 - btnWidth / 2 - offsetX,
@@ -78,7 +78,7 @@ public class CategorySettingsScreen extends Screen {
                             20,
                             new LiteralText(setting.getLabel() + ": " + currentValue),
                             b -> {
-                                int currentIndex = this.getIndex(CategorySettings.getValue(setting.getId(), category.getSettings()), setting.getChoices());
+                                int currentIndex = this.getIndex(CategorySettings.getValue(category, setting.getId()), setting.getChoices());
                                 String next;
 
                                 try { next = setting.getChoices().get(currentIndex + 1); }
@@ -87,7 +87,7 @@ public class CategorySettingsScreen extends Screen {
                                 this.descriptions.remove(b);
 
                                 b.setMessage(new LiteralText(setting.getLabel() + ": " + next));
-                                CategorySettings.setValue(setting.getId(), next);
+                                CategorySettings.setValue(category, setting.getId(), next);
 
                                 this.descriptions.put(b, setting.getDescription());
                             }

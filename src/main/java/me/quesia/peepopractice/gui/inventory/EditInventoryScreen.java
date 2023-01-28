@@ -205,7 +205,11 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
 
                 if (selectedTab == ItemGroup.INVENTORY.getIndex()) {
                     if (slot == this.deleteItemSlot) {
-                        PeepoPractice.PLAYERLESS_INVENTORY.setCursorStack(ItemStack.EMPTY);
+                        if (Screen.hasControlDown()) {
+                            PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack().removeSubTag("Enchantments");
+                        } else {
+                            PeepoPractice.PLAYERLESS_INVENTORY.setCursorStack(ItemStack.EMPTY);
+                        }
                     } else if (actionType == SlotActionType.THROW && slot != null && slot.hasStack()) {
                         slot.takeStack(clickData == 0 ? 1 : slot.getStack().getMaxCount());
                     } else if (actionType == SlotActionType.THROW && !PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack().isEmpty()) {

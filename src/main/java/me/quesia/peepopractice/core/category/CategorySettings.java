@@ -90,8 +90,8 @@ public class CategorySettings {
         }
     }
 
-    public static CategorySettings getSettingById(String id, List<CategorySettings> settings) {
-        for (CategorySettings setting : settings) {
+    public static CategorySettings getSettingById(PracticeCategory category, String id) {
+        for (CategorySettings setting : category.getSettings()) {
             if (setting.id.equals(id)) {
                 return setting;
             }
@@ -105,27 +105,38 @@ public class CategorySettings {
     }
 
     public static String getValue(String id) {
-        return getValue(id, PeepoPractice.CATEGORY.getSettings());
+        return getValue(PeepoPractice.CATEGORY, id);
     }
 
-    public static String getValue(String id, List<CategorySettings> settings) {
+    public static String getValue(PracticeCategory category, String id) {
         PracticeWriter writer = PracticeWriter.CONFIG_WRITER;
         JsonObject config = writer.get();
 
-        JsonElement element = config.get(id);
-        CategorySettings categorySettings = getSettingById(id, settings);
+        JsonObject categoryObject = new JsonObject();
+        if (config.has(category.getId())) {
+            categoryObject = config.get(category.getId()).getAsJsonObject();
+        }
+
+        CategorySettings categorySettings = getSettingById(category, id);
 
         if (categorySettings != null) {
-            if (element == null || !categorySettings.getChoices().contains(element.getAsString())) {
-                writer.put(id, categorySettings.getDefaultChoice());
+            if (!categoryObject.has(id) || !categorySettings.getChoices().contains(categoryObject.get(id).getAsString())) {
+                setValue(category, id, categorySettings.getDefaultChoice());
                 return categorySettings.getDefaultChoice();
             }
         }
 
-        return element.getAsString();
+        return categoryObject.get(id).getAsString();
     }
 
-    public static void setValue(String id, String value) {
-        PracticeWriter.CONFIG_WRITER.put(id, value);
+    public static void setValue(PracticeCategory category, String id, String value) {
+        JsonObject config = PracticeWriter.CONFIG_WRITER.get();
+        JsonObject categorySettings = new JsonObject();
+        if (config.has(category.getId())) {
+            categorySettings = config.get(category.getId()).getAsJsonObject();
+        }
+
+        categorySettings.addProperty(id, value);
+        PracticeWriter.CONFIG_WRITER.put(category.getId(), categorySettings);
     }
 }
