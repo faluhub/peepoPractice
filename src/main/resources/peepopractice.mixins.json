@@ -14,6 +14,11 @@
     "gui.ItemStackMixin",
     "gui.TitleScreenMixin",
 
+    "world.BlockTagsProviderMixin",
+    "world.MinecraftServerMixin",
+    "world.PlayerManagerMixin",
+    "world.ServerPlayerEntityMixin",
+
     "MinecraftClientMixin"
   ],
   "injectors": {

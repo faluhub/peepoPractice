@@ -182,9 +182,7 @@ public class CategorySelectionScreen extends Screen {
             }
 
             public void onPressed() {
-                if (CategoryListWidget.this.getSelected() == this) {
-                    CategorySelectionScreen.this.openConfig();
-                }
+                if (CategoryListWidget.this.getSelected() == this) { CategorySelectionScreen.this.openConfig(); }
                 else { CategoryListWidget.this.setSelected(this); }
             }
         }

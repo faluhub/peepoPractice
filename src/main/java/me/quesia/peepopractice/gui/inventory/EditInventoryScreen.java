@@ -72,21 +72,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         this.parent = parent;
         this.category = category;
 
-        JsonObject config = PracticeWriter.INVENTORY_WRITER.get();
-        if (config.has(this.category.getId())) {
-            JsonObject object = config.getAsJsonObject(this.category.getId());
-            object.entrySet().forEach(set -> {
-                try {
-                    CompoundTag tag = StringNbtReader.parse(set.getValue().getAsString());
-                    ItemStack stack = ItemStack.fromTag(tag);
-                    PeepoPractice.PLAYERLESS_INVENTORY.setStack(Integer.parseInt(set.getKey()), stack);
-                } catch (CommandSyntaxException ignored) {
-                    PeepoPractice.LOGGER.error("Couldn't parse inventory contents for inventory '{}'.", this.category.getId());
-                } catch (NumberFormatException ignored) {
-                    PeepoPractice.LOGGER.error("Couldn't parse slot index: '{}' is not a valid number.", set.getKey());
-                }
-            });
-        }
+        InventoryUtils.putItems(PeepoPractice.PLAYERLESS_INVENTORY, this.category);
     }
 
     @Override

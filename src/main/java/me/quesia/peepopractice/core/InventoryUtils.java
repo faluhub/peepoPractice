@@ -1,9 +1,14 @@
 package me.quesia.peepopractice.core;
 
+import com.google.gson.JsonObject;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.quesia.peepopractice.PeepoPractice;
+import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.mixin.access.ItemEntryAccessor;
 import me.quesia.peepopractice.mixin.access.LootPoolAccessor;
 import me.quesia.peepopractice.mixin.access.LootTableAccessor;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -12,6 +17,8 @@ import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.entry.LootPoolEntry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
@@ -54,5 +61,23 @@ public class InventoryUtils {
         }
 
         return list;
+    }
+
+    public static void putItems(Inventory inventory, PracticeCategory category) {
+        JsonObject config = PracticeWriter.INVENTORY_WRITER.get();
+        if (config.has(category.getId())) {
+            JsonObject object = config.getAsJsonObject(category.getId());
+            object.entrySet().forEach(set -> {
+                try {
+                    CompoundTag tag = StringNbtReader.parse(set.getValue().getAsString());
+                    ItemStack stack = ItemStack.fromTag(tag);
+                    inventory.setStack(Integer.parseInt(set.getKey()), stack);
+                } catch (CommandSyntaxException ignored) {
+                    PeepoPractice.LOGGER.error("Couldn't parse inventory contents for inventory '{}'.", category.getId());
+                } catch (NumberFormatException ignored) {
+                    PeepoPractice.LOGGER.error("Couldn't parse slot index: '{}' is not a valid number.", set.getKey());
+                }
+            });
+        }
     }
 }

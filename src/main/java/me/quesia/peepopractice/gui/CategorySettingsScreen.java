@@ -1,7 +1,7 @@
 package me.quesia.peepopractice.gui;
 
 import me.quesia.peepopractice.PeepoPractice;
-import me.quesia.peepopractice.core.category.CategorySettings;
+import me.quesia.peepopractice.core.category.CategorySetting;
 import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.core.category.PracticeCategoryUtils;
 import me.quesia.peepopractice.gui.inventory.EditInventoryScreen;
@@ -68,8 +68,8 @@ public class CategorySettingsScreen extends Screen {
                 )
         );
 
-        for (CategorySettings setting : category.getSettings()) {
-            String currentValue = CategorySettings.getValue(category, setting.getId());
+        for (CategorySetting setting : category.getSettings()) {
+            String currentValue = CategorySetting.getValue(category, setting.getId());
             ButtonWidget button = this.addButton(
                     new ButtonWidget(
                             this.width / 2 - btnWidth / 2 - offsetX,
@@ -78,7 +78,7 @@ public class CategorySettingsScreen extends Screen {
                             20,
                             new LiteralText(setting.getLabel() + ": " + currentValue),
                             b -> {
-                                int currentIndex = this.getIndex(CategorySettings.getValue(category, setting.getId()), setting.getChoices());
+                                int currentIndex = this.getIndex(CategorySetting.getValue(category, setting.getId()), setting.getChoices());
                                 String next;
 
                                 try { next = setting.getChoices().get(currentIndex + 1); }
@@ -87,7 +87,7 @@ public class CategorySettingsScreen extends Screen {
                                 this.descriptions.remove(b);
 
                                 b.setMessage(new LiteralText(setting.getLabel() + ": " + next));
-                                CategorySettings.setValue(category, setting.getId(), next);
+                                CategorySetting.setValue(category, setting.getId(), next);
 
                                 this.descriptions.put(b, setting.getDescription());
                             }

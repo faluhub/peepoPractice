@@ -17,16 +17,18 @@ public class PracticeCategoryUtils {
 
     public static String getName(PracticeCategory category) {
         StringBuilder text = new StringBuilder();
-        int index = 0;
+        boolean shouldCapitalise = true;
 
-        for (char i : category.getId().toCharArray()) {
-            String add = "";
-
-            if (Character.isUpperCase(i) && index != 0) { add = " "; }
-            add += Character.toString(i);
-
-            text.append(index != 0 ? add : add.toUpperCase(Locale.ROOT));
-            index++;
+        for (Character c : category.getId().toCharArray()) {
+            if (shouldCapitalise) {
+                text.append(c.toString().toUpperCase(Locale.ROOT));
+                shouldCapitalise = false;
+            } else if (c.equals('_')) {
+                text.append(" ");
+                shouldCapitalise = true;
+            } else {
+                text.append(c.toString().toLowerCase(Locale.ROOT));
+            }
         }
 
         return text.toString();
