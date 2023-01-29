@@ -33,5 +33,6 @@ public class PlayerManagerMixin {
     private void setInventory(ClientConnection connection, ServerPlayerEntity player, CallbackInfo ci) {
         if (PeepoPractice.CATEGORY == null) { return; }
         InventoryUtils.putItems(player.inventory, PeepoPractice.CATEGORY);
+        player.getHungerManager().setSaturationLevelClient(20.0F);
     }
 }

@@ -1,5 +1,7 @@
 package me.quesia.peepopractice.core.category;
 
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.Vec2f;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -48,5 +50,7 @@ public class PracticeCategories {
             .setWorldRegistryKey(World.NETHER);
     public static PracticeCategory END_TEST = new PracticeCategory()
             .setId("end_test")
+            .setSpawnAngle(90.0F, 0.0F)
+            .setSpawnPos(ServerWorld.END_SPAWN_POS)
             .setWorldRegistryKey(World.END);
 }
