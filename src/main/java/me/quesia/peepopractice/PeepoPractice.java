@@ -8,6 +8,8 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.resource.ServerResourceManager;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,6 +22,7 @@ public class PeepoPractice implements ClientModInitializer {
     public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
 
     public static PracticeCategory CATEGORY;
+    public static Direction CURRENT_ORIENTATION;
     public static PlayerlessInventory PLAYERLESS_INVENTORY;
     public static PlayerlessPlayerScreenHandler PLAYERLESS_PLAYER_SCREEN_HANDLER;
     public static final AtomicReference<ServerResourceManager> SERVER_RESOURCE_MANAGER = new AtomicReference<>();

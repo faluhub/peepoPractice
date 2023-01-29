@@ -23,8 +23,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class PlayerManagerMixin {
     @ModifyVariable(method = "onPlayerConnect", at = @At("STORE"))
     private RegistryKey<World> otherDimension(RegistryKey<World> value) {
-        if (PeepoPractice.CATEGORY != null && PeepoPractice.CATEGORY.getWorldRegistryKey() != null) {
-            return PeepoPractice.CATEGORY.getWorldRegistryKey();
+        if (PeepoPractice.CATEGORY != null && PeepoPractice.CATEGORY.getWorldProperties() != null && PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey() != null) {
+            return PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey();
         }
         return value;
     }

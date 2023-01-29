@@ -1,5 +1,8 @@
 package me.quesia.peepopractice.core.category;
 
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.chunk.Chunk;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;

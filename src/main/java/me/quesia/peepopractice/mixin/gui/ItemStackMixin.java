@@ -12,9 +12,7 @@ public class ItemStackMixin {
     @Redirect(method = "getTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;hasCustomName()Z", ordinal = 0))
     private boolean ignoreItalic(ItemStack instance) {
         CompoundTag tag = instance.getTag();
-        if (instance.hasCustomName() && tag != null && tag.getBoolean("IgnoreItalic")) {
-            return false;
-        }
+        if (instance.hasCustomName() && tag != null && tag.getBoolean("IgnoreItalic")) { return false; }
         return instance.hasCustomName();
     }
 }

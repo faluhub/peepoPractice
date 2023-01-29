@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:grass_block",
+    "minecraft:podzol",
+    "minecraft:netherrack",
+    "minecraft:soul_soil",
+    "minecraft:soul_sand",
+    "minecraft:basalt"
+  ]
+}

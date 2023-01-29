@@ -11,6 +11,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.RegistryTracker;
@@ -65,7 +66,7 @@ public abstract class MinecraftServerMixin {
      */
     @Inject(method = "createWorlds", at = @At("HEAD"), cancellable = true)
     private void createWorlds(WorldGenerationProgressListener worldGenerationProgressListener, CallbackInfo ci) {
-        if (PeepoPractice.CATEGORY == null || PeepoPractice.CATEGORY.getWorldRegistryKey() == null) { return; }
+        if (PeepoPractice.CATEGORY == null || PeepoPractice.CATEGORY.getWorldProperties() == null || PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey() == null) { return; }
         ci.cancel();
 
         ServerWorldProperties serverWorldProperties = this.saveProperties.getMainWorldProperties();
@@ -75,13 +76,13 @@ public abstract class MinecraftServerMixin {
         long m = BiomeAccess.hashSeed(l);
         ImmutableList<Spawner> list = ImmutableList.of(new PhantomSpawner(), new PillagerSpawner(), new CatSpawner(), new ZombieSiegeManager(), new WanderingTraderManager(serverWorldProperties));
         SimpleRegistry<DimensionOptions> simpleRegistry = generatorOptions.getDimensionMap();
-        DimensionOptions dimensionOptions = simpleRegistry.get(RegistryKey.of(Registry.DIMENSION_OPTIONS, PeepoPractice.CATEGORY.getWorldRegistryKey().getValue()));
-        PeepoPractice.log(dimensionOptions == null);
+        DimensionOptions dimensionOptions = simpleRegistry.get(RegistryKey.of(Registry.DIMENSION_OPTIONS, PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey().getValue()));
+        if (dimensionOptions == null) { return; }
         DimensionType dimensionType = dimensionOptions.getDimensionType();
         ChunkGenerator chunkGenerator = dimensionOptions.getChunkGenerator();
         RegistryKey<DimensionType> registryKey = this.dimensionTracker.getDimensionTypeRegistry().getKey(dimensionType).orElseThrow(() -> new IllegalStateException("Unregistered dimension type: " + dimensionType));
-        ServerWorld serverWorld = new ServerWorld((MinecraftServer) (Object) this, this.workerExecutor, this.session, serverWorldProperties, PeepoPractice.CATEGORY.getWorldRegistryKey(), registryKey, dimensionType, worldGenerationProgressListener, chunkGenerator, bl, m, PeepoPractice.CATEGORY.getWorldRegistryKey().equals(World.OVERWORLD) ? list : ImmutableList.of(), true);
-        this.worlds.put(PeepoPractice.CATEGORY.getWorldRegistryKey(), serverWorld);
+        ServerWorld serverWorld = new ServerWorld((MinecraftServer) (Object) this, this.workerExecutor, this.session, serverWorldProperties, PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey(), registryKey, dimensionType, worldGenerationProgressListener, chunkGenerator, bl, m, PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey().equals(World.OVERWORLD) ? list : ImmutableList.of(), true);
+        this.worlds.put(PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey(), serverWorld);
         PersistentStateManager persistentStateManager = serverWorld.getPersistentStateManager();
         this.initScoreboard(persistentStateManager);
         this.dataCommandStorage = new DataCommandStorage(persistentStateManager);
@@ -108,7 +109,7 @@ public abstract class MinecraftServerMixin {
         }
         for (Map.Entry<RegistryKey<DimensionOptions>, DimensionOptions> entry : simpleRegistry.getEntries()) {
             RegistryKey<DimensionOptions> registryKey2 = entry.getKey();
-            if (registryKey2.getValue() == PeepoPractice.CATEGORY.getWorldRegistryKey().getValue()) continue;
+            if (registryKey2.getValue() == PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey().getValue()) continue;
             RegistryKey<World> registryKey3 = RegistryKey.of(Registry.DIMENSION, registryKey2.getValue());
             DimensionType dimensionType2 = entry.getValue().getDimensionType();
             RegistryKey<DimensionType> registryKey4 = this.dimensionTracker.getDimensionTypeRegistry().getKey(dimensionType2).orElseThrow(() -> new IllegalStateException("Unregistered dimension type: " + dimensionType2));
@@ -122,8 +123,16 @@ public abstract class MinecraftServerMixin {
 
     @Inject(method = "getOverworld", at = @At("RETURN"), cancellable = true)
     private void customSpawnDimension(CallbackInfoReturnable<ServerWorld> cir) {
-        if (PeepoPractice.CATEGORY != null && PeepoPractice.CATEGORY.getWorldRegistryKey() != null) {
-            cir.setReturnValue(this.worlds.get(PeepoPractice.CATEGORY.getWorldRegistryKey()));
+        if (PeepoPractice.CATEGORY != null && PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey() != null) {
+            cir.setReturnValue(this.worlds.get(PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey()));
         }
+    }
+
+    @Redirect(method = "prepareStartRegion", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;getSpawnPos()Lnet/minecraft/util/math/BlockPos;"))
+    private BlockPos customSpawnPos(ServerWorld instance) {
+        if (PeepoPractice.CATEGORY != null && PeepoPractice.CATEGORY.getPlayerProperties() != null && PeepoPractice.CATEGORY.getPlayerProperties().getSpawnPos() != null) {
+            return PeepoPractice.CATEGORY.getPlayerProperties().getSpawnPos();
+        }
+        return instance.getSpawnPos();
     }
 }

@@ -1,19 +1,17 @@
 package me.quesia.peepopractice.core.category;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec2f;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.World;
+import me.quesia.peepopractice.core.category.properties.PlayerProperties;
+import me.quesia.peepopractice.core.category.properties.StructureProperties;
+import me.quesia.peepopractice.core.category.properties.WorldProperties;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PracticeCategory {
     private String id;
-    private RegistryKey<World> worldRegistryKey;
-    private BlockPos spawnPos;
-    private Vec2f spawnAngle;
+    private PlayerProperties playerProperties;
+    private final List<StructureProperties> structureProperties = new ArrayList<>();
+    private WorldProperties worldProperties;
     private final List<CategorySetting> settings;
 
     public PracticeCategory() {
@@ -31,30 +29,30 @@ public class PracticeCategory {
         return this;
     }
 
-    public RegistryKey<World> getWorldRegistryKey() {
-        return this.worldRegistryKey;
+    public PlayerProperties getPlayerProperties() {
+        return this.playerProperties;
     }
 
-    public PracticeCategory setWorldRegistryKey(RegistryKey<World> worldRegistryKey) {
-        this.worldRegistryKey = worldRegistryKey;
+    public PracticeCategory setPlayerProperties(PlayerProperties playerProperties) {
+        this.playerProperties = playerProperties;
         return this;
     }
 
-    public BlockPos getSpawnPos() {
-        return this.spawnPos;
+    public List<StructureProperties> getStructureProperties() {
+        return this.structureProperties;
     }
 
-    public PracticeCategory setSpawnPos(BlockPos spawnPos) {
-        this.spawnPos = spawnPos;
+    public PracticeCategory addStructureProperties(StructureProperties structureProperties) {
+        this.structureProperties.add(structureProperties);
         return this;
     }
 
-    public Vec2f getSpawnAngle() {
-        return this.spawnAngle;
+    public WorldProperties getWorldProperties() {
+        return this.worldProperties;
     }
 
-    public PracticeCategory setSpawnAngle(float yaw, float pitch) {
-        this.spawnAngle = new Vec2f(yaw, pitch);
+    public PracticeCategory setWorldProperties(WorldProperties worldProperties) {
+        this.worldProperties = worldProperties;
         return this;
     }
 

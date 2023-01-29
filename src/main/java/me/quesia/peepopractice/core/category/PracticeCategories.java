@@ -1,17 +1,36 @@
 package me.quesia.peepopractice.core.category;
 
+import me.quesia.peepopractice.core.category.properties.PlayerProperties;
+import me.quesia.peepopractice.core.category.properties.StructureProperties;
+import me.quesia.peepopractice.core.category.properties.WorldProperties;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.Vec2f;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("UnusedDeclaration")
 public class PracticeCategories {
     public static List<PracticeCategory> ALL = new ArrayList<>();
     public static PracticeCategory STRONGHOLD = new PracticeCategory()
             .setId("stronghold")
-            .setWorldRegistryKey(World.OVERWORLD)
+            .addStructureProperties(new StructureProperties()
+                    .setStructure(DefaultBiomeFeatures.STRONGHOLD)
+                    .setChunkPos(new ChunkPos(0, 0))
+                    .setOrientation(Direction.SOUTH)
+//                    .setUnique(true)
+                    .setStructureTopY(50)
+            )
+            .setPlayerProperties(new PlayerProperties()
+                    .setSpawnPos(new BlockPos(4, 41, 4))
+            )
+            .setWorldProperties(new WorldProperties()
+                    .setWorldRegistryKey(World.OVERWORLD)
+            )
             .addSetting(new CategorySetting()
                     .setId("spawn_in_stronghold")
                     .setLabel("Spawn in Stronghold")
@@ -44,13 +63,31 @@ public class PracticeCategories {
             );
     public static PracticeCategory OVERWORLD_TEST = new PracticeCategory()
             .setId("overworld_test")
-            .setWorldRegistryKey(World.OVERWORLD);
+            .setWorldProperties(new WorldProperties()
+                    .setWorldRegistryKey(World.OVERWORLD)
+            );
     public static PracticeCategory NETHER_TEST = new PracticeCategory()
             .setId("nether_test")
-            .setWorldRegistryKey(World.NETHER);
+            .addStructureProperties(new StructureProperties()
+                    .setStructure(DefaultBiomeFeatures.BASTION_REMNANT)
+                    .setChunkPos(new ChunkPos(2, 2))
+                    .setUnique(true)
+            )
+            .addStructureProperties(new StructureProperties()
+                    .setStructure(DefaultBiomeFeatures.FORTRESS)
+                    .setChunkPos(new ChunkPos(-2, -2))
+                    .setUnique(true)
+            )
+            .setWorldProperties(new WorldProperties()
+                    .setWorldRegistryKey(World.NETHER)
+            );
     public static PracticeCategory END_TEST = new PracticeCategory()
             .setId("end_test")
-            .setSpawnAngle(90.0F, 0.0F)
-            .setSpawnPos(ServerWorld.END_SPAWN_POS)
-            .setWorldRegistryKey(World.END);
+            .setPlayerProperties(new PlayerProperties()
+                    .setSpawnAngle(90.0F, 0.0F)
+                    .setSpawnPos(ServerWorld.END_SPAWN_POS)
+            )
+            .setWorldProperties(new WorldProperties()
+                    .setWorldRegistryKey(World.END)
+            );
 }

@@ -4,6 +4,7 @@ import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.resource.LocalResourceManager;
 import me.quesia.peepopractice.mixin.access.ThreadExecutorAccessor;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -39,4 +40,9 @@ public class MinecraftClientMixin {
             });
         });
     }
+
+//    @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("HEAD"))
+//    private void removeCategory(Screen screen, CallbackInfo ci) {
+//        PeepoPractice.CATEGORY = null;
+//    }
 }

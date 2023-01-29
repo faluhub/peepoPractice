@@ -2,3 +2,4 @@ accessWidener v1 named
 
 accessible class net/minecraft/loot/condition/LootConditionManager$AndCondition
 accessible method net/minecraft/loot/condition/LootConditionManager$AndCondition <init> ([Lnet/minecraft/loot/condition/LootCondition;)V
+accessible method net/minecraft/server/network/SpawnLocating findOverworldSpawn (Lnet/minecraft/server/world/ServerWorld;IIZ)Lnet/minecraft/util/math/BlockPos;

@@ -11,14 +11,20 @@
 
     "gui.renderer.ItemRendererMixin",
 
+    "gui.screen.CreateWorldScreenMixin",
+
     "gui.ItemStackMixin",
     "gui.TitleScreenMixin",
 
-    "world.BlockTagsProviderMixin",
+    "structure.ChunkGeneratorMixin",
+    "structure.StructureFeatureMixin",
+    "structure.StructureStartMixin",
+
     "world.MinecraftServerMixin",
     "world.PlayerManagerMixin",
     "world.ServerPlayerEntityMixin",
 
+    "CommandManagerMixin",
     "MinecraftClientMixin"
   ],
   "injectors": {
