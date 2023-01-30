@@ -2,6 +2,7 @@ package me.quesia.peepopractice.mixin.structure;
 
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.ExecuteAtIndexArrayList;
+import me.quesia.peepopractice.core.category.properties.StructureProperties;
 import net.minecraft.structure.StructurePiece;
 import net.minecraft.structure.StructureStart;
 import net.minecraft.util.math.BlockBox;
@@ -23,9 +24,10 @@ public class StructureStartMixin {
     @Inject(method = "<init>", at = @At("TAIL"))
     private void customChildrenListType(StructureFeature<?> feature, int chunkX, int chunkZ, BlockBox box, int references, long seed, CallbackInfo ci) {
         this.children = new ExecuteAtIndexArrayList<>(piece -> {
-            if (PeepoPractice.CURRENT_ORIENTATION != null) {
-                piece.setOrientation(PeepoPractice.CURRENT_ORIENTATION);
-                PeepoPractice.CURRENT_ORIENTATION = null;
+            for (StructureProperties properties : PeepoPractice.CATEGORY.getStructureProperties()) {
+                if (properties.isSameStructure(feature)) {
+                    piece.setOrientation(properties.getOrientation());
+                }
             }
         }, 0);
     }

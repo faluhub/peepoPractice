@@ -120,14 +120,14 @@ public abstract class MinecraftServerMixin {
 
     @Inject(method = "getOverworld", at = @At("RETURN"), cancellable = true)
     private void customSpawnDimension(CallbackInfoReturnable<ServerWorld> cir) {
-        if (PeepoPractice.CATEGORY != null && PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey() != null) {
+        if (PeepoPractice.CATEGORY.hasWorldProperties() && PeepoPractice.CATEGORY.getWorldProperties().hasWorldRegistryKey()) {
             cir.setReturnValue(this.worlds.get(PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey()));
         }
     }
 
     @Redirect(method = "prepareStartRegion", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;getSpawnPos()Lnet/minecraft/util/math/BlockPos;"))
     private BlockPos customSpawnPos(ServerWorld instance) {
-        if (PeepoPractice.CATEGORY != null && PeepoPractice.CATEGORY.getPlayerProperties() != null && PeepoPractice.CATEGORY.getPlayerProperties().getSpawnPos() != null) {
+        if (PeepoPractice.CATEGORY.hasPlayerProperties() && PeepoPractice.CATEGORY.getPlayerProperties().hasSpawnPos()) {
             return PeepoPractice.CATEGORY.getPlayerProperties().getSpawnPos();
         }
         return instance.getSpawnPos();

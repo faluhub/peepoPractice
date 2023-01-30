@@ -3,6 +3,7 @@ package me.quesia.peepopractice.core.category.properties;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
+import net.minecraft.world.gen.feature.StructureFeature;
 
 import java.util.Random;
 
@@ -18,6 +19,14 @@ public class StructureProperties {
 
     public ConfiguredStructureFeature<?, ?> getStructure() {
         return this.structure;
+    }
+
+    public boolean isSameStructure(ConfiguredStructureFeature<?, ?> feature) {
+        return this.hasStructure() && feature.field_24835.getName().equals(this.structure.field_24835.getName());
+    }
+
+    public boolean isSameStructure(StructureFeature<?> feature) {
+        return this.hasStructure() && feature.getName().equals(this.structure.field_24835.getName());
     }
 
     public boolean hasStructure() {

@@ -24,18 +24,14 @@ public abstract class StructureFeatureMixin<C extends FeatureConfig> {
     @Shadow public abstract ChunkPos method_27218(StructureConfig structureConfig, long l, ChunkRandom chunkRandom, int i, int j);
     @Shadow protected abstract StructureStart<C> method_28656(int i, int j, BlockBox blockBox, int k, long l);
     @Shadow public abstract String getName();
-    
-    private boolean isSameStructure(StructureProperties properties) {
-        return properties.getStructure().field_24835.getName().equals(this.getName());
-    }
 
     private boolean checkArtificialStructure(ChunkPos chunkPos) {
         for (StructureProperties properties : PeepoPractice.CATEGORY.getStructureProperties()) {
-            if (this.isSameStructure(properties)) {
+            if (properties.isSameStructure((StructureFeature<?>) (Object) this)) {
                 if (properties.getChunkPos().equals(chunkPos)) {
                     if (!properties.isUnique() || (properties.isUnique() && !properties.hasGenerated())) {
                         properties.setGenerated();
-                        PeepoPractice.CURRENT_ORIENTATION = properties.getOrientation();
+                        PeepoPractice.CURRENT_ORIENTATION_MODIFIER = properties;
                     }
                     return true;
                 }
@@ -59,7 +55,7 @@ public abstract class StructureFeatureMixin<C extends FeatureConfig> {
             if (structureStart.hasChildren()) {
                 for (StructureProperties properties : PeepoPractice.CATEGORY.getStructureProperties()) {
                     if (properties.hasStructureTopY()) {
-                        if (this.isSameStructure(properties)) {
+                        if (properties.isSameStructure((StructureFeature<?>) (Object) this)) {
                             int difference = properties.getStructureTopY() - structureStart.getChildren().get(0).getBoundingBox().maxY;
                             for (StructurePiece piece : structureStart.getChildren()) {
                                 piece.translate(0, difference, 0);

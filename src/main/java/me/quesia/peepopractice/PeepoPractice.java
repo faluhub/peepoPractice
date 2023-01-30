@@ -2,6 +2,7 @@ package me.quesia.peepopractice;
 
 import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.category.PracticeCategory;
+import me.quesia.peepopractice.core.category.properties.StructureProperties;
 import me.quesia.peepopractice.core.resource.LocalResourceManager;
 import me.quesia.peepopractice.gui.inventory.PlayerlessInventory;
 import me.quesia.peepopractice.gui.inventory.PlayerlessPlayerScreenHandler;
@@ -22,7 +23,7 @@ public class PeepoPractice implements ClientModInitializer {
     public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
 
     public static PracticeCategory CATEGORY = PracticeCategories.EMPTY;
-    public static Direction CURRENT_ORIENTATION;
+    public static StructureProperties CURRENT_ORIENTATION_MODIFIER;
     public static PlayerlessInventory PLAYERLESS_INVENTORY;
     public static PlayerlessPlayerScreenHandler PLAYERLESS_PLAYER_SCREEN_HANDLER;
     public static final AtomicReference<ServerResourceManager> SERVER_RESOURCE_MANAGER = new AtomicReference<>();
