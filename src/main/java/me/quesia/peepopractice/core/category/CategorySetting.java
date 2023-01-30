@@ -7,6 +7,7 @@ import me.quesia.peepopractice.core.PracticeWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("UnusedDeclaration")
 public class CategorySetting {
     private String id;
     private String label;

@@ -16,13 +16,16 @@ import java.util.List;
 @SuppressWarnings("UnusedDeclaration")
 public class PracticeCategories {
     public static List<PracticeCategory> ALL = new ArrayList<>();
+    public static PracticeCategory EMPTY = new PracticeCategory()
+            .setId("empty")
+            .setHidden(true);
     public static PracticeCategory STRONGHOLD = new PracticeCategory()
             .setId("stronghold")
             .addStructureProperties(new StructureProperties()
                     .setStructure(DefaultBiomeFeatures.STRONGHOLD)
                     .setChunkPos(new ChunkPos(0, 0))
                     .setOrientation(Direction.SOUTH)
-//                    .setUnique(true)
+                    .setUnique(true)
                     .setStructureTopY(50)
             )
             .setPlayerProperties(new PlayerProperties()

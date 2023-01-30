@@ -7,7 +7,6 @@ import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.mixin.access.ItemEntryAccessor;
 import me.quesia.peepopractice.mixin.access.LootPoolAccessor;
 import me.quesia.peepopractice.mixin.access.LootTableAccessor;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;

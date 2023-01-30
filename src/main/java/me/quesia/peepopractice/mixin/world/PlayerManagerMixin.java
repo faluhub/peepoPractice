@@ -1,13 +1,8 @@
 package me.quesia.peepopractice.mixin.world;
 
-import com.google.gson.JsonObject;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.InventoryUtils;
-import me.quesia.peepopractice.core.PracticeWriter;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.StringNbtReader;
+import me.quesia.peepopractice.core.category.PracticeCategories;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -23,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class PlayerManagerMixin {
     @ModifyVariable(method = "onPlayerConnect", at = @At("STORE"))
     private RegistryKey<World> otherDimension(RegistryKey<World> value) {
-        if (PeepoPractice.CATEGORY != null && PeepoPractice.CATEGORY.getWorldProperties() != null && PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey() != null) {
+        if (PeepoPractice.CATEGORY.hasWorldProperties() && PeepoPractice.CATEGORY.getWorldProperties().hasWorldRegistryKey()) {
             return PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey();
         }
         return value;
@@ -31,8 +26,9 @@ public class PlayerManagerMixin {
 
     @Inject(method = "onPlayerConnect", at = @At("TAIL"))
     private void setInventory(ClientConnection connection, ServerPlayerEntity player, CallbackInfo ci) {
-        if (PeepoPractice.CATEGORY == null) { return; }
-        InventoryUtils.putItems(player.inventory, PeepoPractice.CATEGORY);
-        player.getHungerManager().setSaturationLevelClient(20.0F);
+        if (PeepoPractice.CATEGORY != PracticeCategories.EMPTY) {
+            InventoryUtils.putItems(player.inventory, PeepoPractice.CATEGORY);
+            player.getHungerManager().setSaturationLevelClient(20.0F);
+        }
     }
 }

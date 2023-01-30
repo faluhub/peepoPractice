@@ -14,9 +14,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class CategorySelectionScreen extends Screen {
     private final Screen parent;
     protected PracticeCategory selected;
@@ -132,7 +129,9 @@ public class CategorySelectionScreen extends Screen {
             );
 
             for (PracticeCategory category : PracticeCategories.ALL) {
-                this.addEntry(new CategoryEntry(category));
+                if (!category.isHidden()) {
+                    this.addEntry(new CategoryEntry(category));
+                }
             }
 
             if (this.getSelected() != null) {

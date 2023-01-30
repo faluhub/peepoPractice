@@ -1,10 +1,12 @@
 package me.quesia.peepopractice.mixin;
 
 import me.quesia.peepopractice.PeepoPractice;
+import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.resource.LocalResourceManager;
 import me.quesia.peepopractice.mixin.access.ThreadExecutorAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.TitleScreen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -41,8 +43,10 @@ public class MinecraftClientMixin {
         });
     }
 
-//    @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("HEAD"))
-//    private void removeCategory(Screen screen, CallbackInfo ci) {
-//        PeepoPractice.CATEGORY = null;
-//    }
+    @Inject(method = "openScreen", at = @At("TAIL"))
+    private void resetCategory(Screen screen, CallbackInfo ci) {
+        if (screen instanceof TitleScreen) {
+            PeepoPractice.CATEGORY = PracticeCategories.EMPTY;
+        }
+    }
 }

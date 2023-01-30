@@ -3,12 +3,17 @@ package me.quesia.peepopractice.core.category.properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec2f;
 
+@SuppressWarnings("UnusedDeclaration")
 public class PlayerProperties {
     private BlockPos spawnPos;
     private Vec2f spawnAngle;
 
     public BlockPos getSpawnPos() {
         return this.spawnPos;
+    }
+
+    public boolean hasSpawnPos() {
+        return this.spawnPos != null;
     }
 
     public PlayerProperties setSpawnPos(BlockPos spawnPos) {
@@ -18,6 +23,10 @@ public class PlayerProperties {
 
     public Vec2f getSpawnAngle() {
         return this.spawnAngle;
+    }
+
+    public boolean hasSpawnAngle() {
+        return this.spawnAngle != null;
     }
 
     public PlayerProperties setSpawnAngle(float yaw, float pitch) {

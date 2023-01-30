@@ -7,7 +7,6 @@ import net.minecraft.entity.boss.BossBarManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.WorldGenerationProgressListener;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
@@ -34,7 +33,6 @@ import net.minecraft.world.level.storage.LevelStorage;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -43,7 +41,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.Executor;
 
 @Mixin(MinecraftServer.class)
@@ -54,19 +51,19 @@ public abstract class MinecraftServerMixin {
     @Shadow @Final protected LevelStorage.Session session;
     @Shadow @Final private Map<RegistryKey<World>, ServerWorld> worlds;
     @Shadow protected abstract void initScoreboard(PersistentStateManager persistentStateManager);
-    @Shadow private @Nullable DataCommandStorage dataCommandStorage;
-    @Shadow private static void setupSpawn(ServerWorld serverWorld, ServerWorldProperties serverWorldProperties, boolean bl, boolean bl2, boolean bl3) {}
+    @SuppressWarnings("unused") @Shadow private @Nullable DataCommandStorage dataCommandStorage;
+    @SuppressWarnings("SameParameterValue") @Shadow private static void setupSpawn(ServerWorld serverWorld, ServerWorldProperties serverWorldProperties, boolean bl, boolean bl2, boolean bl3) { throw new UnsupportedOperationException(); }
     @Shadow protected abstract void setToDebugWorldProperties(SaveProperties properties);
     @Shadow public abstract PlayerManager getPlayerManager();
     @Shadow public abstract BossBarManager getBossBarManager();
 
     /**
-     * @author Maya
+     * @author Quesia
      * @reason Custom start dimension
      */
     @Inject(method = "createWorlds", at = @At("HEAD"), cancellable = true)
     private void createWorlds(WorldGenerationProgressListener worldGenerationProgressListener, CallbackInfo ci) {
-        if (PeepoPractice.CATEGORY == null || PeepoPractice.CATEGORY.getWorldProperties() == null || PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey() == null) { return; }
+        if (!PeepoPractice.CATEGORY.hasWorldProperties() || !PeepoPractice.CATEGORY.getWorldProperties().hasWorldRegistryKey()) { return; }
         ci.cancel();
 
         ServerWorldProperties serverWorldProperties = this.saveProperties.getMainWorldProperties();

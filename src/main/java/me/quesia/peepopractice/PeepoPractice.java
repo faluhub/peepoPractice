@@ -1,5 +1,6 @@
 package me.quesia.peepopractice;
 
+import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.core.resource.LocalResourceManager;
 import me.quesia.peepopractice.gui.inventory.PlayerlessInventory;
@@ -9,7 +10,6 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.resource.ServerResourceManager;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,7 +21,7 @@ public class PeepoPractice implements ClientModInitializer {
     public static final String MOD_NAME = MOD_CONTAINER.getMetadata().getName();
     public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
 
-    public static PracticeCategory CATEGORY;
+    public static PracticeCategory CATEGORY = PracticeCategories.EMPTY;
     public static Direction CURRENT_ORIENTATION;
     public static PlayerlessInventory PLAYERLESS_INVENTORY;
     public static PlayerlessPlayerScreenHandler PLAYERLESS_PLAYER_SCREEN_HANDLER;
