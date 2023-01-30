@@ -15,9 +15,14 @@
     "gui.ItemStackMixin",
     "gui.TitleScreenMixin",
 
+    "structure.category.BastionRemnantFeatureConfigMixin",
+
     "structure.ChunkGeneratorMixin",
     "structure.StructureFeatureMixin",
+    "structure.StructurePoolBasedGeneratorMixin",
     "structure.StructureStartMixin",
+
+    "world.biome.BasaltDeltasBiomeMixin",
 
     "world.MinecraftServerMixin",
     "world.PlayerManagerMixin",

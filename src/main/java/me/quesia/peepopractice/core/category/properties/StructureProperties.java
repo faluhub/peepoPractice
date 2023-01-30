@@ -1,9 +1,10 @@
 package me.quesia.peepopractice.core.category.properties;
 
 import me.quesia.peepopractice.core.category.PracticeCategory;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
 
@@ -14,6 +15,7 @@ public class StructureProperties extends BaseProperties {
     private ConfiguredStructureFeature<?, ?> structure;
     private ChunkPos chunkPos;
     private Direction orientation;
+    private BlockRotation rotation;
     private PracticeCategory.ExecuteReturnTask<ChunkPos> chunkPosTask;
     private Integer structureTopY;
     private boolean unique = false;
@@ -50,13 +52,11 @@ public class StructureProperties extends BaseProperties {
 
     public StructureProperties setChunkPos(ChunkPos structureChunkPos) {
         this.chunkPos = structureChunkPos;
-        this.chunkPosTask = null;
         return this;
     }
 
     public StructureProperties setChunkPos(PracticeCategory.ExecuteReturnTask<ChunkPos> task) {
         this.chunkPosTask = task;
-        this.chunkPos = null;
         return this;
     }
 
@@ -70,6 +70,19 @@ public class StructureProperties extends BaseProperties {
 
     public StructureProperties setOrientation(Direction orientation) {
         this.orientation = orientation;
+        return this;
+    }
+
+    public BlockRotation getRotation() {
+        return this.rotation;
+    }
+
+    public boolean hasRotation() {
+        return this.rotation != null;
+    }
+
+    public StructureProperties setRotation(BlockRotation rotation) {
+        this.rotation = rotation;
         return this;
     }
 
@@ -103,10 +116,10 @@ public class StructureProperties extends BaseProperties {
         this.generated = true;
     }
 
-    public void reset(Random random, World world) {
+    public void reset(Random random, ServerWorld world) {
         this.generated = false;
         if (this.chunkPosTask != null) {
-            this.setChunkPos(this.chunkPosTask.execute(random, world));
+            this.setChunkPos(this.chunkPosTask.execute(this.getCategory(), random, world));
         }
     }
 }

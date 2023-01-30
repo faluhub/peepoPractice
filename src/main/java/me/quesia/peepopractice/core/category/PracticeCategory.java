@@ -3,13 +3,12 @@ package me.quesia.peepopractice.core.category;
 import me.quesia.peepopractice.core.category.properties.PlayerProperties;
 import me.quesia.peepopractice.core.category.properties.StructureProperties;
 import me.quesia.peepopractice.core.category.properties.WorldProperties;
-import net.minecraft.world.World;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @SuppressWarnings("UnusedDeclaration")
 public class PracticeCategory {
@@ -19,6 +18,7 @@ public class PracticeCategory {
     private WorldProperties worldProperties;
     private final List<CategorySetting> settings;
     private boolean hidden;
+    private Map<String, Object> customValues = new HashMap<>();
 
     public PracticeCategory() {
         this.settings = new ArrayList<>();
@@ -112,7 +112,29 @@ public class PracticeCategory {
         return this;
     }
 
+    public Object getCustomValue(String key) {
+        return this.customValues.get(key);
+    }
+
+    public boolean hasCustomValue(String key) {
+        return this.customValues.containsKey(key);
+    }
+
+    public void putCustomValue(String key, Object value) {
+        this.customValues.put(key, value);
+    }
+
+    public void removeCustomValue(String key) {
+        if (this.hasCustomValue(key)) {
+            this.customValues.remove(key);
+        }
+    }
+
+    public void reset() {
+        this.customValues.clear();
+    }
+
     public interface ExecuteReturnTask<T> {
-        T execute(Random random, World world);
+        @Nullable T execute(PracticeCategory category, Random random, ServerWorld world);
     }
 }

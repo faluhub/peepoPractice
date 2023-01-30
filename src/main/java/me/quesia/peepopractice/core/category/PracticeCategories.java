@@ -1,15 +1,17 @@
 package me.quesia.peepopractice.core.category;
 
-import com.google.common.collect.ImmutableMap;
+import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.category.properties.PlayerProperties;
 import me.quesia.peepopractice.core.category.properties.StructureProperties;
 import me.quesia.peepopractice.core.category.properties.WorldProperties;
+import net.minecraft.block.Blocks;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec2f;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.BastionRemnantFeatureConfig;
 import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
 import net.minecraft.world.gen.feature.StructureFeature;
 
@@ -67,43 +69,51 @@ public class PracticeCategories {
                     .addChoice("12")
                     .setDefaultChoice("Random")
             );
-    public static PracticeCategory OVERWORLD_TEST = new PracticeCategory()
-            .setId("overworld_test")
-            .setWorldProperties(new WorldProperties()
-                    .setWorldRegistryKey(World.OVERWORLD)
-            );
-    public static PracticeCategory NETHER_TEST = new PracticeCategory()
-            .setId("nether_test")
+    public static PracticeCategory NETHER_SPLIT = new PracticeCategory()
+            .setId("nether_split")
             .addStructureProperties(new StructureProperties()
-                    .setStructure(DefaultBiomeFeatures.FORTRESS)
-                    .setChunkPos((random, world) -> new ChunkPos(-2, -2))
+                    .setStructure(DefaultBiomeFeatures.BASTION_REMNANT)
+                    .setChunkPos((category, random, world) -> new ChunkPos(random.nextInt(3) + 2, 2))
+                    .setRotation(BlockRotation.NONE)
                     .setUnique(true)
             )
             .addStructureProperties(new StructureProperties()
-                    .setStructure(DefaultBiomeFeatures.BASTION_REMNANT)
-                    .setChunkPos((random, world) -> new ChunkPos(2, 2))
+                    .setStructure(DefaultBiomeFeatures.FORTRESS)
+                    .setChunkPos((category, random, world) -> new ChunkPos(-(random.nextInt(3) + 2), -(random.nextInt(3) + 2)))
                     .setUnique(true)
+            )
+            .setPlayerProperties(new PlayerProperties()
+                    .setSpawnPos((category, random, world) -> {
+                        StructureProperties properties = category.findStructureProperties(StructureFeature.BASTION_REMNANT);
+                        if (properties.hasChunkPos()) {
+                            if (category.hasCustomValue("bastionType")) {
+                                PracticeCategoryUtils.BastionType type = PracticeCategoryUtils.BastionType.fromId((int) category.getCustomValue("bastionType"));
+                                if (type != null) {
+                                    BlockPos pos = properties.getChunkPos().getCenterBlockPos();
+                                    return pos.add(type.pos);
+                                }
+                            }
+                        }
+                        return null;
+                    })
+                    .setSpawnAngle((category, random, world) -> {
+                        StructureProperties properties = category.findStructureProperties(StructureFeature.BASTION_REMNANT);
+                        if (properties.hasChunkPos()) {
+                            if (category.hasCustomValue("bastionType")) {
+                                PracticeCategoryUtils.BastionType type = PracticeCategoryUtils.BastionType.fromId((int) category.getCustomValue("bastionType"));
+                                if (type != null) {
+                                    return new Vec2f(type.angle, 0.0F);
+                                }
+                            }
+                        }
+                        return null;
+                    })
             )
             .setWorldProperties(new WorldProperties()
                     .setWorldRegistryKey(World.NETHER)
             );
-    public static PracticeCategory NETHER_TEST_UNIQUE = new PracticeCategory()
-            .setId("nether_test_unique")
-            .addStructureProperties(new StructureProperties()
-                    .setStructure(DefaultBiomeFeatures.FORTRESS)
-                    .setChunkPos((random, world) -> new ChunkPos(-2, -2))
-                    .setUnique(false)
-            )
-            .addStructureProperties(new StructureProperties()
-                    .setStructure(DefaultBiomeFeatures.BASTION_REMNANT)
-                    .setChunkPos((random, world) -> new ChunkPos(2, 2))
-                    .setUnique(false)
-            )
-            .setWorldProperties(new WorldProperties()
-                    .setWorldRegistryKey(World.NETHER)
-            );
-    public static PracticeCategory END_TEST = new PracticeCategory()
-            .setId("end_test")
+    public static PracticeCategory END_SPLIT = new PracticeCategory()
+            .setId("end_split")
             .setPlayerProperties(new PlayerProperties()
                     .setSpawnAngle(90.0F, 0.0F)
                     .setSpawnPos(ServerWorld.END_SPAWN_POS)
