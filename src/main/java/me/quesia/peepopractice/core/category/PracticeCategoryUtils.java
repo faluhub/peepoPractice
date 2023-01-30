@@ -8,6 +8,11 @@ public class PracticeCategoryUtils {
     public static final String ENABLED = "Enabled";
     public static final String DISABLED = "Disabled";
     public static final String[] BOOLEAN_LIST = new String[] { ENABLED, DISABLED };
+    public enum UniqueStructureState {
+        NOT_GENERATED,
+        GENERATED,
+        IGNORED
+    }
 
     public static boolean parseBoolean(String option) {
         List<String> list = Arrays.asList(BOOLEAN_LIST);

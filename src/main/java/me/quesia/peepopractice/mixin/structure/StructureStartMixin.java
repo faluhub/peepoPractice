@@ -25,7 +25,7 @@ public class StructureStartMixin {
     private void customChildrenListType(StructureFeature<?> feature, int chunkX, int chunkZ, BlockBox box, int references, long seed, CallbackInfo ci) {
         this.children = new ExecuteAtIndexArrayList<>(piece -> {
             for (StructureProperties properties : PeepoPractice.CATEGORY.getStructureProperties()) {
-                if (properties.isSameStructure(feature)) {
+                if (properties.isSameStructure(feature) && properties.hasOrientation()) {
                     piece.setOrientation(properties.getOrientation());
                 }
             }

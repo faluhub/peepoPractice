@@ -21,24 +21,8 @@ public class PracticeWriter {
     }
 
     private File create(String fileName) {
-        File folder = new File(FabricLoader.getInstance().getConfigDir() + "/" + PeepoPractice.MOD_NAME);
-        if (!folder.exists()) {
-            if (folder.mkdirs()) {
-                PeepoPractice.log("Created config folder.");
-            }
-        }
-
-        File file = folder.toPath().resolve(fileName).toFile();
-
-        if (!file.exists()) {
-            try {
-                if (file.createNewFile()) {
-                    PeepoPractice.log("Created file '" + fileName + "'.");
-                }
-            } catch (IOException ignored) {}
-        }
-
-        return file;
+        File folder = FabricLoader.getInstance().getConfigDir().resolve(PeepoPractice.MOD_NAME).toFile();
+        return folder.toPath().resolve(fileName).toFile();
     }
 
     private void write(JsonObject config) {
@@ -50,8 +34,6 @@ public class PracticeWriter {
                 writer.write(new GsonBuilder().setPrettyPrinting().create().toJson(config));
                 writer.flush();
                 writer.close();
-
-                PeepoPractice.log("Saved file '" + this.file.getName() + "'. (Put)");
             } catch (IOException ignored) {}
         });
     }

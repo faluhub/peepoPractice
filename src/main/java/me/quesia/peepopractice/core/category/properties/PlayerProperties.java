@@ -4,7 +4,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec2f;
 
 @SuppressWarnings("UnusedDeclaration")
-public class PlayerProperties {
+public class PlayerProperties extends BaseProperties {
     private BlockPos spawnPos;
     private Vec2f spawnAngle;
 

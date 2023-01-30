@@ -1,5 +1,6 @@
 package me.quesia.peepopractice.core.category;
 
+import com.google.common.collect.ImmutableMap;
 import me.quesia.peepopractice.core.category.properties.PlayerProperties;
 import me.quesia.peepopractice.core.category.properties.StructureProperties;
 import me.quesia.peepopractice.core.category.properties.WorldProperties;
@@ -8,7 +9,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.feature.BastionRemnantFeatureConfig;
 import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
+import net.minecraft.world.gen.feature.StructureFeature;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,14 +75,29 @@ public class PracticeCategories {
     public static PracticeCategory NETHER_TEST = new PracticeCategory()
             .setId("nether_test")
             .addStructureProperties(new StructureProperties()
-                    .setStructure(DefaultBiomeFeatures.BASTION_REMNANT)
-                    .setChunkPos(new ChunkPos(2, 2))
+                    .setStructure(DefaultBiomeFeatures.FORTRESS)
+                    .setChunkPos((random, world) -> new ChunkPos(-2, -2))
                     .setUnique(true)
             )
             .addStructureProperties(new StructureProperties()
-                    .setStructure(DefaultBiomeFeatures.FORTRESS)
-                    .setChunkPos(new ChunkPos(-2, -2))
+                    .setStructure(DefaultBiomeFeatures.BASTION_REMNANT)
+                    .setChunkPos((random, world) -> new ChunkPos(2, 2))
                     .setUnique(true)
+            )
+            .setWorldProperties(new WorldProperties()
+                    .setWorldRegistryKey(World.NETHER)
+            );
+    public static PracticeCategory NETHER_TEST_UNIQUE = new PracticeCategory()
+            .setId("nether_test_unique")
+            .addStructureProperties(new StructureProperties()
+                    .setStructure(DefaultBiomeFeatures.FORTRESS)
+                    .setChunkPos((random, world) -> new ChunkPos(-2, -2))
+                    .setUnique(false)
+            )
+            .addStructureProperties(new StructureProperties()
+                    .setStructure(DefaultBiomeFeatures.BASTION_REMNANT)
+                    .setChunkPos((random, world) -> new ChunkPos(2, 2))
+                    .setUnique(false)
             )
             .setWorldProperties(new WorldProperties()
                     .setWorldRegistryKey(World.NETHER)

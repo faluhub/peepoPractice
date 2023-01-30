@@ -4,14 +4,13 @@
   "package": "me.quesia.peepopractice.mixin",
   "compatibilityLevel": "JAVA_10",
   "client": [
+    "access.ChunkGeneratorAccessor",
     "access.ItemEntryAccessor",
     "access.LootPoolAccessor",
     "access.LootTableAccessor",
     "access.ThreadExecutorAccessor",
 
     "gui.renderer.ItemRendererMixin",
-
-    "gui.screen.CreateWorldScreenMixin",
 
     "gui.ItemStackMixin",
     "gui.TitleScreenMixin",
@@ -24,6 +23,7 @@
     "world.PlayerManagerMixin",
     "world.ServerPlayerEntityMixin",
 
+    "ClientPlayNetworkHandlerMixin",
     "CommandManagerMixin",
     "MinecraftClientMixin"
   ],

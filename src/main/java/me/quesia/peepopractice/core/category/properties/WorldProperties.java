@@ -4,7 +4,7 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 
 @SuppressWarnings("UnusedDeclaration")
-public class WorldProperties {
+public class WorldProperties extends BaseProperties {
     private RegistryKey<World> worldRegistryKey;
 
     public RegistryKey<World> getWorldRegistryKey() {

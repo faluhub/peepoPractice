@@ -3,9 +3,13 @@ package me.quesia.peepopractice.core.category;
 import me.quesia.peepopractice.core.category.properties.PlayerProperties;
 import me.quesia.peepopractice.core.category.properties.StructureProperties;
 import me.quesia.peepopractice.core.category.properties.WorldProperties;
+import net.minecraft.world.World;
+import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
+import net.minecraft.world.gen.feature.StructureFeature;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @SuppressWarnings("UnusedDeclaration")
 public class PracticeCategory {
@@ -41,6 +45,7 @@ public class PracticeCategory {
 
     public PracticeCategory setPlayerProperties(PlayerProperties playerProperties) {
         this.playerProperties = playerProperties;
+        this.playerProperties.setCategory(this);
         return this;
     }
 
@@ -48,12 +53,30 @@ public class PracticeCategory {
         return this.structureProperties;
     }
 
+    public StructureProperties findStructureProperties(StructureFeature<?> feature) {
+        for (StructureProperties properties : this.structureProperties) {
+            if (properties.isSameStructure(feature)) {
+                return properties;
+            }
+        }
+        return null;
+    }
+
+    public StructureProperties findStructureProperties(ConfiguredStructureFeature<?, ?> feature) {
+        for (StructureProperties properties : this.structureProperties) {
+            if (properties.isSameStructure(feature)) {
+                return properties;
+            }
+        }
+        return null;
+    }
+
     public boolean hasStructureProperties() {
         return !this.structureProperties.isEmpty();
     }
 
     public PracticeCategory addStructureProperties(StructureProperties structureProperties) {
-        this.structureProperties.add(structureProperties);
+        this.structureProperties.add((StructureProperties) structureProperties.setCategory(this));
         return this;
     }
 
@@ -67,6 +90,7 @@ public class PracticeCategory {
 
     public PracticeCategory setWorldProperties(WorldProperties worldProperties) {
         this.worldProperties = worldProperties;
+        this.worldProperties.setCategory(this);
         return this;
     }
 
@@ -86,5 +110,9 @@ public class PracticeCategory {
     public PracticeCategory addSetting(CategorySetting setting) {
         this.settings.add(setting);
         return this;
+    }
+
+    public interface ExecuteReturnTask<T> {
+        T execute(Random random, World world);
     }
 }

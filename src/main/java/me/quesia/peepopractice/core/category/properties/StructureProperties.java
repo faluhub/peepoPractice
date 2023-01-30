@@ -1,18 +1,20 @@
 package me.quesia.peepopractice.core.category.properties;
 
+import me.quesia.peepopractice.core.category.PracticeCategory;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
 
 import java.util.Random;
 
 @SuppressWarnings("UnusedDeclaration")
-public class StructureProperties {
+public class StructureProperties extends BaseProperties {
     private ConfiguredStructureFeature<?, ?> structure;
     private ChunkPos chunkPos;
     private Direction orientation;
-    private ChunkPosSetterTask chunkPosSetterTask;
+    private PracticeCategory.ExecuteReturnTask<ChunkPos> chunkPosTask;
     private Integer structureTopY;
     private boolean unique = false;
     private boolean generated = false;
@@ -43,17 +45,17 @@ public class StructureProperties {
     }
 
     public boolean hasChunkPos() {
-        return this.chunkPos != null || this.chunkPosSetterTask != null;
+        return this.chunkPos != null || this.chunkPosTask != null;
     }
 
     public StructureProperties setChunkPos(ChunkPos structureChunkPos) {
         this.chunkPos = structureChunkPos;
-        this.chunkPosSetterTask = null;
+        this.chunkPosTask = null;
         return this;
     }
 
-    public StructureProperties setChunkPos(ChunkPosSetterTask task) {
-        this.chunkPosSetterTask = task;
+    public StructureProperties setChunkPos(PracticeCategory.ExecuteReturnTask<ChunkPos> task) {
+        this.chunkPosTask = task;
         this.chunkPos = null;
         return this;
     }
@@ -101,14 +103,10 @@ public class StructureProperties {
         this.generated = true;
     }
 
-    public void reset(Random random) {
+    public void reset(Random random, World world) {
         this.generated = false;
-        if (this.chunkPosSetterTask != null) {
-            this.chunkPos = this.chunkPosSetterTask.execute(random);
+        if (this.chunkPosTask != null) {
+            this.setChunkPos(this.chunkPosTask.execute(random, world));
         }
-    }
-
-    public interface ChunkPosSetterTask {
-        ChunkPos execute(Random random);
     }
 }

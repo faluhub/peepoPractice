@@ -2,6 +2,10 @@ package me.quesia.peepopractice.mixin.world;
 
 import com.google.common.collect.ImmutableList;
 import me.quesia.peepopractice.PeepoPractice;
+import me.quesia.peepopractice.core.category.PracticeCategories;
+import me.quesia.peepopractice.core.category.PracticeCategory;
+import me.quesia.peepopractice.core.category.properties.StructureProperties;
+import me.quesia.peepopractice.mixin.access.ChunkGeneratorAccessor;
 import net.minecraft.command.DataCommandStorage;
 import net.minecraft.entity.boss.BossBarManager;
 import net.minecraft.server.MinecraftServer;
@@ -41,6 +45,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.Executor;
 
 @Mixin(MinecraftServer.class)
@@ -79,6 +84,14 @@ public abstract class MinecraftServerMixin {
         ChunkGenerator chunkGenerator = dimensionOptions.getChunkGenerator();
         RegistryKey<DimensionType> registryKey = this.dimensionTracker.getDimensionTypeRegistry().getKey(dimensionType).orElseThrow(() -> new IllegalStateException("Unregistered dimension type: " + dimensionType));
         ServerWorld serverWorld = new ServerWorld((MinecraftServer) (Object) this, this.workerExecutor, this.session, serverWorldProperties, PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey(), registryKey, dimensionType, worldGenerationProgressListener, chunkGenerator, bl, m, PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey().equals(World.OVERWORLD) ? list : ImmutableList.of(), true);
+
+        Random random = new Random(((ChunkGeneratorAccessor) chunkGenerator).getField_24748());
+        for (PracticeCategory category : PracticeCategories.ALL) {
+            for (StructureProperties properties : category.getStructureProperties()) {
+                properties.reset(random, serverWorld);
+            }
+        }
+
         this.worlds.put(PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey(), serverWorld);
         PersistentStateManager persistentStateManager = serverWorld.getPersistentStateManager();
         this.initScoreboard(persistentStateManager);
