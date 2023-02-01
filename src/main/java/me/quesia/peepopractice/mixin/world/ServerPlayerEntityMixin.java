@@ -2,6 +2,10 @@ package me.quesia.peepopractice.mixin.world;
 
 import com.mojang.authlib.GameProfile;
 import me.quesia.peepopractice.PeepoPractice;
+import me.quesia.peepopractice.core.category.properties.event.ChangeDimensionSplitEvent;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -14,6 +18,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Random;
 
@@ -29,6 +34,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     @Inject(method = "moveToSpawn", at = @At("HEAD"), cancellable = true)
     private void customSpawn(ServerWorld world, CallbackInfo ci) {
         if (PeepoPractice.CATEGORY.hasPlayerProperties() && PeepoPractice.CATEGORY.getPlayerProperties().hasSpawnPos()) {
+            if (!(world.getLevelProperties() instanceof LevelProperties)) { return; }
+
             PeepoPractice.CATEGORY.getPlayerProperties().reset(new Random(world.getSeed()), world);
 
             if (PeepoPractice.CATEGORY.hasWorldProperties() && PeepoPractice.CATEGORY.getWorldProperties().hasWorldRegistryKey() && PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey().equals(World.END)) {
@@ -50,5 +57,25 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
 
             ci.cancel();
         }
+    }
+
+    @Inject(method = "changeDimension", at = @At("TAIL"))
+    private void triggerSplitEvent(ServerWorld destination, CallbackInfoReturnable<Entity> cir) {
+        if (PeepoPractice.CATEGORY.hasSplitEvent()) {
+            if (PeepoPractice.CATEGORY.getSplitEvent() instanceof ChangeDimensionSplitEvent) {
+                ChangeDimensionSplitEvent event = (ChangeDimensionSplitEvent) PeepoPractice.CATEGORY.getSplitEvent();
+                if (event.hasDimension() && event.getDimension() == destination.getRegistryKey()) {
+                    event.endSplit(!this.isDead());
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onDeath(DamageSource source) {
+        if (PeepoPractice.CATEGORY.hasSplitEvent()) {
+            PeepoPractice.CATEGORY.getSplitEvent().endSplit(false);
+        }
+        super.onDeath(source);
     }
 }

@@ -20,6 +20,7 @@
   "mixins": ["peepopractice.mixins.json"],
   "accessWidener": "peepopractice.accesswidener",
   "depends": {
-    "minecraft": "1.16.1"
+    "minecraft": "1.16.1",
+    "speedrunigt": ">=7.0"
   }
 }

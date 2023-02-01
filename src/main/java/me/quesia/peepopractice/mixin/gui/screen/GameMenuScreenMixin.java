@@ -40,7 +40,7 @@ public abstract class GameMenuScreenMixin extends Screen {
                 new ButtonWidget(
                         this.width / 2 - 102,
                         this.height / 4 + 120 + i,
-                        68 - 4,
+                        98,
                         20,
                         new LiteralText("Save & Quit"),
                         b -> {
@@ -51,26 +51,9 @@ public abstract class GameMenuScreenMixin extends Screen {
         );
         this.addButton(
                 new ButtonWidget(
-                        this.width / 2 - 102 + 68,
+                        this.width / 2 + 4,
                         this.height / 4 + 120 + i,
-                        68,
-                        20,
-                        new LiteralText("Replay Seed"),
-                        b -> {
-                            b.active = false;
-                            if (this.client.world == null || this.client.getServer() == null) { return; }
-                            MoreOptionsDialog dialog = new MoreOptionsDialog();
-                            String seedText = String.valueOf(Objects.requireNonNull(this.client.getServer().getWorld(this.client.world.getRegistryKey())).getSeed());
-                            ((MoreOptionsDialogAccessor) dialog).setSeedText(seedText);
-                            this.client.openScreen(new CreateWorldScreen(null, dialog));
-                        }
-                )
-        );
-        this.addButton(
-                new ButtonWidget(
-                        this.width / 2 - 102 + 68 * 2 + 4,
-                        this.height / 4 + 120 + i,
-                        68 - 4,
+                        98,
                         20,
                         new LiteralText("Replay Split"),
                         b -> {
@@ -80,5 +63,11 @@ public abstract class GameMenuScreenMixin extends Screen {
                 )
         );
         return button;
+    }
+
+    @Override
+    protected <T extends AbstractButtonWidget> T addButton(T button) {
+        if (button.getMessage().getString().equals("menu.quitWorld")) { return button; }
+        return super.addButton(button);
     }
 }

@@ -3,6 +3,7 @@ package me.quesia.peepopractice.core.category;
 import me.quesia.peepopractice.core.category.properties.PlayerProperties;
 import me.quesia.peepopractice.core.category.properties.StructureProperties;
 import me.quesia.peepopractice.core.category.properties.WorldProperties;
+import me.quesia.peepopractice.core.category.properties.event.SplitEvent;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
@@ -16,6 +17,7 @@ public class PracticeCategory {
     private PlayerProperties playerProperties;
     private final List<StructureProperties> structureProperties = new ArrayList<>();
     private WorldProperties worldProperties;
+    private SplitEvent splitEvent;
     private final List<CategorySetting> settings;
     private boolean hidden;
     private final Map<String, Object> customValues = new HashMap<>();
@@ -91,6 +93,20 @@ public class PracticeCategory {
     public PracticeCategory setWorldProperties(WorldProperties worldProperties) {
         this.worldProperties = worldProperties;
         this.worldProperties.setCategory(this);
+        return this;
+    }
+
+    public SplitEvent getSplitEvent() {
+        return this.splitEvent;
+    }
+
+    public boolean hasSplitEvent() {
+        return this.splitEvent != null;
+    }
+
+    public PracticeCategory setSplitEvent(SplitEvent splitEvent) {
+        this.splitEvent = splitEvent;
+        this.splitEvent.setCategory(this);
         return this;
     }
 

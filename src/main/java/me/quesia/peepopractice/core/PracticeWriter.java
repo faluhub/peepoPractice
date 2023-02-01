@@ -13,6 +13,7 @@ import java.io.IOException;
 public class PracticeWriter {
     public static final PracticeWriter CONFIG_WRITER = new PracticeWriter("config.json");
     public static final PracticeWriter INVENTORY_WRITER = new PracticeWriter("inventory.json");
+    public static final PracticeWriter PB_WRITER = new PracticeWriter("personal_bests.json");
 
     private final File file;
 
@@ -62,8 +63,7 @@ public class PracticeWriter {
         return null;
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    public void put(String element, String value) {
+    public void put(String element, long value) {
         JsonObject config = this.get();
 
         if (config != null) {

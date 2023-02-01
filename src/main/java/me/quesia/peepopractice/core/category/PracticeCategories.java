@@ -3,6 +3,7 @@ package me.quesia.peepopractice.core.category;
 import me.quesia.peepopractice.core.category.properties.PlayerProperties;
 import me.quesia.peepopractice.core.category.properties.StructureProperties;
 import me.quesia.peepopractice.core.category.properties.WorldProperties;
+import me.quesia.peepopractice.core.category.properties.event.ChangeDimensionSplitEvent;
 import me.quesia.peepopractice.core.category.properties.preset.BastionPreset;
 import net.minecraft.block.Blocks;
 import net.minecraft.server.world.ServerWorld;
@@ -37,6 +38,9 @@ public class PracticeCategories {
             )
             .setWorldProperties(new WorldProperties()
                     .setWorldRegistryKey(World.OVERWORLD)
+            )
+            .setSplitEvent(new ChangeDimensionSplitEvent()
+                    .setDimension(World.END)
             )
             .addSetting(new CategorySetting()
                     .setId("spawn_in_stronghold")

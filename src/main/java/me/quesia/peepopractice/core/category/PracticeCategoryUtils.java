@@ -15,6 +15,7 @@ public class PracticeCategoryUtils {
     public static final String ENABLED = "Enabled";
     public static final String DISABLED = "Disabled";
     public static final String[] BOOLEAN_LIST = new String[] { ENABLED, DISABLED };
+
     public enum BastionType {
         HOUSING(0, new Vec3i(-9, 83, 27), -90.0F),
         STABLES(1, new Vec3i(3, 54, 30), 90.0F),
