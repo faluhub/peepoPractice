@@ -20,9 +20,18 @@ public class PracticeWriter {
         this.file = this.create(fileName);
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private File create(String fileName) {
-        File folder = FabricLoader.getInstance().getConfigDir().resolve(PeepoPractice.MOD_NAME).toFile();
-        return folder.toPath().resolve(fileName).toFile();
+        try {
+            File folder = FabricLoader.getInstance().getConfigDir().resolve(PeepoPractice.MOD_NAME).toFile();
+            if (!folder.exists()) { folder.mkdirs(); }
+            File file = folder.toPath().resolve(fileName).toFile();
+            if (!file.exists()) { file.createNewFile(); }
+            return file;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private void write(JsonObject config) {

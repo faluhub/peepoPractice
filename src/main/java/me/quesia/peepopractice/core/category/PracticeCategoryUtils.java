@@ -1,11 +1,15 @@
 package me.quesia.peepopractice.core.category;
 
-import net.minecraft.util.math.Vec2f;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.SaveLevelScreen;
+import net.minecraft.client.gui.screen.TitleScreen;
+import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
+import net.minecraft.realms.RealmsBridge;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.Vec3i;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 public class PracticeCategoryUtils {
     public static final String ENABLED = "Enabled";
@@ -43,22 +47,24 @@ public class PracticeCategoryUtils {
         return option.equals(ENABLED);
     }
 
-    public static String getName(PracticeCategory category) {
-        StringBuilder text = new StringBuilder();
-        boolean shouldCapitalise = true;
+    public static void quit() { quit(false); }
 
-        for (Character c : category.getId().toCharArray()) {
-            if (shouldCapitalise) {
-                text.append(c.toString().toUpperCase(Locale.ROOT));
-                shouldCapitalise = false;
-            } else if (c.equals('_')) {
-                text.append(" ");
-                shouldCapitalise = true;
-            } else {
-                text.append(c.toString().toLowerCase(Locale.ROOT));
-            }
+    public static void quit(boolean close) {
+        MinecraftClient client = MinecraftClient.getInstance();
+
+        boolean bl = client.isInSingleplayer();
+        boolean bl2 = client.isConnectedToRealms();
+
+        if (client.world != null) { client.world.disconnect(); }
+
+        if (bl) { client.disconnect(new SaveLevelScreen(new TranslatableText("menu.savingLevel"))); }
+        else { client.disconnect(); }
+
+        if (bl && close) { client.openScreen(new TitleScreen()); }
+        else if (bl2) {
+            RealmsBridge realmsBridge = new RealmsBridge();
+            realmsBridge.switchToRealms(new TitleScreen());
         }
-
-        return text.toString();
+        else { client.openScreen(new MultiplayerScreen(new TitleScreen())); }
     }
 }

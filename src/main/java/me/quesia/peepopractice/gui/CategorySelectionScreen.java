@@ -3,7 +3,6 @@ package me.quesia.peepopractice.gui;
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.category.PracticeCategory;
-import me.quesia.peepopractice.core.category.PracticeCategoryUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
@@ -161,7 +160,7 @@ public class CategorySelectionScreen extends Screen {
             }
 
             public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-                Text label = new LiteralText(PracticeCategoryUtils.getName(this.category));
+                Text label = new LiteralText(this.category.getName());
 
                 CategorySelectionScreen.this.textRenderer.drawWithShadow(
                         matrices,

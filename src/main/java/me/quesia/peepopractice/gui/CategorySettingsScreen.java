@@ -3,7 +3,6 @@ package me.quesia.peepopractice.gui;
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.category.CategorySetting;
 import me.quesia.peepopractice.core.category.PracticeCategory;
-import me.quesia.peepopractice.core.category.PracticeCategoryUtils;
 import me.quesia.peepopractice.gui.inventory.EditInventoryScreen;
 import me.quesia.peepopractice.gui.inventory.PlayerlessInventory;
 import me.quesia.peepopractice.gui.inventory.PlayerlessPlayerScreenHandler;
@@ -21,7 +20,7 @@ public class CategorySettingsScreen extends Screen {
     private final Map<ButtonWidget, String> descriptions = new HashMap<>();
 
     public CategorySettingsScreen(Screen parent, PracticeCategory category) {
-        super(new LiteralText("Configure (" + PracticeCategoryUtils.getName(category) + ")"));
+        super(new LiteralText("Configure (" + category.getName() + ")"));
 
         this.parent = parent;
         this.category = category;

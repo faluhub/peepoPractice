@@ -18,7 +18,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
@@ -31,7 +30,7 @@ public abstract class ChunkGeneratorMixin {
 
     private StructureProperties getUniqueStronghold() {
         for (StructureProperties properties : PeepoPractice.CATEGORY.getStructureProperties()) {
-            if (properties.isSameStructure(StructureFeature.STRONGHOLD) && properties.isUnique()) {
+            if (properties.isSameStructure(StructureFeature.STRONGHOLD) && !properties.isGeneratable()) {
                 return properties;
             }
         }
@@ -43,7 +42,7 @@ public abstract class ChunkGeneratorMixin {
         for (StructureProperties properties : PeepoPractice.CATEGORY.getStructureProperties()) {
             if (!properties.isSameStructure(StructureFeature.STRONGHOLD)) {
                 MinecraftClient client = MinecraftClient.getInstance();
-                if (client.world != null) {
+                if (client.world != null && properties.getChunkPos() != null) {
                     ChunkPos chunkPos = client.world.getChunk(properties.getChunkPos().x, properties.getChunkPos().z, ChunkStatus.BIOMES).getPos();
                     Biome biome = this.biomeSource.getBiomeForNoiseGen((chunkPos.x << 2) + 2, 0, (chunkPos.z << 2) + 2);
                     this.method_28508(properties.getStructure(), structureAccessor, chunk, structureManager, l, chunkPos, biome);

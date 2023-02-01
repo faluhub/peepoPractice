@@ -18,7 +18,7 @@ public class PracticeCategory {
     private WorldProperties worldProperties;
     private final List<CategorySetting> settings;
     private boolean hidden;
-    private Map<String, Object> customValues = new HashMap<>();
+    private final Map<String, Object> customValues = new HashMap<>();
 
     public PracticeCategory() {
         this.settings = new ArrayList<>();
@@ -128,6 +128,25 @@ public class PracticeCategory {
         if (this.hasCustomValue(key)) {
             this.customValues.remove(key);
         }
+    }
+
+    public String getName() {
+        StringBuilder text = new StringBuilder();
+        boolean shouldCapitalise = true;
+
+        for (Character c : this.getId().toCharArray()) {
+            if (shouldCapitalise) {
+                text.append(c.toString().toUpperCase(Locale.ROOT));
+                shouldCapitalise = false;
+            } else if (c.equals('_')) {
+                text.append(" ");
+                shouldCapitalise = true;
+            } else {
+                text.append(c.toString().toLowerCase(Locale.ROOT));
+            }
+        }
+
+        return text.toString();
     }
 
     public void reset() {

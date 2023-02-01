@@ -11,10 +11,14 @@ import net.minecraft.entity.boss.BossBarManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.WorldGenerationProgressListener;
+import net.minecraft.server.world.ChunkTicketType;
+import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Unit;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.RegistryTracker;
@@ -38,9 +42,7 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -61,6 +63,7 @@ public abstract class MinecraftServerMixin {
     @Shadow protected abstract void setToDebugWorldProperties(SaveProperties properties);
     @Shadow public abstract PlayerManager getPlayerManager();
     @Shadow public abstract BossBarManager getBossBarManager();
+    @Shadow public abstract ServerWorld getOverworld();
 
     /**
      * @author Quesia
@@ -144,5 +147,15 @@ public abstract class MinecraftServerMixin {
             return PeepoPractice.CATEGORY.getPlayerProperties().getSpawnPos();
         }
         return instance.getSpawnPos();
+    }
+
+    @Inject(method = "prepareStartRegion", at = @At("TAIL"))
+    private void removeTicket(WorldGenerationProgressListener worldGenerationProgressListener, CallbackInfo ci) {
+        if (PeepoPractice.CATEGORY.hasWorldProperties() && !PeepoPractice.CATEGORY.getWorldProperties().isSpawnChunksEnabled()) {
+            ServerWorld serverWorld = this.getOverworld();
+            BlockPos blockPos = serverWorld.getSpawnPos();
+            ServerChunkManager serverChunkManager = serverWorld.getChunkManager();
+            serverChunkManager.removeTicket(ChunkTicketType.START, new ChunkPos(blockPos), 11, Unit.INSTANCE);
+        }
     }
 }

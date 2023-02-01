@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class ClientPlayNetworkHandlerMixin {
     @Redirect(method = "onEntityPassengersSet", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;warn(Ljava/lang/String;)V"))
     private void ignoreWarning(Logger instance, String s) {
-        if (PeepoPractice.CATEGORY == PracticeCategories.EMPTY) {
+        if (PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
             instance.warn(s);
         }
     }

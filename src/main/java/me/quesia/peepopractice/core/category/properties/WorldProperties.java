@@ -6,6 +6,7 @@ import net.minecraft.world.World;
 @SuppressWarnings("UnusedDeclaration")
 public class WorldProperties extends BaseProperties {
     private RegistryKey<World> worldRegistryKey;
+    private boolean spawnChunksEnabled = true;
 
     public RegistryKey<World> getWorldRegistryKey() {
         return this.worldRegistryKey;
@@ -17,6 +18,15 @@ public class WorldProperties extends BaseProperties {
 
     public WorldProperties setWorldRegistryKey(RegistryKey<World> worldRegistryKey) {
         this.worldRegistryKey = worldRegistryKey;
+        return this;
+    }
+
+    public boolean isSpawnChunksEnabled() {
+        return this.spawnChunksEnabled;
+    }
+
+    public WorldProperties setSpawnChunksEnabled(boolean spawnChunksEnabled) {
+        this.spawnChunksEnabled = spawnChunksEnabled;
         return this;
     }
 }

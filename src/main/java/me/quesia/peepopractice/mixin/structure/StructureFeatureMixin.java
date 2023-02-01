@@ -1,7 +1,6 @@
 package me.quesia.peepopractice.mixin.structure;
 
 import me.quesia.peepopractice.PeepoPractice;
-import me.quesia.peepopractice.core.category.PracticeCategoryUtils;
 import me.quesia.peepopractice.core.category.properties.StructureProperties;
 import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.StructurePiece;
@@ -13,7 +12,6 @@ import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.ChunkRandom;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.StructureConfig;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.FeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,7 +29,7 @@ public abstract class StructureFeatureMixin<C extends FeatureConfig> {
         for (StructureProperties properties : PeepoPractice.CATEGORY.getStructureProperties()) {
             if (properties.isSameStructure((StructureFeature<?>) (Object) this)) {
                 if (properties.hasChunkPos() && properties.getChunkPos().equals(chunkPos)) {
-                    if (properties.isUnique() && !properties.hasGenerated()) {
+                    if (!properties.isGeneratable() && !properties.hasGenerated()) {
                         properties.setGenerated();
                     }
                     return true;
@@ -50,7 +48,7 @@ public abstract class StructureFeatureMixin<C extends FeatureConfig> {
         ChunkPos chunkPos2 = this.method_27218(structureConfig, l, chunkRandom, chunkPos.x, chunkPos.z);
         StructureProperties props = PeepoPractice.CATEGORY.findStructureProperties((StructureFeature<?>) (Object) this);
         boolean bl1 = this.checkArtificialStructure(chunkPos);
-        boolean bl2 = !bl1 && (props == null || !props.isUnique()) && chunkPos.x == chunkPos2.x && chunkPos.z == chunkPos2.z && this.shouldStartAt(chunkGenerator, biomeSource, l, chunkRandom, chunkPos.x, chunkPos.z, biome, chunkPos2, featureConfig);
+        boolean bl2 = !bl1 && (props == null || props.isGeneratable()) && chunkPos.x == chunkPos2.x && chunkPos.z == chunkPos2.z && this.shouldStartAt(chunkGenerator, biomeSource, l, chunkRandom, chunkPos.x, chunkPos.z, biome, chunkPos2, featureConfig);
         if (bl1 || bl2) {
             final StructureStart<C> structureStart = this.method_28656(chunkPos.x, chunkPos.z, BlockBox.empty(), i, l);
             structureStart.init(chunkGenerator, structureManager, chunkPos.x, chunkPos.z, biome, featureConfig);

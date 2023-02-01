@@ -18,7 +18,7 @@ public class StructureProperties extends BaseProperties {
     private BlockRotation rotation;
     private PracticeCategory.ExecuteReturnTask<ChunkPos> chunkPosTask;
     private Integer structureTopY;
-    private boolean unique = false;
+    private boolean generatable = false;
     private boolean generated = false;
 
     public ConfiguredStructureFeature<?, ?> getStructure() {
@@ -99,12 +99,12 @@ public class StructureProperties extends BaseProperties {
         return this;
     }
 
-    public boolean isUnique() {
-        return this.unique;
+    public boolean isGeneratable() {
+        return this.generatable;
     }
 
-    public StructureProperties setUnique(boolean unique) {
-        this.unique = unique;
+    public StructureProperties setGeneratable(boolean generatable) {
+        this.generatable = generatable;
         return this;
     }
 

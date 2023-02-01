@@ -8,9 +8,13 @@
     "access.ItemEntryAccessor",
     "access.LootPoolAccessor",
     "access.LootTableAccessor",
+    "access.MoreOptionsDialogAccessor",
     "access.ThreadExecutorAccessor",
 
     "gui.renderer.ItemRendererMixin",
+
+    "gui.screen.CreateWorldScreenMixin",
+    "gui.screen.GameMenuScreenMixin",
 
     "gui.ItemStackMixin",
     "gui.TitleScreenMixin",
@@ -27,6 +31,7 @@
     "world.MinecraftServerMixin",
     "world.PlayerManagerMixin",
     "world.ServerPlayerEntityMixin",
+    "world.ServerWorldMixin",
 
     "ClientPlayNetworkHandlerMixin",
     "CommandManagerMixin",
