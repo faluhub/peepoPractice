@@ -35,6 +35,7 @@ public class PracticeCategories {
             )
             .setPlayerProperties(new PlayerProperties()
                     .setSpawnPos(new BlockPos(4, 41, 4))
+                    .setSpawnAngle(0.0F, 0.0F)
             )
             .setWorldProperties(new WorldProperties()
                     .setWorldRegistryKey(World.OVERWORLD)
@@ -105,6 +106,9 @@ public class PracticeCategories {
             .setWorldProperties(new WorldProperties()
                     .setWorldRegistryKey(World.NETHER)
                     .setSpawnChunksEnabled(false)
+            )
+            .setSplitEvent(new ChangeDimensionSplitEvent()
+                    .setDimension(World.OVERWORLD)
             );
     public static PracticeCategory BASTION_SPLIT = new PracticeCategory()
             .setId("bastion_split")
@@ -160,5 +164,8 @@ public class PracticeCategories {
             )
             .setWorldProperties(new WorldProperties()
                     .setWorldRegistryKey(World.END)
+            )
+            .setSplitEvent(new ChangeDimensionSplitEvent()
+                    .setDimension(World.OVERWORLD)
             );
 }

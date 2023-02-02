@@ -4,10 +4,19 @@ import com.google.gson.JsonObject;
 import com.redlimerl.speedrunigt.option.SpeedRunOption;
 import com.redlimerl.speedrunigt.option.SpeedRunOptions;
 import com.redlimerl.speedrunigt.timer.InGameTimer;
+import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.PracticeWriter;
 import me.quesia.peepopractice.core.category.PracticeCategory;
+import net.minecraft.block.NoteBlock;
+import net.minecraft.block.enums.Instrument;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.sound.MovingSoundInstance;
+import net.minecraft.client.sound.PositionedSoundInstance;
+import net.minecraft.client.sound.Sound;
+import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
@@ -15,6 +24,9 @@ import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
+
+import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 
 public class SplitEvent {
     private PracticeCategory category;
@@ -75,6 +87,24 @@ public class SplitEvent {
             if (client.getServer() != null) {
                 ServerPlayerEntity serverPlayerEntity = client.getServer().getPlayerManager().getPlayer(client.player.getUuid());
                 if (serverPlayerEntity != null) {
+                    if (completed) {
+                        new Thread(() -> {
+                            for (int i = 0; i < 5; i++) {
+                                client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 3.0F, 0.5F + .2F * (i + i / 4.0F));
+                                try { TimeUnit.MILLISECONDS.sleep(180); }
+                                catch (InterruptedException ignored) {}
+                            }
+                        }).start();
+                    } else {
+                        new Thread(() -> {
+                            for (int i = 0; i < 2; i++) {
+                                client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS, 3.0F, 1.2F - i * 0.5F);
+                                try { TimeUnit.MILLISECONDS.sleep(180); }
+                                catch (InterruptedException ignored) {}
+                            }
+                        }).start();
+                    }
+
                     serverPlayerEntity.setGameMode(GameMode.SPECTATOR);
                     float yaw = 0.0F;
                     float pitch = 0.0F;
@@ -94,6 +124,7 @@ public class SplitEvent {
                         }
                     }
                     serverPlayerEntity.teleport(client.getServer().getWorld(registryKey), pos.getX(), pos.getY(), pos.getZ(), yaw, pitch);
+                    serverPlayerEntity.addScoreboardTag("completed");
                 }
             }
         }

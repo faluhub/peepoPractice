@@ -68,7 +68,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     private void triggerSplitEvent(ServerWorld destination, CallbackInfoReturnable<Entity> cir) {
         if (PeepoPractice.CATEGORY.hasSplitEvent()) {
             if (PeepoPractice.CATEGORY.getSplitEvent() instanceof ChangeDimensionSplitEvent) {
-                if (InGameTimer.getInstance().isCompleted()) {
+                if (InGameTimer.getInstance().isCompleted() && this.getScoreboardTags().contains("completed")) {
                     cir.setReturnValue(this);
                     cir.cancel();
                     return;
