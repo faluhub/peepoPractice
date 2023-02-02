@@ -47,6 +47,7 @@ import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
 public class EditInventoryScreen extends PlayerlessHandledScreen {
@@ -129,8 +130,54 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
             this.searchBox.setCursorToEnd();
             this.searchBox.setSelectionEnd(0);
         }
+
         boolean bl = actionType == SlotActionType.QUICK_MOVE;
         actionType = invSlot == -999 && actionType == SlotActionType.PICKUP ? SlotActionType.THROW : actionType;
+
+        if (
+                slot != null
+                && (slot.inventory == this.playerInventory || selectedTab == ItemGroup.INVENTORY.getIndex())
+                && actionType == SlotActionType.PICKUP
+                && slot.getStack() != null
+                && slot.getStack() != ItemStack.EMPTY
+                && PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack() != null
+                && PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack().getItem().equals(Items.ENCHANTED_BOOK)
+        ) {
+            ListTag enchantments = EnchantedBookItem.getEnchantmentTag(PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack());
+            AtomicBoolean shouldStop = new AtomicBoolean(false);
+            enchantments.forEach(rawTag -> {
+                if (shouldStop.get()) { return; }
+
+                ItemStack stack = slot.getStack();
+                CompoundTag tag = (CompoundTag) rawTag;
+                Enchantment enchantment = Registry.ENCHANTMENT.get(new Identifier(tag.getString("id")));
+                if (enchantment != null) {
+                    if (!enchantment.isAcceptableItem(stack)) {
+                        shouldStop.set(true);
+                        return;
+                    }
+
+                    if (!stack.getEnchantments().isEmpty()) {
+                        stack.getEnchantments().forEach(rawTag1 -> {
+                            CompoundTag tag1 = (CompoundTag) rawTag1;
+                            if (!enchantment.canCombine(Registry.ENCHANTMENT.get(new Identifier(tag1.getString("id"))))) {
+                                shouldStop.set(true);
+                            }
+                        });
+                    }
+
+                    if (shouldStop.get()) { return; }
+
+                    slot.getStack().addEnchantment(enchantment, tag.getInt("lvl"));
+                }
+            });
+
+            if (!shouldStop.get()) {
+                PeepoPractice.PLAYERLESS_INVENTORY.setCursorStack(ItemStack.EMPTY);
+                return;
+            }
+        }
+
         if (slot != null || selectedTab == ItemGroup.INVENTORY.getIndex() || actionType == SlotActionType.QUICK_CRAFT) {
             if (slot == this.deleteItemSlot && bl) {
                 for (int i = 0; i < PeepoPractice.PLAYERLESS_PLAYER_SCREEN_HANDLER.slots.size(); i++) {
@@ -145,6 +192,24 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
                     PeepoPractice.PLAYERLESS_INVENTORY.setCursorStack(ItemStack.EMPTY);
                 } else {
                     PeepoPractice.PLAYERLESS_PLAYER_SCREEN_HANDLER.onSlotClick(slot == null ? invSlot : ((EditInventoryScreen.CreativeSlot) slot).slot.id, clickData, actionType, PeepoPractice.PLAYERLESS_INVENTORY);
+                }
+            } else if (
+                    selectedTab == InventoryUtils.LOOT_TABLES.getIndex()
+                    && actionType == SlotActionType.PICKUP
+                    && slot.getStack() != null
+                    && slot.getStack().getTag() != null
+                    && slot.getStack().getTag().contains("LootTableId")
+            ) {
+                ItemStack stack = slot.getStack();
+                this.scrollPosition = 0.0F;
+                Identifier identifier = new Identifier(stack.getTag().getString("LootTableId"));
+                List<ItemStack> items = InventoryUtils.getLootTableItems(identifier);
+                ((PlayerlessCreativeScreenHandler) this.handler).itemList.clear();
+
+                displayInv.clear();
+                for (ItemStack stack1 : items) {
+                    displayInv.addStack(stack1);
+                    ((PlayerlessCreativeScreenHandler) this.handler).itemList.add(items.indexOf(stack1), stack1);
                 }
             } else if (actionType != SlotActionType.QUICK_CRAFT && slot.inventory == displayInv) {
                 PlayerlessInventory playerInventory = PeepoPractice.PLAYERLESS_INVENTORY;

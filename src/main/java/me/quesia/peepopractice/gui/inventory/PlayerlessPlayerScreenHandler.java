@@ -78,7 +78,9 @@ public class PlayerlessPlayerScreenHandler extends PlayerlessScreenHandler {
     @Override
     public ItemStack transferSlot(int index) {
         ItemStack itemStack = ItemStack.EMPTY;
-        Slot slot = this.slots.get(index);
+        Slot slot;
+        try { slot = this.slots.get(index); }
+        catch (IndexOutOfBoundsException ignored) { return itemStack; }
         if (slot != null && slot.hasStack()) {
             int i;
             ItemStack itemStack2 = slot.getStack();
@@ -105,7 +107,7 @@ public class PlayerlessPlayerScreenHandler extends PlayerlessScreenHandler {
     }
 
     static {
-        EMPTY_ARMOR_SLOT_TEXTURES = new Identifier[]{EMPTY_BOOTS_SLOT_TEXTURE, EMPTY_LEGGINGS_SLOT_TEXTURE, EMPTY_CHESTPLATE_SLOT_TEXTURE, EMPTY_HELMET_SLOT_TEXTURE};
-        EQUIPMENT_SLOT_ORDER = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
+        EMPTY_ARMOR_SLOT_TEXTURES = new Identifier[] { EMPTY_BOOTS_SLOT_TEXTURE, EMPTY_LEGGINGS_SLOT_TEXTURE, EMPTY_CHESTPLATE_SLOT_TEXTURE, EMPTY_HELMET_SLOT_TEXTURE };
+        EQUIPMENT_SLOT_ORDER = new EquipmentSlot[] { EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET };
     }
 }
