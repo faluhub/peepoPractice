@@ -3,6 +3,7 @@ package me.quesia.peepopractice.mixin.world;
 import com.mojang.authlib.GameProfile;
 import com.redlimerl.speedrunigt.timer.InGameTimer;
 import me.quesia.peepopractice.PeepoPractice;
+import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.category.properties.event.ChangeDimensionSplitEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
@@ -12,6 +13,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.world.GameMode;
+import net.minecraft.world.PortalForcer;
 import net.minecraft.world.World;
 import net.minecraft.world.level.LevelProperties;
 import org.jetbrains.annotations.Nullable;
@@ -19,6 +21,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -28,7 +31,6 @@ import java.util.Random;
 public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     @Shadow public abstract void refreshPositionAfterTeleport(double x, double y, double z);
     @Shadow @Nullable public abstract BlockPos getSpawnPointPosition();
-
     @Shadow public abstract void setGameMode(GameMode gameMode);
 
     @SuppressWarnings("unused")
@@ -76,10 +78,20 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
 
                 ChangeDimensionSplitEvent event = (ChangeDimensionSplitEvent) PeepoPractice.CATEGORY.getSplitEvent();
                 if (event.hasDimension() && event.getDimension() == destination.getRegistryKey()) {
-                    event.endSplit(!this.isDead());
+                    event.complete(!this.isDead());
+                    cir.setReturnValue(this);
+                    cir.cancel();
                 }
             }
         }
+    }
+
+    @Redirect(method = "changeDimension", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/PortalForcer;usePortal(Lnet/minecraft/entity/Entity;F)Z"))
+    private boolean ignorePortal(PortalForcer instance, Entity entity, float yawOffset) {
+        if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
+            return true;
+        }
+        return instance.usePortal(entity, yawOffset);
     }
 
     @Override
@@ -95,7 +107,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
             }
             if (end) {
                 this.setGameMode(GameMode.SPECTATOR);
-                PeepoPractice.CATEGORY.getSplitEvent().endSplit(false);
+                PeepoPractice.CATEGORY.getSplitEvent().complete(false);
             }
         }
         super.onDeath(source);

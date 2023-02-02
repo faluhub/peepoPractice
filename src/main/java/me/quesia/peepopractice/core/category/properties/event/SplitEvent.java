@@ -7,31 +7,29 @@ import com.redlimerl.speedrunigt.timer.InGameTimer;
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.PracticeWriter;
 import me.quesia.peepopractice.core.category.PracticeCategory;
-import net.minecraft.block.NoteBlock;
-import net.minecraft.block.enums.Instrument;
+import me.quesia.peepopractice.mixin.access.ServerWorldAccessor;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.sound.MovingSoundInstance;
-import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.client.sound.Sound;
-import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
 
-import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 public class SplitEvent {
     private PracticeCategory category;
 
-    public void endSplit(boolean completed) {
+    public void complete(boolean completed) {
+        new Thread(() -> this.endSplit(completed)).start();
+    }
+
+    private void endSplit(boolean completed) {
         if (this.category == null) { return; }
 
         PracticeWriter writer = PracticeWriter.PB_WRITER;
@@ -49,7 +47,9 @@ public class SplitEvent {
                 isPb = false;
             }
         }
-        writer.put(this.category.getId(), igt);
+        if (isPb) {
+            writer.put(this.category.getId(), igt);
+        }
 
         String time;
         SpeedRunOptions.TimerDecimals timerDecimals = SpeedRunOption.getOption(SpeedRunOptions.DISPLAY_DECIMALS);
@@ -87,24 +87,6 @@ public class SplitEvent {
             if (client.getServer() != null) {
                 ServerPlayerEntity serverPlayerEntity = client.getServer().getPlayerManager().getPlayer(client.player.getUuid());
                 if (serverPlayerEntity != null) {
-                    if (completed) {
-                        new Thread(() -> {
-                            for (int i = 0; i < 5; i++) {
-                                client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 3.0F, 0.5F + .2F * (i + i / 4.0F));
-                                try { TimeUnit.MILLISECONDS.sleep(180); }
-                                catch (InterruptedException ignored) {}
-                            }
-                        }).start();
-                    } else {
-                        new Thread(() -> {
-                            for (int i = 0; i < 2; i++) {
-                                client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS, 3.0F, 1.2F - i * 0.5F);
-                                try { TimeUnit.MILLISECONDS.sleep(180); }
-                                catch (InterruptedException ignored) {}
-                            }
-                        }).start();
-                    }
-
                     serverPlayerEntity.setGameMode(GameMode.SPECTATOR);
                     float yaw = 0.0F;
                     float pitch = 0.0F;
@@ -123,8 +105,33 @@ public class SplitEvent {
                             pos = this.category.getPlayerProperties().getSpawnPos();
                         }
                     }
+
+                    while (((ServerWorldAccessor) serverPlayerEntity.getServerWorld()).getInEntityTick()) {}
+                    PeepoPractice.log("Done waiting for entity tick");
                     serverPlayerEntity.teleport(client.getServer().getWorld(registryKey), pos.getX(), pos.getY(), pos.getZ(), yaw, pitch);
                     serverPlayerEntity.addScoreboardTag("completed");
+
+                    if (completed) {
+                        new Thread(() -> {
+                            for (int i = 0; i < 5; i++) {
+                                if (client.player != null) {
+                                    client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 3.0F, 0.5F + .2F * (i + i / 4.0F));
+                                    try { TimeUnit.MILLISECONDS.sleep(180); }
+                                    catch (InterruptedException ignored) {}
+                                }
+                            }
+                        }).start();
+                    } else {
+                        new Thread(() -> {
+                            for (int i = 0; i < 2; i++) {
+                                if (client.player != null) {
+                                    client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS, 3.0F, 1.2F - i * 0.5F);
+                                    try { TimeUnit.MILLISECONDS.sleep(180); }
+                                    catch (InterruptedException ignored) {}
+                                }
+                            }
+                        }).start();
+                    }
                 }
             }
         }

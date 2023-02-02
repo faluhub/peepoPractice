@@ -11,14 +11,11 @@ import net.minecraft.entity.boss.BossBarManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.WorldGenerationProgressListener;
-import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Unit;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.RegistryTracker;
@@ -63,7 +60,6 @@ public abstract class MinecraftServerMixin {
     @Shadow protected abstract void setToDebugWorldProperties(SaveProperties properties);
     @Shadow public abstract PlayerManager getPlayerManager();
     @Shadow public abstract BossBarManager getBossBarManager();
-    @Shadow public abstract ServerWorld getOverworld();
 
     /**
      * @author Quesia
@@ -149,13 +145,18 @@ public abstract class MinecraftServerMixin {
         return instance.getSpawnPos();
     }
 
+    @Redirect(method = "prepareStartRegion", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerChunkManager;getTotalChunksLoadedCount()I"))
+    private int redirectGetTotalChunksLoadedCount(ServerChunkManager serverChunkManager) {
+        return 1;
+    }
+
+    @ModifyConstant(method = "prepareStartRegion", constant = @Constant(intValue = 441))
+    private int modifyNumChunksToWaitFor(int value) {
+        return 1;
+    }
+
     @Inject(method = "prepareStartRegion", at = @At("TAIL"))
-    private void removeTicket(WorldGenerationProgressListener worldGenerationProgressListener, CallbackInfo ci) {
-        if (PeepoPractice.CATEGORY.hasWorldProperties() && !PeepoPractice.CATEGORY.getWorldProperties().isSpawnChunksEnabled()) {
-            ServerWorld serverWorld = this.getOverworld();
-            BlockPos blockPos = serverWorld.getSpawnPos();
-            ServerChunkManager serverChunkManager = serverWorld.getChunkManager();
-            serverChunkManager.removeTicket(ChunkTicketType.START, new ChunkPos(blockPos), 11, Unit.INSTANCE);
-        }
+    private void onPrepareStartRegion(CallbackInfo info) {
+        ((MinecraftServer) (Object) this).save(false, false, false);
     }
 }

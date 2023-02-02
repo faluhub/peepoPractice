@@ -42,6 +42,13 @@ public class CategorySelectionScreen extends Screen {
         }
     }
 
+    public void play() {
+        if (this.client != null && this.selected != null) {
+            PeepoPractice.CATEGORY = this.selected;
+            this.client.openScreen(new CreateWorldScreen(this));
+        }
+    }
+
     @Override
     protected void init() {
         this.categoryListWidget = new CategoryListWidget(this.client);
@@ -59,10 +66,7 @@ public class CategorySelectionScreen extends Screen {
                                 if (this.doneButton.getMessage().getString().equals(ScreenTexts.BACK.getString())) {
                                     this.client.openScreen(this.parent);
                                 } else {
-                                    if (this.selected != null) {
-                                        PeepoPractice.CATEGORY = this.selected;
-                                        this.client.openScreen(new CreateWorldScreen(this));
-                                    }
+                                    this.play();
                                 }
                             }
                         }
@@ -180,7 +184,7 @@ public class CategorySelectionScreen extends Screen {
             }
 
             public void onPressed() {
-                if (CategoryListWidget.this.getSelected() == this) { CategorySelectionScreen.this.openConfig(); }
+                if (CategoryListWidget.this.getSelected() == this) { CategorySelectionScreen.this.play(); }
                 else { CategoryListWidget.this.setSelected(this); }
             }
         }
