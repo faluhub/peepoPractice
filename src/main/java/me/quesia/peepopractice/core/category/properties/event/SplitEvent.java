@@ -62,19 +62,11 @@ public class SplitEvent {
         MinecraftClient client = MinecraftClient.getInstance();
 
         if (client.player != null) {
-            // mojang code sucks
-            client.inGameHud.setTitles(
-                    null,
-                    new LiteralText(Formatting.GRAY + time),
-                    10,
-                    100,
-                    10
-            );
             client.inGameHud.setTitles(
                     completed
                             ? new LiteralText(Formatting.AQUA + "Completed"
                             + (isPb ? Formatting.YELLOW + " (PB!)" : ""))
-                            : new LiteralText("Failed"),
+                            : new LiteralText(Formatting.RED + "Failed"),
                     new LiteralText(Formatting.GRAY + time),
                     10,
                     100,

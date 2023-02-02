@@ -100,48 +100,49 @@ public class PlayerlessInventory implements Inventory, Nameable {
         }
     }
 
-    public void insertStack(ItemStack stack) {
-        this.insertStack(-1, stack);
+    public boolean insertStack(ItemStack stack) {
+        return this.insertStack(-1, stack);
     }
 
-    public void insertStack(int slot, ItemStack stack) {
-        if (!stack.isEmpty()) {
-            try {
-                if (stack.isDamaged()) {
+    public boolean insertStack(int slot, ItemStack stack) {
+        if (stack.isEmpty()) {
+            return false;
+        }
+        try {
+            if (!stack.isDamaged()) {
+                int i;
+                do {
+                    i = stack.getCount();
                     if (slot == -1) {
-                        slot = this.getEmptySlot();
+                        stack.setCount(this.addStack(stack));
+                        continue;
                     }
-
-                    if (slot >= 0) {
-                        this.main.set(slot, stack.copy());
-                        this.main.get(slot).setCooldown(5);
-                        stack.setCount(0);
-                    } else {
-                        stack.setCount(0);
-                    }
-                } else {
-                    int i;
-                    do {
-                        i = stack.getCount();
-                        if (slot == -1) {
-                            stack.setCount(this.addStack(stack));
-                        } else {
-                            stack.setCount(this.addStack(slot, stack));
-                        }
-                    } while(!stack.isEmpty() && stack.getCount() < i);
-
-                    if (stack.getCount() == i) {
-                        stack.setCount(0);
-                    }
+                    stack.setCount(this.addStack(slot, stack));
+                } while (!stack.isEmpty() && stack.getCount() < i);
+                if (stack.getCount() == i) {
+                    stack.setCount(0);
+                    return true;
                 }
-            } catch (Throwable var6) {
-                CrashReport crashReport = CrashReport.create(var6, "Adding item to inventory");
-                CrashReportSection crashReportSection = crashReport.addElement("Item being added");
-                crashReportSection.add("Item ID", Item.getRawId(stack.getItem()));
-                crashReportSection.add("Item data", stack.getDamage());
-                crashReportSection.add("Item name", () -> stack.getName().getString());
-                throw new CrashException(crashReport);
+                return stack.getCount() < i;
             }
+            if (slot == -1) {
+                slot = this.getEmptySlot();
+            }
+            if (slot >= 0) {
+                this.main.set(slot, stack.copy());
+                this.main.get(slot).setCooldown(5);
+                stack.setCount(0);
+                return true;
+            }
+            stack.setCount(0);
+            return true;
+        } catch (Throwable throwable) {
+            CrashReport crashReport = CrashReport.create(throwable, "Adding item to inventory");
+            CrashReportSection crashReportSection = crashReport.addElement("Item being added");
+            crashReportSection.add("Item ID", Item.getRawId(stack.getItem()));
+            crashReportSection.add("Item data", stack.getDamage());
+            crashReportSection.add("Item name", () -> stack.getName().getString());
+            throw new CrashException(crashReport);
         }
     }
 

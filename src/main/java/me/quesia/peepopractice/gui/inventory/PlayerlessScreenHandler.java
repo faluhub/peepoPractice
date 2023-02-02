@@ -2,17 +2,16 @@ package me.quesia.peepopractice.gui.inventory;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import me.quesia.peepopractice.PeepoPractice;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashReportSection;
-import net.minecraft.util.math.MathHelper;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -35,7 +34,8 @@ public abstract class PlayerlessScreenHandler {
 
     public ItemStack transferSlot(int index) {
         Slot slot = this.slots.get(index);
-        return slot != null ? slot.getStack() : ItemStack.EMPTY;
+        if (slot != null) { return slot.getStack(); }
+        return ItemStack.EMPTY;
     }
 
     public void onSlotClick(int i, int j, SlotActionType actionType, PlayerlessInventory inventory) {
@@ -53,21 +53,16 @@ public abstract class PlayerlessScreenHandler {
         }
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     private void method_30010(int i, int j, SlotActionType slotActionType, PlayerlessInventory playerInventory) {
-        ItemStack itemStack7;
-        ItemStack itemStack8;
-        int n;
-        int l;
         if (slotActionType == SlotActionType.QUICK_CRAFT) {
             int k = this.quickCraftButton;
-            this.quickCraftButton = unpackQuickCraftStage(j);
+            this.quickCraftButton = ScreenHandler.unpackQuickCraftStage(j);
             if ((k != 1 || this.quickCraftButton != 2) && k != this.quickCraftButton) {
                 this.endQuickCraft();
             } else if (playerInventory.getCursorStack().isEmpty()) {
                 this.endQuickCraft();
             } else if (this.quickCraftButton == 0) {
-                this.quickCraftStage = unpackQuickCraftButton(j);
+                this.quickCraftStage = ScreenHandler.unpackQuickCraftButton(j);
                 if (shouldQuickCraftContinue(this.quickCraftStage)) {
                     this.quickCraftButton = 1;
                     this.quickCraftSlots.clear();
@@ -76,216 +71,229 @@ public abstract class PlayerlessScreenHandler {
                 }
             } else if (this.quickCraftButton == 1) {
                 Slot slot = this.slots.get(i);
-                itemStack8 = playerInventory.getCursorStack();
-                if (slot != null && canInsertItemIntoSlot(slot, itemStack8, true) && slot.canInsert(itemStack8) && (this.quickCraftStage == 2 || itemStack8.getCount() > this.quickCraftSlots.size())) {
+                ItemStack itemStack2 = playerInventory.getCursorStack();
+                if (slot != null && ScreenHandler.canInsertItemIntoSlot(slot, itemStack2, true) && slot.canInsert(itemStack2) && (this.quickCraftStage == 2 || itemStack2.getCount() > this.quickCraftSlots.size())) {
                     this.quickCraftSlots.add(slot);
                 }
             } else if (this.quickCraftButton == 2) {
                 if (!this.quickCraftSlots.isEmpty()) {
-                    itemStack7 = playerInventory.getCursorStack().copy();
-                    l = playerInventory.getCursorStack().getCount();
-                    Iterator<Slot> var23 = this.quickCraftSlots.iterator();
-
-                    label336:
-                    while(true) {
-                        Slot slot2;
-                        ItemStack itemStack4;
-                        do {
-                            do {
-                                do {
-                                    do {
-                                        if (!var23.hasNext()) {
-                                            itemStack7.setCount(l);
-                                            playerInventory.setCursorStack(itemStack7);
-                                            break label336;
-                                        }
-
-                                        slot2 = var23.next();
-                                        itemStack4 = playerInventory.getCursorStack();
-                                    } while(slot2 == null);
-                                } while(!canInsertItemIntoSlot(slot2, itemStack4, true));
-                            } while(!slot2.canInsert(itemStack4));
-                        } while(this.quickCraftStage != 2 && itemStack4.getCount() < this.quickCraftSlots.size());
-
-                        ItemStack itemStack5 = itemStack7.copy();
+                    ItemStack itemStack3 = playerInventory.getCursorStack().copy();
+                    int l = playerInventory.getCursorStack().getCount();
+                    for (Slot slot2 : this.quickCraftSlots) {
+                        ItemStack itemStack4 = playerInventory.getCursorStack();
+                        if (slot2 == null || !ScreenHandler.canInsertItemIntoSlot(slot2, itemStack4, true) || !slot2.canInsert(itemStack4) || this.quickCraftStage != 2 && itemStack4.getCount() < this.quickCraftSlots.size()) continue;
+                        ItemStack itemStack5 = itemStack3.copy();
                         int m = slot2.hasStack() ? slot2.getStack().getCount() : 0;
-                        calculateStackSize(this.quickCraftSlots, this.quickCraftStage, itemStack5, m);
-                        n = Math.min(itemStack5.getMaxCount(), slot2.getMaxStackAmount(itemStack5));
+                        ScreenHandler.calculateStackSize(this.quickCraftSlots, this.quickCraftStage, itemStack5, m);
+                        int n = Math.min(itemStack5.getMaxCount(), slot2.getMaxStackAmount(itemStack5));
                         if (itemStack5.getCount() > n) {
                             itemStack5.setCount(n);
                         }
-
                         l -= itemStack5.getCount() - m;
                         slot2.setStack(itemStack5);
                     }
+                    itemStack3.setCount(l);
+                    playerInventory.setCursorStack(itemStack3);
                 }
-
                 this.endQuickCraft();
             } else {
                 this.endQuickCraft();
             }
         } else if (this.quickCraftButton != 0) {
             this.endQuickCraft();
-        } else {
-            Slot slot4;
-            int q;
-            if ((slotActionType == SlotActionType.PICKUP || slotActionType == SlotActionType.QUICK_MOVE) && (j == 0 || j == 1)) {
-                if (i == -999) {
-                    if (!playerInventory.getCursorStack().isEmpty()) {
-                        if (j == 0) {
-                            playerInventory.setCursorStack(ItemStack.EMPTY);
+        } else if (!(slotActionType != SlotActionType.PICKUP && slotActionType != SlotActionType.QUICK_MOVE || j != 0 && j != 1)) {
+            if (i == -999) {
+                if (!playerInventory.getCursorStack().isEmpty()) {
+                    if (j == 0) {
+                        playerInventory.setCursorStack(ItemStack.EMPTY);
+                    }
+                    if (j == 1) {
+                        playerInventory.getCursorStack().split(1);
+                    }
+                }
+            } else if (slotActionType == SlotActionType.QUICK_MOVE) {
+                if (i < 0) {
+                    return;
+                }
+                Slot slot3 = this.slots.get(i);
+                if (slot3 == null) {
+                    return;
+                }
+                ItemStack itemStack3 = PeepoPractice.PLAYERLESS_PLAYER_SCREEN_HANDLER.transferSlot(i);
+                while (!itemStack3.isEmpty() && ItemStack.areItemsEqualIgnoreDamage(slot3.getStack(), itemStack3)) {
+                    itemStack3 = PeepoPractice.PLAYERLESS_PLAYER_SCREEN_HANDLER.transferSlot(i);
+                }
+            } else {
+                if (i < 0) {
+                    return;
+                }
+                Slot slot3 = this.slots.get(i);
+                if (slot3 != null) {
+                    ItemStack itemStack3 = slot3.getStack();
+                    ItemStack itemStack2 = playerInventory.getCursorStack();
+                    if (itemStack3.isEmpty()) {
+                        if (!itemStack2.isEmpty() && slot3.canInsert(itemStack2)) {
+                            int o = j == 0 ? itemStack2.getCount() : 1;
+                            if (o > slot3.getMaxStackAmount(itemStack2)) {
+                                o = slot3.getMaxStackAmount(itemStack2);
+                            }
+                            slot3.setStack(itemStack2.split(o));
+                        }
+                    } else {
+                        int o;
+                        if (itemStack2.isEmpty()) {
+                            int o2 = j == 0 ? itemStack3.getCount() : (itemStack3.getCount() + 1) / 2;
+                            playerInventory.setCursorStack(slot3.takeStack(o2));
+                            if (itemStack3.isEmpty()) {
+                                slot3.setStack(ItemStack.EMPTY);
+                            }
+                        } else if (slot3.canInsert(itemStack2)) {
+                            if (ScreenHandler.canStacksCombine(itemStack3, itemStack2)) {
+                                int o3 = j == 0 ? itemStack2.getCount() : 1;
+                                if (o3 > slot3.getMaxStackAmount(itemStack2) - itemStack3.getCount()) {
+                                    o3 = slot3.getMaxStackAmount(itemStack2) - itemStack3.getCount();
+                                }
+                                if (o3 > itemStack2.getMaxCount() - itemStack3.getCount()) {
+                                    o3 = itemStack2.getMaxCount() - itemStack3.getCount();
+                                }
+                                itemStack2.decrement(o3);
+                                itemStack3.increment(o3);
+                            } else if (itemStack2.getCount() <= slot3.getMaxStackAmount(itemStack2)) {
+                                slot3.setStack(itemStack2);
+                                playerInventory.setCursorStack(itemStack3);
+                            }
+                        } else if (itemStack2.getMaxCount() > 1 && ScreenHandler.canStacksCombine(itemStack3, itemStack2) && !itemStack3.isEmpty() && (o = itemStack3.getCount()) + itemStack2.getCount() <= itemStack2.getMaxCount()) {
+                            itemStack2.increment(o);
+                            itemStack3 = slot3.takeStack(o);
+                            if (itemStack3.isEmpty()) {
+                                slot3.setStack(ItemStack.EMPTY);
+                            }
                         }
                     }
-                } else if (slotActionType == SlotActionType.QUICK_MOVE) {
-                    if (i < 0) {
-                        return;
-                    }
-
-                    slot4 = this.slots.get(i);
-                    if (slot4 == null) {
-                        return;
-                    }
-
-                    for(itemStack7 = this.transferSlot(i); !itemStack7.isEmpty() && ItemStack.areItemsEqualIgnoreDamage(slot4.getStack(), itemStack7); itemStack7 = this.transferSlot(i)) {
-                    }
-                } else {
-                    if (i < 0) {
-                        return;
-                    }
-
-                    slot4 = this.slots.get(i);
-                    if (slot4 != null) {
-                        itemStack7 = slot4.getStack();
-                        itemStack8 = playerInventory.getCursorStack();
-
-                        if (itemStack7.isEmpty() && itemStack7.getCount() == 0) {
-                            if (!itemStack8.isEmpty() && slot4.canInsert(itemStack8)) {
-                                q = j == 0 ? itemStack8.getCount() : 1;
-                                if (q > slot4.getMaxStackAmount(itemStack8)) {
-                                    q = slot4.getMaxStackAmount(itemStack8);
-                                }
-
-                                slot4.setStack(itemStack8.split(q));
-                            }
+                    slot3.markDirty();
+                }
+            }
+        } else if (slotActionType == SlotActionType.SWAP) {
+            Slot slot3 = this.slots.get(i);
+            ItemStack itemStack3 = playerInventory.getStack(j);
+            ItemStack itemStack2 = slot3.getStack();
+            if (!itemStack3.isEmpty() || !itemStack2.isEmpty()) {
+                if (itemStack3.isEmpty()) {
+                    playerInventory.setStack(j, itemStack2);
+                    slot3.setStack(ItemStack.EMPTY);
+                } else if (itemStack2.isEmpty()) {
+                    if (slot3.canInsert(itemStack3)) {
+                        int o = slot3.getMaxStackAmount(itemStack3);
+                        if (itemStack3.getCount() > o) {
+                            slot3.setStack(itemStack3.split(o));
                         } else {
-                            if (itemStack8.isEmpty()) {
-                                q = j == 0 ? itemStack7.getCount() : (itemStack7.getCount() + 1) / 2;
-                                playerInventory.setCursorStack(slot4.takeStack(q));
-                                if (itemStack7.isEmpty()) {
-                                    slot4.setStack(ItemStack.EMPTY);
-                                }
-                            } else if (slot4.canInsert(itemStack8)) {
-                                if (canStacksCombine(itemStack7, itemStack8)) {
-                                    q = j == 0 ? itemStack8.getCount() : 1;
-                                    if (q > slot4.getMaxStackAmount(itemStack8) - itemStack7.getCount()) {
-                                        q = slot4.getMaxStackAmount(itemStack8) - itemStack7.getCount();
-                                    }
-
-                                    if (q > itemStack8.getMaxCount() - itemStack7.getCount()) {
-                                        q = itemStack8.getMaxCount() - itemStack7.getCount();
-                                    }
-
-                                    itemStack8.decrement(q);
-                                    itemStack7.increment(q);
-                                } else if (itemStack8.getCount() <= slot4.getMaxStackAmount(itemStack8)) {
-                                    slot4.setStack(itemStack8);
-                                    playerInventory.setCursorStack(itemStack7);
-                                }
-                            } else if (itemStack8.getMaxCount() > 1 && canStacksCombine(itemStack7, itemStack8) && !itemStack7.isEmpty()) {
-                                q = itemStack7.getCount();
-                                if (q + itemStack8.getCount() <= itemStack8.getMaxCount()) {
-                                    itemStack8.increment(q);
-                                    itemStack7 = slot4.takeStack(q);
-                                    if (itemStack7.isEmpty()) {
-                                        slot4.setStack(ItemStack.EMPTY);
-                                    }
-                                }
-                            }
-                        }
-
-                        slot4.markDirty();
-                    }
-                }
-            } else if (slotActionType == SlotActionType.SWAP) {
-                slot4 = this.slots.get(i);
-                itemStack7 = playerInventory.getStack(j);
-                itemStack8 = slot4.getStack();
-                if (!itemStack7.isEmpty() || !itemStack8.isEmpty()) {
-                    if (itemStack7.isEmpty()) {
-                        playerInventory.setStack(j, itemStack8);
-                        slot4.setStack(ItemStack.EMPTY);
-                    } else if (itemStack8.isEmpty()) {
-                        if (slot4.canInsert(itemStack7)) {
-                            q = slot4.getMaxStackAmount(itemStack7);
-                            if (itemStack7.getCount() > q) {
-                                slot4.setStack(itemStack7.split(q));
-                            } else {
-                                slot4.setStack(itemStack7);
-                                playerInventory.setStack(j, ItemStack.EMPTY);
-                            }
-                        }
-                    } else if (slot4.canInsert(itemStack7)) {
-                        q = slot4.getMaxStackAmount(itemStack7);
-                        if (itemStack7.getCount() > q) {
-                            slot4.setStack(itemStack7.split(q));
-                            playerInventory.insertStack(itemStack8);
-                        } else {
-                            slot4.setStack(itemStack7);
-                            playerInventory.setStack(j, itemStack8);
+                            slot3.setStack(itemStack3);
+                            playerInventory.setStack(j, ItemStack.EMPTY);
                         }
                     }
+                } else if (slot3.canInsert(itemStack3)) {
+                    int o = slot3.getMaxStackAmount(itemStack3);
+                    if (itemStack3.getCount() > o) {
+                        slot3.setStack(itemStack3.split(o));
+                        playerInventory.insertStack(itemStack2);
+                    } else {
+                        slot3.setStack(itemStack3);
+                        playerInventory.setStack(j, itemStack2);
+                    }
                 }
-            } else if (slotActionType == SlotActionType.CLONE && playerInventory.getCursorStack().isEmpty() && i >= 0) {
-                slot4 = this.slots.get(i);
-                if (slot4 != null && slot4.hasStack()) {
-                    itemStack7 = slot4.getStack().copy();
-                    itemStack7.setCount(itemStack7.getMaxCount());
-                    playerInventory.setCursorStack(itemStack7);
-                }
-            } else if (slotActionType == SlotActionType.THROW && playerInventory.getCursorStack().isEmpty() && i >= 0) {
-                slot4 = this.slots.get(i);
-                if (slot4 != null && slot4.hasStack()) {
-                    slot4.takeStack(j == 0 ? 1 : slot4.getStack().getCount());
-                }
-            } else if (slotActionType == SlotActionType.PICKUP_ALL && i >= 0) {
-                slot4 = this.slots.get(i);
-                itemStack7 = playerInventory.getCursorStack();
-                if (!itemStack7.isEmpty() && (slot4 == null || !slot4.hasStack())) {
-                    l = j == 0 ? 0 : this.slots.size() - 1;
-                    q = j == 0 ? 1 : -1;
-
-                    for(int w = 0; w < 2; ++w) {
-                        for(int x = l; x >= 0 && x < this.slots.size() && itemStack7.getCount() < itemStack7.getMaxCount(); x += q) {
-                            Slot slot9 = this.slots.get(x);
-                            if (slot9.hasStack() && canInsertItemIntoSlot(slot9, itemStack7, true)) {
-                                ItemStack itemStack14 = slot9.getStack();
-                                if (w != 0 || itemStack14.getCount() != itemStack14.getMaxCount()) {
-                                    n = Math.min(itemStack7.getMaxCount() - itemStack7.getCount(), itemStack14.getCount());
-                                    ItemStack itemStack15 = slot9.takeStack(n);
-                                    itemStack7.increment(n);
-                                    if (itemStack15.isEmpty()) {
-                                        slot9.setStack(ItemStack.EMPTY);
-                                    }
-                                }
-                            }
+            }
+        } else if (slotActionType == SlotActionType.CLONE && playerInventory.getCursorStack().isEmpty() && i >= 0) {
+            Slot slot3 = this.slots.get(i);
+            if (slot3 != null && slot3.hasStack()) {
+                ItemStack itemStack3 = slot3.getStack().copy();
+                itemStack3.setCount(itemStack3.getMaxCount());
+                playerInventory.setCursorStack(itemStack3);
+            }
+        } else if (slotActionType == SlotActionType.THROW && playerInventory.getCursorStack().isEmpty() && i >= 0) {
+            Slot slot3 = this.slots.get(i);
+            if (slot3 != null && slot3.hasStack()) {
+                slot3.takeStack(j == 0 ? 1 : slot3.getStack().getCount());
+            }
+        } else if (slotActionType == SlotActionType.PICKUP_ALL && i >= 0) {
+            Slot slot3 = this.slots.get(i);
+            ItemStack itemStack3 = playerInventory.getCursorStack();
+            if (!(itemStack3.isEmpty() || slot3 != null && slot3.hasStack())) {
+                int l = j == 0 ? 0 : this.slots.size() - 1;
+                int o = j == 0 ? 1 : -1;
+                for (int p = 0; p < 2; ++p) {
+                    for (int q = l; q >= 0 && q < this.slots.size() && itemStack3.getCount() < itemStack3.getMaxCount(); q += o) {
+                        Slot slot4 = this.slots.get(q);
+                        if (!slot4.hasStack() || !ScreenHandler.canInsertItemIntoSlot(slot4, itemStack3, true)) continue;
+                        ItemStack itemStack6 = slot4.getStack();
+                        if (p == 0 && itemStack6.getCount() == itemStack6.getMaxCount()) continue;
+                        int n = Math.min(itemStack3.getMaxCount() - itemStack3.getCount(), itemStack6.getCount());
+                        ItemStack itemStack7 = slot4.takeStack(n);
+                        itemStack3.increment(n);
+                        if (itemStack7.isEmpty()) {
+                            slot4.setStack(ItemStack.EMPTY);
                         }
                     }
                 }
             }
         }
-
     }
 
-    public static boolean canStacksCombine(ItemStack first, ItemStack second) {
-        return first.getItem() == second.getItem() && ItemStack.areTagsEqual(first, second);
-    }
-
-    public static int unpackQuickCraftButton(int quickCraftData) {
-        return quickCraftData >> 2 & 3;
-    }
-
-    public static int unpackQuickCraftStage(int quickCraftData) {
-        return quickCraftData & 3;
+    protected boolean insertItem(ItemStack stack, int startIndex, int endIndex, boolean fromLast) {
+        ItemStack itemStack;
+        Slot slot;
+        boolean bl = false;
+        int i = startIndex;
+        if (fromLast) {
+            i = endIndex - 1;
+        }
+        if (stack.isStackable()) {
+            while (!stack.isEmpty() && (fromLast ? i >= startIndex : i < endIndex)) {
+                slot = this.slots.get(i);
+                itemStack = slot.getStack();
+                if (!itemStack.isEmpty() && ScreenHandler.canStacksCombine(stack, itemStack)) {
+                    int j = itemStack.getCount() + stack.getCount();
+                    if (j <= stack.getMaxCount()) {
+                        stack.setCount(0);
+                        itemStack.setCount(j);
+                        slot.markDirty();
+                        bl = true;
+                    } else if (itemStack.getCount() < stack.getMaxCount()) {
+                        stack.decrement(stack.getMaxCount() - itemStack.getCount());
+                        itemStack.setCount(stack.getMaxCount());
+                        slot.markDirty();
+                        bl = true;
+                    }
+                }
+                if (fromLast) {
+                    --i;
+                    continue;
+                }
+                ++i;
+            }
+        }
+        if (!stack.isEmpty()) {
+            i = fromLast ? endIndex - 1 : startIndex;
+            while (fromLast ? i >= startIndex : i < endIndex) {
+                slot = this.slots.get(i);
+                itemStack = slot.getStack();
+                if (itemStack.isEmpty() && slot.canInsert(stack)) {
+                    if (stack.getCount() > slot.getMaxStackAmount()) {
+                        slot.setStack(stack.split(slot.getMaxStackAmount()));
+                    } else {
+                        slot.setStack(stack.split(stack.getCount()));
+                    }
+                    slot.markDirty();
+                    bl = true;
+                    break;
+                }
+                if (fromLast) {
+                    --i;
+                    continue;
+                }
+                ++i;
+            }
+        }
+        return bl;
     }
 
     public static boolean shouldQuickCraftContinue(int stage) {
@@ -295,29 +303,5 @@ public abstract class PlayerlessScreenHandler {
     protected void endQuickCraft() {
         this.quickCraftButton = 0;
         this.quickCraftSlots.clear();
-    }
-
-    public static boolean canInsertItemIntoSlot(@Nullable Slot slot, ItemStack stack, boolean allowOverflow) {
-        boolean bl = slot == null || !slot.hasStack();
-        if (!bl && stack.isItemEqualIgnoreDamage(slot.getStack()) && ItemStack.areTagsEqual(slot.getStack(), stack)) {
-            return slot.getStack().getCount() + (allowOverflow ? 0 : stack.getCount()) <= stack.getMaxCount();
-        } else {
-            return bl;
-        }
-    }
-
-    public static void calculateStackSize(Set<Slot> slots, int mode, ItemStack stack, int stackSize) {
-        switch(mode) {
-            case 0:
-                stack.setCount(MathHelper.floor((float)stack.getCount() / (float)slots.size()));
-                break;
-            case 1:
-                stack.setCount(1);
-                break;
-            case 2:
-                stack.setCount(stack.getItem().getMaxCount());
-        }
-
-        stack.increment(stackSize);
     }
 }

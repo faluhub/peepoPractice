@@ -47,7 +47,6 @@ import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
 public class EditInventoryScreen extends PlayerlessHandledScreen {
@@ -63,6 +62,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
     private final Map<Identifier, Tag<Item>> searchResultTags = Maps.newTreeMap();
     private final Screen parent;
     private final PracticeCategory category;
+    private boolean lastClickOutsideBounds;
 
     public EditInventoryScreen(Screen parent, PracticeCategory category) {
         super(new PlayerlessCreativeScreenHandler(), PeepoPractice.PLAYERLESS_INVENTORY, LiteralText.EMPTY);
@@ -72,6 +72,13 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         this.category = category;
 
         InventoryUtils.putItems(PeepoPractice.PLAYERLESS_INVENTORY, this.category);
+    }
+
+    @Override
+    protected boolean isClickOutsideBounds(double mouseX, double mouseY, int left, int top) {
+        boolean bl = mouseX < (double)left || mouseY < (double)top || mouseX >= (double)(left + this.backgroundWidth) || mouseY >= (double)(top + this.backgroundHeight);
+        this.lastClickOutsideBounds = bl && !this.isClickInTab(ItemGroup.GROUPS[selectedTab], mouseX, mouseY);
+        return this.lastClickOutsideBounds;
     }
 
     @Override
@@ -122,173 +129,91 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
             this.searchBox.setCursorToEnd();
             this.searchBox.setSelectionEnd(0);
         }
-
         boolean bl = actionType == SlotActionType.QUICK_MOVE;
         actionType = invSlot == -999 && actionType == SlotActionType.PICKUP ? SlotActionType.THROW : actionType;
-        ItemStack itemStack3;
-        PlayerlessInventory playerInventory;
-        if (slot == null && selectedTab != ItemGroup.INVENTORY.getIndex() && actionType != SlotActionType.QUICK_CRAFT) {
-            playerInventory = PeepoPractice.PLAYERLESS_INVENTORY;
-            if (!playerInventory.getCursorStack().isEmpty()) {
-                if (clickData == 0) {
-                    playerInventory.setCursorStack(ItemStack.EMPTY);
+        if (slot != null || selectedTab == ItemGroup.INVENTORY.getIndex() || actionType == SlotActionType.QUICK_CRAFT) {
+            if (slot == this.deleteItemSlot && bl) {
+                for (int i = 0; i < PeepoPractice.PLAYERLESS_PLAYER_SCREEN_HANDLER.slots.size(); i++) {
+                    PeepoPractice.PLAYERLESS_PLAYER_SCREEN_HANDLER.slots.get(i).setStack(ItemStack.EMPTY);
                 }
-
-                if (clickData == 1) {
-                    playerInventory.getCursorStack().split(1);
+            } else if (selectedTab == ItemGroup.INVENTORY.getIndex()) {
+                if (slot == this.deleteItemSlot) {
+                    PeepoPractice.PLAYERLESS_INVENTORY.setCursorStack(ItemStack.EMPTY);
+                } else if (actionType == SlotActionType.THROW && slot != null && slot.hasStack()) {
+                    slot.takeStack(clickData == 0 ? 1 : slot.getStack().getMaxCount());
+                } else if (actionType == SlotActionType.THROW && !PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack().isEmpty()) {
+                    PeepoPractice.PLAYERLESS_INVENTORY.setCursorStack(ItemStack.EMPTY);
+                } else {
+                    PeepoPractice.PLAYERLESS_PLAYER_SCREEN_HANDLER.onSlotClick(slot == null ? invSlot : ((EditInventoryScreen.CreativeSlot) slot).slot.id, clickData, actionType, PeepoPractice.PLAYERLESS_INVENTORY);
+                }
+            } else if (actionType != SlotActionType.QUICK_CRAFT && slot.inventory == displayInv) {
+                PlayerlessInventory playerInventory = PeepoPractice.PLAYERLESS_INVENTORY;
+                ItemStack itemStack2 = playerInventory.getCursorStack();
+                ItemStack itemStack3 = slot.getStack();
+                if (actionType == SlotActionType.SWAP) {
+                    if (!itemStack3.isEmpty()) {
+                        ItemStack itemStack4 = itemStack3.copy();
+                        itemStack4.setCount(itemStack4.getMaxCount());
+                        PeepoPractice.PLAYERLESS_INVENTORY.setStack(clickData, itemStack4);
+                    }
+                    return;
+                }
+                if (actionType == SlotActionType.CLONE) {
+                    if (playerInventory.getCursorStack().isEmpty() && slot.hasStack()) {
+                        ItemStack itemStack4 = slot.getStack().copy();
+                        itemStack4.setCount(itemStack4.getMaxCount());
+                        playerInventory.setCursorStack(itemStack4);
+                    }
+                    return;
+                }
+                if (actionType == SlotActionType.THROW) {
+                    if (!itemStack3.isEmpty()) {
+                        ItemStack itemStack4 = itemStack3.copy();
+                        itemStack4.setCount(clickData == 0 ? 1 : itemStack4.getMaxCount());
+                    }
+                    return;
+                }
+                if (!itemStack2.isEmpty() && !itemStack3.isEmpty() && itemStack2.isItemEqualIgnoreDamage(itemStack3) && ItemStack.areTagsEqual(itemStack2, itemStack3)) {
+                    if (clickData == 0) {
+                        if (bl) {
+                            itemStack2.setCount(itemStack2.getMaxCount());
+                        } else if (itemStack2.getCount() < itemStack2.getMaxCount()) {
+                            itemStack2.increment(1);
+                        }
+                    } else {
+                        itemStack2.decrement(1);
+                    }
+                } else if (itemStack3.isEmpty() || !itemStack2.isEmpty()) {
+                    if (clickData == 0) {
+                        playerInventory.setCursorStack(ItemStack.EMPTY);
+                    } else {
+                        playerInventory.getCursorStack().decrement(1);
+                    }
+                } else {
+                    playerInventory.setCursorStack(itemStack3.copy());
+                    itemStack2 = playerInventory.getCursorStack();
+                    if (bl) {
+                        itemStack2.setCount(itemStack2.getMaxCount());
+                    }
+                }
+            } else if (this.handler != null) {
+                ItemStack itemStack = slot == null ? ItemStack.EMPTY : this.handler.getSlot(slot.id).getStack();
+                this.handler.onSlotClick(slot == null ? invSlot : slot.id, clickData, actionType, PeepoPractice.PLAYERLESS_INVENTORY);
+                if (ScreenHandler.unpackQuickCraftStage(clickData) != 2 && slot != null) {
+                    if (actionType == SlotActionType.THROW && !itemStack.isEmpty()) {
+                        ItemStack itemStack4 = itemStack.copy();
+                        itemStack4.setCount(clickData == 0 ? 1 : itemStack4.getMaxCount());
+                    }
                 }
             }
         } else {
-            if (!bl) {
-                ItemStack itemStack8;
-                if (
-                        slot != null
-                        && (
-                                slot.inventory == this.playerInventory
-                                || selectedTab == ItemGroup.INVENTORY.getIndex()
-                        )
-                        && actionType == SlotActionType.PICKUP
-                        && slot.getStack() != null
-                        && slot.getStack() != ItemStack.EMPTY
-                        && PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack() != null
-                        && PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack().getItem().equals(Items.ENCHANTED_BOOK)
-                ) {
-                    ListTag enchantments = EnchantedBookItem.getEnchantmentTag(PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack());
-                    AtomicBoolean shouldStop = new AtomicBoolean(false);
-                    enchantments.forEach(rawTag -> {
-                        if (shouldStop.get()) { return; }
-
-                        ItemStack stack = slot.getStack();
-                        CompoundTag tag = (CompoundTag) rawTag;
-                        Enchantment enchantment = Registry.ENCHANTMENT.get(new Identifier(tag.getString("id")));
-                        if (enchantment != null) {
-                            if (!enchantment.isAcceptableItem(stack)) {
-                                shouldStop.set(true);
-                                return;
-                            }
-
-                            if (!stack.getEnchantments().isEmpty()) {
-                                stack.getEnchantments().forEach(rawTag1 -> {
-                                    CompoundTag tag1 = (CompoundTag) rawTag1;
-                                    if (!enchantment.canCombine(Registry.ENCHANTMENT.get(new Identifier(tag1.getString("id"))))) {
-                                        shouldStop.set(true);
-                                    }
-                                });
-                            }
-
-                            if (shouldStop.get()) { return; }
-
-                            slot.getStack().addEnchantment(enchantment, tag.getInt("lvl"));
-                        }
-                    });
-
-                    if (!shouldStop.get()) {
-                        PeepoPractice.PLAYERLESS_INVENTORY.setCursorStack(ItemStack.EMPTY);
-                        return;
-                    }
+            PlayerlessInventory playerInventory = PeepoPractice.PLAYERLESS_INVENTORY;
+            if (!playerInventory.getCursorStack().isEmpty() && this.lastClickOutsideBounds) {
+                if (clickData == 0) {
+                    playerInventory.setCursorStack(ItemStack.EMPTY);
                 }
-
-                if (selectedTab == ItemGroup.INVENTORY.getIndex()) {
-                    if (slot == this.deleteItemSlot) {
-                        if (Screen.hasControlDown()) {
-                            PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack().removeSubTag("Enchantments");
-                        } else {
-                            PeepoPractice.PLAYERLESS_INVENTORY.setCursorStack(ItemStack.EMPTY);
-                        }
-                    } else if (actionType == SlotActionType.THROW && slot != null && slot.hasStack()) {
-                        slot.takeStack(clickData == 0 ? 1 : slot.getStack().getMaxCount());
-                    } else if (actionType == SlotActionType.THROW && !PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack().isEmpty()) {
-                        PeepoPractice.PLAYERLESS_INVENTORY.setCursorStack(ItemStack.EMPTY);
-                    } else if (this.handler != null) {
-                        this.handler.onSlotClick(slot == null ? invSlot : slot.id, clickData, actionType, PeepoPractice.PLAYERLESS_INVENTORY);
-                    }
-                } else if (
-                        selectedTab == InventoryUtils.LOOT_TABLES.getIndex()
-                        && actionType == SlotActionType.PICKUP
-                        && slot.getStack() != null
-                        && slot.getStack().getTag() != null
-                        && slot.getStack().getTag().contains("LootTableId")
-                ) {
-                    ItemStack stack = slot.getStack();
-                    this.scrollPosition = 0.0F;
-                    Identifier identifier = new Identifier(stack.getTag().getString("LootTableId"));
-                    List<ItemStack> items = InventoryUtils.getLootTableItems(identifier);
-                    ((PlayerlessCreativeScreenHandler) this.handler).itemList.clear();
-
-                    displayInv.clear();
-                    for (ItemStack stack1 : items) {
-                        displayInv.addStack(stack1);
-                        ((PlayerlessCreativeScreenHandler) this.handler).itemList.add(items.indexOf(stack1), stack1);
-                    }
-                } else {
-                    ItemStack itemStack10;
-                    if (actionType != SlotActionType.QUICK_CRAFT && slot.inventory == displayInv) {
-                        playerInventory = PeepoPractice.PLAYERLESS_INVENTORY;
-                        itemStack3 = playerInventory.getCursorStack();
-                        ItemStack itemStack4 = slot.getStack();
-                        if (actionType == SlotActionType.SWAP) {
-                            if (!itemStack4.isEmpty()) {
-                                itemStack10 = itemStack4.copy();
-                                itemStack10.setCount(itemStack10.getMaxCount());
-                                PeepoPractice.PLAYERLESS_INVENTORY.setStack(clickData, itemStack10);
-                            }
-
-                            return;
-                        }
-
-                        if (actionType == SlotActionType.CLONE) {
-                            if (playerInventory.getCursorStack().isEmpty() && slot.hasStack()) {
-                                itemStack10 = slot.getStack().copy();
-                                itemStack10.setCount(itemStack10.getMaxCount());
-                                playerInventory.setCursorStack(itemStack10);
-                            }
-
-                            return;
-                        }
-
-                        if (actionType == SlotActionType.THROW) {
-                            if (!itemStack4.isEmpty()) {
-                                itemStack10 = itemStack4.copy();
-                                itemStack10.setCount(clickData == 0 ? 1 : itemStack10.getMaxCount());
-                            }
-
-                            return;
-                        }
-
-                        if (!itemStack3.isEmpty() && !itemStack4.isEmpty() && itemStack3.isItemEqualIgnoreDamage(itemStack4) && ItemStack.areTagsEqual(itemStack3, itemStack4)) {
-                            if (clickData == 0) {
-                                if (itemStack3.getCount() < itemStack3.getMaxCount()) {
-                                    itemStack3.increment(1);
-                                }
-                            } else {
-                                itemStack3.decrement(1);
-                            }
-                        } else if (!itemStack4.isEmpty() && itemStack3.isEmpty()) {
-                            playerInventory.setCursorStack(itemStack4.copy());
-                        } else if (clickData == 0) {
-                            playerInventory.setCursorStack(ItemStack.EMPTY);
-                        } else {
-                            playerInventory.getCursorStack().decrement(1);
-                        }
-                    } else if (this.handler != null) {
-                        itemStack8 = slot == null ? ItemStack.EMPTY : this.handler.getSlot(slot.id).getStack();
-                        this.handler.onSlotClick(slot == null ? invSlot : slot.id, clickData, actionType, PeepoPractice.PLAYERLESS_INVENTORY);
-                        if (ScreenHandler.unpackQuickCraftStage(clickData) != 2 && slot != null) {
-                            if (actionType == SlotActionType.THROW && !itemStack8.isEmpty()) {
-                                itemStack10 = itemStack8.copy();
-                                itemStack10.setCount(clickData == 0 ? 1 : itemStack10.getMaxCount());
-                            }
-                        }
-                    }
-                }
-            } else if (
-                    this.deleteItemSlot != null
-                    && slot == this.deleteItemSlot
-                    && selectedTab == ItemGroup.INVENTORY.getIndex()
-                    && Screen.hasShiftDown()
-            ) {
-                for (int i = 0; i < this.playerInventory.size(); i++) {
-                    this.playerInventory.setStack(i, ItemStack.EMPTY);
+                if (clickData == 1) {
+                    playerInventory.getCursorStack().split(1);
                 }
             }
         }
@@ -967,14 +892,12 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
             return this.itemList.size() > 45;
         }
 
+        @Override
         public ItemStack transferSlot(int index) {
-            if (index >= this.slots.size() - 9 && index < this.slots.size()) {
-                Slot slot = this.slots.get(index);
-                if (slot != null && slot.hasStack()) {
-                    slot.setStack(ItemStack.EMPTY);
-                }
+            Slot slot;
+            if (index >= this.slots.size() - 9 && index < this.slots.size() && (slot = this.slots.get(index)) != null && slot.hasStack()) {
+                slot.setStack(ItemStack.EMPTY);
             }
-
             return ItemStack.EMPTY;
         }
     }

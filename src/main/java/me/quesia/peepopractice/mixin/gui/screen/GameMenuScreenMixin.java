@@ -4,6 +4,7 @@ import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.category.PracticeCategoryUtils;
 import me.quesia.peepopractice.mixin.access.MoreOptionsDialogAccessor;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
@@ -16,10 +17,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import java.util.Objects;
-
 @Mixin(GameMenuScreen.class)
 public abstract class GameMenuScreenMixin extends Screen {
+    private ButtonWidget quitButton;
+
     protected GameMenuScreenMixin(Text title) {
         super(title);
     }
@@ -36,20 +37,24 @@ public abstract class GameMenuScreenMixin extends Screen {
         }
 
         int i = -16;
-        ButtonWidget button = this.addButton(
-                new ButtonWidget(
-                        this.width / 2 - 102,
-                        this.height / 4 + 120 + i,
-                        98,
-                        20,
-                        new LiteralText("Save & Quit"),
-                        b -> {
-                            b.active = false;
-                            PracticeCategoryUtils.quit(true);
-                        }
-                )
+
+        this.quitButton = new ButtonWidget(
+                this.width / 2 - 102,
+                this.height / 4 + 120 + i,
+                98,
+                20,
+                new LiteralText("Save & Quit"),
+                b -> {
+                    b.active = false;
+                    PracticeCategoryUtils.quit(true);
+                }
         );
-        this.addButton(
+
+        if (!PeepoPractice.HAS_FAST_RESET) {
+            this.addButton(this.quitButton);
+        }
+
+        return this.addButton(
                 new ButtonWidget(
                         this.width / 2 + 4,
                         this.height / 4 + 120 + i,
@@ -62,12 +67,17 @@ public abstract class GameMenuScreenMixin extends Screen {
                         }
                 )
         );
-        return button;
     }
 
     @Override
     protected <T extends AbstractButtonWidget> T addButton(T button) {
-        if (button.getMessage().getString().equals("menu.quitWorld")) { return button; }
+        if (button.getMessage().getString().equals("menu.quitWorld")) {
+            button.setWidth(this.quitButton.getWidth());
+            button.x = this.quitButton.x;
+            button.y = this.quitButton.y;
+            button.setMessage(this.quitButton.getMessage());
+            return super.addButton(button);
+        }
         return super.addButton(button);
     }
 }

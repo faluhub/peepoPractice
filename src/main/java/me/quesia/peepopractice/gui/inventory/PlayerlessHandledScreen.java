@@ -6,6 +6,7 @@ import com.mojang.datafixers.util.Pair;
 import me.quesia.peepopractice.PeepoPractice;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
@@ -311,7 +312,7 @@ public abstract class PlayerlessHandledScreen extends Screen {
                             if (this.client.options.keyPickItem.matchesMouse(button)) {
                                 this.onMouseClick(slot, k, button, SlotActionType.CLONE);
                             } else {
-                                boolean bl3 = k != -999 && (InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), 340) || InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), 344));
+                                boolean bl3 = k != -999 && Screen.hasShiftDown();
                                 SlotActionType slotActionType = SlotActionType.PICKUP;
                                 if (bl3) {
                                     this.quickMovingStack = slot.hasStack() ? slot.getStack().copy() : ItemStack.EMPTY;
@@ -354,13 +355,12 @@ public abstract class PlayerlessHandledScreen extends Screen {
                 return;
             }
 
-            for(int j = 0; j < 9; ++j) {
+            for (int j = 0; j < 9; ++j) {
                 if (this.client.options.keysHotbar[j].matchesMouse(i)) {
                     this.onMouseClick(this.focusedSlot, this.focusedSlot.id, j, SlotActionType.SWAP);
                 }
             }
         }
-
     }
 
     protected boolean isClickOutsideBounds(double mouseX, double mouseY, int left, int top) {
@@ -419,13 +419,9 @@ public abstract class PlayerlessHandledScreen extends Screen {
         if (this.isDoubleClicking && slot != null && button == 0) {
             if (hasShiftDown()) {
                 if (!this.quickMovingStack.isEmpty()) {
-                    var13 = this.handler.slots.iterator();
-
-                    while(var13.hasNext()) {
-                        slot3 = var13.next();
-                        if (slot3 != null && slot3.hasStack() && slot3.inventory == slot.inventory && ScreenHandler.canInsertItemIntoSlot(slot3, this.quickMovingStack, true)) {
-                            this.onMouseClick(slot3, slot3.id, button, SlotActionType.QUICK_MOVE);
-                        }
+                    for (Slot slot2 : this.handler.slots) {
+                        if (slot2 == null || !slot2.hasStack() || slot2.inventory != slot.inventory || !ScreenHandler.canInsertItemIntoSlot(slot2, this.quickMovingStack, true)) continue;
+                        this.onMouseClick(slot2, slot2.id, button, SlotActionType.QUICK_MOVE);
                     }
                 }
             } else {
@@ -523,7 +519,7 @@ public abstract class PlayerlessHandledScreen extends Screen {
         return pointX >= (double)(xPosition - 1) && pointX < (double)(xPosition + width + 1) && pointY >= (double)(yPosition - 1) && pointY < (double)(yPosition + height + 1);
     }
 
-    protected void onMouseClick(Slot slot, int invSlot, int clickData, SlotActionType actionType) {}
+    protected abstract void onMouseClick(Slot slot, int invSlot, int clickData, SlotActionType actionType);
 
     public boolean shouldCloseOnEsc() {
         return false;

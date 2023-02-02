@@ -1,9 +1,9 @@
 package me.quesia.peepopractice.mixin.world;
 
 import com.mojang.authlib.GameProfile;
+import com.redlimerl.speedrunigt.timer.InGameTimer;
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.category.properties.event.ChangeDimensionSplitEvent;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
@@ -11,8 +11,10 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec2f;
+import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
 import net.minecraft.world.level.LevelProperties;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,6 +27,9 @@ import java.util.Random;
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     @Shadow public abstract void refreshPositionAfterTeleport(double x, double y, double z);
+    @Shadow @Nullable public abstract BlockPos getSpawnPointPosition();
+
+    @Shadow public abstract void setGameMode(GameMode gameMode);
 
     @SuppressWarnings("unused")
     public ServerPlayerEntityMixin(World world, BlockPos blockPos, GameProfile gameProfile) {
@@ -59,10 +64,16 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
         }
     }
 
-    @Inject(method = "changeDimension", at = @At("TAIL"))
+    @Inject(method = "changeDimension", at = @At("HEAD"), cancellable = true)
     private void triggerSplitEvent(ServerWorld destination, CallbackInfoReturnable<Entity> cir) {
         if (PeepoPractice.CATEGORY.hasSplitEvent()) {
             if (PeepoPractice.CATEGORY.getSplitEvent() instanceof ChangeDimensionSplitEvent) {
+                if (InGameTimer.getInstance().isCompleted()) {
+                    cir.setReturnValue(this);
+                    cir.cancel();
+                    return;
+                }
+
                 ChangeDimensionSplitEvent event = (ChangeDimensionSplitEvent) PeepoPractice.CATEGORY.getSplitEvent();
                 if (event.hasDimension() && event.getDimension() == destination.getRegistryKey()) {
                     event.endSplit(!this.isDead());
@@ -74,7 +85,18 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     @Override
     public void onDeath(DamageSource source) {
         if (PeepoPractice.CATEGORY.hasSplitEvent()) {
-            PeepoPractice.CATEGORY.getSplitEvent().endSplit(false);
+            boolean end = true;
+            if (this.getServer() != null && this.getServer().getOverworld() != null && this.getSpawnPointPosition() != null) {
+                if (this.getSpawnPointPosition() != this.getServer().getOverworld().getSpawnPos()) {
+                    if (this.getSpawnPointPosition().isWithinDistance(this.getPos(), 4.0D)) {
+                        end = false;
+                    }
+                }
+            }
+            if (end) {
+                this.setGameMode(GameMode.SPECTATOR);
+                PeepoPractice.CATEGORY.getSplitEvent().endSplit(false);
+            }
         }
         super.onDeath(source);
     }

@@ -48,8 +48,6 @@ public class PracticeCategoryUtils {
         return option.equals(ENABLED);
     }
 
-    public static void quit() { quit(false); }
-
     public static void quit(boolean close) {
         MinecraftClient client = MinecraftClient.getInstance();
 

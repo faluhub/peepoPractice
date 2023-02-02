@@ -16,6 +16,7 @@
     "gui.screen.CreateWorldScreenMixin",
     "gui.screen.GameMenuScreenMixin",
 
+    "gui.InGameHudMixin",
     "gui.ItemStackMixin",
     "gui.TitleScreenMixin",
 
@@ -28,6 +29,7 @@
 
     "world.biome.BasaltDeltasBiomeMixin",
 
+    "world.ClientPlayerEntityMixin",
     "world.MinecraftServerMixin",
     "world.PlayerManagerMixin",
     "world.ServerPlayerEntityMixin",

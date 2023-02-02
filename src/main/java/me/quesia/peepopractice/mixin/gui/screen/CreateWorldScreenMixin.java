@@ -4,9 +4,14 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.category.PracticeCategoryUtils;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
+import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.StringRenderable;
@@ -44,7 +49,21 @@ public abstract class CreateWorldScreenMixin extends Screen {
     @Inject(method = "createLevel", at = @At("HEAD"))
     private void checkDisconnected(CallbackInfo ci) {
         if (this.client != null && this.client.isIntegratedServerRunning()) {
-            PracticeCategoryUtils.quit();
+            if (PeepoPractice.HAS_FAST_RESET) {
+                GameMenuScreen screen = new GameMenuScreen(true);
+                screen.init(this.client, this.width, this.height);
+                for (Element element : screen.children()) {
+                    if (element instanceof ButtonWidget) {
+                        ButtonWidget button = (ButtonWidget) element;
+                        if (button.getMessage().getString().equals("Save & Quit")) {
+                            PeepoPractice.RESET_CATEGORY = false;
+                            button.onPress();
+                            return;
+                        }
+                    }
+                }
+            }
+            PracticeCategoryUtils.quit(false);
         }
     }
 

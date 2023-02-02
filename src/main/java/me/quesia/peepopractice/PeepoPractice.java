@@ -24,6 +24,8 @@ public class PeepoPractice implements ClientModInitializer {
     public static PlayerlessInventory PLAYERLESS_INVENTORY;
     public static PlayerlessPlayerScreenHandler PLAYERLESS_PLAYER_SCREEN_HANDLER;
     public static final AtomicReference<ServerResourceManager> SERVER_RESOURCE_MANAGER = new AtomicReference<>();
+    public static boolean RESET_CATEGORY = true;
+    public static boolean HAS_FAST_RESET = FabricLoader.getInstance().getModContainer("fast_reset").isPresent();
 
     public static void log(Object message) {
         LOGGER.info(message);
