@@ -2,14 +2,19 @@ package me.quesia.peepopractice.mixin.world;
 
 import com.mojang.authlib.GameProfile;
 import com.redlimerl.speedrunigt.timer.InGameTimer;
+import com.redlimerl.speedrunigt.timer.TimerStatus;
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.category.properties.event.ChangeDimensionSplitEvent;
+import me.quesia.peepopractice.core.category.properties.event.SplitEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.world.GameMode;
@@ -33,6 +38,10 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     @Shadow @Nullable public abstract BlockPos getSpawnPointPosition();
     @Shadow public abstract void setGameMode(GameMode gameMode);
 
+    @Shadow public abstract void sendMessage(Text message, boolean actionBar);
+
+    private Long pb;
+
     @SuppressWarnings("unused")
     public ServerPlayerEntityMixin(World world, BlockPos blockPos, GameProfile gameProfile) {
         super(world, blockPos, gameProfile);
@@ -40,6 +49,9 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
 
     @Inject(method = "moveToSpawn", at = @At("HEAD"), cancellable = true)
     private void customSpawn(ServerWorld world, CallbackInfo ci) {
+        PeepoPractice.SHOW_PAUSE_BOY = false;
+        this.pb = PeepoPractice.CATEGORY.hasSplitEvent() && PeepoPractice.CATEGORY.getSplitEvent().hasPb() ? PeepoPractice.CATEGORY.getSplitEvent().getPbLong() : null;
+
         if (PeepoPractice.CATEGORY.hasPlayerProperties() && PeepoPractice.CATEGORY.getPlayerProperties().hasSpawnPos()) {
             if (!(world.getLevelProperties() instanceof LevelProperties)) { return; }
 
@@ -66,6 +78,32 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
         }
     }
 
+    @Inject(method = "setGameMode", at = @At("HEAD"), cancellable = true)
+    private void cancelGameModeChange(GameMode gameMode, CallbackInfo ci) {
+        if (this.getScoreboardTags().contains("completed")) {
+            ci.cancel();
+        }
+    }
+
+    @Inject(method = "tick", at = @At("TAIL"))
+    private void setPbActionBar(CallbackInfo ci) {
+        long igt = InGameTimer.getInstance().getInGameTime();
+        if (this.pb != null) {
+            long difference = this.pb - igt;
+            boolean flip = false;
+            if (difference < 0) {
+                difference = igt - this.pb;
+                flip = true;
+            }
+            String timeString = Formatting.GRAY + "Pace: ";
+            timeString += !flip ? Formatting.GREEN + "+" : Formatting.RED + "-";
+            timeString += SplitEvent.getTimeString(difference);
+            this.sendMessage(new LiteralText(timeString), true);
+        } else {
+            this.sendMessage(new LiteralText(Formatting.GRAY + "Pace: " + Formatting.GREEN + "+" + SplitEvent.getTimeString(igt)), true);
+        }
+    }
+
     @Inject(method = "changeDimension", at = @At("HEAD"), cancellable = true)
     private void triggerSplitEvent(ServerWorld destination, CallbackInfoReturnable<Entity> cir) {
         if (PeepoPractice.CATEGORY.hasSplitEvent()) {
@@ -77,7 +115,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
                 }
 
                 ChangeDimensionSplitEvent event = (ChangeDimensionSplitEvent) PeepoPractice.CATEGORY.getSplitEvent();
-                if (event.hasDimension() && event.getDimension() == destination.getRegistryKey()) {
+                if (InGameTimer.getInstance().getStatus() != TimerStatus.NONE && event.hasDimension() && event.getDimension() == destination.getRegistryKey()) {
                     event.complete(!this.isDead());
                     cir.setReturnValue(this);
                     cir.cancel();

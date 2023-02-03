@@ -3,12 +3,9 @@ package me.quesia.peepopractice.mixin.gui.screen;
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.category.PracticeCategoryUtils;
-import me.quesia.peepopractice.mixin.access.MoreOptionsDialogAccessor;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
-import net.minecraft.client.gui.screen.world.MoreOptionsDialog;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.LiteralText;
@@ -71,7 +68,7 @@ public abstract class GameMenuScreenMixin extends Screen {
 
     @Override
     protected <T extends AbstractButtonWidget> T addButton(T button) {
-        if (button.getMessage().getString().equals("menu.quitWorld")) {
+        if (this.quitButton != null && button.getMessage().getString().equals("menu.quitWorld")) {
             button.setWidth(this.quitButton.getWidth());
             button.x = this.quitButton.x;
             button.y = this.quitButton.y;

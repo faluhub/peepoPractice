@@ -100,13 +100,13 @@ public class PlayerlessInventory implements Inventory, Nameable {
         }
     }
 
-    public boolean insertStack(ItemStack stack) {
-        return this.insertStack(-1, stack);
+    public void insertStack(ItemStack stack) {
+        this.insertStack(-1, stack);
     }
 
-    public boolean insertStack(int slot, ItemStack stack) {
+    public void insertStack(int slot, ItemStack stack) {
         if (stack.isEmpty()) {
-            return false;
+            return;
         }
         try {
             if (!stack.isDamaged()) {
@@ -121,9 +121,9 @@ public class PlayerlessInventory implements Inventory, Nameable {
                 } while (!stack.isEmpty() && stack.getCount() < i);
                 if (stack.getCount() == i) {
                     stack.setCount(0);
-                    return true;
+                    return;
                 }
-                return stack.getCount() < i;
+                return;
             }
             if (slot == -1) {
                 slot = this.getEmptySlot();
@@ -132,10 +132,9 @@ public class PlayerlessInventory implements Inventory, Nameable {
                 this.main.set(slot, stack.copy());
                 this.main.get(slot).setCooldown(5);
                 stack.setCount(0);
-                return true;
+                return;
             }
             stack.setCount(0);
-            return true;
         } catch (Throwable throwable) {
             CrashReport crashReport = CrashReport.create(throwable, "Adding item to inventory");
             CrashReportSection crashReportSection = crashReport.addElement("Item being added");

@@ -75,7 +75,6 @@ public class PlayerlessPlayerScreenHandler extends PlayerlessScreenHandler {
         });
     }
 
-    @Override
     public ItemStack transferSlot(int index) {
         ItemStack itemStack = ItemStack.EMPTY;
         Slot slot;
@@ -87,11 +86,11 @@ public class PlayerlessPlayerScreenHandler extends PlayerlessScreenHandler {
             itemStack = itemStack2.copy();
             EquipmentSlot equipmentSlot = MobEntity.getPreferredEquipmentSlot(itemStack);
             if (index == 0) {
-                if (!this.insertItem(itemStack2, 9, 45, true)) {
+                if (this.insertItem(itemStack2, 9, 45, true)) {
                     return ItemStack.EMPTY;
                 }
                 slot.onStackChanged(itemStack2, itemStack);
-            } else if (index < 5 ? !this.insertItem(itemStack2, 9, 45, false) : index < 9 ? !this.insertItem(itemStack2, 9, 45, false) : equipmentSlot.getType() == EquipmentSlot.Type.ARMOR && !this.slots.get(8 - equipmentSlot.getEntitySlotId()).hasStack() ? !this.insertItem(itemStack2, i = 8 - equipmentSlot.getEntitySlotId(), i + 1, false) : equipmentSlot == EquipmentSlot.OFFHAND && !this.slots.get(45).hasStack() ? !this.insertItem(itemStack2, 45, 46, false) : index < 36 ? !this.insertItem(itemStack2, 36, 45, false) : index < 45 ? !this.insertItem(itemStack2, 9, 36, false) : !this.insertItem(itemStack2, 9, 45, false)) {
+            } else if (index < 5 ? this.insertItem(itemStack2, 9, 45, false) : index < 9 ? this.insertItem(itemStack2, 9, 45, false) : equipmentSlot.getType() == EquipmentSlot.Type.ARMOR && !this.slots.get(8 - equipmentSlot.getEntitySlotId()).hasStack() ? this.insertItem(itemStack2, i = 8 - equipmentSlot.getEntitySlotId(), i + 1, false) : equipmentSlot == EquipmentSlot.OFFHAND && !this.slots.get(45).hasStack() ? this.insertItem(itemStack2, 45, 46, false) : index < 36 ? this.insertItem(itemStack2, 36, 45, false) : index < 45 ? this.insertItem(itemStack2, 9, 36, false) : this.insertItem(itemStack2, 9, 45, false)) {
                 return ItemStack.EMPTY;
             }
             if (itemStack2.isEmpty()) {

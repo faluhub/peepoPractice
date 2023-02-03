@@ -1,8 +1,12 @@
 package me.quesia.peepopractice.mixin.gui;
 
+import me.quesia.peepopractice.gui.PeepoPauseManHud;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameHud;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,6 +21,8 @@ public class InGameHudMixin {
     @Shadow private int titleFadeInTicks;
     @Shadow private int titleRemainTicks;
     @Shadow private int titleFadeOutTicks;
+    @Shadow @Final private MinecraftClient client;
+    private PeepoPauseManHud peepoPauseManHud;
 
     @Inject(method = "setTitles", at = @At("HEAD"), cancellable = true)
     private void cancelDefaultFunc(Text text, Text text2, int i, int j, int k, CallbackInfo ci) {
@@ -47,5 +53,13 @@ public class InGameHudMixin {
         if (this.titleTotalTicks > 0) {
             this.titleTotalTicks = this.titleFadeInTicks + this.titleRemainTicks + this.titleFadeOutTicks;
         }
+    }
+
+    @Inject(method = "render", at = @At("TAIL"))
+    private void renderPeepoPauseMan(MatrixStack matrixStack, float f, CallbackInfo ci) {
+        if (this.peepoPauseManHud == null) {
+            this.peepoPauseManHud = new PeepoPauseManHud(this.client);
+        }
+        this.peepoPauseManHud.render(matrixStack);
     }
 }

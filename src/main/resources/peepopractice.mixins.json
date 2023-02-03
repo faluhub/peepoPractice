@@ -8,7 +8,6 @@
     "access.ItemEntryAccessor",
     "access.LootPoolAccessor",
     "access.LootTableAccessor",
-    "access.MoreOptionsDialogAccessor",
     "access.ServerWorldAccessor",
     "access.ThreadExecutorAccessor",
 
@@ -16,10 +15,10 @@
 
     "gui.screen.CreateWorldScreenMixin",
     "gui.screen.GameMenuScreenMixin",
+    "gui.screen.TitleScreenMixin",
 
     "gui.InGameHudMixin",
     "gui.ItemStackMixin",
-    "gui.TitleScreenMixin",
 
     "structure.category.BastionRemnantFeatureConfigMixin",
 
@@ -29,12 +28,16 @@
     "structure.StructureStartMixin",
 
     "world.biome.BasaltDeltasBiomeMixin",
+    "world.biome.MultiNoiseBiomeSourceMixin",
+
+    "world.entity.ThrownItemEntityMixin",
 
     "world.ClientPlayerEntityMixin",
     "world.MinecraftServerMixin",
     "world.PlayerManagerMixin",
     "world.ServerPlayerEntityMixin",
 
+    "ClientAdvancementManagerMixin",
     "ClientPlayNetworkHandlerMixin",
     "CommandManagerMixin",
     "MinecraftClientMixin"

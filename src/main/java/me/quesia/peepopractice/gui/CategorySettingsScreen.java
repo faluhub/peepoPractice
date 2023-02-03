@@ -20,7 +20,7 @@ public class CategorySettingsScreen extends Screen {
     private final Map<ButtonWidget, String> descriptions = new HashMap<>();
 
     public CategorySettingsScreen(Screen parent, PracticeCategory category) {
-        super(new LiteralText("Configure (" + category.getName() + ")"));
+        super(new LiteralText("Configure (" + category.getName(false) + ")"));
 
         this.parent = parent;
         this.category = category;

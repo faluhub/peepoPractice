@@ -957,13 +957,5 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
             return this.itemList.size() > 45;
         }
 
-        @Override
-        public ItemStack transferSlot(int index) {
-            Slot slot;
-            if (index >= this.slots.size() - 9 && index < this.slots.size() && (slot = this.slots.get(index)) != null && slot.hasStack()) {
-                slot.setStack(ItemStack.EMPTY);
-            }
-            return ItemStack.EMPTY;
-        }
     }
 }

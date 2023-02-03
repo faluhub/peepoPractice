@@ -5,6 +5,7 @@ import me.quesia.peepopractice.core.category.properties.StructureProperties;
 import me.quesia.peepopractice.core.category.properties.WorldProperties;
 import me.quesia.peepopractice.core.category.properties.event.SplitEvent;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Formatting;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
 import org.jetbrains.annotations.Nullable;
@@ -146,10 +147,9 @@ public class PracticeCategory {
         }
     }
 
-    public String getName() {
+    public String getName(boolean showPb) {
         StringBuilder text = new StringBuilder();
         boolean shouldCapitalise = true;
-
         for (Character c : this.getId().toCharArray()) {
             if (shouldCapitalise) {
                 text.append(c.toString().toUpperCase(Locale.ROOT));
@@ -161,7 +161,13 @@ public class PracticeCategory {
                 text.append(c.toString().toLowerCase(Locale.ROOT));
             }
         }
-
+        if (showPb && this.hasSplitEvent()) {
+            if (this.getSplitEvent().hasPb()) {
+                text.append(Formatting.GOLD).append(" (").append(this.getSplitEvent().getPbString()).append(")");
+            } else {
+                text.append(Formatting.GRAY).append(" (No PB)");
+            }
+        }
         return text.toString();
     }
 

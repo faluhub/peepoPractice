@@ -32,12 +32,6 @@ public abstract class PlayerlessScreenHandler {
         return this.slots.get(index);
     }
 
-    public ItemStack transferSlot(int index) {
-        Slot slot = this.slots.get(index);
-        if (slot != null) { return slot.getStack(); }
-        return ItemStack.EMPTY;
-    }
-
     public void onSlotClick(int i, int j, SlotActionType actionType, PlayerlessInventory inventory) {
         try {
             this.method_30010(i, j, actionType, inventory);
@@ -293,7 +287,7 @@ public abstract class PlayerlessScreenHandler {
                 ++i;
             }
         }
-        return bl;
+        return !bl;
     }
 
     public static boolean shouldQuickCraftContinue(int stage) {

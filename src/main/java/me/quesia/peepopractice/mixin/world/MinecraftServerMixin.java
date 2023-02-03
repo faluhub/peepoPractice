@@ -11,7 +11,6 @@ import net.minecraft.entity.boss.BossBarManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.WorldGenerationProgressListener;
-import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
@@ -143,20 +142,5 @@ public abstract class MinecraftServerMixin {
             return PeepoPractice.CATEGORY.getPlayerProperties().getSpawnPos();
         }
         return instance.getSpawnPos();
-    }
-
-    @Redirect(method = "prepareStartRegion", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerChunkManager;getTotalChunksLoadedCount()I"))
-    private int redirectGetTotalChunksLoadedCount(ServerChunkManager serverChunkManager) {
-        return 1;
-    }
-
-    @ModifyConstant(method = "prepareStartRegion", constant = @Constant(intValue = 441))
-    private int modifyNumChunksToWaitFor(int value) {
-        return 1;
-    }
-
-    @Inject(method = "prepareStartRegion", at = @At("TAIL"))
-    private void onPrepareStartRegion(CallbackInfo info) {
-        ((MinecraftServer) (Object) this).save(false, false, false);
     }
 }

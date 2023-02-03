@@ -1,8 +1,9 @@
-package me.quesia.peepopractice.mixin.gui;
+package me.quesia.peepopractice.mixin.gui.screen;
 
 import me.quesia.peepopractice.gui.CategorySelectionScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
+import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
@@ -13,9 +14,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(TitleScreen.class)
 public abstract class TitleScreenMixin extends Screen {
-    @SuppressWarnings("UnusedDeclaration")
     protected TitleScreenMixin(Text title) {
         super(title);
+    }
+
+    @Override
+    protected <T extends AbstractButtonWidget> T addButton(T button) {
+        if (button.getMessage().getString().equals("")) {
+            return button;
+        }
+        return super.addButton(button);
     }
 
     @SuppressWarnings("UnusedDeclaration")

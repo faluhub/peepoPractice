@@ -4,14 +4,17 @@ import me.quesia.peepopractice.core.category.properties.PlayerProperties;
 import me.quesia.peepopractice.core.category.properties.StructureProperties;
 import me.quesia.peepopractice.core.category.properties.WorldProperties;
 import me.quesia.peepopractice.core.category.properties.event.ChangeDimensionSplitEvent;
+import me.quesia.peepopractice.core.category.properties.event.ThrowEntitySplitEvent;
 import me.quesia.peepopractice.core.category.properties.preset.BastionPreset;
 import net.minecraft.block.Blocks;
+import net.minecraft.item.Items;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
 import net.minecraft.world.gen.feature.StructureFeature;
 
@@ -87,8 +90,8 @@ public class PracticeCategories {
                         StructureProperties properties = category.findStructureProperties(StructureFeature.BASTION_REMNANT);
                         if (properties.getChunkPos() != null) {
                             ChunkPos pos = properties.getChunkPos();
-                            int offset = 8;
-                            int bound = 5;
+                            int offset = 6;
+                            int bound = 4;
                             boolean bl = random.nextBoolean();
                             return new ChunkPos(
                                     pos.x + (bl ? offset + random.nextInt(bound) : -(offset + random.nextInt(offset))),
@@ -106,6 +109,7 @@ public class PracticeCategories {
             .setWorldProperties(new WorldProperties()
                     .setWorldRegistryKey(World.NETHER)
                     .setSpawnChunksEnabled(false)
+                    .addAntiBiomeRange(Biomes.BASALT_DELTAS, null)
             )
             .setSplitEvent(new ChangeDimensionSplitEvent()
                     .setDimension(World.OVERWORLD)
@@ -128,6 +132,10 @@ public class PracticeCategories {
             )
             .setWorldProperties(new WorldProperties()
                     .setWorldRegistryKey(World.NETHER)
+                    .addAntiBiomeRange(Biomes.BASALT_DELTAS, null)
+            )
+            .setSplitEvent(new ThrowEntitySplitEvent()
+                    .setItem(Items.ENDER_PEARL)
             );
     public static PracticeCategory FORTRESS_SPLIT = new PracticeCategory()
             .setId("fortress_split")
@@ -155,6 +163,9 @@ public class PracticeCategories {
             )
             .setWorldProperties(new WorldProperties()
                     .setWorldRegistryKey(World.NETHER)
+            )
+            .setSplitEvent(new ChangeDimensionSplitEvent()
+                    .setDimension(World.OVERWORLD)
             );
     public static PracticeCategory END_SPLIT = new PracticeCategory()
             .setId("end_split")

@@ -164,7 +164,7 @@ public class CategorySelectionScreen extends Screen {
             }
 
             public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-                Text label = new LiteralText(this.category.getName());
+                Text label = new LiteralText(this.category.getName(true));
 
                 CategorySelectionScreen.this.textRenderer.drawWithShadow(
                         matrices,

@@ -26,6 +26,7 @@ public class PeepoPractice implements ClientModInitializer {
     public static final AtomicReference<ServerResourceManager> SERVER_RESOURCE_MANAGER = new AtomicReference<>();
     public static boolean RESET_CATEGORY = true;
     public static boolean HAS_FAST_RESET = FabricLoader.getInstance().getModContainer("fast_reset").isPresent();
+    public static boolean SHOW_PAUSE_BOY = false;
 
     public static void log(Object message) {
         LOGGER.info(message);

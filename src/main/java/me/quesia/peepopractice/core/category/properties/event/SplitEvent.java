@@ -13,13 +13,13 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
 
+import java.util.ConcurrentModificationException;
 import java.util.concurrent.TimeUnit;
 
 public class SplitEvent {
@@ -29,6 +29,7 @@ public class SplitEvent {
         new Thread(() -> this.endSplit(completed)).start();
     }
 
+    @SuppressWarnings("StatementWithEmptyBody")
     private void endSplit(boolean completed) {
         if (this.category == null) { return; }
 
@@ -40,37 +41,18 @@ public class SplitEvent {
         long igt = timer.getInGameTime();
         InGameTimer.complete();
 
-        boolean isPb = true;
-        if (object.has(this.category.getId())) {
+        boolean isPb;
+        if (this.hasPb()) {
             long pb = object.get(this.category.getId()).getAsLong();
-            if (igt > pb) {
-                isPb = false;
-            }
+            isPb = igt <= pb;
+        } else {
+            isPb = true;
         }
-        if (isPb) {
+        if (isPb && completed) {
             writer.put(this.category.getId(), igt);
         }
 
-        String time;
-        SpeedRunOptions.TimerDecimals timerDecimals = SpeedRunOption.getOption(SpeedRunOptions.DISPLAY_DECIMALS);
-        String millsString = String.format("%03d", igt % 1000).substring(0, timerDecimals.getNumber());
-        int seconds = ((int) (igt / 1000)) % 60;
-        int minutes = ((int) (igt / 1000)) / 60;
-        if (minutes > 59) {
-            int hours = minutes / 60;
-            minutes = minutes % 60;
-            if (timerDecimals == SpeedRunOptions.TimerDecimals.NONE) {
-                time = String.format("%d:%02d:%02d", hours, minutes, seconds);
-            } else {
-                time = String.format("%d:%02d:%02d.%s", hours, minutes, seconds, millsString);
-            }
-        } else {
-            if (timerDecimals == SpeedRunOptions.TimerDecimals.NONE) {
-                time = String.format("%02d:%02d", minutes, seconds);
-            } else {
-                time = String.format("%02d:%02d.%s", minutes, seconds, millsString);
-            }
-        }
+        String time = getTimeString(igt);
         MinecraftClient client = MinecraftClient.getInstance();
 
         if (client.player != null) {
@@ -114,27 +96,75 @@ public class SplitEvent {
                     if (completed) {
                         new Thread(() -> {
                             for (int i = 0; i < 5; i++) {
-                                if (client.player != null) {
-                                    client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 3.0F, 0.5F + .2F * (i + i / 4.0F));
-                                    try { TimeUnit.MILLISECONDS.sleep(180); }
-                                    catch (InterruptedException ignored) {}
-                                }
+                                try {
+                                    if (client.player != null) {
+                                        client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 3.0F, 0.5F + .2F * (i + i / 4.0F));
+                                        try { TimeUnit.MILLISECONDS.sleep(180); }
+                                        catch (InterruptedException ignored) {}
+                                    }
+                                } catch (ConcurrentModificationException ignored) {}
+                            }
+                            if (isPb) {
+                                try {
+                                    if (client.player != null) {
+                                        TimeUnit.MILLISECONDS.sleep(180);
+                                        client.player.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, 3.0F, 1.0F);
+                                    }
+                                } catch (InterruptedException | ConcurrentModificationException ignored) {}
                             }
                         }).start();
                     } else {
                         new Thread(() -> {
                             for (int i = 0; i < 2; i++) {
-                                if (client.player != null) {
-                                    client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS, 3.0F, 1.2F - i * 0.5F);
-                                    try { TimeUnit.MILLISECONDS.sleep(180); }
-                                    catch (InterruptedException ignored) {}
-                                }
+                                try {
+                                    if (client.player != null) {
+                                        client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS, 3.0F, 1.2F - i * 0.5F);
+                                        try { TimeUnit.MILLISECONDS.sleep(180); }
+                                        catch (InterruptedException ignored) {}
+                                    }
+                                } catch (ConcurrentModificationException ignored) {}
                             }
                         }).start();
                     }
                 }
             }
         }
+    }
+
+    public boolean hasPb() {
+        return PracticeWriter.PB_WRITER.get().has(this.category.getId());
+    }
+
+    public long getPbLong() {
+        return PracticeWriter.PB_WRITER.get().get(this.category.getId()).getAsLong();
+    }
+
+    public String getPbString() {
+        return getTimeString(this.getPbLong());
+    }
+
+    public static String getTimeString(long igt) {
+        String time;
+        SpeedRunOptions.TimerDecimals timerDecimals = SpeedRunOption.getOption(SpeedRunOptions.DISPLAY_DECIMALS);
+        String millsString = String.format("%03d", igt % 1000).substring(0, timerDecimals.getNumber());
+        int seconds = ((int) (igt / 1000)) % 60;
+        int minutes = ((int) (igt / 1000)) / 60;
+        if (minutes > 59) {
+            int hours = minutes / 60;
+            minutes = minutes % 60;
+            if (timerDecimals == SpeedRunOptions.TimerDecimals.NONE) {
+                time = String.format("%d:%02d:%02d", hours, minutes, seconds);
+            } else {
+                time = String.format("%d:%02d:%02d.%s", hours, minutes, seconds, millsString);
+            }
+        } else {
+            if (timerDecimals == SpeedRunOptions.TimerDecimals.NONE) {
+                time = String.format("%02d:%02d", minutes, seconds);
+            } else {
+                time = String.format("%02d:%02d.%s", minutes, seconds, millsString);
+            }
+        }
+        return time;
     }
 
     public void setCategory(PracticeCategory category) {
