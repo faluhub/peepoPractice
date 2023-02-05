@@ -1,11 +1,10 @@
-package me.quesia.peepopractice.gui;
+package me.quesia.peepopractice.gui.screen;
 
 import me.quesia.peepopractice.PeepoPractice;
-import me.quesia.peepopractice.core.category.CategorySetting;
+import me.quesia.peepopractice.core.category.CategoryPreference;
 import me.quesia.peepopractice.core.category.PracticeCategory;
-import me.quesia.peepopractice.gui.inventory.EditInventoryScreen;
-import me.quesia.peepopractice.gui.inventory.PlayerlessInventory;
-import me.quesia.peepopractice.gui.inventory.PlayerlessPlayerScreenHandler;
+import me.quesia.peepopractice.core.playerless.PlayerlessInventory;
+import me.quesia.peepopractice.core.playerless.PlayerlessPlayerScreenHandler;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -14,12 +13,12 @@ import net.minecraft.text.LiteralText;
 
 import java.util.*;
 
-public class CategorySettingsScreen extends Screen {
+public class CategoryPreferencesScreen extends Screen {
     private final Screen parent;
     private final PracticeCategory category;
     private final Map<ButtonWidget, String> descriptions = new HashMap<>();
 
-    public CategorySettingsScreen(Screen parent, PracticeCategory category) {
+    public CategoryPreferencesScreen(Screen parent, PracticeCategory category) {
         super(new LiteralText("Configure (" + category.getName(false) + ")"));
 
         this.parent = parent;
@@ -67,8 +66,8 @@ public class CategorySettingsScreen extends Screen {
                 )
         );
 
-        for (CategorySetting setting : category.getSettings()) {
-            String currentValue = CategorySetting.getValue(category, setting.getId());
+        for (CategoryPreference setting : category.getPreferences()) {
+            String currentValue = CategoryPreference.getValue(category, setting.getId());
             ButtonWidget button = this.addButton(
                     new ButtonWidget(
                             this.width / 2 - btnWidth / 2 - offsetX,
@@ -77,7 +76,7 @@ public class CategorySettingsScreen extends Screen {
                             20,
                             new LiteralText(setting.getLabel() + ": " + currentValue),
                             b -> {
-                                int currentIndex = this.getIndex(CategorySetting.getValue(category, setting.getId()), setting.getChoices());
+                                int currentIndex = this.getIndex(CategoryPreference.getValue(category, setting.getId()), setting.getChoices());
                                 String next;
 
                                 try { next = setting.getChoices().get(currentIndex + 1); }
@@ -86,7 +85,7 @@ public class CategorySettingsScreen extends Screen {
                                 this.descriptions.remove(b);
 
                                 b.setMessage(new LiteralText(setting.getLabel() + ": " + next));
-                                CategorySetting.setValue(category, setting.getId(), next);
+                                CategoryPreference.setValue(category, setting.getId(), next);
 
                                 this.descriptions.put(b, setting.getDescription());
                             }
@@ -102,7 +101,7 @@ public class CategorySettingsScreen extends Screen {
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        this.renderBackground(matrices);
+        this.fillGradient(matrices, 0, 0, this.width, this.height, PeepoPractice.BACKGROUND_COLOUR, PeepoPractice.BACKGROUND_COLOUR);
         this.drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 13, 16777215);
 
         for (AbstractButtonWidget button : this.buttons) {

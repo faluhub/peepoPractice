@@ -1,9 +1,11 @@
-package me.quesia.peepopractice.gui.inventory;
+package me.quesia.peepopractice.core.playerless;
 
 import com.mojang.datafixers.util.Pair;
 import me.quesia.peepopractice.PeepoPractice;
+import me.quesia.peepopractice.gui.screen.EditInventoryScreen;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.mob.MobEntity;

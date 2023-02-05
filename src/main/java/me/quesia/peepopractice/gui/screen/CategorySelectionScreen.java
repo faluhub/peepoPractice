@@ -1,17 +1,25 @@
-package me.quesia.peepopractice.gui;
+package me.quesia.peepopractice.gui.screen;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.category.PracticeCategory;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.hud.BackgroundHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.MathHelper;
 
 public class CategorySelectionScreen extends Screen {
     private final Screen parent;
@@ -38,7 +46,7 @@ public class CategorySelectionScreen extends Screen {
 
     public void openConfig() {
         if (this.client != null && this.selected != null) {
-            this.client.openScreen(new CategorySettingsScreen(this, this.selected));
+            this.client.openScreen(new SettingsTypeSelectionScreen(this, this.selected));
         }
     }
 
@@ -88,18 +96,13 @@ public class CategorySelectionScreen extends Screen {
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        this.fillGradient(matrices, 0, 0, this.width, this.height, PeepoPractice.BACKGROUND_COLOUR, PeepoPractice.BACKGROUND_COLOUR);
+
         if (this.categoryListWidget != null) {
             this.categoryListWidget.render(matrices, mouseX, mouseY, delta);
         }
 
-        this.drawCenteredText(
-                matrices,
-                this.textRenderer,
-                this.title,
-                this.width / 2,
-                13,
-                16777215
-        );
+        this.drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 13, 16777215);
 
         this.configureButton.active = this.selected != null;
         this.doneButton.setMessage(this.selected != null ? new LiteralText("Play!") : ScreenTexts.BACK);
@@ -142,9 +145,13 @@ public class CategorySelectionScreen extends Screen {
             }
         }
 
-        protected int getScrollbarPositionX() { return super.getScrollbarPositionX() + 20; }
+        protected int getScrollbarPositionX() {
+            return super.getScrollbarPositionX() + 20;
+        }
 
-        public int getRowWidth() { return super.getRowWidth() + 50; }
+        public int getRowWidth() {
+            return super.getRowWidth() + 50;
+        }
 
         public void setSelected(CategoryEntry categoryEntry) {
             super.setSelected(categoryEntry);
@@ -152,9 +159,14 @@ public class CategorySelectionScreen extends Screen {
             else { CategorySelectionScreen.this.selected = null; }
         }
 
-        protected void renderBackground(MatrixStack matrices) { CategorySelectionScreen.this.renderBackground(matrices); }
+        @Override
+        protected void renderBackground(MatrixStack matrices) {
+            this.fillGradient(matrices, 0, 0, this.width, this.height, PeepoPractice.BACKGROUND_COLOUR, PeepoPractice.BACKGROUND_COLOUR);
+        }
 
-        protected boolean isFocused() { return CategorySelectionScreen.this.getFocused() == this; }
+        protected boolean isFocused() {
+            return CategorySelectionScreen.this.getFocused() == this;
+        }
 
         public class CategoryEntry extends AlwaysSelectedEntryListWidget.Entry<CategoryListWidget.CategoryEntry> {
             public final PracticeCategory category;

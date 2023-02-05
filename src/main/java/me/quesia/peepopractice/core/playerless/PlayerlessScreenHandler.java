@@ -1,4 +1,4 @@
-package me.quesia.peepopractice.gui.inventory;
+package me.quesia.peepopractice.core.playerless;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;

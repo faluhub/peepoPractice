@@ -1,4 +1,4 @@
-package me.quesia.peepopractice.gui.inventory;
+package me.quesia.peepopractice.gui.screen;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -10,11 +10,16 @@ import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.InventoryUtils;
 import me.quesia.peepopractice.core.PracticeWriter;
 import me.quesia.peepopractice.core.category.PracticeCategory;
+import me.quesia.peepopractice.core.playerless.PlayerlessHandledScreen;
+import me.quesia.peepopractice.core.playerless.PlayerlessInventory;
+import me.quesia.peepopractice.core.playerless.PlayerlessPlayerScreenHandler;
+import me.quesia.peepopractice.core.playerless.PlayerlessScreenHandler;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.FatalErrorScreen;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.search.SearchManager;
@@ -53,7 +58,7 @@ import java.util.function.Predicate;
 public class EditInventoryScreen extends PlayerlessHandledScreen {
     public static final Identifier TABS_TEXTURE = new Identifier("textures/gui/container/creative_inventory/tabs.png");
     public static final SimpleInventory displayInv = new SimpleInventory(45);
-    private static int selectedTab;
+    private static int selectedTab = ItemGroup.BUILDING_BLOCKS.getIndex();
     private float scrollPosition;
     private boolean scrolling;
     private TextFieldWidget searchBox;
@@ -73,6 +78,12 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         this.category = category;
 
         InventoryUtils.putItems(PeepoPractice.PLAYERLESS_INVENTORY, this.category);
+    }
+
+    public static EditInventoryScreen open(Screen parent, PracticeCategory category) {
+        PeepoPractice.PLAYERLESS_INVENTORY = new PlayerlessInventory();
+        PeepoPractice.PLAYERLESS_PLAYER_SCREEN_HANDLER = new PlayerlessPlayerScreenHandler();
+        return new EditInventoryScreen(parent, category);
     }
 
     @Override
@@ -683,7 +694,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
 
     @SuppressWarnings("deprecation")
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        this.renderBackground(matrices);
+        this.fillGradient(matrices, 0, 0, this.width, this.height, PeepoPractice.BACKGROUND_COLOUR, PeepoPractice.BACKGROUND_COLOUR);
         super.render(matrices, mouseX, mouseY, delta);
         ItemGroup[] var5 = ItemGroup.GROUPS;
 
@@ -768,12 +779,8 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         }
     }
 
-    static {
-        selectedTab = ItemGroup.BUILDING_BLOCKS.getIndex();
-    }
-
     @Environment(EnvType.CLIENT)
-    static class LockedSlot extends Slot {
+    public static class LockedSlot extends Slot {
         public LockedSlot(Inventory inventory, int i, int j, int k) {
             super(inventory, i, j, k);
         }

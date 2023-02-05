@@ -1,6 +1,6 @@
 package me.quesia.peepopractice.mixin.gui.screen;
 
-import me.quesia.peepopractice.gui.CategorySelectionScreen;
+import me.quesia.peepopractice.gui.screen.CategorySelectionScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;

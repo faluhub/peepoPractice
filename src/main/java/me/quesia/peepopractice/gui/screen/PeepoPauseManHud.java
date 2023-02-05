@@ -1,4 +1,4 @@
-package me.quesia.peepopractice.gui;
+package me.quesia.peepopractice.gui.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.redlimerl.speedrunigt.timer.InGameTimer;
@@ -37,7 +37,7 @@ public class PeepoPauseManHud extends DrawableHelper {
             this.client.getTextureManager().bindTexture(!InGameTimer.getInstance().isCompleted() ? PEEPO_PAUSE_MAN : PEEPO_PAG_MAN);
             this.setZOffset(100);
             RenderSystem.translatef(0, 0, 100.0F);
-            int spriteDiv = 8;
+            int spriteDiv = 6;
             int spriteWidth = 112 / spriteDiv;
             int spriteHeight = 84 / spriteDiv;
             drawTexture(matrices, 0, (int) (this.client.getWindow().getScaledHeight() - spriteHeight * percentage), 0.0F, 0.0F, spriteWidth, spriteHeight, spriteWidth, spriteHeight);

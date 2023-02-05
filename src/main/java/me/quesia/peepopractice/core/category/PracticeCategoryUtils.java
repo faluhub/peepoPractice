@@ -42,10 +42,10 @@ public class PracticeCategoryUtils {
         }
     }
 
-    public static boolean parseBoolean(String option) {
+    public static boolean parseBoolean(String value) {
         List<String> list = Arrays.asList(BOOLEAN_LIST);
-        if (!list.contains(option)) { return true; }
-        return option.equals(ENABLED);
+        if (!list.contains(value)) { return true; }
+        return value.equals(ENABLED);
     }
 
     public static void quit(boolean close) {

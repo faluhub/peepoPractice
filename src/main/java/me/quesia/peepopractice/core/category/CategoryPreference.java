@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("UnusedDeclaration")
-public class CategorySetting {
+public class CategoryPreference {
     private String id;
     private String label;
     private String description;
@@ -19,7 +19,7 @@ public class CategorySetting {
         return this.id;
     }
 
-    public CategorySetting setId(String id) {
+    public CategoryPreference setId(String id) {
         this.id = id;
         return this;
     }
@@ -28,7 +28,7 @@ public class CategorySetting {
         return this.label;
     }
 
-    public CategorySetting setLabel(String label) {
+    public CategoryPreference setLabel(String label) {
         this.label = label;
         return this;
     }
@@ -37,7 +37,7 @@ public class CategorySetting {
         return this.description;
     }
 
-    public CategorySetting setDescription(String description) {
+    public CategoryPreference setDescription(String description) {
         this.description = description;
         return this;
     }
@@ -46,18 +46,18 @@ public class CategorySetting {
         return this.choices;
     }
 
-    public CategorySetting setChoices(List<String> choices) {
+    public CategoryPreference setChoices(List<String> choices) {
         this.choices = choices;
         return this;
     }
 
-    public CategorySetting setChoices(String[] choices) {
+    public CategoryPreference setChoices(String[] choices) {
         this.choices.clear();
         this.choices.addAll(List.of(choices));
         return this;
     }
 
-    public CategorySetting addChoice(String choice) {
+    public CategoryPreference addChoice(String choice) {
         this.choices.add(choice);
         return this;
     }
@@ -66,14 +66,14 @@ public class CategorySetting {
         return this.defaultChoice;
     }
 
-    public CategorySetting setDefaultChoice(String defaultChoice) {
+    public CategoryPreference setDefaultChoice(String defaultChoice) {
         if (this.choices.contains(this.defaultChoice)) { this.defaultChoice = defaultChoice; }
         else if (this.choices.size() > 0) { this.defaultChoice = this.choices.get(0); }
         return this;
     }
 
-    public static CategorySetting getSettingById(PracticeCategory category, String id) {
-        for (CategorySetting setting : category.getSettings()) {
+    public static CategoryPreference getSettingById(PracticeCategory category, String id) {
+        for (CategoryPreference setting : category.getPreferences()) {
             if (setting.id.equals(id)) {
                 return setting;
             }
@@ -91,7 +91,7 @@ public class CategorySetting {
     }
 
     public static String getValue(PracticeCategory category, String id) {
-        PracticeWriter writer = PracticeWriter.CONFIG_WRITER;
+        PracticeWriter writer = PracticeWriter.PREFERENCES_WRITER;
         JsonObject config = writer.get();
 
         JsonObject categoryObject = new JsonObject();
@@ -99,7 +99,7 @@ public class CategorySetting {
             categoryObject = config.get(category.getId()).getAsJsonObject();
         }
 
-        CategorySetting categorySettings = getSettingById(category, id);
+        CategoryPreference categorySettings = getSettingById(category, id);
 
         if (categorySettings != null) {
             if (!categoryObject.has(id) || !categorySettings.getChoices().contains(categoryObject.get(id).getAsString())) {
@@ -112,13 +112,13 @@ public class CategorySetting {
     }
 
     public static void setValue(PracticeCategory category, String id, String value) {
-        JsonObject config = PracticeWriter.CONFIG_WRITER.get();
+        JsonObject config = PracticeWriter.PREFERENCES_WRITER.get();
         JsonObject categorySettings = new JsonObject();
         if (config.has(category.getId())) {
             categorySettings = config.get(category.getId()).getAsJsonObject();
         }
 
         categorySettings.addProperty(id, value);
-        PracticeWriter.CONFIG_WRITER.put(category.getId(), categorySettings);
+        PracticeWriter.PREFERENCES_WRITER.put(category.getId(), categorySettings);
     }
 }

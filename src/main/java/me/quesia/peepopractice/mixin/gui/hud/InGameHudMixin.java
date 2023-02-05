@@ -1,6 +1,6 @@
-package me.quesia.peepopractice.mixin.gui;
+package me.quesia.peepopractice.mixin.gui.hud;
 
-import me.quesia.peepopractice.gui.PeepoPauseManHud;
+import me.quesia.peepopractice.gui.screen.PeepoPauseManHud;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;

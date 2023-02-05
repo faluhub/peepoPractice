@@ -3,11 +3,12 @@ package me.quesia.peepopractice;
 import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.core.resource.LocalResourceManager;
-import me.quesia.peepopractice.gui.inventory.PlayerlessInventory;
-import me.quesia.peepopractice.gui.inventory.PlayerlessPlayerScreenHandler;
+import me.quesia.peepopractice.core.playerless.PlayerlessInventory;
+import me.quesia.peepopractice.core.playerless.PlayerlessPlayerScreenHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import net.minecraft.client.gui.hud.BackgroundHelper;
 import net.minecraft.resource.ServerResourceManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,6 +28,7 @@ public class PeepoPractice implements ClientModInitializer {
     public static boolean RESET_CATEGORY = true;
     public static boolean HAS_FAST_RESET = FabricLoader.getInstance().getModContainer("fast_reset").isPresent();
     public static boolean SHOW_PAUSE_BOY = false;
+    public static final int BACKGROUND_COLOUR = BackgroundHelper.ColorMixer.getArgb(255, 68, 112, 106);
 
     public static void log(Object message) {
         LOGGER.info(message);

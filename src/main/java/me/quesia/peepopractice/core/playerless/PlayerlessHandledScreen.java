@@ -1,4 +1,4 @@
-package me.quesia.peepopractice.gui.inventory;
+package me.quesia.peepopractice.core.playerless;
 
 import com.google.common.collect.Sets;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -6,7 +6,6 @@ import com.mojang.datafixers.util.Pair;
 import me.quesia.peepopractice.PeepoPractice;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;

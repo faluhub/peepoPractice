@@ -19,12 +19,12 @@ public class PracticeCategory {
     private final List<StructureProperties> structureProperties = new ArrayList<>();
     private WorldProperties worldProperties;
     private SplitEvent splitEvent;
-    private final List<CategorySetting> settings;
+    private final List<CategoryPreference> preferences;
     private boolean hidden;
     private final Map<String, Object> customValues = new HashMap<>();
 
     public PracticeCategory() {
-        this.settings = new ArrayList<>();
+        this.preferences = new ArrayList<>();
 
         PracticeCategories.ALL.add(this);
     }
@@ -120,12 +120,16 @@ public class PracticeCategory {
         return this;
     }
 
-    public List<CategorySetting> getSettings() {
-        return this.settings;
+    public List<CategoryPreference> getPreferences() {
+        return this.preferences;
     }
 
-    public PracticeCategory addSetting(CategorySetting setting) {
-        this.settings.add(setting);
+    public boolean hasPreferences() {
+        return !this.preferences.isEmpty();
+    }
+
+    public PracticeCategory addPreference(CategoryPreference preference) {
+        this.preferences.add(preference);
         return this;
     }
 

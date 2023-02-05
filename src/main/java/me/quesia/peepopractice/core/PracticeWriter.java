@@ -11,7 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class PracticeWriter {
-    public static final PracticeWriter CONFIG_WRITER = new PracticeWriter("config.json");
+    public static final PracticeWriter PREFERENCES_WRITER = new PracticeWriter("preferences.json");
     public static final PracticeWriter INVENTORY_WRITER = new PracticeWriter("inventory.json");
     public static final PracticeWriter PB_WRITER = new PracticeWriter("personal_bests.json");
 

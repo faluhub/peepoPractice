@@ -12,6 +12,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.WorldGenerationProgressListener;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.server.world.ThreadedAnvilChunkStorage;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.math.BlockPos;
@@ -45,6 +46,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Executor;
+import java.util.function.BooleanSupplier;
 
 @Mixin(MinecraftServer.class)
 public abstract class MinecraftServerMixin {
@@ -59,6 +61,8 @@ public abstract class MinecraftServerMixin {
     @Shadow protected abstract void setToDebugWorldProperties(SaveProperties properties);
     @Shadow public abstract PlayerManager getPlayerManager();
     @Shadow public abstract BossBarManager getBossBarManager();
+
+    @Shadow public abstract ServerWorld getOverworld();
 
     /**
      * @author Quesia

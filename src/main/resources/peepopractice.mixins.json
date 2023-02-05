@@ -11,13 +11,14 @@
     "access.ServerWorldAccessor",
     "access.ThreadExecutorAccessor",
 
+    "gui.hud.InGameHudMixin",
+    "gui.hud.SubtitlesHudMixin",
+
     "gui.renderer.ItemRendererMixin",
 
     "gui.screen.CreateWorldScreenMixin",
     "gui.screen.GameMenuScreenMixin",
     "gui.screen.TitleScreenMixin",
-
-    "gui.InGameHudMixin",
     "gui.ItemStackMixin",
 
     "structure.category.BastionRemnantFeatureConfigMixin",
@@ -36,6 +37,7 @@
     "world.MinecraftServerMixin",
     "world.PlayerManagerMixin",
     "world.ServerPlayerEntityMixin",
+    "world.ServerWorldMixin",
 
     "ClientAdvancementManagerMixin",
     "ClientPlayNetworkHandlerMixin",
