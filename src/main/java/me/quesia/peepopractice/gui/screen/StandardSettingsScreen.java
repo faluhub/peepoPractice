@@ -43,7 +43,7 @@ public class StandardSettingsScreen extends Screen {
             index++;
         }
         this.pieChartDirectoryField = new TextFieldWidget(this.textRenderer, this.width / 2 - btnWidth / 2, 30 + (20 + 5) * index, btnWidth, 20, new LiteralText("PieChart Directory"));
-        this.pieChartDirectoryField.setSelected(true);
+        this.pieChartDirectoryField.setMaxLength(99);
         this.pieChartDirectoryField.setText(StandardSettingsUtils.getSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "piechart", "root.gameRenderer.level.entities"));
         this.children.add(this.pieChartDirectoryField);
         index++;
