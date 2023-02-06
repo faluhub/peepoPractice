@@ -1,5 +1,6 @@
 package me.quesia.peepopractice.mixin.world;
 
+import me.quesia.peepopractice.PeepoPractice;
 import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
@@ -19,6 +20,8 @@ public abstract class ServerWorldMixin {
 
     @Inject(method = "setSpawnPos", at = @At("TAIL"))
     private void removeTicket(BlockPos pos, CallbackInfo ci) {
-        this.getChunkManager().removeTicket(ChunkTicketType.START, new ChunkPos(pos), 11, Unit.INSTANCE);
+        if (!PeepoPractice.CATEGORY.getWorldProperties().isSpawnChunksEnabled()) {
+            this.getChunkManager().removeTicket(ChunkTicketType.START, new ChunkPos(pos), 11, Unit.INSTANCE);
+        }
     }
 }

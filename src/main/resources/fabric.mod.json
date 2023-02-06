@@ -21,6 +21,6 @@
   "accessWidener": "peepopractice.accesswidener",
   "depends": {
     "minecraft": "1.16.1",
-    "speedrunigt": ">=7.0"
+    "speedrunigt": ">=13.2"
   }
 }

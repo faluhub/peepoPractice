@@ -9,12 +9,14 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
+import net.minecraft.client.gui.screen.world.MoreOptionsDialog;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.StringRenderable;
 import net.minecraft.text.Text;
 import net.minecraft.world.Difficulty;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,7 +30,8 @@ public abstract class CreateWorldScreenMixin extends Screen {
     @Shadow private Difficulty field_24290;
     @Shadow private boolean cheatsEnabled;
     @Shadow private boolean tweakedCheats;
-    private boolean renderTitle = false;
+    @Shadow protected abstract void createLevel();
+    @Shadow @Final public MoreOptionsDialog moreOptionsDialog;
 
     protected CreateWorldScreenMixin(Text title) {
         super(title);
@@ -40,7 +43,13 @@ public abstract class CreateWorldScreenMixin extends Screen {
             this.field_24289 = this.field_24290 = Difficulty.EASY;
             this.cheatsEnabled = true;
             this.tweakedCheats = true;
-            this.renderTitle = true;
+        }
+    }
+
+    @Inject(method = "init", at = @At("TAIL"))
+    private void startCreateLevel(CallbackInfo ci) {
+        if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
+            this.createLevel();
         }
     }
 
@@ -62,24 +71,6 @@ public abstract class CreateWorldScreenMixin extends Screen {
                 }
             }
             PracticeCategoryUtils.quit(false);
-        }
-    }
-
-    @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/world/CreateWorldScreen;drawCenteredText(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/StringRenderable;III)V", ordinal = 0))
-    private void cancelTitleRender(CreateWorldScreen instance, MatrixStack matrixStack, TextRenderer textRenderer, StringRenderable stringRenderable, int i, int j, int k) {
-        if (!this.renderTitle) {
-            this.drawCenteredText(matrixStack, textRenderer, stringRenderable, i, j, k);
-        }
-    }
-
-    @Inject(method = "render", at = @At("TAIL"))
-    @SuppressWarnings("deprecation")
-    private void renderCategoryName(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        if (this.renderTitle) {
-            RenderSystem.pushMatrix();
-            RenderSystem.scalef(2.0F, 2.0F, 2.0F);
-            this.drawCenteredText(matrices, this.textRenderer, new LiteralText(PeepoPractice.CATEGORY.getName(true)), this.width / 2 / 2, 6, 0xFFFFFF);
-            RenderSystem.popMatrix();
         }
     }
 }

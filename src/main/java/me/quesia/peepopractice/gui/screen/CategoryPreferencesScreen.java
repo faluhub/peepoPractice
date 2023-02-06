@@ -1,22 +1,26 @@
 package me.quesia.peepopractice.gui.screen;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import me.quesia.peepopractice.PeepoPractice;
+import me.quesia.peepopractice.core.PracticeWriter;
 import me.quesia.peepopractice.core.category.CategoryPreference;
 import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.core.playerless.PlayerlessInventory;
 import me.quesia.peepopractice.core.playerless.PlayerlessPlayerScreenHandler;
+import me.quesia.peepopractice.gui.widget.LimitlessButtonWidget;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.StringRenderable;
 
 import java.util.*;
 
 public class CategoryPreferencesScreen extends Screen {
     private final Screen parent;
     private final PracticeCategory category;
-    private final Map<ButtonWidget, String> descriptions = new HashMap<>();
 
     public CategoryPreferencesScreen(Screen parent, PracticeCategory category) {
         super(new LiteralText("Configure (" + category.getName(false) + ")"));
@@ -40,89 +44,58 @@ public class CategoryPreferencesScreen extends Screen {
 
     @Override
     protected void init() {
-        this.descriptions.clear();
+        if (this.client == null) { return; }
 
-        int index = 1;
-        int offsetX = 200;
-        int offsetY = 20;
-        int spacingY = 30;
-        int btnWidth = 200;
+        int size = 110;
+        int column = 0;
+        int row = 0;
+        int values = this.category.getPreferences().size();
+        int maxColumns = Math.round(this.width / (float) (size * values)) + 2;
 
-        this.addButton(
-                new ButtonWidget(
-                        this.width / 2 - 100 / 2,
-                        this.height / 8,
-                        100,
-                        20,
-                        new LiteralText("Edit Inventory"),
-                        b -> {
-                            if (this.client != null) {
-                                PeepoPractice.PLAYERLESS_INVENTORY = new PlayerlessInventory();
-                                PeepoPractice.PLAYERLESS_PLAYER_SCREEN_HANDLER = new PlayerlessPlayerScreenHandler();
-
-                                this.client.openScreen(new EditInventoryScreen(this, this.category));
-                            }
-                        }
-                )
-        );
-
-        for (CategoryPreference setting : category.getPreferences()) {
-            String currentValue = CategoryPreference.getValue(category, setting.getId());
-            ButtonWidget button = this.addButton(
-                    new ButtonWidget(
-                            this.width / 2 - btnWidth / 2 - offsetX,
-                            this.height / 4 + spacingY * index + offsetY,
-                            btnWidth,
-                            20,
-                            new LiteralText(setting.getLabel() + ": " + currentValue),
+        for (CategoryPreference preference : this.category.getPreferences()) {
+            String currentValue = CategoryPreference.getValue(this.category, preference.getId());
+            this.addButton(
+                    new LimitlessButtonWidget(
+                            null,
+                            preference.getIcon(),
+                            null,
+                            this.width * (column + 1) / (maxColumns + 1) - size / 2 + column * 3,
+                            32 + size * row,
+                            size,
+                            size,
+                            new LiteralText(preference.getLabel() + ":\n" + currentValue),
                             b -> {
-                                int currentIndex = this.getIndex(CategoryPreference.getValue(category, setting.getId()), setting.getChoices());
+                                int currentIndex = this.getIndex(CategoryPreference.getValue(this.category, preference.getId()), preference.getChoices());
                                 String next;
 
-                                try { next = setting.getChoices().get(currentIndex + 1); }
-                                catch (IndexOutOfBoundsException ignored) { next = setting.getChoices().get(0); }
+                                try { next = preference.getChoices().get(currentIndex + 1); }
+                                catch (IndexOutOfBoundsException ignored) { next = preference.getChoices().get(0); }
 
-                                this.descriptions.remove(b);
-
-                                b.setMessage(new LiteralText(setting.getLabel() + ": " + next));
-                                CategoryPreference.setValue(category, setting.getId(), next);
-
-                                this.descriptions.put(b, setting.getDescription());
-                            }
+                                b.setMessage(new LiteralText(preference.getLabel() + ":\n" + next));
+                                CategoryPreference.setValue(this.category, preference.getId(), next);
+                            },
+                            (button, matrices, mouseX, mouseY) -> this.renderTooltip(matrices, new LiteralText(preference.getDescription()), mouseX, mouseY)
                     )
             );
-            this.descriptions.put(button, setting.getDescription());
 
-            index++;
+            column++;
+            if (column >= maxColumns) {
+                row++;
+                column = 0;
+            }
         }
-
-        super.init();
     }
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         this.fillGradient(matrices, 0, 0, this.width, this.height, PeepoPractice.BACKGROUND_COLOUR, PeepoPractice.BACKGROUND_COLOUR);
         this.drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 13, 16777215);
-
-        for (AbstractButtonWidget button : this.buttons) {
-            this.descriptions.forEach((v, k) -> {
-                if (v.getMessage().getString().equals(button.getMessage().getString())) {
-                    this.textRenderer.drawWithShadow(
-                            matrices,
-                            k,
-                            v.x + v.getWidth() + 20,
-                            v.y + v.getHeight() / 3.0F,
-                            16777215
-                    );
-                }
-            });
-        }
-
         super.render(matrices, mouseX, mouseY, delta);
     }
 
     @Override
     public void onClose() {
+        PracticeWriter.PREFERENCES_WRITER.write();
         if (this.client != null) {
             this.client.openScreen(this.parent);
 

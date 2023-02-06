@@ -1,29 +1,48 @@
 package me.quesia.peepopractice.gui.widget;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import me.quesia.peepopractice.PeepoPractice;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.gui.hud.BackgroundHelper;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Matrix4f;
+import org.jetbrains.annotations.Nullable;
 
 public class LimitlessButtonWidget extends ButtonWidget {
     public static final int BG_INACTIVE_COLOR;
-    public static final int BG_COLOR = BG_INACTIVE_COLOR = BackgroundHelper.ColorMixer.getArgb(60, 0, 0, 0);
-    private final Identifier icon;
+    public static final int BG_COLOR = BG_INACTIVE_COLOR = PeepoPractice.BACKGROUND_OVERLAY_COLOUR;
+    public Boolean odd;
+    public Identifier icon;
+    public Integer textureSize;
 
-    public LimitlessButtonWidget(Identifier icon, int x, int y, int width, int height, Text message, ButtonWidget.PressAction onPress) {
+    public LimitlessButtonWidget(@Nullable Boolean odd, @Nullable Identifier icon, @Nullable Integer textureSize, int x, int y, int width, int height, Text message, ButtonWidget.PressAction onPress) {
         super(x, y, width, height, message, onPress);
+        this.odd = odd;
         this.icon = icon;
+        this.textureSize = textureSize != null ? textureSize : 32;
     }
 
-    public LimitlessButtonWidget(Identifier icon, int x, int y, int width, int height, Text message, ButtonWidget.PressAction onPress, ButtonWidget.TooltipSupplier tooltipSupplier) {
+    public LimitlessButtonWidget(@Nullable Boolean odd, @Nullable Identifier icon, @Nullable Integer textureSize, int x, int y, int width, int height, Text message, ButtonWidget.PressAction onPress, TooltipSupplier tooltipSupplier) {
         super(x, y, width, height, message, onPress, tooltipSupplier);
+        this.odd = odd;
         this.icon = icon;
+        this.textureSize = textureSize != null ? textureSize : 32;
+    }
+
+    private void drawText(String[] parts, float x, float y, int color, Matrix4f matrix, boolean mirror) {
+        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+        int i = 0;
+        int spacing = textRenderer.fontHeight + 2;
+        for (String part : parts) {
+            int textWidth = textRenderer.getWidth(part);
+            textRenderer.draw(part, (i != 0 ? this.x + this.width / 2.0F - textWidth / 2.0F : x), y + spacing * i, color, matrix, true, mirror);
+            i++;
+        }
     }
 
     @SuppressWarnings("deprecation")
@@ -48,7 +67,53 @@ public class LimitlessButtonWidget extends ButtonWidget {
         DrawableHelper.fill(matrices, this.x + 3, this.y + 3, this.x + this.width - 3, this.y + this.height - 3, this.active ? BG_COLOR : BG_INACTIVE_COLOR);
 
         int j = this.active ? 0xFFFFFF : 0xA0A0A0;
-        this.drawCenteredText(matrices, textRenderer, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | MathHelper.ceil(this.alpha * 255.0f) << 24);
+        RenderSystem.pushMatrix();
+        float colour = 0.3F;
+        String[] parts = this.getMessage().getString().split("\n");
+        int textWidth = 0;
+        for (String part : parts) {
+            int width = textRenderer.getWidth(part);
+            if (width > textWidth) {
+                textWidth = width;
+            }
+        }
+        if (this.odd != null) {
+            if (this.odd) {
+                this.drawText(parts, this.x + this.width / 4.0F - this.width / 8.0F, this.y + this.height / 2.0F - textRenderer.fontHeight / 4.0F, j | MathHelper.ceil(this.alpha * 255.0F) << 24, matrices.peek().getModel(), false);
+                if (this.icon != null) {
+                    if (!this.active) {
+                        RenderSystem.color3f(colour, colour, colour);
+                    }
+                    MinecraftClient.getInstance().getTextureManager().bindTexture(this.icon);
+                    RenderSystem.translatef(0.0F, 0.0F, 10.0F);
+                    drawTexture(matrices, this.x + this.width - this.width / 4, this.y + this.height / 4, 0.0F, 0.0F, this.textureSize, this.textureSize, this.textureSize, this.textureSize);
+                }
+            } else {
+                this.drawText(parts, this.x + this.width - textWidth - this.width / 8.0F, this.y + this.height / 2.0F - textRenderer.fontHeight / 4.0F, j | MathHelper.ceil(this.alpha * 255.0F) << 24, matrices.peek().getModel(), true);
+                if (this.icon != null) {
+                    if (!this.active) {
+                        RenderSystem.color3f(colour, colour, colour);
+                    }
+                    MinecraftClient.getInstance().getTextureManager().bindTexture(this.icon);
+                    RenderSystem.translatef(0.0F, 0.0F, 10.0F);
+                    drawTexture(matrices, this.x + this.width / 4 - this.textureSize, this.y + this.height / 4, 0.0F, 0.0F, this.textureSize, this.textureSize, this.textureSize, this.textureSize);
+                }
+            }
+        } else {
+            if (this.icon != null) {
+                this.drawText(parts, this.x + this.width / 2.0F - textWidth / 2.0F, this.y + this.height / 6.0F - textRenderer.fontHeight / 4.0F, j | MathHelper.ceil(this.alpha * 255.0F) << 24, matrices.peek().getModel(), false);
+                if (!this.active) {
+                    RenderSystem.color3f(colour, colour, colour);
+                }
+                MinecraftClient.getInstance().getTextureManager().bindTexture(this.icon);
+                RenderSystem.translatef(0.0F, 0.0F, -100.0F);
+                this.setZOffset(-100);
+                drawTexture(matrices, this.x + this.width / 2 - this.textureSize / 2, this.y + this.height / 4 + this.textureSize, 0.0F, 0.0F, this.textureSize, this.textureSize, this.textureSize, this.textureSize);
+            } else {
+                this.drawText(parts, this.x + this.width / 2.0F - textWidth / 2.0F, this.y + this.height / 2.0F - textRenderer.fontHeight / 2.0F, j | MathHelper.ceil(this.alpha * 255.0F) << 24, matrices.peek().getModel(), false);
+            }
+        }
+        RenderSystem.popMatrix();
 
         if (this.isHovered() && this.active) {
             this.renderToolTip(matrices, mouseX, mouseY);

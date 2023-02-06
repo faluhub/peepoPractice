@@ -11,11 +11,14 @@ import net.minecraft.entity.boss.BossBarManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.WorldGenerationProgressListener;
+import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.server.world.ThreadedAnvilChunkStorage;
+import net.minecraft.util.Unit;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.RegistryTracker;
@@ -61,8 +64,8 @@ public abstract class MinecraftServerMixin {
     @Shadow protected abstract void setToDebugWorldProperties(SaveProperties properties);
     @Shadow public abstract PlayerManager getPlayerManager();
     @Shadow public abstract BossBarManager getBossBarManager();
-
     @Shadow public abstract ServerWorld getOverworld();
+    @Shadow public abstract boolean save(boolean bl, boolean bl2, boolean bl3);
 
     /**
      * @author Quesia
@@ -146,5 +149,13 @@ public abstract class MinecraftServerMixin {
             return PeepoPractice.CATEGORY.getPlayerProperties().getSpawnPos();
         }
         return instance.getSpawnPos();
+    }
+
+    @Inject(method = "prepareStartRegion", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;getMeasuringTimeMs()J", ordinal = 2))
+    private void removeTicketsAfterGen(WorldGenerationProgressListener worldGenerationProgressListener, CallbackInfo ci) {
+        if (!PeepoPractice.CATEGORY.getWorldProperties().isSpawnChunksEnabled()) {
+            this.getOverworld().getChunkManager().removeTicket(ChunkTicketType.START, new ChunkPos(this.getOverworld().getSpawnPos()), 11, Unit.INSTANCE);
+            this.save(true, true, false);
+        }
     }
 }

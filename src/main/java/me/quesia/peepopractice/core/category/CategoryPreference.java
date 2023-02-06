@@ -3,6 +3,7 @@ package me.quesia.peepopractice.core.category;
 import com.google.gson.JsonObject;
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.PracticeWriter;
+import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ public class CategoryPreference {
     private String description;
     private List<String> choices = new ArrayList<>();
     private String defaultChoice;
+    private Identifier icon;
 
     public String getId() {
         return this.id;
@@ -72,10 +74,19 @@ public class CategoryPreference {
         return this;
     }
 
-    public static CategoryPreference getSettingById(PracticeCategory category, String id) {
-        for (CategoryPreference setting : category.getPreferences()) {
-            if (setting.id.equals(id)) {
-                return setting;
+    public Identifier getIcon() {
+        return this.icon;
+    }
+
+    public CategoryPreference setIcon(Identifier icon) {
+        this.icon = icon;
+        return this;
+    }
+
+    public static CategoryPreference getPreferenceById(PracticeCategory category, String id) {
+        for (CategoryPreference preference : category.getPreferences()) {
+            if (preference.id.equals(id)) {
+                return preference;
             }
         }
         return null;
@@ -99,7 +110,7 @@ public class CategoryPreference {
             categoryObject = config.get(category.getId()).getAsJsonObject();
         }
 
-        CategoryPreference categorySettings = getSettingById(category, id);
+        CategoryPreference categorySettings = getPreferenceById(category, id);
 
         if (categorySettings != null) {
             if (!categoryObject.has(id) || !categorySettings.getChoices().contains(categoryObject.get(id).getAsString())) {

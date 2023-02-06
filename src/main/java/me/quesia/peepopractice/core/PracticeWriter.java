@@ -14,20 +14,26 @@ public class PracticeWriter {
     public static final PracticeWriter PREFERENCES_WRITER = new PracticeWriter("preferences.json");
     public static final PracticeWriter INVENTORY_WRITER = new PracticeWriter("inventory.json");
     public static final PracticeWriter PB_WRITER = new PracticeWriter("personal_bests.json");
-
+    public static final PracticeWriter STANDARD_SETTINGS_WRITER = new PracticeWriter("standard_settings.json");
     private final File file;
+    private JsonObject local;
 
     public PracticeWriter(String fileName) {
         this.file = this.create(fileName);
+        this.local = this.get();
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private File create(String fileName) {
         try {
             File folder = FabricLoader.getInstance().getConfigDir().resolve(PeepoPractice.MOD_NAME).toFile();
-            if (!folder.exists()) { folder.mkdirs(); }
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
             File file = folder.toPath().resolve(fileName).toFile();
-            if (!file.exists()) { file.createNewFile(); }
+            if (!file.exists()) {
+                file.createNewFile();
+            }
             return file;
         } catch (IOException e) {
             e.printStackTrace();
@@ -35,20 +41,22 @@ public class PracticeWriter {
         return null;
     }
 
-    private void write(JsonObject config) {
+    public void write() {
         this.create(this.file.getName());
-        Util.getServerWorkerExecutor().execute(() -> {
-            try {
-                FileWriter writer = new FileWriter(this.file);
+        try {
+            FileWriter writer = new FileWriter(this.file);
 
-                writer.write(new GsonBuilder().setPrettyPrinting().create().toJson(config));
-                writer.flush();
-                writer.close();
-            } catch (IOException ignored) {}
-        });
+            writer.write(new GsonBuilder().setPrettyPrinting().create().toJson(this.local));
+            writer.flush();
+            writer.close();
+        } catch (IOException ignored) {}
+        this.local = null;
+        this.local = this.get();
     }
 
     public JsonObject get() {
+        if (this.local != null) { return this.local; }
+
         this.create(this.file.getName());
 
         try {
@@ -64,42 +72,24 @@ public class PracticeWriter {
     }
 
     public void put(String element, long value) {
-        JsonObject config = this.get();
-
-        if (config != null) {
-            if (config.has(element)) {
-                config.remove(element);
-            }
-            config.addProperty(element, value);
-
-            this.write(config);
+        if (this.local.has(element)) {
+            this.local.remove(element);
         }
+        this.local.addProperty(element, value);
     }
 
     public void put(String element, JsonObject obj) {
-        JsonObject config = this.get();
-
-        if (config != null) {
-            if (config.has(element)) {
-                config.remove(element);
-            }
-            config.add(element, obj);
-
-            this.write(config);
+        if (this.local.has(element)) {
+            this.local.remove(element);
         }
+        this.local.add(element, obj);
     }
 
     @SuppressWarnings("UnusedDeclaration")
     public void put(String element, JsonArray array) {
-        JsonObject config = this.get();
-
-        if (config != null) {
-            if (config.has(element)) {
-                config.remove(element);
-            }
-            config.add(element, array);
-
-            this.write(config);
+        if (this.local.has(element)) {
+            this.local.remove(element);
         }
+        this.local.add(element, array);
     }
 }

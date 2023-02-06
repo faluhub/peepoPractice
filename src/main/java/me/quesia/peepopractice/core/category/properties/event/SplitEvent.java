@@ -50,6 +50,7 @@ public class SplitEvent {
         }
         if (isPb && completed) {
             writer.put(this.category.getId(), igt);
+            writer.write();
         }
 
         String time = getTimeString(igt);
@@ -98,6 +99,7 @@ public class SplitEvent {
                             for (int i = 0; i < 5; i++) {
                                 try {
                                     if (client.player != null) {
+                                        while (((ServerWorldAccessor) serverPlayerEntity.getServerWorld()).getInEntityTick()) {}
                                         client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 3.0F, 0.5F + .2F * (i + i / 4.0F));
                                         try { TimeUnit.MILLISECONDS.sleep(180); }
                                         catch (InterruptedException ignored) {}
@@ -107,6 +109,7 @@ public class SplitEvent {
                             if (isPb) {
                                 try {
                                     if (client.player != null) {
+                                        while (((ServerWorldAccessor) serverPlayerEntity.getServerWorld()).getInEntityTick()) {}
                                         TimeUnit.MILLISECONDS.sleep(180);
                                         client.player.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, 3.0F, 1.0F);
                                     }
@@ -118,6 +121,7 @@ public class SplitEvent {
                             for (int i = 0; i < 2; i++) {
                                 try {
                                     if (client.player != null) {
+                                        while (((ServerWorldAccessor) serverPlayerEntity.getServerWorld()).getInEntityTick()) {}
                                         client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS, 3.0F, 1.2F - i * 0.5F);
                                         try { TimeUnit.MILLISECONDS.sleep(180); }
                                         catch (InterruptedException ignored) {}

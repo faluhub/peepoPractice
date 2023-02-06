@@ -7,9 +7,11 @@ import me.quesia.peepopractice.core.category.properties.event.ChangeDimensionSpl
 import me.quesia.peepopractice.core.category.properties.event.ThrowEntitySplitEvent;
 import me.quesia.peepopractice.core.category.properties.preset.BastionPreset;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Items;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.BlockRotation;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
@@ -52,6 +54,7 @@ public class PracticeCategories {
                     .setDescription("If enabled, you'll spawn inside of the Stronghold.")
                     .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
                     .setDefaultChoice(PracticeCategoryUtils.ENABLED)
+                    .setIcon(new Identifier("textures/item/iron_shovel.png"))
             )
             .addPreference(new CategoryPreference()
                     .setId("disable_mineshafts")
@@ -59,6 +62,7 @@ public class PracticeCategories {
                     .setDescription("If enabled, Mineshafts won't generate.")
                     .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
                     .setDefaultChoice(PracticeCategoryUtils.DISABLED)
+                    .setIcon(new Identifier("textures/item/string.png"))
             )
             .addPreference(new CategoryPreference()
                     .setId("disable_dungeons")
@@ -66,6 +70,7 @@ public class PracticeCategories {
                     .setDescription("If enabled, Dungeons won't generate.")
                     .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
                     .setDefaultChoice(PracticeCategoryUtils.DISABLED)
+                    .setIcon(new Identifier("textures/item/spawn_egg.png"))
             )
             .addPreference(new CategoryPreference()
                     .setId("eye_count")
@@ -75,6 +80,7 @@ public class PracticeCategories {
                     .addChoice("0")
                     .addChoice("12")
                     .setDefaultChoice("Random")
+                    .setIcon(new Identifier("textures/item/ender_eye.png"))
             );
     public static PracticeCategory NETHER_SPLIT = new PracticeCategory()
             .setId("nether_split")
@@ -163,6 +169,7 @@ public class PracticeCategories {
             )
             .setWorldProperties(new WorldProperties()
                     .setWorldRegistryKey(World.NETHER)
+                    .setSpawnChunksEnabled(false)
             )
             .setSplitEvent(new ChangeDimensionSplitEvent()
                     .setDimension(World.OVERWORLD)

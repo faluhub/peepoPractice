@@ -2,7 +2,7 @@ package me.quesia.peepopractice.gui.screen;
 
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.category.PracticeCategory;
-import me.quesia.peepopractice.gui.widget.OddLimitlessButtonWidget;
+import me.quesia.peepopractice.gui.widget.LimitlessButtonWidget;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
@@ -14,7 +14,7 @@ public class SettingsTypeSelectionScreen extends Screen {
     private final ButtonChoice[] buttons = new ButtonChoice[] {
             new ButtonChoice(new LiteralText("Inventory"), new Identifier("textures/item/chest_minecart.png"), category -> EditInventoryScreen.open(this, category)),
             new ButtonChoice(new LiteralText("Preferences"), new Identifier("textures/item/heart_of_the_sea.png"), category -> new CategoryPreferencesScreen(this, category), PracticeCategory::hasPreferences),
-            new ButtonChoice(new LiteralText("Standard Settings"), new Identifier(PeepoPractice.MOD_CONTAINER.getMetadata().getId(), "gear.png"), category -> new StandardSettingsScreen(this, category))
+            new ButtonChoice(new LiteralText("Standard Settings"), new Identifier(PeepoPractice.MOD_CONTAINER.getMetadata().getId(), "icon/gear.png"), category -> new StandardSettingsScreen(this, category))
     };
     private final Screen parent;
     private final PracticeCategory category;
@@ -40,7 +40,7 @@ public class SettingsTypeSelectionScreen extends Screen {
         int width = (int) (this.width / 2 * .8);
         int height = 60;
         for (ButtonChoice buttonChoice : this.buttons) {
-            ButtonWidget bw = this.addButton(new OddLimitlessButtonWidget(index % 2 == 0, buttonChoice.icon, this.width / 2 - width / 2, this.height * (index + 1) / (this.buttons.length + 1) - (height / 2), width, height, buttonChoice.text, b -> {
+            ButtonWidget bw = this.addButton(new LimitlessButtonWidget(index % 2 == 0, buttonChoice.icon, null, this.width / 2 - width / 2, this.height * (index + 1) / (this.buttons.length + 1) - height / 2, width, height, buttonChoice.text, b -> {
                 if (this.client != null) {
                     Screen screen = buttonChoice.screenTask.execute(this.category);
                     this.client.openScreen(screen);

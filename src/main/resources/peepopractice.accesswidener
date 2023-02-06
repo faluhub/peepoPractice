@@ -7,6 +7,9 @@ accessible method net/minecraft/server/network/SpawnLocating findOverworldSpawn 
 accessible method net/minecraft/client/gui/screen/world/CreateWorldScreen <init> (Lnet/minecraft/client/gui/screen/Screen;Lnet/minecraft/client/gui/screen/world/MoreOptionsDialog;)V
 accessible method net/minecraft/client/font/TextRenderer draw (Ljava/lang/String;FFILnet/minecraft/util/math/Matrix4f;ZZ)I
 accessible method net/minecraft/client/gui/widget/EntryListWidget getMaxScroll ()I
+accessible method net/minecraft/client/gui/widget/EntryListWidget getRowBottom (I)I
 
 accessible field net/minecraft/state/property/EnumProperty values Lcom/google/common/collect/ImmutableSet;
 accessible field net/minecraft/client/gui/widget/EntryListWidget renderHeader Z
+accessible field net/minecraft/client/gui/widget/EntryListWidget renderSelection Z
+accessible field net/minecraft/client/render/debug/DebugRenderer showChunkBorder Z

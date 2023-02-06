@@ -123,6 +123,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         }
 
         PracticeWriter.INVENTORY_WRITER.put(this.category.getId(), object);
+        PracticeWriter.INVENTORY_WRITER.write();
 
         this.client.openScreen(this.parent);
     }

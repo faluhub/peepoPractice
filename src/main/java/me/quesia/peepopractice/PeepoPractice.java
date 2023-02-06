@@ -20,15 +20,15 @@ public class PeepoPractice implements ClientModInitializer {
     public static final String MOD_VERSION = String.valueOf(MOD_CONTAINER.getMetadata().getVersion());
     public static final String MOD_NAME = MOD_CONTAINER.getMetadata().getName();
     public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
-
     public static PracticeCategory CATEGORY = PracticeCategories.EMPTY;
+    public static PracticeCategory CONFIGURING_CATEGORY = PracticeCategories.EMPTY;
     public static PlayerlessInventory PLAYERLESS_INVENTORY;
     public static PlayerlessPlayerScreenHandler PLAYERLESS_PLAYER_SCREEN_HANDLER;
     public static final AtomicReference<ServerResourceManager> SERVER_RESOURCE_MANAGER = new AtomicReference<>();
     public static boolean RESET_CATEGORY = true;
     public static boolean HAS_FAST_RESET = FabricLoader.getInstance().getModContainer("fast_reset").isPresent();
-    public static boolean SHOW_PAUSE_BOY = false;
     public static final int BACKGROUND_COLOUR = BackgroundHelper.ColorMixer.getArgb(255, 68, 112, 106);
+    public static final int BACKGROUND_OVERLAY_COLOUR = BackgroundHelper.ColorMixer.getArgb(60, 0, 0, 0);
 
     public static void log(Object message) {
         LOGGER.info(message);

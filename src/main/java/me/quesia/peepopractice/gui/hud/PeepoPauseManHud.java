@@ -1,9 +1,8 @@
-package me.quesia.peepopractice.gui.screen;
+package me.quesia.peepopractice.gui.hud;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.redlimerl.speedrunigt.timer.InGameTimer;
 import me.quesia.peepopractice.PeepoPractice;
-import me.quesia.peepopractice.core.category.PracticeCategories;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
@@ -11,8 +10,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 public class PeepoPauseManHud extends DrawableHelper {
-    private static final Identifier PEEPO_PAUSE_MAN = new Identifier(PeepoPractice.MOD_CONTAINER.getMetadata().getId(), "peepopauseman.png");
-    private static final Identifier PEEPO_PAG_MAN = new Identifier(PeepoPractice.MOD_CONTAINER.getMetadata().getId(), "peepopagman.png");
+    private static final Identifier PEEPO_PAUSE_MAN = new Identifier(PeepoPractice.MOD_CONTAINER.getMetadata().getId(), "sprite/peepopauseman.png");
+    private static final Identifier PEEPO_PAG_MAN = new Identifier(PeepoPractice.MOD_CONTAINER.getMetadata().getId(), "sprite/peepopagman.png");
     private final MinecraftClient client;
     private Long startTime;
 
@@ -22,7 +21,7 @@ public class PeepoPauseManHud extends DrawableHelper {
 
     @SuppressWarnings("deprecation")
     public void render(MatrixStack matrices) {
-        if (PeepoPractice.SHOW_PAUSE_BOY && PeepoPractice.CATEGORY.equals(PracticeCategories.NETHER_SPLIT)) {
+        if (PeepoPractice.CATEGORY.hasCustomValue("showPauseBoy") && (boolean) PeepoPractice.CATEGORY.getCustomValue("showPauseBoy")) {
             if (this.startTime == null) {
                 this.startTime = System.currentTimeMillis();
             }

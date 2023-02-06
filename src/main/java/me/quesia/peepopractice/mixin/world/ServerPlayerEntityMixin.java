@@ -49,7 +49,6 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
 
     @Inject(method = "moveToSpawn", at = @At("HEAD"), cancellable = true)
     private void customSpawn(ServerWorld world, CallbackInfo ci) {
-        PeepoPractice.SHOW_PAUSE_BOY = false;
         this.pb = PeepoPractice.CATEGORY.hasSplitEvent() && PeepoPractice.CATEGORY.getSplitEvent().hasPb() ? PeepoPractice.CATEGORY.getSplitEvent().getPbLong() : null;
 
         if (PeepoPractice.CATEGORY.hasPlayerProperties() && PeepoPractice.CATEGORY.getPlayerProperties().hasSpawnPos()) {
