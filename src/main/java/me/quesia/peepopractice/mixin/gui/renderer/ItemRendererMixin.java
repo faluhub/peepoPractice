@@ -16,13 +16,12 @@ public class ItemRendererMixin {
     @Shadow public float zOffset;
     private ItemStack stack;
 
-    @SuppressWarnings("UnusedDeclaration")
     @Inject(method = "renderGuiItemModel", at = @At("HEAD"))
     private void captureStack(ItemStack stack, int x, int y, BakedModel model, CallbackInfo ci) {
         this.stack = stack;
     }
 
-    @SuppressWarnings({ "deprecation", "UnusedDeclaration" })
+    @SuppressWarnings("deprecation")
     @Redirect(method = "renderGuiItemModel", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;scalef(FFF)V", ordinal = 1))
     private void scaleDown(float x, float y, float z) {
         if (this.stack.getTag() != null && this.stack.getTag().getBoolean("IsDisplayItem")) {
@@ -32,7 +31,7 @@ public class ItemRendererMixin {
         RenderSystem.scalef(x, y, z);
     }
 
-    @SuppressWarnings({ "deprecation", "UnusedDeclaration" })
+    @SuppressWarnings("deprecation")
     @Redirect(method = "renderGuiItemModel", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;translatef(FFF)V", ordinal = 1))
     private void bringForward(float x, float y, float z) {
         if (this.stack.getTag() != null && this.stack.getTag().getBoolean("IsDisplayItem")) {

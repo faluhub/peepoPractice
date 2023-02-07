@@ -3,6 +3,7 @@ package me.quesia.peepopractice.gui.screen;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.quesia.peepopractice.PeepoPractice;
+import me.quesia.peepopractice.core.PracticeWriter;
 import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.gui.widget.LimitlessButtonWidget;
@@ -120,6 +121,8 @@ public class CategorySelectionScreen extends Screen {
 
     @Override
     public void onClose() {
+        PracticeWriter.COMPLETIONS_WRITER.update();
+
         if (this.selected != null) {
             this.selected = null;
         } else {

@@ -16,9 +16,9 @@ import org.jetbrains.annotations.Nullable;
 public class LimitlessButtonWidget extends ButtonWidget {
     public static final int BG_INACTIVE_COLOR;
     public static final int BG_COLOR = BG_INACTIVE_COLOR = PeepoPractice.BACKGROUND_OVERLAY_COLOUR;
-    public Boolean odd;
-    public Identifier icon;
-    public Integer textureSize;
+    public final Boolean odd;
+    public final Identifier icon;
+    public final Integer textureSize;
 
     public LimitlessButtonWidget(@Nullable Boolean odd, @Nullable Identifier icon, @Nullable Integer textureSize, int x, int y, int width, int height, Text message, ButtonWidget.PressAction onPress) {
         super(x, y, width, height, message, onPress);
@@ -86,7 +86,7 @@ public class LimitlessButtonWidget extends ButtonWidget {
                     }
                     MinecraftClient.getInstance().getTextureManager().bindTexture(this.icon);
                     RenderSystem.translatef(0.0F, 0.0F, 10.0F);
-                    drawTexture(matrices, this.x + this.width - this.width / 4, this.y + this.height / 4, 0.0F, 0.0F, this.textureSize, this.textureSize, this.textureSize, this.textureSize);
+                    drawTexture(matrices, this.x + this.width - this.width / 4, this.y + this.height / 2 - this.textureSize / 2, 0.0F, 0.0F, this.textureSize, this.textureSize, this.textureSize, this.textureSize);
                 }
             } else {
                 this.drawText(parts, this.x + this.width - textWidth - this.width / 8.0F, this.y + this.height / 2.0F - textRenderer.fontHeight / 4.0F, j | MathHelper.ceil(this.alpha * 255.0F) << 24, matrices.peek().getModel(), true);
@@ -96,7 +96,7 @@ public class LimitlessButtonWidget extends ButtonWidget {
                     }
                     MinecraftClient.getInstance().getTextureManager().bindTexture(this.icon);
                     RenderSystem.translatef(0.0F, 0.0F, 10.0F);
-                    drawTexture(matrices, this.x + this.width / 4 - this.textureSize, this.y + this.height / 4, 0.0F, 0.0F, this.textureSize, this.textureSize, this.textureSize, this.textureSize);
+                    drawTexture(matrices, this.x + this.width / 4 - this.textureSize, this.y + this.height / 2 - this.textureSize / 2, 0.0F, 0.0F, this.textureSize, this.textureSize, this.textureSize, this.textureSize);
                 }
             }
         } else {

@@ -81,12 +81,12 @@ public class SubtitlesHudMixin {
                 RenderSystem.enableBlend();
                 if (!bl) {
                     if (d > 0.0) {
-                        this.client.textRenderer.draw(matrixStack, ">", (float)(l - this.client.textRenderer.getWidth(">")), (float)(-n), q + -16777216);
+                        this.client.textRenderer.draw(matrixStack, ">", (float)(l - this.client.textRenderer.getWidth(">")), (float)(-n), q - 16777216);
                     } else if (d < 0.0) {
-                        this.client.textRenderer.draw(matrixStack, "<", (float)(-l), (float)(-n), q + -16777216);
+                        this.client.textRenderer.draw(matrixStack, "<", (float)(-l), (float)(-n), q - 16777216);
                     }
                 }
-                this.client.textRenderer.draw(matrixStack, text, (float)(-o / 2), (float)(-n), q + -16777216);
+                this.client.textRenderer.draw(matrixStack, text, (float)(-o / 2), (float)(-n), q - 16777216);
                 RenderSystem.popMatrix();
                 ++i;
             }

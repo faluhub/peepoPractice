@@ -1,22 +1,13 @@
 package me.quesia.peepopractice.gui.screen;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.PracticeWriter;
 import me.quesia.peepopractice.core.category.CategoryPreference;
 import me.quesia.peepopractice.core.category.PracticeCategory;
-import me.quesia.peepopractice.core.playerless.PlayerlessInventory;
-import me.quesia.peepopractice.core.playerless.PlayerlessPlayerScreenHandler;
 import me.quesia.peepopractice.gui.widget.LimitlessButtonWidget;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
-import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
-import net.minecraft.text.StringRenderable;
-
-import java.util.*;
 
 public class CategoryPreferencesScreen extends Screen {
     private final Screen parent;
@@ -29,24 +20,12 @@ public class CategoryPreferencesScreen extends Screen {
         this.category = category;
     }
 
-    private int getIndex(String value, List<String> choices) {
-        int index = 0;
-
-        for (String choice : choices) {
-            if (Objects.equals(value, choice)) {
-                break;
-            }
-            index++;
-        }
-
-        return index;
-    }
-
     @Override
     protected void init() {
         if (this.client == null) { return; }
 
-        int size = 110;
+        int offset = this.width / 16;
+        int size = this.width / 6 + offset;
         int column = 0;
         int row = 0;
         int values = this.category.getPreferences().size();
@@ -58,20 +37,21 @@ public class CategoryPreferencesScreen extends Screen {
                     new LimitlessButtonWidget(
                             null,
                             preference.getIcon(),
-                            null,
+                            (int) (32 * ((size - offset) / 110.0F)),
                             this.width * (column + 1) / (maxColumns + 1) - size / 2 + column * 3,
                             32 + size * row,
                             size,
-                            size,
+                            size - offset,
                             new LiteralText(preference.getLabel() + ":\n" + currentValue),
                             b -> {
-                                int currentIndex = this.getIndex(CategoryPreference.getValue(this.category, preference.getId()), preference.getChoices());
+                                String value = CategoryPreference.getValue(this.category, preference.getId());
+                                int currentIndex = CategoryPreference.getIndex(value, preference.getChoices());
                                 String next;
 
                                 try { next = preference.getChoices().get(currentIndex + 1); }
                                 catch (IndexOutOfBoundsException ignored) { next = preference.getChoices().get(0); }
 
-                                b.setMessage(new LiteralText(preference.getLabel() + ":\n" + next));
+                                b.setMessage(new LiteralText(b.getMessage().getString().replaceAll(value, next)));
                                 CategoryPreference.setValue(this.category, preference.getId(), next);
                             },
                             (button, matrices, mouseX, mouseY) -> this.renderTooltip(matrices, new LiteralText(preference.getDescription()), mouseX, mouseY)

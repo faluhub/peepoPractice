@@ -19,14 +19,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftClient.class)
 public class MinecraftClientMixin {
-    @SuppressWarnings("UnusedDeclaration")
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;runTasks()V"))
     private void runMoreTasks(MinecraftClient instance) {
         ((ThreadExecutorAccessor) instance).invokeRunTasks();
         LocalResourceManager.INSTANCE.submit(() -> LocalResourceManager.INSTANCE.tickTasks());
     }
 
-    @SuppressWarnings("UnusedDeclaration")
     @Inject(method = "<init>", at = @At("TAIL"))
     private void getResources(CallbackInfo ci) {
         PeepoPractice.log("Reloading local resource manager...");

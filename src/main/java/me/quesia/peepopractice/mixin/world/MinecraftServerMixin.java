@@ -13,7 +13,6 @@ import net.minecraft.server.PlayerManager;
 import net.minecraft.server.WorldGenerationProgressListener;
 import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.server.world.ThreadedAnvilChunkStorage;
 import net.minecraft.util.Unit;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
@@ -49,7 +48,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Executor;
-import java.util.function.BooleanSupplier;
 
 @Mixin(MinecraftServer.class)
 public abstract class MinecraftServerMixin {
@@ -59,13 +57,14 @@ public abstract class MinecraftServerMixin {
     @Shadow @Final protected LevelStorage.Session session;
     @Shadow @Final private Map<RegistryKey<World>, ServerWorld> worlds;
     @Shadow protected abstract void initScoreboard(PersistentStateManager persistentStateManager);
-    @SuppressWarnings("unused") @Shadow private @Nullable DataCommandStorage dataCommandStorage;
+    @Shadow private @Nullable DataCommandStorage dataCommandStorage;
     @SuppressWarnings("SameParameterValue") @Shadow private static void setupSpawn(ServerWorld serverWorld, ServerWorldProperties serverWorldProperties, boolean bl, boolean bl2, boolean bl3) { throw new UnsupportedOperationException(); }
     @Shadow protected abstract void setToDebugWorldProperties(SaveProperties properties);
     @Shadow public abstract PlayerManager getPlayerManager();
     @Shadow public abstract BossBarManager getBossBarManager();
     @Shadow public abstract ServerWorld getOverworld();
-    @Shadow public abstract boolean save(boolean bl, boolean bl2, boolean bl3);
+    @SuppressWarnings("UnusedReturnValue") @Shadow public abstract boolean save(boolean bl, boolean bl2, boolean bl3);
+    @Shadow protected abstract void method_16208();
 
     /**
      * @author Quesia
@@ -153,9 +152,14 @@ public abstract class MinecraftServerMixin {
 
     @Inject(method = "prepareStartRegion", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;getMeasuringTimeMs()J", ordinal = 2))
     private void removeTicketsAfterGen(WorldGenerationProgressListener worldGenerationProgressListener, CallbackInfo ci) {
-        if (!PeepoPractice.CATEGORY.getWorldProperties().isSpawnChunksEnabled()) {
-            this.getOverworld().getChunkManager().removeTicket(ChunkTicketType.START, new ChunkPos(this.getOverworld().getSpawnPos()), 11, Unit.INSTANCE);
+        if (PeepoPractice.CATEGORY.hasWorldProperties() && PeepoPractice.CATEGORY.getWorldProperties().isSpawnChunksDisabled()) {
+            BlockPos blockPos = this.getOverworld().getSpawnPos();
+            if (PeepoPractice.CATEGORY.hasPlayerProperties() && PeepoPractice.CATEGORY.getPlayerProperties().hasSpawnPos()) {
+                blockPos = PeepoPractice.CATEGORY.getPlayerProperties().getSpawnPos();
+            }
+            this.getOverworld().getChunkManager().removeTicket(ChunkTicketType.START, new ChunkPos(blockPos), 11, Unit.INSTANCE);
             this.save(true, true, false);
+            this.method_16208();
         }
     }
 }

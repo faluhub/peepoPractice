@@ -26,7 +26,6 @@ public abstract class TitleScreenMixin extends Screen {
         return super.addButton(button);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
     @Inject(method = "initWidgetsNormal", at = @At("TAIL"))
     private void addPracticeButton(int y, int spacingY, CallbackInfo ci) {
         this.addButton(

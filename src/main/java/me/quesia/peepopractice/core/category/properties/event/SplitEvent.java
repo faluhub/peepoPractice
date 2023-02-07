@@ -1,9 +1,12 @@
 package me.quesia.peepopractice.core.category.properties.event;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.redlimerl.speedrunigt.option.SpeedRunOption;
 import com.redlimerl.speedrunigt.option.SpeedRunOptions;
 import com.redlimerl.speedrunigt.timer.InGameTimer;
+import com.redlimerl.speedrunigt.timer.TimerStatus;
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.PracticeWriter;
 import me.quesia.peepopractice.core.category.PracticeCategory;
@@ -25,36 +28,50 @@ import java.util.concurrent.TimeUnit;
 public class SplitEvent {
     private PracticeCategory category;
 
-    public void complete(boolean completed) {
-        new Thread(() -> this.endSplit(completed)).start();
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
-    private void endSplit(boolean completed) {
+    public void complete(boolean completed) {
         if (this.category == null) { return; }
 
-        PracticeWriter writer = PracticeWriter.PB_WRITER;
+        PracticeWriter writer = PracticeWriter.COMPLETIONS_WRITER;
         JsonObject object = writer.get();
 
+        MinecraftClient client = MinecraftClient.getInstance();
+
+        if (client.player == null || client.getServer() == null) { return; }
+        ServerPlayerEntity serverPlayerEntity = client.getServer().getPlayerManager().getPlayer(client.player.getUuid());
+        if (serverPlayerEntity == null || serverPlayerEntity.getScoreboardTags().contains("completed")) { return; }
+
         InGameTimer timer = InGameTimer.getInstance();
-        if (timer.isCompleted()) { return; }
-        long igt = timer.getInGameTime();
+        if (timer.isCompleted() || timer.getStatus().equals(TimerStatus.NONE)) { return; }
         InGameTimer.complete();
+        long igt = timer.getInGameTime();
 
         boolean isPb;
         if (this.hasPb()) {
-            long pb = object.get(this.category.getId()).getAsLong();
+            long pb = getPbLong();
             isPb = igt <= pb;
         } else {
             isPb = true;
         }
-        if (isPb && completed) {
-            writer.put(this.category.getId(), igt);
+        if (completed) {
+            JsonObject categoryObject = new JsonObject();
+            JsonArray array = new JsonArray();
+            if (object.has(this.category.getId())) {
+                categoryObject = object.get(this.category.getId()).getAsJsonObject();
+                if (categoryObject.has("completions")) {
+                    array = categoryObject.get("completions").getAsJsonArray();
+                }
+            }
+            array.add(igt);
+            categoryObject.add("completions", array);
+            if (isPb) {
+                categoryObject.addProperty("pb", igt);
+            }
+            writer.put(this.category.getId(), categoryObject);
             writer.write();
         }
 
         String time = getTimeString(igt);
-        MinecraftClient client = MinecraftClient.getInstance();
 
         if (client.player != null) {
             client.inGameHud.setTitles(
@@ -67,84 +84,130 @@ public class SplitEvent {
                     100,
                     10
             );
-            if (client.getServer() != null) {
-                ServerPlayerEntity serverPlayerEntity = client.getServer().getPlayerManager().getPlayer(client.player.getUuid());
-                if (serverPlayerEntity != null) {
-                    serverPlayerEntity.setGameMode(GameMode.SPECTATOR);
-                    float yaw = 0.0F;
-                    float pitch = 0.0F;
-                    BlockPos pos = client.getServer().getOverworld().getSpawnPos();
-                    RegistryKey<World> registryKey = client.getServer().getOverworld().getRegistryKey();
-                    if (this.category.hasWorldProperties() && this.category.getWorldProperties().hasWorldRegistryKey()) {
-                        registryKey = this.category.getWorldProperties().getWorldRegistryKey();
-                    }
-                    if (this.category.hasPlayerProperties()) {
-                        if (this.category.getPlayerProperties().getSpawnAngle() != null) {
-                            Vec2f angle = this.category.getPlayerProperties().getSpawnAngle();
-                            yaw = angle.x;
-                            pitch = angle.y;
-                        }
-                        if (this.category.getPlayerProperties().getSpawnPos() != null) {
-                            pos = this.category.getPlayerProperties().getSpawnPos();
-                        }
-                    }
-
-                    while (((ServerWorldAccessor) serverPlayerEntity.getServerWorld()).getInEntityTick()) {}
-                    PeepoPractice.log("Done waiting for entity tick");
-                    serverPlayerEntity.teleport(client.getServer().getWorld(registryKey), pos.getX(), pos.getY(), pos.getZ(), yaw, pitch);
-                    serverPlayerEntity.addScoreboardTag("completed");
-
-                    if (completed) {
-                        new Thread(() -> {
-                            for (int i = 0; i < 5; i++) {
-                                try {
-                                    if (client.player != null) {
-                                        while (((ServerWorldAccessor) serverPlayerEntity.getServerWorld()).getInEntityTick()) {}
-                                        client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 3.0F, 0.5F + .2F * (i + i / 4.0F));
-                                        try { TimeUnit.MILLISECONDS.sleep(180); }
-                                        catch (InterruptedException ignored) {}
-                                    }
-                                } catch (ConcurrentModificationException ignored) {}
-                            }
-                            if (isPb) {
-                                try {
-                                    if (client.player != null) {
-                                        while (((ServerWorldAccessor) serverPlayerEntity.getServerWorld()).getInEntityTick()) {}
-                                        TimeUnit.MILLISECONDS.sleep(180);
-                                        client.player.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, 3.0F, 1.0F);
-                                    }
-                                } catch (InterruptedException | ConcurrentModificationException ignored) {}
-                            }
-                        }).start();
-                    } else {
-                        new Thread(() -> {
-                            for (int i = 0; i < 2; i++) {
-                                try {
-                                    if (client.player != null) {
-                                        while (((ServerWorldAccessor) serverPlayerEntity.getServerWorld()).getInEntityTick()) {}
-                                        client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS, 3.0F, 1.2F - i * 0.5F);
-                                        try { TimeUnit.MILLISECONDS.sleep(180); }
-                                        catch (InterruptedException ignored) {}
-                                    }
-                                } catch (ConcurrentModificationException ignored) {}
-                            }
-                        }).start();
-                    }
+            serverPlayerEntity.setGameMode(GameMode.SPECTATOR);
+            float yaw = 0.0F;
+            float pitch = 0.0F;
+            BlockPos pos = client.getServer().getOverworld().getSpawnPos();
+            RegistryKey<World> registryKey = client.getServer().getOverworld().getRegistryKey();
+            if (this.category.hasWorldProperties() && this.category.getWorldProperties().hasWorldRegistryKey()) {
+                registryKey = this.category.getWorldProperties().getWorldRegistryKey();
+            }
+            if (this.category.hasPlayerProperties()) {
+                if (this.category.getPlayerProperties().getSpawnAngle() != null) {
+                    Vec2f angle = this.category.getPlayerProperties().getSpawnAngle();
+                    yaw = angle.x;
+                    pitch = angle.y;
                 }
+                if (this.category.getPlayerProperties().getSpawnPos() != null) {
+                    pos = this.category.getPlayerProperties().getSpawnPos();
+                }
+            }
+
+            while (((ServerWorldAccessor) serverPlayerEntity.getServerWorld()).getInEntityTick()) {}
+            PeepoPractice.log("Done waiting for entity tick");
+            serverPlayerEntity.teleport(client.getServer().getWorld(registryKey), pos.getX(), pos.getY(), pos.getZ(), yaw, pitch);
+            serverPlayerEntity.addScoreboardTag("completed");
+
+            if (completed) {
+                new Thread(() -> {
+                    for (int i = 0; i < 5; i++) {
+                        try {
+                            if (client.player != null) {
+                                while (((ServerWorldAccessor) serverPlayerEntity.getServerWorld()).getInEntityTick()) {}
+                                client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 3.0F, 0.5F + .2F * (i + i / 4.0F));
+                                try { TimeUnit.MILLISECONDS.sleep(180); }
+                                catch (InterruptedException ignored) {}
+                            }
+                        } catch (ConcurrentModificationException ignored) {}
+                    }
+                    if (isPb) {
+                        try {
+                            if (client.player != null) {
+                                while (((ServerWorldAccessor) serverPlayerEntity.getServerWorld()).getInEntityTick()) {}
+                                TimeUnit.MILLISECONDS.sleep(180);
+                                client.player.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, 3.0F, 1.0F);
+                            }
+                        } catch (InterruptedException | ConcurrentModificationException ignored) {}
+                    }
+                }).start();
+            } else {
+                new Thread(() -> {
+                    for (int i = 0; i < 2; i++) {
+                        try {
+                            if (client.player != null) {
+                                while (((ServerWorldAccessor) serverPlayerEntity.getServerWorld()).getInEntityTick()) {}
+                                client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS, 3.0F, 1.2F - i * 0.5F);
+                                try { TimeUnit.MILLISECONDS.sleep(180); }
+                                catch (InterruptedException ignored) {}
+                            }
+                        } catch (ConcurrentModificationException ignored) {}
+                    }
+                }).start();
             }
         }
     }
 
     public boolean hasPb() {
-        return PracticeWriter.PB_WRITER.get().has(this.category.getId());
+        PracticeWriter writer = PracticeWriter.COMPLETIONS_WRITER;
+        JsonObject object = writer.get();
+        if (object.has(this.category.getId())) {
+            JsonObject categoryObject = object.get(this.category.getId()).getAsJsonObject();
+            return categoryObject.has("pb");
+        }
+        return false;
     }
 
-    public long getPbLong() {
-        return PracticeWriter.PB_WRITER.get().get(this.category.getId()).getAsLong();
+    public Long getPbLong() {
+        PracticeWriter writer = PracticeWriter.COMPLETIONS_WRITER;
+        JsonObject object = writer.get();
+        if (object.has(this.category.getId())) {
+            JsonObject categoryObject = object.get(this.category.getId()).getAsJsonObject();
+            if (categoryObject.has("pb")) {
+                return categoryObject.get("pb").getAsLong();
+            }
+        }
+        return null;
     }
 
     public String getPbString() {
         return getTimeString(this.getPbLong());
+    }
+
+    public boolean hasCompletedTimes() {
+        PracticeWriter writer = PracticeWriter.COMPLETIONS_WRITER;
+        JsonObject object = writer.get();
+        if (object.has(this.category.getId())) {
+            JsonObject categoryObject = object.get(this.category.getId()).getAsJsonObject();
+            return categoryObject.has("completions");
+        }
+        return false;
+    }
+
+    public Long findAverage() {
+        if (this.hasCompletedTimes()) {
+            PracticeWriter writer = PracticeWriter.COMPLETIONS_WRITER;
+            JsonObject object = writer.get();
+            JsonObject categoryObject = object.get(this.category.getId()).getAsJsonObject();
+            JsonArray completions = categoryObject.get("completions").getAsJsonArray();
+            long total = 0;
+            for (JsonElement element : completions) {
+                total += element.getAsLong();
+            }
+            return total / completions.size();
+        }
+        return null;
+    }
+
+    public String getAverageString() {
+        return getTimeString(this.findAverage());
+    }
+
+    public void clearTimes() {
+        PracticeWriter writer = PracticeWriter.COMPLETIONS_WRITER;
+        JsonObject config = writer.get();
+        if (config.has(this.category.getId())) {
+            writer.put(this.category.getId(), new JsonObject());
+        }
     }
 
     public static String getTimeString(long igt) {

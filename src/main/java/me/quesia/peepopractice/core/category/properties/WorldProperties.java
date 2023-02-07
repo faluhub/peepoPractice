@@ -11,7 +11,7 @@ import java.util.Map;
 @SuppressWarnings("UnusedDeclaration")
 public class WorldProperties extends BaseProperties {
     private RegistryKey<World> worldRegistryKey;
-    private boolean spawnChunksEnabled = true;
+    private boolean spawnChunksDisabled = true;
     private final Map<Biome, @Nullable Integer> antiBiomeRangeMap = new HashMap<>();
 
     public RegistryKey<World> getWorldRegistryKey() {
@@ -27,12 +27,12 @@ public class WorldProperties extends BaseProperties {
         return this;
     }
 
-    public boolean isSpawnChunksEnabled() {
-        return this.spawnChunksEnabled;
+    public boolean isSpawnChunksDisabled() {
+        return this.spawnChunksDisabled;
     }
 
-    public WorldProperties setSpawnChunksEnabled(boolean spawnChunksEnabled) {
-        this.spawnChunksEnabled = spawnChunksEnabled;
+    public WorldProperties setSpawnChunksDisabled(boolean spawnChunksDisabled) {
+        this.spawnChunksDisabled = spawnChunksDisabled;
         return this;
     }
 

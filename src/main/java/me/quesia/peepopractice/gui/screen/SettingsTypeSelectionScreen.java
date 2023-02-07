@@ -14,7 +14,8 @@ public class SettingsTypeSelectionScreen extends Screen {
     private final ButtonChoice[] buttons = new ButtonChoice[] {
             new ButtonChoice(new LiteralText("Inventory"), new Identifier("textures/item/chest_minecart.png"), category -> EditInventoryScreen.open(this, category)),
             new ButtonChoice(new LiteralText("Preferences"), new Identifier("textures/item/heart_of_the_sea.png"), category -> new CategoryPreferencesScreen(this, category), PracticeCategory::hasPreferences),
-            new ButtonChoice(new LiteralText("Standard Settings"), new Identifier(PeepoPractice.MOD_CONTAINER.getMetadata().getId(), "icon/gear.png"), category -> new StandardSettingsScreen(this, category))
+            new ButtonChoice(new LiteralText("Standard Settings"), new Identifier(PeepoPractice.MOD_CONTAINER.getMetadata().getId(), "icon/gear.png"), category -> new StandardSettingsScreen(this, category)),
+            new ButtonChoice(new LiteralText("Split"), new Identifier("textures/item/clock_00.png"), category -> new SplitSettingsScreen(this, category), PracticeCategory::hasSplitEvent)
     };
     private final Screen parent;
     private final PracticeCategory category;
@@ -38,7 +39,7 @@ public class SettingsTypeSelectionScreen extends Screen {
     protected void init() {
         int index = 0;
         int width = (int) (this.width / 2 * .8);
-        int height = 60;
+        int height = this.height / 5;
         for (ButtonChoice buttonChoice : this.buttons) {
             ButtonWidget bw = this.addButton(new LimitlessButtonWidget(index % 2 == 0, buttonChoice.icon, null, this.width / 2 - width / 2, this.height * (index + 1) / (this.buttons.length + 1) - height / 2, width, height, buttonChoice.text, b -> {
                 if (this.client != null) {

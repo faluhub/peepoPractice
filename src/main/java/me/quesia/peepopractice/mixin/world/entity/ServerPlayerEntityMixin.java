@@ -1,9 +1,10 @@
-package me.quesia.peepopractice.mixin.world;
+package me.quesia.peepopractice.mixin.world.entity;
 
 import com.mojang.authlib.GameProfile;
 import com.redlimerl.speedrunigt.timer.InGameTimer;
 import com.redlimerl.speedrunigt.timer.TimerStatus;
 import me.quesia.peepopractice.PeepoPractice;
+import me.quesia.peepopractice.core.category.CategoryPreference;
 import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.category.properties.event.ChangeDimensionSplitEvent;
 import me.quesia.peepopractice.core.category.properties.event.SplitEvent;
@@ -37,19 +38,26 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     @Shadow public abstract void refreshPositionAfterTeleport(double x, double y, double z);
     @Shadow @Nullable public abstract BlockPos getSpawnPointPosition();
     @Shadow public abstract void setGameMode(GameMode gameMode);
-
     @Shadow public abstract void sendMessage(Text message, boolean actionBar);
+    private Long comparingTime;
 
-    private Long pb;
-
-    @SuppressWarnings("unused")
     public ServerPlayerEntityMixin(World world, BlockPos blockPos, GameProfile gameProfile) {
         super(world, blockPos, gameProfile);
     }
 
     @Inject(method = "moveToSpawn", at = @At("HEAD"), cancellable = true)
     private void customSpawn(ServerWorld world, CallbackInfo ci) {
-        this.pb = PeepoPractice.CATEGORY.hasSplitEvent() && PeepoPractice.CATEGORY.getSplitEvent().hasPb() ? PeepoPractice.CATEGORY.getSplitEvent().getPbLong() : null;
+        if (PeepoPractice.CATEGORY.hasSplitEvent()) {
+            String compareType = CategoryPreference.getValue(PeepoPractice.CATEGORY, "compare_type", "PB");
+            switch (compareType) {
+                case "PB":
+                    this.comparingTime = PeepoPractice.CATEGORY.getSplitEvent().hasPb() ? PeepoPractice.CATEGORY.getSplitEvent().getPbLong() : null;
+                    break;
+                case "Average":
+                    this.comparingTime = PeepoPractice.CATEGORY.getSplitEvent().hasCompletedTimes() ? PeepoPractice.CATEGORY.getSplitEvent().findAverage() : null;
+                    break;
+            }
+        }
 
         if (PeepoPractice.CATEGORY.hasPlayerProperties() && PeepoPractice.CATEGORY.getPlayerProperties().hasSpawnPos()) {
             if (!(world.getLevelProperties() instanceof LevelProperties)) { return; }
@@ -77,21 +85,14 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
         }
     }
 
-    @Inject(method = "setGameMode", at = @At("HEAD"), cancellable = true)
-    private void cancelGameModeChange(GameMode gameMode, CallbackInfo ci) {
-        if (this.getScoreboardTags().contains("completed")) {
-            ci.cancel();
-        }
-    }
-
     @Inject(method = "tick", at = @At("TAIL"))
-    private void setPbActionBar(CallbackInfo ci) {
+    private void setComparisonMessage(CallbackInfo ci) {
         long igt = InGameTimer.getInstance().getInGameTime();
-        if (this.pb != null) {
-            long difference = this.pb - igt;
+        if (this.comparingTime != null) {
+            long difference = this.comparingTime - igt;
             boolean flip = false;
             if (difference < 0) {
-                difference = igt - this.pb;
+                difference = igt - this.comparingTime;
                 flip = true;
             }
             String timeString = Formatting.GRAY + "Pace: ";

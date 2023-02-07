@@ -3,7 +3,6 @@ package me.quesia.peepopractice.core;
 import com.google.gson.*;
 import me.quesia.peepopractice.PeepoPractice;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.util.Util;
 
 import java.io.File;
 import java.io.FileReader;
@@ -13,7 +12,7 @@ import java.io.IOException;
 public class PracticeWriter {
     public static final PracticeWriter PREFERENCES_WRITER = new PracticeWriter("preferences.json");
     public static final PracticeWriter INVENTORY_WRITER = new PracticeWriter("inventory.json");
-    public static final PracticeWriter PB_WRITER = new PracticeWriter("personal_bests.json");
+    public static final PracticeWriter COMPLETIONS_WRITER = new PracticeWriter("completions.json");
     public static final PracticeWriter STANDARD_SETTINGS_WRITER = new PracticeWriter("standard_settings.json");
     private final File file;
     private JsonObject local;
@@ -51,6 +50,10 @@ public class PracticeWriter {
             writer.close();
         } catch (IOException ignored) {}
         this.local = null;
+    }
+
+    public void update() {
+        this.local = null;
         this.local = this.get();
     }
 
@@ -64,18 +67,12 @@ public class PracticeWriter {
             JsonParser parser = new JsonParser();
 
             Object obj = parser.parse(reader);
-
-            return obj == null || obj.equals(JsonNull.INSTANCE) ? new JsonObject() : (JsonObject) obj;
+            JsonObject value = obj == null || obj.equals(JsonNull.INSTANCE) ? new JsonObject() : (JsonObject) obj;
+            this.local = value;
+            return value;
         } catch (IOException ignored) {}
 
         return null;
-    }
-
-    public void put(String element, long value) {
-        if (this.local.has(element)) {
-            this.local.remove(element);
-        }
-        this.local.addProperty(element, value);
     }
 
     public void put(String element, JsonObject obj) {
@@ -83,13 +80,5 @@ public class PracticeWriter {
             this.local.remove(element);
         }
         this.local.add(element, obj);
-    }
-
-    @SuppressWarnings("UnusedDeclaration")
-    public void put(String element, JsonArray array) {
-        if (this.local.has(element)) {
-            this.local.remove(element);
-        }
-        this.local.add(element, array);
     }
 }

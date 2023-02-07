@@ -8,7 +8,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(ItemStack.class)
 public class ItemStackMixin {
-    @SuppressWarnings("UnusedDeclaration")
     @Redirect(method = "getTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;hasCustomName()Z", ordinal = 0))
     private boolean ignoreItalic(ItemStack instance) {
         CompoundTag tag = instance.getTag();

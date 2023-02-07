@@ -166,10 +166,22 @@ public class PracticeCategory {
             }
         }
         if (showPb && this.hasSplitEvent()) {
-            if (this.getSplitEvent().hasPb()) {
-                text.append(Formatting.GOLD).append(" (").append(this.getSplitEvent().getPbString()).append(")");
-            } else {
-                text.append(Formatting.GRAY).append(" (No PB)");
+            String compareType = CategoryPreference.getValue(this, "compare_type", "PB");
+            switch (compareType) {
+                case "PB":
+                    if (this.getSplitEvent().hasPb()) {
+                        text.append(Formatting.GREEN).append(" (").append(this.getSplitEvent().getPbString()).append(")");
+                    } else {
+                        text.append(Formatting.GRAY).append(" (No ").append(compareType).append(")");
+                    }
+                    break;
+                case "Average":
+                    if (this.getSplitEvent().hasCompletedTimes()) {
+                        text.append(Formatting.AQUA).append(" (").append(this.getSplitEvent().getAverageString()).append(")");
+                    } else {
+                        text.append(Formatting.GRAY).append(" (No ").append(compareType).append(")");
+                    }
+                    break;
             }
         }
         return text.toString();

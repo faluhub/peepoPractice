@@ -1,7 +1,5 @@
 package me.quesia.peepopractice.mixin.world.entity;
 
-import com.redlimerl.speedrunigt.timer.InGameTimer;
-import com.redlimerl.speedrunigt.timer.TimerStatus;
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.category.properties.event.ThrowEntitySplitEvent;
 import net.minecraft.entity.EntityType;
@@ -25,7 +23,7 @@ public abstract class ThrownItemEntityMixin extends ThrownEntity {
         if (PeepoPractice.CATEGORY.hasSplitEvent()) {
             if (PeepoPractice.CATEGORY.getSplitEvent() instanceof ThrowEntitySplitEvent) {
                 ThrowEntitySplitEvent event = (ThrowEntitySplitEvent) PeepoPractice.CATEGORY.getSplitEvent();
-                if (!InGameTimer.getInstance().isCompleted() && InGameTimer.getInstance().getStatus() != TimerStatus.NONE && event.hasItem() && event.getItem().equals(item.getItem())) {
+                if (event.hasItem() && event.getItem().equals(item.getItem())) {
                     event.complete(this.getOwner() != null && this.getOwner().isAlive());
                     this.remove();
                 }

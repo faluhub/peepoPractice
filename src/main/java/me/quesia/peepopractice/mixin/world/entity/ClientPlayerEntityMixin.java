@@ -1,4 +1,4 @@
-package me.quesia.peepopractice.mixin.world;
+package me.quesia.peepopractice.mixin.world.entity;
 
 import com.redlimerl.speedrunigt.timer.InGameTimer;
 import me.quesia.peepopractice.PeepoPractice;

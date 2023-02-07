@@ -33,11 +33,10 @@
     "world.biome.MultiNoiseBiomeSourceMixin",
 
     "world.entity.ThrownItemEntityMixin",
-
-    "world.ClientPlayerEntityMixin",
+    "world.entity.ClientPlayerEntityMixin",
     "world.MinecraftServerMixin",
     "world.PlayerManagerMixin",
-    "world.ServerPlayerEntityMixin",
+    "world.entity.ServerPlayerEntityMixin",
     "world.ServerWorldMixin",
 
     "ClientAdvancementManagerMixin",

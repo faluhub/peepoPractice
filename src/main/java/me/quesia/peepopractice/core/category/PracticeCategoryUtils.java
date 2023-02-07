@@ -1,7 +1,5 @@
 package me.quesia.peepopractice.core.category;
 
-import com.google.gson.JsonObject;
-import me.quesia.peepopractice.core.PracticeWriter;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.SaveLevelScreen;
 import net.minecraft.client.gui.screen.TitleScreen;

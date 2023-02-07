@@ -7,7 +7,6 @@ import me.quesia.peepopractice.core.category.properties.event.ChangeDimensionSpl
 import me.quesia.peepopractice.core.category.properties.event.ThrowEntitySplitEvent;
 import me.quesia.peepopractice.core.category.properties.preset.BastionPreset;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Items;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.BlockRotation;
@@ -114,7 +113,7 @@ public class PracticeCategories {
             )
             .setWorldProperties(new WorldProperties()
                     .setWorldRegistryKey(World.NETHER)
-                    .setSpawnChunksEnabled(false)
+                    .setSpawnChunksDisabled(false)
                     .addAntiBiomeRange(Biomes.BASALT_DELTAS, null)
             )
             .setSplitEvent(new ChangeDimensionSplitEvent()
@@ -169,7 +168,7 @@ public class PracticeCategories {
             )
             .setWorldProperties(new WorldProperties()
                     .setWorldRegistryKey(World.NETHER)
-                    .setSpawnChunksEnabled(false)
+                    .setSpawnChunksDisabled(false)
             )
             .setSplitEvent(new ChangeDimensionSplitEvent()
                     .setDimension(World.OVERWORLD)

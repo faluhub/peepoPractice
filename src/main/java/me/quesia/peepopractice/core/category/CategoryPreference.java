@@ -7,6 +7,7 @@ import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @SuppressWarnings("UnusedDeclaration")
 public class CategoryPreference {
@@ -83,6 +84,19 @@ public class CategoryPreference {
         return this;
     }
 
+    public static int getIndex(String value, List<String> choices) {
+        int index = 0;
+
+        for (String choice : choices) {
+            if (Objects.equals(value, choice)) {
+                break;
+            }
+            index++;
+        }
+
+        return index;
+    }
+
     public static CategoryPreference getPreferenceById(PracticeCategory category, String id) {
         for (CategoryPreference preference : category.getPreferences()) {
             if (preference.id.equals(id)) {
@@ -101,6 +115,14 @@ public class CategoryPreference {
         return getValue(PeepoPractice.CATEGORY, id);
     }
 
+    public static String getValue(PracticeCategory category, String id, String def) {
+        try { return getValue(category, id); }
+        catch (NullPointerException ignored) {
+            setValue(category, id, def);
+            return def;
+        }
+    }
+
     public static String getValue(PracticeCategory category, String id) {
         PracticeWriter writer = PracticeWriter.PREFERENCES_WRITER;
         JsonObject config = writer.get();
@@ -110,13 +132,31 @@ public class CategoryPreference {
             categoryObject = config.get(category.getId()).getAsJsonObject();
         }
 
-        CategoryPreference categorySettings = getPreferenceById(category, id);
+        CategoryPreference categoryPreference = getPreferenceById(category, id);
 
-        if (categorySettings != null) {
-            if (!categoryObject.has(id) || !categorySettings.getChoices().contains(categoryObject.get(id).getAsString())) {
-                setValue(category, id, categorySettings.getDefaultChoice());
-                return categorySettings.getDefaultChoice();
+        if (categoryPreference != null) {
+            if (!categoryObject.has(id) || !categoryPreference.getChoices().contains(categoryObject.get(id).getAsString())) {
+                setValue(category, id, categoryPreference.getDefaultChoice());
+                return categoryPreference.getDefaultChoice();
             }
+        }
+
+        return categoryObject.get(id).getAsString();
+    }
+
+    public static String getValue(PracticeCategory category, CategoryPreference categoryPreference) {
+        PracticeWriter writer = PracticeWriter.PREFERENCES_WRITER;
+        JsonObject config = writer.get();
+
+        JsonObject categoryObject = new JsonObject();
+        if (config.has(category.getId())) {
+            categoryObject = config.get(category.getId()).getAsJsonObject();
+        }
+
+        String id = categoryPreference.getId();
+        if (!categoryObject.has(id) || !categoryPreference.getChoices().contains(categoryObject.get(id).getAsString())) {
+            setValue(category, id, categoryPreference.getDefaultChoice());
+            return categoryPreference.getDefaultChoice();
         }
 
         return categoryObject.get(id).getAsString();
@@ -124,12 +164,11 @@ public class CategoryPreference {
 
     public static void setValue(PracticeCategory category, String id, String value) {
         JsonObject config = PracticeWriter.PREFERENCES_WRITER.get();
-        JsonObject categorySettings = new JsonObject();
+        JsonObject categoryPreference = new JsonObject();
         if (config.has(category.getId())) {
-            categorySettings = config.get(category.getId()).getAsJsonObject();
+            categoryPreference = config.get(category.getId()).getAsJsonObject();
         }
-
-        categorySettings.addProperty(id, value);
-        PracticeWriter.PREFERENCES_WRITER.put(category.getId(), categorySettings);
+        categoryPreference.addProperty(id, value);
+        PracticeWriter.PREFERENCES_WRITER.put(category.getId(), categoryPreference);
     }
 }

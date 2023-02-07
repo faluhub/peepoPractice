@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.category.PracticeCategoryUtils;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
@@ -12,7 +11,6 @@ import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
-import net.minecraft.text.StringRenderable;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -87,18 +85,8 @@ public abstract class GameMenuScreenMixin extends Screen {
     }
 
     @SuppressWarnings("deprecation")
-    @Inject(method = "render", at = @At("HEAD"))
-    private void setAlpha(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        RenderSystem.pushMatrix();
-        if (this.renderTitle) {
-            RenderSystem.color4f(0.0F, 0.0F, 0.0F, 0.0F);
-        }
-    }
-
-    @SuppressWarnings("deprecation")
     @Inject(method = "render", at = @At("TAIL"))
     private void renderTitle(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        RenderSystem.popMatrix();
         if (this.renderTitle) {
             RenderSystem.pushMatrix();
             RenderSystem.scalef(2.0F, 2.0F, 2.0F);
