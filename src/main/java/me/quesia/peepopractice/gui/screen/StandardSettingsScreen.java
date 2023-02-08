@@ -21,7 +21,7 @@ public class StandardSettingsScreen extends Screen {
             CustomOption.ENTITY_DISTANCE_SCALING,
             CustomOption.SPRINTING,
             CustomOption.CHUNK_BORDERS,
-            CustomOption.FULLSCREEN
+            CustomOption.ENABLED
     };
     private final Screen parent;
     private TextFieldWidget pieChartDirectoryField;

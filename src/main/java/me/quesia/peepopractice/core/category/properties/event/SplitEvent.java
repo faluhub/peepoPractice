@@ -69,6 +69,8 @@ public class SplitEvent {
             }
             writer.put(this.category.getId(), categoryObject);
             writer.write();
+        } else {
+            this.incrementFailCount();
         }
 
         String time = getTimeString(igt);
@@ -183,6 +185,17 @@ public class SplitEvent {
         return false;
     }
 
+    public int getCompletionCount() {
+        if (this.hasCompletedTimes()) {
+            PracticeWriter writer = PracticeWriter.COMPLETIONS_WRITER;
+            JsonObject object = writer.get();
+            JsonObject categoryObject = object.get(this.category.getId()).getAsJsonObject();
+            JsonArray completions = categoryObject.get("completions").getAsJsonArray();
+            return completions.size();
+        }
+        return 0;
+    }
+
     public Long findAverage() {
         if (this.hasCompletedTimes()) {
             PracticeWriter writer = PracticeWriter.COMPLETIONS_WRITER;
@@ -208,6 +221,38 @@ public class SplitEvent {
         if (config.has(this.category.getId())) {
             writer.put(this.category.getId(), new JsonObject());
         }
+    }
+
+    public void incrementFailCount() {
+        PracticeWriter writer = PracticeWriter.COMPLETIONS_WRITER;
+        JsonObject config = writer.get();
+        JsonObject categoryObject = new JsonObject();
+        if (config.has(this.category.getId())) {
+            categoryObject = config.get(this.category.getId()).getAsJsonObject();
+        }
+        int playCount = 1;
+        if (categoryObject.has("fail_count")) {
+            playCount = categoryObject.get("fail_count").getAsInt() + 1;
+        }
+        categoryObject.addProperty("fail_count", playCount);
+        writer.put(this.category.getId(), categoryObject);
+        writer.write();
+    }
+
+    public int getFailCount() {
+        PracticeWriter writer = PracticeWriter.COMPLETIONS_WRITER;
+        JsonObject config = writer.get();
+        if (config.has(this.category.getId())) {
+            JsonObject categoryObject = config.get(this.category.getId()).getAsJsonObject();
+            if (categoryObject.has("fail_count")) {
+                return categoryObject.get("fail_count").getAsInt();
+            }
+        }
+        return 0;
+    }
+
+    public int getPlayCount() {
+        return this.getCompletionCount() + this.getFailCount();
     }
 
     public static String getTimeString(long igt) {

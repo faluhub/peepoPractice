@@ -12,9 +12,9 @@ import net.minecraft.util.Identifier;
 
 public class SettingsTypeSelectionScreen extends Screen {
     private final ButtonChoice[] buttons = new ButtonChoice[] {
-            new ButtonChoice(new LiteralText("Inventory"), new Identifier("textures/item/chest_minecart.png"), category -> EditInventoryScreen.open(this, category)),
+            new ButtonChoice(new LiteralText("Inventory"), new Identifier("textures/item/chest_minecart.png"), category -> EditInventoryScreen.create(this, category)),
             new ButtonChoice(new LiteralText("Preferences"), new Identifier("textures/item/heart_of_the_sea.png"), category -> new CategoryPreferencesScreen(this, category), PracticeCategory::hasPreferences),
-            new ButtonChoice(new LiteralText("Standard Settings"), new Identifier(PeepoPractice.MOD_CONTAINER.getMetadata().getId(), "icon/gear.png"), category -> new StandardSettingsScreen(this, category)),
+            new ButtonChoice(new LiteralText("Standard Settings"), new Identifier(PeepoPractice.MOD_CONTAINER.getMetadata().getId(), "icon/gear.png"), category -> new StandardSettingsScreen(this, category), (category) -> !PeepoPractice.HAS_STANDARD_SETTINGS),
             new ButtonChoice(new LiteralText("Split"), new Identifier("textures/item/clock_00.png"), category -> new SplitSettingsScreen(this, category), PracticeCategory::hasSplitEvent)
     };
     private final Screen parent;

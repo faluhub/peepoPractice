@@ -1,13 +1,21 @@
 package me.quesia.peepopractice.core.category;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.SaveLevelScreen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.realms.RealmsBridge;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.world.Heightmap;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.chunk.WorldChunk;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,6 +50,71 @@ public class PracticeCategoryUtils {
         }
     }
 
+    public enum CompareType {
+        PB("PB"),
+        AVERAGE("Average");
+
+        private final String label;
+
+        CompareType(String label) {
+            this.label = label;
+        }
+
+        public String getLabel() {
+            return this.label;
+        }
+
+        public static List<String> all() {
+            List<String> labels = new ArrayList<>();
+            for (CompareType type : CompareType.values()) {
+                labels.add(type.getLabel());
+            }
+            return labels;
+        }
+
+        public static CompareType fromLabel(String label) {
+            for (CompareType type : CompareType.values()) {
+                if (type.getLabel().equals(label)) {
+                    return type;
+                }
+            }
+            return null;
+        }
+    }
+
+    public enum PaceTimerShowType {
+        ALWAYS("Always"),
+        END("End"),
+        NEVER("Never");
+
+        private final String label;
+
+        PaceTimerShowType(String label) {
+            this.label = label;
+        }
+
+        public String getLabel() {
+            return this.label;
+        }
+
+        public static List<String> all() {
+            List<String> labels = new ArrayList<>();
+            for (PaceTimerShowType type : PaceTimerShowType.values()) {
+                labels.add(type.getLabel());
+            }
+            return labels;
+        }
+
+        public static PaceTimerShowType fromLabel(String label) {
+            for (PaceTimerShowType type : PaceTimerShowType.values()) {
+                if (type.getLabel().equals(label)) {
+                    return type;
+                }
+            }
+            return null;
+        }
+    }
+
     public static boolean parseBoolean(String value) {
         List<String> list = Arrays.asList(BOOLEAN_LIST);
         if (!list.contains(value)) { return true; }
@@ -65,5 +138,26 @@ public class PracticeCategoryUtils {
             realmsBridge.switchToRealms(new TitleScreen());
         }
         else { client.openScreen(new MultiplayerScreen(new TitleScreen())); }
+    }
+
+    public static int findTopPos(ServerWorld world, BlockPos blockPos) {
+        int x = blockPos.getX();
+        int z = blockPos.getZ();
+        int i;
+        BlockPos.Mutable mutable = new BlockPos.Mutable(x, 0, z);
+        Biome biome = world.getBiome(mutable);
+        boolean bl = world.getDimension().hasCeiling();
+        BlockState blockState = biome.getSurfaceConfig().getTopMaterial();
+        WorldChunk worldChunk = world.getChunk(x >> 4, z >> 4);
+        i = bl ? world.getChunkManager().getChunkGenerator().getSpawnHeight() : worldChunk.sampleHeightmap(Heightmap.Type.MOTION_BLOCKING, x & 0xF, z & 0xF);
+        worldChunk.sampleHeightmap(Heightmap.Type.WORLD_SURFACE, x & 0xF, z & 0xF);
+        for (int k = i + 1; k >= 0; --k) {
+            mutable.set(x, k, z);
+            BlockState blockState2 = world.getBlockState(mutable);
+            if (!blockState2.getFluidState().isEmpty()) break;
+            if (!blockState2.equals(blockState)) continue;
+            return mutable.up().toImmutable().getY();
+        }
+        return mutable.getY();
     }
 }

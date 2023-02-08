@@ -6,8 +6,10 @@ import com.redlimerl.speedrunigt.timer.TimerStatus;
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.category.CategoryPreference;
 import me.quesia.peepopractice.core.category.PracticeCategories;
+import me.quesia.peepopractice.core.category.PracticeCategoryUtils;
 import me.quesia.peepopractice.core.category.properties.event.ChangeDimensionSplitEvent;
 import me.quesia.peepopractice.core.category.properties.event.SplitEvent;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
@@ -40,6 +42,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     @Shadow public abstract void setGameMode(GameMode gameMode);
     @Shadow public abstract void sendMessage(Text message, boolean actionBar);
     private Long comparingTime;
+    private PracticeCategoryUtils.PaceTimerShowType showType;
 
     public ServerPlayerEntityMixin(World world, BlockPos blockPos, GameProfile gameProfile) {
         super(world, blockPos, gameProfile);
@@ -48,27 +51,33 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     @Inject(method = "moveToSpawn", at = @At("HEAD"), cancellable = true)
     private void customSpawn(ServerWorld world, CallbackInfo ci) {
         if (PeepoPractice.CATEGORY.hasSplitEvent()) {
-            String compareType = CategoryPreference.getValue(PeepoPractice.CATEGORY, "compare_type", "PB");
-            switch (compareType) {
-                case "PB":
-                    this.comparingTime = PeepoPractice.CATEGORY.getSplitEvent().hasPb() ? PeepoPractice.CATEGORY.getSplitEvent().getPbLong() : null;
-                    break;
-                case "Average":
-                    this.comparingTime = PeepoPractice.CATEGORY.getSplitEvent().hasCompletedTimes() ? PeepoPractice.CATEGORY.getSplitEvent().findAverage() : null;
-                    break;
+            PracticeCategoryUtils.CompareType compareType = PracticeCategoryUtils.CompareType.fromLabel(CategoryPreference.getValue(PeepoPractice.CATEGORY, "compare_type", PracticeCategoryUtils.CompareType.PB.getLabel()));
+            if (compareType != null) {
+                switch (compareType) {
+                    case PB:
+                        this.comparingTime = PeepoPractice.CATEGORY.getSplitEvent().hasPb() ? PeepoPractice.CATEGORY.getSplitEvent().getPbLong() : null;
+                        break;
+                    case AVERAGE:
+                        this.comparingTime = PeepoPractice.CATEGORY.getSplitEvent().hasCompletedTimes() ? PeepoPractice.CATEGORY.getSplitEvent().findAverage() : null;
+                        break;
+                }
             }
+            this.showType = PracticeCategoryUtils.PaceTimerShowType.fromLabel(CategoryPreference.getValue(PeepoPractice.CATEGORY, "pace_timer_show_type", PracticeCategoryUtils.PaceTimerShowType.ALWAYS.getLabel()));
         }
 
         if (PeepoPractice.CATEGORY.hasPlayerProperties() && PeepoPractice.CATEGORY.getPlayerProperties().hasSpawnPos()) {
             if (!(world.getLevelProperties() instanceof LevelProperties)) { return; }
 
-            PeepoPractice.CATEGORY.getPlayerProperties().reset(new Random(world.getSeed()), world);
+            if (!PeepoPractice.CATEGORY.hasCustomValue("initialisedWorld")) {
+                PeepoPractice.CATEGORY.getPlayerProperties().reset(new Random(world.getSeed()), world);
 
-            if (PeepoPractice.CATEGORY.hasWorldProperties() && PeepoPractice.CATEGORY.getWorldProperties().hasWorldRegistryKey() && PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey().equals(World.END)) {
-                ServerWorld.createEndSpawnPlatform(world);
+                if (PeepoPractice.CATEGORY.hasWorldProperties() && PeepoPractice.CATEGORY.getWorldProperties().hasWorldRegistryKey() && PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey().equals(World.END)) {
+                    ServerWorld.createEndSpawnPlatform(world);
+                }
+
+                ((LevelProperties) world.getLevelProperties()).setSpawnPos(PeepoPractice.CATEGORY.getPlayerProperties().getSpawnPos());
+                PeepoPractice.CATEGORY.putCustomValue("initialisedWorld", true);
             }
-
-            ((LevelProperties) world.getLevelProperties()).setSpawnPos(PeepoPractice.CATEGORY.getPlayerProperties().getSpawnPos());
 
             float yaw = 0.0F;
             float pitch = 0.0F;
@@ -86,7 +95,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     }
 
     @Inject(method = "tick", at = @At("TAIL"))
-    private void setComparisonMessage(CallbackInfo ci) {
+    private void setPaceMessage(CallbackInfo ci) {
+        if (this.showType == null || this.showType.equals(PracticeCategoryUtils.PaceTimerShowType.NEVER) || (this.showType.equals(PracticeCategoryUtils.PaceTimerShowType.END) && !InGameTimer.getInstance().isCompleted())) { return; }
         long igt = InGameTimer.getInstance().getInGameTime();
         if (this.comparingTime != null) {
             long difference = this.comparingTime - igt;
@@ -122,14 +132,6 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
                 }
             }
         }
-    }
-
-    @Redirect(method = "changeDimension", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/PortalForcer;usePortal(Lnet/minecraft/entity/Entity;F)Z"))
-    private boolean ignorePortal(PortalForcer instance, Entity entity, float yawOffset) {
-        if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
-            return true;
-        }
-        return instance.usePortal(entity, yawOffset);
     }
 
     @Override

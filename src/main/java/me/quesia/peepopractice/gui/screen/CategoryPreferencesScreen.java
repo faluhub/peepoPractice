@@ -80,7 +80,10 @@ public class CategoryPreferencesScreen extends Screen {
             this.client.openScreen(this.parent);
 
             if (this.parent instanceof CategorySelectionScreen) {
-                ((CategorySelectionScreen) this.parent).selected = null;
+                CategorySelectionScreen parent = ((CategorySelectionScreen) this.parent);
+                if (parent.categoryListWidget != null) {
+                    parent.categoryListWidget.setSelected(null);
+                }
             }
         }
     }

@@ -70,13 +70,7 @@ public class LimitlessButtonWidget extends ButtonWidget {
         RenderSystem.pushMatrix();
         float colour = 0.3F;
         String[] parts = this.getMessage().getString().split("\n");
-        int textWidth = 0;
-        for (String part : parts) {
-            int width = textRenderer.getWidth(part);
-            if (width > textWidth) {
-                textWidth = width;
-            }
-        }
+        int textWidth = textRenderer.getWidth(parts[0]);
         if (this.odd != null) {
             if (this.odd) {
                 this.drawText(parts, this.x + this.width / 4.0F - this.width / 8.0F, this.y + this.height / 2.0F - textRenderer.fontHeight / 4.0F, j | MathHelper.ceil(this.alpha * 255.0F) << 24, matrices.peek().getModel(), false);

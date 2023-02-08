@@ -27,6 +27,7 @@ public class PeepoPractice implements ClientModInitializer {
     public static final AtomicReference<ServerResourceManager> SERVER_RESOURCE_MANAGER = new AtomicReference<>();
     public static boolean RESET_CATEGORY = true;
     public static final boolean HAS_FAST_RESET = FabricLoader.getInstance().getModContainer("fast_reset").isPresent();
+    public static final boolean HAS_STANDARD_SETTINGS = FabricLoader.getInstance().getModContainer("standardsettings").isPresent();
     public static final int BACKGROUND_COLOUR = BackgroundHelper.ColorMixer.getArgb(255, 68, 112, 106);
     public static final int BACKGROUND_OVERLAY_COLOUR = BackgroundHelper.ColorMixer.getArgb(60, 0, 0, 0);
 

@@ -14,11 +14,13 @@ import me.quesia.peepopractice.core.playerless.PlayerlessHandledScreen;
 import me.quesia.peepopractice.core.playerless.PlayerlessInventory;
 import me.quesia.peepopractice.core.playerless.PlayerlessPlayerScreenHandler;
 import me.quesia.peepopractice.core.playerless.PlayerlessScreenHandler;
+import me.quesia.peepopractice.gui.widget.LimitlessButtonWidget;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.FatalErrorScreen;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.search.SearchManager;
@@ -57,7 +59,7 @@ import java.util.function.Predicate;
 public class EditInventoryScreen extends PlayerlessHandledScreen {
     public static final Identifier TABS_TEXTURE = new Identifier("textures/gui/container/creative_inventory/tabs.png");
     public static final SimpleInventory displayInv = new SimpleInventory(45);
-    private static int selectedTab = ItemGroup.BUILDING_BLOCKS.getIndex();
+    private static int SELECTED_TAB = ItemGroup.BUILDING_BLOCKS.getIndex();
     private float scrollPosition;
     private boolean scrolling;
     private TextFieldWidget searchBox;
@@ -70,7 +72,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
     private boolean lastClickOutsideBounds;
 
     public EditInventoryScreen(Screen parent, PracticeCategory category) {
-        super(new PlayerlessCreativeScreenHandler(), PeepoPractice.PLAYERLESS_INVENTORY, LiteralText.EMPTY);
+        super(new PlayerlessCreativeScreenHandler(), PeepoPractice.PLAYERLESS_INVENTORY, new LiteralText("Edit Inventory (" + category.getName(false) + ")"));
         this.backgroundHeight = 136;
         this.backgroundWidth = 195;
         this.parent = parent;
@@ -79,7 +81,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         InventoryUtils.putItems(PeepoPractice.PLAYERLESS_INVENTORY, this.category);
     }
 
-    public static EditInventoryScreen open(Screen parent, PracticeCategory category) {
+    public static EditInventoryScreen create(Screen parent, PracticeCategory category) {
         PeepoPractice.PLAYERLESS_INVENTORY = new PlayerlessInventory();
         PeepoPractice.PLAYERLESS_PLAYER_SCREEN_HANDLER = new PlayerlessPlayerScreenHandler();
         return new EditInventoryScreen(parent, category);
@@ -88,13 +90,13 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
     @Override
     protected boolean isClickOutsideBounds(double mouseX, double mouseY, int left, int top) {
         boolean bl = mouseX < (double)left || mouseY < (double)top || mouseX >= (double)(left + this.backgroundWidth) || mouseY >= (double)(top + this.backgroundHeight);
-        this.lastClickOutsideBounds = bl && !this.isClickInTab(ItemGroup.GROUPS[selectedTab], mouseX, mouseY);
+        this.lastClickOutsideBounds = bl && !this.isClickInTab(ItemGroup.GROUPS[SELECTED_TAB], mouseX, mouseY);
         return this.lastClickOutsideBounds;
     }
 
     @Override
     public boolean shouldCloseOnEsc() {
-        if (selectedTab == InventoryUtils.LOOT_TABLES.getIndex()) {
+        if (SELECTED_TAB == InventoryUtils.LOOT_TABLES.getIndex()) {
             PlayerlessCreativeScreenHandler handler1 = (PlayerlessCreativeScreenHandler) this.handler;
             List<ItemStack> copy = new ArrayList<>(handler1.itemList);
             handler1.initLootTableItems();
@@ -107,10 +109,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         return true;
     }
 
-    @Override
-    public void onClose() {
-        if (this.client == null) { return; }
-
+    private void saveInventory() {
         JsonObject object = new JsonObject();
 
         for (int i = 0; i < PeepoPractice.PLAYERLESS_INVENTORY.size(); i++) {
@@ -123,6 +122,13 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
 
         PracticeWriter.INVENTORY_WRITER.put(this.category.getId(), object);
         PracticeWriter.INVENTORY_WRITER.write();
+    }
+
+    @Override
+    public void onClose() {
+        if (this.client == null) { return; }
+
+        this.saveInventory();
 
         this.client.openScreen(this.parent);
     }
@@ -147,7 +153,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
 
         if (
                 slot != null
-                && (slot.inventory == this.playerInventory || selectedTab == ItemGroup.INVENTORY.getIndex())
+                && (slot.inventory == this.playerInventory || SELECTED_TAB == ItemGroup.INVENTORY.getIndex())
                 && actionType == SlotActionType.PICKUP
                 && slot.getStack() != null
                 && slot.getStack() != ItemStack.EMPTY
@@ -189,12 +195,12 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
             }
         }
 
-        if (slot != null || selectedTab == ItemGroup.INVENTORY.getIndex() || actionType == SlotActionType.QUICK_CRAFT) {
+        if (slot != null || SELECTED_TAB == ItemGroup.INVENTORY.getIndex() || actionType == SlotActionType.QUICK_CRAFT) {
             if (slot == this.deleteItemSlot && bl) {
                 for (int i = 0; i < PeepoPractice.PLAYERLESS_PLAYER_SCREEN_HANDLER.slots.size(); i++) {
                     PeepoPractice.PLAYERLESS_PLAYER_SCREEN_HANDLER.slots.get(i).setStack(ItemStack.EMPTY);
                 }
-            } else if (selectedTab == ItemGroup.INVENTORY.getIndex()) {
+            } else if (SELECTED_TAB == ItemGroup.INVENTORY.getIndex()) {
                 if (slot == this.deleteItemSlot) {
                     PeepoPractice.PLAYERLESS_INVENTORY.setCursorStack(ItemStack.EMPTY);
                 } else if (actionType == SlotActionType.THROW && slot != null && slot.hasStack()) {
@@ -205,7 +211,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
                     PeepoPractice.PLAYERLESS_PLAYER_SCREEN_HANDLER.onSlotClick(slot == null ? invSlot : ((EditInventoryScreen.CreativeSlot) slot).slot.id, clickData, actionType, PeepoPractice.PLAYERLESS_INVENTORY);
                 }
             } else if (
-                    selectedTab == InventoryUtils.LOOT_TABLES.getIndex()
+                    SELECTED_TAB == InventoryUtils.LOOT_TABLES.getIndex()
                     && actionType == SlotActionType.PICKUP
                     && slot.getStack() != null
                     && slot.getStack().getTag() != null
@@ -320,9 +326,17 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         this.searchBox.setVisible(false);
         this.searchBox.setEditableColor(16777215);
         this.children.add(this.searchBox);
-        int i = selectedTab;
-        selectedTab = -1;
+        int i = SELECTED_TAB;
+        SELECTED_TAB = -1;
         this.setSelectedTab(ItemGroup.GROUPS[i]);
+
+        this.addButton(new LimitlessButtonWidget(null, new Identifier("textures/item/barrier.png"), null, this.x - this.x / 2 - (this.width / 8) / 2, this.y, this.width / 8, this.backgroundHeight, ScreenTexts.BACK, b -> this.onClose()));
+        this.addButton(new LimitlessButtonWidget(null, new Identifier("textures/item/chest_minecart.png"), null, this.x + this.backgroundWidth + this.x / 2 - (this.width / 8) / 2, this.y, this.width / 8, this.backgroundHeight, new LiteralText("Copy\nInventory"), b -> {
+            if (this.client != null) {
+                this.saveInventory();
+                this.client.openScreen(new CopyInventorySelectionScreen(this.category));
+            }
+        }));
     }
 
     @Override
@@ -347,7 +361,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
     public boolean charTyped(char chr, int keyCode) {
         if (this.ignoreTypedCharacter) {
             return false;
-        } else if (selectedTab != ItemGroup.SEARCH.getIndex()) {
+        } else if (SELECTED_TAB != ItemGroup.SEARCH.getIndex()) {
             return false;
         } else {
             String string = this.searchBox.getText();
@@ -365,7 +379,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
 
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         this.ignoreTypedCharacter = false;
-        if (selectedTab != ItemGroup.SEARCH.getIndex()) {
+        if (SELECTED_TAB != ItemGroup.SEARCH.getIndex()) {
             if (this.client != null && this.client.options.keyChat.matchesKey(keyCode, scanCode)) {
                 this.ignoreTypedCharacter = true;
                 this.setSelectedTab(ItemGroup.SEARCH);
@@ -400,8 +414,8 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
     }
 
     private void setSelectedTab(ItemGroup group) {
-        int i = selectedTab;
-        selectedTab = group.getIndex();
+        int i = SELECTED_TAB;
+        SELECTED_TAB = group.getIndex();
         this.cursorDragSlots.clear();
         ((PlayerlessCreativeScreenHandler)this.handler).itemList.clear();
         if (group == InventoryUtils.LOOT_TABLES || group != ItemGroup.SEARCH) {
@@ -536,7 +550,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
                 }
             }
 
-            if (selectedTab != ItemGroup.INVENTORY.getIndex() && this.isClickInScrollbar(mouseX, mouseY)) {
+            if (SELECTED_TAB != ItemGroup.INVENTORY.getIndex() && this.isClickInScrollbar(mouseX, mouseY)) {
                 this.scrolling = this.hasScrollbar();
                 return true;
             }
@@ -598,7 +612,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         if (this.client == null) { return; }
 
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        ItemGroup itemGroup = ItemGroup.GROUPS[selectedTab];
+        ItemGroup itemGroup = ItemGroup.GROUPS[SELECTED_TAB];
         ItemGroup[] var6 = ItemGroup.GROUPS;
         int j = var6.length;
 
@@ -606,7 +620,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         for (k = 0; k < j; ++k) {
             ItemGroup itemGroup2 = var6[k];
             this.client.getTextureManager().bindTexture(TABS_TEXTURE);
-            if (itemGroup2.getIndex() != selectedTab) {
+            if (itemGroup2.getIndex() != SELECTED_TAB) {
                 this.renderTabIcon(matrices, itemGroup2);
             }
         }
@@ -627,12 +641,12 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
     }
 
     private boolean hasScrollbar() {
-        return selectedTab != ItemGroup.INVENTORY.getIndex() && ItemGroup.GROUPS[selectedTab].hasScrollbar() && ((PlayerlessCreativeScreenHandler) this.handler).shouldShowScrollbar();
+        return SELECTED_TAB != ItemGroup.INVENTORY.getIndex() && ItemGroup.GROUPS[SELECTED_TAB].hasScrollbar() && ((PlayerlessCreativeScreenHandler) this.handler).shouldShowScrollbar();
     }
 
     @SuppressWarnings("deprecation")
     protected void renderTabIcon(MatrixStack matrixStack, ItemGroup itemGroup) {
-        boolean bl = itemGroup.getIndex() == selectedTab;
+        boolean bl = itemGroup.getIndex() == SELECTED_TAB;
         boolean bl2 = itemGroup.isTopRow();
         int i = itemGroup.getColumn();
         int j = i * 28;
@@ -704,16 +718,18 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
             }
         }
 
-        if (this.deleteItemSlot != null && selectedTab == ItemGroup.INVENTORY.getIndex() && this.isPointWithinBounds(this.deleteItemSlot.x, this.deleteItemSlot.y, 16, 16, mouseX, mouseY)) {
+        if (this.deleteItemSlot != null && SELECTED_TAB == ItemGroup.INVENTORY.getIndex() && this.isPointWithinBounds(this.deleteItemSlot.x, this.deleteItemSlot.y, 16, 16, mouseX, mouseY)) {
             this.renderTooltip(matrices, new TranslatableText("inventory.binSlot"), mouseX, mouseY);
         }
+
+        this.drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 13, 16777215);
 
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.drawMouseoverTooltip(matrices, mouseX, mouseY);
     }
 
     protected void renderTooltip(MatrixStack matrices, ItemStack stack, int x, int y) {
-        if (selectedTab == ItemGroup.SEARCH.getIndex() && this.client != null) {
+        if (SELECTED_TAB == ItemGroup.SEARCH.getIndex() && this.client != null) {
             List<Text> list = stack.getTooltip(null, this.client.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.NORMAL);
             List<StringRenderable> list2 = Lists.newArrayList(list);
             Item item = stack.getItem();

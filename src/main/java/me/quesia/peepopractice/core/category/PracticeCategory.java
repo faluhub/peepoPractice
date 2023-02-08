@@ -1,5 +1,6 @@
 package me.quesia.peepopractice.core.category;
 
+import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.category.properties.PlayerProperties;
 import me.quesia.peepopractice.core.category.properties.StructureProperties;
 import me.quesia.peepopractice.core.category.properties.WorldProperties;
@@ -166,22 +167,24 @@ public class PracticeCategory {
             }
         }
         if (showPb && this.hasSplitEvent()) {
-            String compareType = CategoryPreference.getValue(this, "compare_type", "PB");
-            switch (compareType) {
-                case "PB":
-                    if (this.getSplitEvent().hasPb()) {
-                        text.append(Formatting.GREEN).append(" (").append(this.getSplitEvent().getPbString()).append(")");
-                    } else {
-                        text.append(Formatting.GRAY).append(" (No ").append(compareType).append(")");
-                    }
-                    break;
-                case "Average":
-                    if (this.getSplitEvent().hasCompletedTimes()) {
-                        text.append(Formatting.AQUA).append(" (").append(this.getSplitEvent().getAverageString()).append(")");
-                    } else {
-                        text.append(Formatting.GRAY).append(" (No ").append(compareType).append(")");
-                    }
-                    break;
+            PracticeCategoryUtils.CompareType compareType = PracticeCategoryUtils.CompareType.fromLabel(CategoryPreference.getValue(this, "compare_type", PracticeCategoryUtils.CompareType.PB.getLabel()));
+            if (compareType != null) {
+                switch (compareType) {
+                    case PB:
+                        if (this.getSplitEvent().hasPb()) {
+                            text.append(Formatting.GREEN).append(" (").append(this.getSplitEvent().getPbString()).append(")");
+                        } else {
+                            text.append(Formatting.GRAY).append(" (No ").append(compareType.getLabel()).append(")");
+                        }
+                        break;
+                    case AVERAGE:
+                        if (this.getSplitEvent().hasCompletedTimes()) {
+                            text.append(Formatting.AQUA).append(" (").append(this.getSplitEvent().getAverageString()).append(")");
+                        } else {
+                            text.append(Formatting.GRAY).append(" (No ").append(compareType.getLabel()).append(")");
+                        }
+                        break;
+                }
             }
         }
         return text.toString();

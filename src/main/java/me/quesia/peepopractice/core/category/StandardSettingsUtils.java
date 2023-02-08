@@ -1,16 +1,20 @@
 package me.quesia.peepopractice.core.category;
 
 import com.google.gson.JsonObject;
+import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.PracticeWriter;
 import me.quesia.peepopractice.mixin.access.MinecraftClientAccessor;
 import net.minecraft.client.MinecraftClient;
 
 public class StandardSettingsUtils {
     public static void triggerStandardSettings(PracticeCategory category) {
+        if (PeepoPractice.HAS_STANDARD_SETTINGS) { return; }
+
         PracticeWriter writer = PracticeWriter.STANDARD_SETTINGS_WRITER;
         JsonObject config = writer.get();
         if (!config.has(category.getId())) { return; }
         JsonObject settings = config.get(category.getId()).getAsJsonObject();
+        if (settings.has("enabled") && !settings.get("enabled").getAsBoolean()) { return; }
         settings.entrySet().forEach(entry -> {
             String k = entry.getKey();
             switch (k) {
@@ -25,18 +29,12 @@ public class StandardSettingsUtils {
                     break;
                 case "sprinting":
                     MinecraftClient.getInstance().options.sprintToggled = entry.getValue().getAsBoolean();
-                    MinecraftClient.getInstance().options.keySprint.setPressed(MinecraftClient.getInstance().options.sprintToggled && entry.getValue().getAsBoolean() != MinecraftClient.getInstance().options.keySprint.isPressed());
+                    if (MinecraftClient.getInstance().options.sprintToggled && entry.getValue().getAsBoolean() != MinecraftClient.getInstance().options.keySprint.isPressed()) {
+                        MinecraftClient.getInstance().options.keySprint.setPressed(MinecraftClient.getInstance().options.sprintToggled);
+                    }
                     break;
                 case "chunk_borders":
                     MinecraftClient.getInstance().debugRenderer.showChunkBorder = entry.getValue().getAsBoolean();
-                    break;
-                case "fullscreen":
-                    MinecraftClient minecraftClient = MinecraftClient.getInstance();
-                    minecraftClient.options.fullscreen = entry.getValue().getAsBoolean();
-                    if (minecraftClient.getWindow() != null && minecraftClient.getWindow().isFullscreen() != minecraftClient.options.fullscreen) {
-                        minecraftClient.getWindow().toggleFullscreen();
-                        minecraftClient.options.fullscreen = minecraftClient.getWindow().isFullscreen();
-                    }
                     break;
                 case "piechart":
                     String value = entry.getValue().getAsString();

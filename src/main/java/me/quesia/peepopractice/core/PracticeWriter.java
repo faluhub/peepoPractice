@@ -19,7 +19,7 @@ public class PracticeWriter {
 
     public PracticeWriter(String fileName) {
         this.file = this.create(fileName);
-        this.local = this.get();
+        this.update();
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -76,6 +76,9 @@ public class PracticeWriter {
     }
 
     public void put(String element, JsonObject obj) {
+        if (this.local == null) {
+            this.update();
+        }
         if (this.local.has(element)) {
             this.local.remove(element);
         }

@@ -4,6 +4,7 @@ import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.PracticeWriter;
 import me.quesia.peepopractice.core.category.CategoryPreference;
 import me.quesia.peepopractice.core.category.PracticeCategory;
+import me.quesia.peepopractice.core.category.PracticeCategoryUtils;
 import me.quesia.peepopractice.gui.widget.LimitlessButtonWidget;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -17,12 +18,18 @@ public class SplitSettingsScreen extends Screen {
     private final CategoryPreference[] preferences = new CategoryPreference[] {
             new CategoryPreference()
                     .setId("compare_type")
-                    .setLabel("Split Compare Type")
+                    .setLabel("Split Comparison")
                     .setDescription("Which type of time the split is compared against.")
-                    .addChoice("PB")
-                    .addChoice("Average")
-                    .setDefaultChoice("PB")
-                    .setIcon(new Identifier("textures/item/clock_00.png"))
+                    .setChoices(PracticeCategoryUtils.CompareType.all())
+                    .setDefaultChoice(PracticeCategoryUtils.CompareType.PB.getLabel())
+                    .setIcon(new Identifier("textures/item/clock_00.png")),
+            new CategoryPreference()
+                    .setId("pace_timer_show_type")
+                    .setLabel("Show Pace Timer")
+                    .setDescription("When the pace timer should show.")
+                    .setChoices(PracticeCategoryUtils.PaceTimerShowType.all())
+                    .setDefaultChoice(PracticeCategoryUtils.PaceTimerShowType.ALWAYS.getLabel())
+                    .setIcon(new Identifier("textures/mob_effect/blindness.png"))
     };
 
     public SplitSettingsScreen(Screen parent, PracticeCategory category) {
