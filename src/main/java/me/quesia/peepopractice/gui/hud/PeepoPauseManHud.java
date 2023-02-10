@@ -33,13 +33,23 @@ public class PeepoPauseManHud extends DrawableHelper {
             float percentage = (float) MathHelper.clamp(1 - Math.pow(1 - div, 5), 0.0F, 1.0F);
             RenderSystem.pushMatrix();
             RenderSystem.enableBlend();
-            this.client.getTextureManager().bindTexture(!InGameTimer.getInstance().isCompleted() ? PEEPO_PAUSE_MAN : PEEPO_PAG_MAN);
-            this.setZOffset(100);
-            RenderSystem.translatef(0, 0, 100.0F);
-            int spriteDiv = 6;
-            int spriteWidth = 112 / spriteDiv;
-            int spriteHeight = 84 / spriteDiv;
-            drawTexture(matrices, 0, (int) (this.client.getWindow().getScaledHeight() - spriteHeight * percentage), 0.0F, 0.0F, spriteWidth, spriteHeight, spriteWidth, spriteHeight);
+            Identifier texture = PEEPO_PAUSE_MAN;
+            if (PeepoPractice.CATEGORY.hasCustomValue("isCompletion")) {
+                if ((boolean) PeepoPractice.CATEGORY.getCustomValue("isCompletion")) {
+                    texture = PEEPO_PAG_MAN;
+                } else {
+                    texture = null;
+                }
+            }
+            if (texture != null) {
+                this.client.getTextureManager().bindTexture(texture);
+                this.setZOffset(100);
+                RenderSystem.translatef(0, 0, 100.0F);
+                int spriteDiv = 6;
+                int spriteWidth = 112 / spriteDiv;
+                int spriteHeight = 84 / spriteDiv;
+                drawTexture(matrices, 0, (int) (this.client.getWindow().getScaledHeight() - spriteHeight * percentage), 0.0F, 0.0F, spriteWidth, spriteHeight, spriteWidth, spriteHeight);
+            }
 
             RenderSystem.disableBlend();
             RenderSystem.popMatrix();

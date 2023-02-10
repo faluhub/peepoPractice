@@ -1,5 +1,6 @@
 package me.quesia.peepopractice.mixin;
 
+import com.mojang.datafixers.DataFixer;
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.category.StandardSettingsUtils;
@@ -11,14 +12,25 @@ import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.util.registry.RegistryTracker;
 import net.minecraft.world.gen.GeneratorOptions;
 import net.minecraft.world.level.LevelInfo;
+import net.minecraft.world.level.storage.LevelStorage;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.io.File;
+import java.io.IOException;
 
 @Mixin(MinecraftClient.class)
 public class MinecraftClientMixin {
+    @Shadow @Final public File runDirectory;
+
+    @Shadow @Final private DataFixer dataFixer;
+
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;runTasks()V"))
     private void runMoreTasks(MinecraftClient instance) {
         ((ThreadExecutorAccessor) instance).invokeRunTasks();
@@ -43,6 +55,8 @@ public class MinecraftClientMixin {
                 }
             });
         });
+
+        PeepoPractice.PRACTICE_LEVEL_STORAGE = new LevelStorage(this.runDirectory.toPath().resolve("practiceSaves"), this.runDirectory.toPath().resolve("backups"), this.dataFixer);
     }
 
     @Inject(method = "openScreen", at = @At("HEAD"))
@@ -65,5 +79,20 @@ public class MinecraftClientMixin {
     private void standardSettings_onWorldLoad(String worldName, LevelInfo levelInfo, RegistryTracker.Modifiable registryTracker, GeneratorOptions generatorOptions, CallbackInfo ci) {
         PeepoPractice.log("Triggered second standard settings call for " + PeepoPractice.CATEGORY.getId());
         StandardSettingsUtils.triggerStandardSettings(PeepoPractice.CATEGORY);
+    }
+
+    @Redirect(method = "startIntegratedServer(Ljava/lang/String;Lnet/minecraft/util/registry/RegistryTracker$Modifiable;Ljava/util/function/Function;Lcom/mojang/datafixers/util/Function4;ZLnet/minecraft/client/MinecraftClient$WorldLoadAction;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/storage/LevelStorage;createSession(Ljava/lang/String;)Lnet/minecraft/world/level/storage/LevelStorage$Session;"))
+    private LevelStorage.Session differentSavesFolder(LevelStorage instance, String directoryName) throws IOException {
+        if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY) && PeepoPractice.PRACTICE_LEVEL_STORAGE != null) {
+            return PeepoPractice.PRACTICE_LEVEL_STORAGE.createSession(directoryName);
+        }
+        return instance.createSession(directoryName);
+    }
+
+    @Inject(method = "getLevelStorage", at = @At("RETURN"), cancellable = true)
+    private void customLevelStorage(CallbackInfoReturnable<LevelStorage> cir) {
+        if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY) && PeepoPractice.PRACTICE_LEVEL_STORAGE != null) {
+            cir.setReturnValue(PeepoPractice.PRACTICE_LEVEL_STORAGE);
+        }
     }
 }

@@ -2,16 +2,19 @@ package me.quesia.peepopractice.gui.screen;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.blaze3d.systems.RenderSystem;
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.PracticeWriter;
 import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.gui.widget.CategoryListWidget;
 import me.quesia.peepopractice.gui.widget.LimitlessButtonWidget;
+import net.minecraft.client.gui.hud.BackgroundHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
+import net.minecraft.util.Formatting;
 
 import java.util.Map;
 
@@ -108,6 +111,7 @@ public class CopyInventorySelectionScreen extends Screen {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         this.fillGradient(matrices, 0, 0, this.width, this.height, PeepoPractice.BACKGROUND_COLOUR, PeepoPractice.BACKGROUND_COLOUR);
 
@@ -119,6 +123,10 @@ public class CopyInventorySelectionScreen extends Screen {
 
         this.copyButton.active = this.categoryListWidget != null && this.categoryListWidget.getSelected() != null;
         if (this.copyButton.active) {
+            RenderSystem.pushMatrix();
+            RenderSystem.scalef(0.5F, 0.5F, 1.0F);
+            this.drawCenteredText(matrices, this.textRenderer, new LiteralText("Hold Shift to Merge").formatted(Formatting.YELLOW, Formatting.ITALIC), (this.copyButton.x + this.copyButton.getWidth() / 2) * 2, (this.copyButton.y + this.copyButton.getHeight() / 2 - (int) (this.textRenderer.fontHeight * 1.5)) * 2, BackgroundHelper.ColorMixer.getArgb(255 / 2, 255, 255, 255));
+            RenderSystem.popMatrix();
             this.copyButton.setMessage(!Screen.hasShiftDown() ? new LiteralText("Copy") : new LiteralText("Merge"));
         }
 

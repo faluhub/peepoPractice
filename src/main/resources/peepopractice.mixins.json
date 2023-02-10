@@ -12,6 +12,9 @@
     "access.ServerWorldAccessor",
     "access.ThreadExecutorAccessor",
 
+    "compat.InGameTimerUtilsMixin",
+    "compat.LocateCommandMixin",
+
     "gui.hud.InGameHudMixin",
     "gui.hud.SubtitlesHudMixin",
 
@@ -24,6 +27,8 @@
     "gui.ItemStackMixin",
 
     "structure.category.BastionRemnantFeatureConfigMixin",
+    "structure.category.DungeonFeatureMixin",
+    "structure.category.PortalRoomMixin",
 
     "structure.ChunkGeneratorMixin",
     "structure.StructureFeatureMixin",

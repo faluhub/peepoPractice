@@ -106,9 +106,16 @@ public class CategoryPreference {
         return null;
     }
 
-    @SuppressWarnings("UnusedDeclaration")
     public static boolean getBoolValue(String id) {
-        return PracticeCategoryUtils.parseBoolean(getValue(id));
+        return getBoolValue(PeepoPractice.CATEGORY, id);
+    }
+
+    public static boolean getBoolValue(PracticeCategory category, String id) {
+        String value = getValue(category, id);
+        if (value != null) {
+            return PracticeCategoryUtils.parseBoolean(value);
+        }
+        return false;
     }
 
     public static String getValue(String id) {
@@ -116,11 +123,12 @@ public class CategoryPreference {
     }
 
     public static String getValue(PracticeCategory category, String id, String def) {
-        try { return getValue(category, id); }
-        catch (NullPointerException ignored) {
+        String value = getValue(category, id);
+        if (value == null) {
             setValue(category, id, def);
             return def;
         }
+        return value;
     }
 
     public static String getValue(PracticeCategory category, String id) {
@@ -139,9 +147,10 @@ public class CategoryPreference {
                 setValue(category, id, categoryPreference.getDefaultChoice());
                 return categoryPreference.getDefaultChoice();
             }
+            return categoryObject.get(id).getAsString();
         }
 
-        return categoryObject.get(id).getAsString();
+        return null;
     }
 
     public static String getValue(PracticeCategory category, CategoryPreference categoryPreference) {

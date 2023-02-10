@@ -4,9 +4,11 @@ import com.mojang.authlib.GameProfile;
 import com.redlimerl.speedrunigt.timer.InGameTimer;
 import com.redlimerl.speedrunigt.timer.TimerStatus;
 import me.quesia.peepopractice.PeepoPractice;
+import me.quesia.peepopractice.core.NotInitializedException;
 import me.quesia.peepopractice.core.category.CategoryPreference;
 import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.category.PracticeCategoryUtils;
+import me.quesia.peepopractice.core.category.PracticeTypes;
 import me.quesia.peepopractice.core.category.properties.event.ChangeDimensionSplitEvent;
 import me.quesia.peepopractice.core.category.properties.event.SplitEvent;
 import net.minecraft.block.Blocks;
@@ -42,7 +44,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     @Shadow public abstract void setGameMode(GameMode gameMode);
     @Shadow public abstract void sendMessage(Text message, boolean actionBar);
     private Long comparingTime;
-    private PracticeCategoryUtils.PaceTimerShowType showType;
+    private PracticeTypes.PaceTimerShowType showType;
 
     public ServerPlayerEntityMixin(World world, BlockPos blockPos, GameProfile gameProfile) {
         super(world, blockPos, gameProfile);
@@ -51,7 +53,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     @Inject(method = "moveToSpawn", at = @At("HEAD"), cancellable = true)
     private void customSpawn(ServerWorld world, CallbackInfo ci) {
         if (PeepoPractice.CATEGORY.hasSplitEvent()) {
-            PracticeCategoryUtils.CompareType compareType = PracticeCategoryUtils.CompareType.fromLabel(CategoryPreference.getValue(PeepoPractice.CATEGORY, "compare_type", PracticeCategoryUtils.CompareType.PB.getLabel()));
+            PracticeTypes.CompareType compareType = PracticeTypes.CompareType.fromLabel(CategoryPreference.getValue(PeepoPractice.CATEGORY, "compare_type", PracticeTypes.CompareType.PB.getLabel()));
             if (compareType != null) {
                 switch (compareType) {
                     case PB:
@@ -62,21 +64,24 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
                         break;
                 }
             }
-            this.showType = PracticeCategoryUtils.PaceTimerShowType.fromLabel(CategoryPreference.getValue(PeepoPractice.CATEGORY, "pace_timer_show_type", PracticeCategoryUtils.PaceTimerShowType.ALWAYS.getLabel()));
+            this.showType = PracticeTypes.PaceTimerShowType.fromLabel(CategoryPreference.getValue(PeepoPractice.CATEGORY, "pace_timer_show_type", PracticeTypes.PaceTimerShowType.ALWAYS.getLabel()));
         }
 
-        if (PeepoPractice.CATEGORY.hasPlayerProperties() && PeepoPractice.CATEGORY.getPlayerProperties().hasSpawnPos()) {
+        if (PeepoPractice.CATEGORY.hasPlayerProperties()) {
             if (!(world.getLevelProperties() instanceof LevelProperties)) { return; }
 
-            if (!PeepoPractice.CATEGORY.hasCustomValue("initialisedWorld")) {
-                PeepoPractice.CATEGORY.getPlayerProperties().reset(new Random(world.getSeed()), world);
+            if (PeepoPractice.CATEGORY.hasWorldProperties() && PeepoPractice.CATEGORY.getWorldProperties().hasWorldRegistryKey() && PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey().equals(World.END)) {
+                ServerWorld.createEndSpawnPlatform(world);
+            }
 
-                if (PeepoPractice.CATEGORY.hasWorldProperties() && PeepoPractice.CATEGORY.getWorldProperties().hasWorldRegistryKey() && PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey().equals(World.END)) {
-                    ServerWorld.createEndSpawnPlatform(world);
+            if (PeepoPractice.RETRY_PLAYER_INITIALIZATION) {
+                try {
+                    PeepoPractice.CATEGORY.getPlayerProperties().reset(new Random(world.getSeed()), world);
+                    PeepoPractice.log("Infinite loop resolved for " + PeepoPractice.CATEGORY.getId() + ".");
+                } catch (NotInitializedException ignored) {
+                    PeepoPractice.log("Failed to resolve infinite loop for " + PeepoPractice.CATEGORY.getId() + ".");
                 }
-
-                ((LevelProperties) world.getLevelProperties()).setSpawnPos(PeepoPractice.CATEGORY.getPlayerProperties().getSpawnPos());
-                PeepoPractice.CATEGORY.putCustomValue("initialisedWorld", true);
+                PeepoPractice.RETRY_PLAYER_INITIALIZATION = false;
             }
 
             float yaw = 0.0F;
@@ -87,7 +92,11 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
                 pitch = spawnAngle.y;
             }
 
-            BlockPos spawnPos = PeepoPractice.CATEGORY.getPlayerProperties().getSpawnPos();
+            BlockPos spawnPos = world.getSpawnPos();
+            if (PeepoPractice.CATEGORY.getPlayerProperties().hasSpawnPos()) {
+                spawnPos = PeepoPractice.CATEGORY.getPlayerProperties().getSpawnPos();
+                ((LevelProperties) world.getLevelProperties()).setSpawnPos(PeepoPractice.CATEGORY.getPlayerProperties().getSpawnPos());
+            }
             this.refreshPositionAndAngles(spawnPos, yaw, pitch);
 
             ci.cancel();
@@ -96,7 +105,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
 
     @Inject(method = "tick", at = @At("TAIL"))
     private void setPaceMessage(CallbackInfo ci) {
-        if (this.showType == null || this.showType.equals(PracticeCategoryUtils.PaceTimerShowType.NEVER) || (this.showType.equals(PracticeCategoryUtils.PaceTimerShowType.END) && !InGameTimer.getInstance().isCompleted())) { return; }
+        if (this.showType == null || this.showType.equals(PracticeTypes.PaceTimerShowType.NEVER) || (this.showType.equals(PracticeTypes.PaceTimerShowType.END) && !InGameTimer.getInstance().isCompleted())) { return; }
         long igt = InGameTimer.getInstance().getInGameTime();
         if (this.comparingTime != null) {
             long difference = this.comparingTime - igt;

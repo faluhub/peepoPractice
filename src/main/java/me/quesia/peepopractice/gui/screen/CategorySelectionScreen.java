@@ -1,10 +1,14 @@
 package me.quesia.peepopractice.gui.screen;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.PracticeWriter;
 import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.gui.widget.CategoryListWidget;
 import me.quesia.peepopractice.gui.widget.LimitlessButtonWidget;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.hud.BackgroundHelper;
+import net.minecraft.client.gui.screen.FatalErrorScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
@@ -72,6 +76,13 @@ public class CategorySelectionScreen extends Screen {
                                 if (this.doneButton.getMessage().getString().equals(ScreenTexts.BACK.getString())) {
                                     this.client.openScreen(this.parent);
                                 } else {
+                                    if (this.categoryListWidget != null && this.categoryListWidget.getSelected() != null) {
+                                        PracticeCategory selected = this.categoryListWidget.getSelected().category;
+                                        if (!selected.hasConfiguredInventory()) {
+                                            this.client.openScreen(new FatalErrorScreen(new LiteralText("You haven't configured your inventory for this category yet!"), new LiteralText("")));
+                                            return;
+                                        }
+                                    }
                                     this.play();
                                 }
                             }
@@ -104,6 +115,8 @@ public class CategorySelectionScreen extends Screen {
         }
 
         this.drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 13, 16777215);
+        String text = PeepoPractice.MOD_NAME + " v" + PeepoPractice.MOD_VERSION;
+        this.textRenderer.drawWithShadow(matrices, text, this.width - this.textRenderer.getWidth(text), this.height - this.textRenderer.fontHeight, BackgroundHelper.ColorMixer.getArgb(255 / 2, 255, 255, 255));
 
         this.configureButton.active = this.categoryListWidget != null && this.categoryListWidget.getSelected() != null;
         this.doneButton.setMessage(this.configureButton.active ? new LiteralText("Play!") : ScreenTexts.BACK);

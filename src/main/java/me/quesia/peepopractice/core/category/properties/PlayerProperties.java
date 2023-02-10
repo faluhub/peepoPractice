@@ -1,5 +1,6 @@
 package me.quesia.peepopractice.core.category.properties;
 
+import me.quesia.peepopractice.core.NotInitializedException;
 import me.quesia.peepopractice.core.category.PracticeCategory;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -50,7 +51,7 @@ public class PlayerProperties extends BaseProperties {
         return this;
     }
 
-    public void reset(Random random, ServerWorld world) {
+    public void reset(Random random, ServerWorld world) throws NotInitializedException {
         if (this.spawnPosTask != null) {
             this.setSpawnPos(this.spawnPosTask.execute(this.getCategory(), random, world));
         }

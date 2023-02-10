@@ -45,8 +45,8 @@ public class LimitlessButtonWidget extends ButtonWidget {
         }
     }
 
-    @SuppressWarnings("deprecation")
     @Override
+    @SuppressWarnings("deprecation")
     public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
         TextRenderer textRenderer = minecraftClient.textRenderer;
@@ -109,7 +109,7 @@ public class LimitlessButtonWidget extends ButtonWidget {
         }
         RenderSystem.popMatrix();
 
-        if (this.isHovered() && this.active) {
+        if (this.isHovered()) {
             this.renderToolTip(matrices, mouseX, mouseY);
         }
     }

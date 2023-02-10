@@ -10,6 +10,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.gui.hud.BackgroundHelper;
 import net.minecraft.resource.ServerResourceManager;
+import net.minecraft.world.level.storage.LevelStorage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,6 +31,8 @@ public class PeepoPractice implements ClientModInitializer {
     public static final boolean HAS_STANDARD_SETTINGS = FabricLoader.getInstance().getModContainer("standardsettings").isPresent();
     public static final int BACKGROUND_COLOUR = BackgroundHelper.ColorMixer.getArgb(255, 68, 112, 106);
     public static final int BACKGROUND_OVERLAY_COLOUR = BackgroundHelper.ColorMixer.getArgb(60, 0, 0, 0);
+    public static LevelStorage PRACTICE_LEVEL_STORAGE;
+    public static boolean RETRY_PLAYER_INITIALIZATION = false;
 
     public static void log(Object message) {
         LOGGER.info(message);

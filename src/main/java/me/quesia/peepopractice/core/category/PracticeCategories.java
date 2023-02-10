@@ -1,7 +1,9 @@
 package me.quesia.peepopractice.core.category;
 
 import com.redlimerl.speedrunigt.timer.InGameTimer;
+import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.CustomPortalForcer;
+import me.quesia.peepopractice.core.NotInitializedException;
 import me.quesia.peepopractice.core.category.properties.PlayerProperties;
 import me.quesia.peepopractice.core.category.properties.StructureProperties;
 import me.quesia.peepopractice.core.category.properties.WorldProperties;
@@ -24,11 +26,11 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
-import net.minecraft.world.gen.feature.StructureFeature;
+import net.minecraft.world.gen.feature.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @SuppressWarnings("UnusedDeclaration")
 public class PracticeCategories {
@@ -36,44 +38,6 @@ public class PracticeCategories {
     public static PracticeCategory EMPTY = new PracticeCategory()
             .setId("empty")
             .setHidden(true);
-    public static PracticeCategory NETHER_SPLIT = new PracticeCategory()
-            .setId("nether_split")
-            .addStructureProperties(new StructureProperties()
-                    .setStructure(DefaultBiomeFeatures.BASTION_REMNANT)
-                    .setChunkPos((category, random, world) -> new ChunkPos(random.nextInt(3) + 2, random.nextInt(3) + 2))
-                    .setRotation(BlockRotation.NONE)
-                    .setGeneratable(false)
-            )
-            .addStructureProperties(new StructureProperties()
-                    .setStructure(DefaultBiomeFeatures.FORTRESS)
-                    .setChunkPos((category, random, world) -> {
-                        StructureProperties properties = category.findStructureProperties(StructureFeature.BASTION_REMNANT);
-                        if (properties.getChunkPos() != null) {
-                            ChunkPos pos = properties.getChunkPos();
-                            int offset = 6;
-                            int bound = 4;
-                            boolean bl = random.nextBoolean();
-                            return new ChunkPos(
-                                    pos.x + (bl ? offset + random.nextInt(bound) : -(offset + random.nextInt(offset))),
-                                    pos.z + (!bl ? offset + random.nextInt(bound) : -(offset + random.nextInt(offset)))
-                            );
-                        }
-                        return new ChunkPos(0, 0);
-                    })
-                    .setGeneratable(false)
-            )
-            .setPlayerProperties(new PlayerProperties()
-                    .setSpawnPos(BastionPreset.BASTION_SPAWN_POS)
-                    .setSpawnAngle(BastionPreset.BASTION_SPAWN_ANGLE)
-            )
-            .setWorldProperties(new WorldProperties()
-                    .setWorldRegistryKey(World.NETHER)
-                    .setSpawnChunksDisabled(true)
-                    .addAntiBiomeRange(Biomes.BASALT_DELTAS, null)
-            )
-            .setSplitEvent(new ChangeDimensionSplitEvent()
-                    .setDimension(World.OVERWORLD)
-            );
     public static PracticeCategory BASTION_SPLIT = new PracticeCategory()
             .setId("bastion_split")
             .addStructureProperties(new StructureProperties()
@@ -96,6 +60,14 @@ public class PracticeCategories {
             )
             .setSplitEvent(new ThrowEntitySplitEvent()
                     .setItem(Items.ENDER_PEARL)
+            )
+            .addPreference(new CategoryPreference()
+                    .setId("bastion_type")
+                    .setLabel("Bastion Type")
+                    .setDescription("The bastion type.")
+                    .setIcon(new Identifier("textures/item/golden_helmet.png"))
+                    .setChoices(PracticeTypes.BastionType.all())
+                    .setDefaultChoice(PracticeTypes.BastionType.RANDOM.getLabel())
             );
     public static PracticeCategory FORTRESS_SPLIT = new PracticeCategory()
             .setId("fortress_split")
@@ -114,8 +86,7 @@ public class PracticeCategories {
                         while (!world.getBlockState(pos).isOf(Blocks.NETHER_BRICKS)) {
                             pos = pos.add(0, -1, 0);
                             if (pos.getY() < 0) {
-                                pos = pos.add(0, -pos.getY() + 66, 0);
-                                break;
+                                throw new NotInitializedException();
                             }
                         }
                         return pos.add(0, 1, 0);
@@ -128,33 +99,101 @@ public class PracticeCategories {
             .setSplitEvent(new ChangeDimensionSplitEvent()
                     .setDimension(World.OVERWORLD)
             );
-    public static PracticeCategory POST_BLIND = new PracticeCategory()
-            .setId("post_blind")
+    public static PracticeCategory NETHER_SPLIT = new PracticeCategory()
+            .setId("nether_split")
+            .addStructureProperties(new StructureProperties()
+                    .setStructure(DefaultBiomeFeatures.BASTION_REMNANT)
+                    .setChunkPos((category, random, world) -> new ChunkPos(random.nextInt(3) + 2, random.nextInt(3) + 2))
+                    .setRotation(BlockRotation.NONE)
+                    .setGeneratable(false)
+            )
+            .addStructureProperties(new StructureProperties()
+                    .setStructure(DefaultBiomeFeatures.FORTRESS)
+                    .setChunkPos((category, random, world) -> {
+                        StructureProperties properties = category.findStructureProperties(StructureFeature.BASTION_REMNANT);
+                        if (properties.getChunkPos() != null) {
+                            ChunkPos pos = properties.getChunkPos();
+                            int offset = 6;
+                            int bound = 4;
+                            return new ChunkPos(
+                                    pos.x + (random.nextBoolean() ? offset + random.nextInt(bound) : -(offset + random.nextInt(offset))),
+                                    pos.z + (random.nextBoolean() ? offset + random.nextInt(bound) : -(offset + random.nextInt(offset)))
+                            );
+                        }
+                        return new ChunkPos(0, 0);
+                    })
+                    .setGeneratable(false)
+            )
+            .setPlayerProperties(new PlayerProperties()
+                    .setSpawnPos(BastionPreset.BASTION_SPAWN_POS)
+                    .setSpawnAngle(BastionPreset.BASTION_SPAWN_ANGLE)
+            )
+            .setWorldProperties(new WorldProperties()
+                    .setWorldRegistryKey(World.NETHER)
+                    .setSpawnChunksDisabled(true)
+                    .addAntiBiomeRange(Biomes.BASALT_DELTAS, null)
+            )
+            .setSplitEvent(new ChangeDimensionSplitEvent()
+                    .setDimension(World.OVERWORLD)
+            )
+            .addPreference(new CategoryPreference()
+                    .setId("bastion_type")
+                    .setLabel("Bastion Type")
+                    .setDescription("The bastion type.")
+                    .setIcon(new Identifier("textures/item/golden_helmet.png"))
+                    .setChoices(PracticeTypes.BastionType.all())
+                    .setDefaultChoice(PracticeTypes.BastionType.RANDOM.getLabel())
+            );
+    public static PracticeCategory POST_BLIND_SPLIT = new PracticeCategory()
+            .setId("post_blind_split")
             .setPlayerProperties(new PlayerProperties()
                     .setSpawnPos((category, random, world) -> {
+                        PracticeTypes.StrongholdDistanceType distanceType = PracticeTypes.StrongholdDistanceType.fromLabel(CategoryPreference.getValue(category, "stronghold_distance", PracticeTypes.StrongholdDistanceType.AVERAGE.getLabel()));
+                        int max = Objects.requireNonNullElse(distanceType, PracticeTypes.StrongholdDistanceType.AVERAGE).getMax();
+                        int min = Objects.requireNonNullElse(distanceType, PracticeTypes.StrongholdDistanceType.AVERAGE).getMin();
                         ChunkGenerator chunkGenerator = world.getChunkManager().getChunkGenerator();
                         ((ChunkGeneratorAccessor) chunkGenerator).invokeMethod_28509();
                         List<ChunkPos> strongholds = ((ChunkGeneratorAccessor) chunkGenerator).getField_24749();
-                        BlockPos blockPos = strongholds.get(random.nextInt(strongholds.size() - 1)).toBlockPos(4, 0, 4);
-                        int radius = 1600;
-                        double ang = random.nextDouble() * 2 * Math.PI;
-                        double hyp = Math.sqrt(random.nextDouble()) * radius;
-                        double adj = Math.cos(ang) * hyp;
-                        double opp = Math.sin(ang) * hyp;
-                        blockPos = new BlockPos(blockPos.getX() + adj, 0, blockPos.getZ() + opp);
+                        int maxStrongholds = 9;
+                        BlockPos blockPos = strongholds.get(random.nextInt(maxStrongholds)).toBlockPos(4, 0, 4);
+                        blockPos = PracticeCategoryUtils.getRandomBlockInRadius(max, min, blockPos, random);
                         blockPos = new BlockPos(blockPos.getX(), PracticeCategoryUtils.findTopPos(world, blockPos), blockPos.getZ());
                         blockPos = CustomPortalForcer.createPortal(blockPos, world).down();
                         return blockPos;
                     })
+            )
+            .addStructureProperties(new StructureProperties()
+                    .setStructure(DefaultBiomeFeatures.FORTRESS)
+                    .setChunkPos((category, random, world) -> {
+                        if (category.hasPlayerProperties()) {
+                            PlayerProperties properties = category.getPlayerProperties();
+                            if (properties.hasSpawnPos()) {
+                                BlockPos pos = properties.getSpawnPos();
+                                BlockPos netherPos = new BlockPos(pos.getX() / 8, pos.getY(), pos.getZ() / 8);
+                                netherPos = PracticeCategoryUtils.getRandomBlockInRadius(20, netherPos, random);
+                                return new ChunkPos(netherPos);
+                            }
+                        }
+                        throw new NotInitializedException();
+                    })
+                    .setGeneratable(false)
             )
             .setWorldProperties(new WorldProperties()
                     .setWorldRegistryKey(World.OVERWORLD)
             )
             .setSplitEvent(new GetAdvancementSplitEvent()
                     .setAdvancement(new Identifier("story/follow_ender_eye"))
+            )
+            .addPreference(new CategoryPreference()
+                    .setId("stronghold_distance")
+                    .setLabel("Stronghold Distance")
+                    .setDescription("Close (200-500), Average (700-1000) or Far (1200-1600).")
+                    .setIcon(new Identifier("textures/mob_effect/speed.png"))
+                    .setChoices(PracticeTypes.StrongholdDistanceType.all())
+                    .setDefaultChoice(PracticeTypes.StrongholdDistanceType.AVERAGE.getLabel())
             );
-    public static PracticeCategory STRONGHOLD = new PracticeCategory()
-            .setId("stronghold")
+    public static PracticeCategory STRONGHOLD_SPLIT = new PracticeCategory()
+            .setId("stronghold_split")
             .addStructureProperties(new StructureProperties()
                     .setStructure(DefaultBiomeFeatures.STRONGHOLD)
                     .setChunkPos(new ChunkPos(0, 0))
@@ -169,16 +208,16 @@ public class PracticeCategories {
             .setWorldProperties(new WorldProperties()
                     .setWorldRegistryKey(World.OVERWORLD)
             )
+            .addStructureProperties(new StructureProperties()
+                    .setStructure(DefaultBiomeFeatures.NORMAL_MINESHAFT)
+                    .setGeneratable((category, random, world) -> !CategoryPreference.getBoolValue(category, "disable_mineshafts"))
+            )
+            .addStructureProperties(new StructureProperties()
+                    .setStructure(DefaultBiomeFeatures.MESA_MINESHAFT)
+                    .setGeneratable((category, random, world) -> !CategoryPreference.getBoolValue(category, "disable_mineshafts"))
+            )
             .setSplitEvent(new ChangeDimensionSplitEvent()
                     .setDimension(World.END)
-            )
-            .addPreference(new CategoryPreference()
-                    .setId("spawn_in_stronghold")
-                    .setLabel("Spawn in Stronghold")
-                    .setDescription("If enabled, you'll spawn inside of the Stronghold.")
-                    .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
-                    .setDefaultChoice(PracticeCategoryUtils.ENABLED)
-                    .setIcon(new Identifier("textures/item/iron_shovel.png"))
             )
             .addPreference(new CategoryPreference()
                     .setId("disable_mineshafts")
@@ -200,10 +239,8 @@ public class PracticeCategories {
                     .setId("eye_count")
                     .setLabel("Eye Count")
                     .setDescription("Specify the amount of eyes that are filled in.")
-                    .addChoice("Random")
-                    .addChoice("0")
-                    .addChoice("12")
-                    .setDefaultChoice("Random")
+                    .setChoices(PracticeTypes.EyeCountType.all())
+                    .setDefaultChoice(PracticeTypes.EyeCountType.RANDOM.getLabel())
                     .setIcon(new Identifier("textures/item/ender_eye.png"))
             );
     public static PracticeCategory END_SPLIT = new PracticeCategory()

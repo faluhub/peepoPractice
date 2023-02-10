@@ -1,7 +1,8 @@
 package me.quesia.peepopractice.core.category;
 
-import net.minecraft.block.Block;
+import me.quesia.peepopractice.PeepoPractice;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.SaveLevelScreen;
 import net.minecraft.client.gui.screen.TitleScreen;
@@ -10,110 +11,18 @@ import net.minecraft.realms.RealmsBridge;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.WorldChunk;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class PracticeCategoryUtils {
     public static final String ENABLED = "Enabled";
     public static final String DISABLED = "Disabled";
     public static final String[] BOOLEAN_LIST = new String[] { ENABLED, DISABLED };
-
-    public enum BastionType {
-        HOUSING(0, new Vec3i(-9, 83, 27), -90.0F),
-        STABLES(1, new Vec3i(3, 54, 30), 90.0F),
-        TREASURE(2, new Vec3i(16, 75, -1), 180.0F),
-        BRIDGE(3, new Vec3i(-26, 67, 10), -90.0F);
-
-        public final int id;
-        public final Vec3i pos;
-        public final float angle;
-
-        BastionType(int id, Vec3i pos, float angle) {
-            this.id = id;
-            this.pos = pos;
-            this.angle = angle;
-        }
-
-        public static BastionType fromId(int id) {
-            for (BastionType type : BastionType.values()) {
-                if (type.id == id) {
-                    return type;
-                }
-            }
-            return null;
-        }
-    }
-
-    public enum CompareType {
-        PB("PB"),
-        AVERAGE("Average");
-
-        private final String label;
-
-        CompareType(String label) {
-            this.label = label;
-        }
-
-        public String getLabel() {
-            return this.label;
-        }
-
-        public static List<String> all() {
-            List<String> labels = new ArrayList<>();
-            for (CompareType type : CompareType.values()) {
-                labels.add(type.getLabel());
-            }
-            return labels;
-        }
-
-        public static CompareType fromLabel(String label) {
-            for (CompareType type : CompareType.values()) {
-                if (type.getLabel().equals(label)) {
-                    return type;
-                }
-            }
-            return null;
-        }
-    }
-
-    public enum PaceTimerShowType {
-        ALWAYS("Always"),
-        END("End"),
-        NEVER("Never");
-
-        private final String label;
-
-        PaceTimerShowType(String label) {
-            this.label = label;
-        }
-
-        public String getLabel() {
-            return this.label;
-        }
-
-        public static List<String> all() {
-            List<String> labels = new ArrayList<>();
-            for (PaceTimerShowType type : PaceTimerShowType.values()) {
-                labels.add(type.getLabel());
-            }
-            return labels;
-        }
-
-        public static PaceTimerShowType fromLabel(String label) {
-            for (PaceTimerShowType type : PaceTimerShowType.values()) {
-                if (type.getLabel().equals(label)) {
-                    return type;
-                }
-            }
-            return null;
-        }
-    }
 
     public static boolean parseBoolean(String value) {
         List<String> list = Arrays.asList(BOOLEAN_LIST);
@@ -150,14 +59,33 @@ public class PracticeCategoryUtils {
         BlockState blockState = biome.getSurfaceConfig().getTopMaterial();
         WorldChunk worldChunk = world.getChunk(x >> 4, z >> 4);
         i = bl ? world.getChunkManager().getChunkGenerator().getSpawnHeight() : worldChunk.sampleHeightmap(Heightmap.Type.MOTION_BLOCKING, x & 0xF, z & 0xF);
-        worldChunk.sampleHeightmap(Heightmap.Type.WORLD_SURFACE, x & 0xF, z & 0xF);
-        for (int k = i + 1; k >= 0; --k) {
-            mutable.set(x, k, z);
-            BlockState blockState2 = world.getBlockState(mutable);
-            if (!blockState2.getFluidState().isEmpty()) break;
-            if (!blockState2.equals(blockState)) continue;
-            return mutable.up().toImmutable().getY();
+        if (bl) {
+            for (int k = i + 1; k >= 0; --k) {
+                mutable.set(x, k, z);
+                BlockState blockState2 = world.getBlockState(mutable);
+                if (!blockState2.getFluidState().isEmpty()) break;
+                if (!blockState2.equals(blockState)) continue;
+                return mutable.up().toImmutable().getY();
+            }
+        } else {
+            mutable.setY(i);
         }
         return mutable.getY();
+    }
+
+    public static BlockPos getRandomBlockInRadius(int radius, BlockPos blockPos, Random random) {
+        return getRandomBlockInRadius(radius, 0, blockPos, random);
+    }
+
+    public static BlockPos getRandomBlockInRadius(int radius, int min, BlockPos blockPos, Random random) {
+        BlockPos newPos;
+        do {
+            double ang = random.nextDouble() * 2 * Math.PI;
+            double hyp = Math.sqrt(random.nextDouble()) * radius;
+            double adj = Math.cos(ang) * hyp;
+            double opp = Math.sin(ang) * hyp;
+            newPos = new BlockPos(blockPos.getX() + adj, 0, blockPos.getZ() + opp);
+        } while (newPos.isWithinDistance(blockPos, min));
+        return newPos;
     }
 }

@@ -1,10 +1,14 @@
 package me.quesia.peepopractice.core.category;
 
+import com.google.gson.JsonObject;
 import me.quesia.peepopractice.PeepoPractice;
+import me.quesia.peepopractice.core.NotInitializedException;
+import me.quesia.peepopractice.core.PracticeWriter;
 import me.quesia.peepopractice.core.category.properties.PlayerProperties;
 import me.quesia.peepopractice.core.category.properties.StructureProperties;
 import me.quesia.peepopractice.core.category.properties.WorldProperties;
 import me.quesia.peepopractice.core.category.properties.event.SplitEvent;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
@@ -167,7 +171,7 @@ public class PracticeCategory {
             }
         }
         if (showPb && this.hasSplitEvent()) {
-            PracticeCategoryUtils.CompareType compareType = PracticeCategoryUtils.CompareType.fromLabel(CategoryPreference.getValue(this, "compare_type", PracticeCategoryUtils.CompareType.PB.getLabel()));
+            PracticeTypes.CompareType compareType = PracticeTypes.CompareType.fromLabel(CategoryPreference.getValue(this, "compare_type", PracticeTypes.CompareType.PB.getLabel()));
             if (compareType != null) {
                 switch (compareType) {
                     case PB:
@@ -190,11 +194,19 @@ public class PracticeCategory {
         return text.toString();
     }
 
+    public boolean hasConfiguredInventory() {
+        PracticeWriter writer = PracticeWriter.INVENTORY_WRITER;
+        JsonObject config = writer.get();
+        if (!config.has(this.getId())) { return false; }
+        JsonObject inventory = config.get(this.getId()).getAsJsonObject();
+        return inventory.size() > 0 || FabricLoader.getInstance().isDevelopmentEnvironment();
+    }
+
     public void reset() {
         this.customValues.clear();
     }
 
     public interface ExecuteReturnTask<T> {
-        @Nullable T execute(PracticeCategory category, Random random, ServerWorld world);
+        @Nullable T execute(PracticeCategory category, Random random, ServerWorld world) throws NotInitializedException;
     }
 }

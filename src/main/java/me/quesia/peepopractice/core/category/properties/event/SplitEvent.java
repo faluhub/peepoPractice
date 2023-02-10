@@ -53,6 +53,7 @@ public class SplitEvent {
         } else {
             isPb = true;
         }
+        PeepoPractice.CATEGORY.putCustomValue("isCompletion", completed);
         if (completed) {
             JsonObject categoryObject = new JsonObject();
             JsonArray array = new JsonArray();

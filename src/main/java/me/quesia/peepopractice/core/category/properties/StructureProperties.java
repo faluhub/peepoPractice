@@ -1,5 +1,6 @@
 package me.quesia.peepopractice.core.category.properties;
 
+import me.quesia.peepopractice.core.NotInitializedException;
 import me.quesia.peepopractice.core.category.PracticeCategory;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.BlockRotation;
@@ -14,11 +15,12 @@ import java.util.Random;
 public class StructureProperties extends BaseProperties {
     private ConfiguredStructureFeature<?, ?> structure;
     private ChunkPos chunkPos;
+    private PracticeCategory.ExecuteReturnTask<ChunkPos> chunkPosTask;
     private Direction orientation;
     private BlockRotation rotation;
-    private PracticeCategory.ExecuteReturnTask<ChunkPos> chunkPosTask;
     private Integer structureTopY;
     private boolean generatable = false;
+    private PracticeCategory.ExecuteReturnTask<Boolean> generatableTask;
     private boolean generated = false;
 
     public ConfiguredStructureFeature<?, ?> getStructure() {
@@ -108,6 +110,11 @@ public class StructureProperties extends BaseProperties {
         return this;
     }
 
+    public StructureProperties setGeneratable(PracticeCategory.ExecuteReturnTask<Boolean> task) {
+        this.generatableTask = task;
+        return this;
+    }
+
     public boolean hasGenerated() {
         return this.generated;
     }
@@ -116,10 +123,16 @@ public class StructureProperties extends BaseProperties {
         this.generated = true;
     }
 
-    public void reset(Random random, ServerWorld world) {
+    public void reset(Random random, ServerWorld world) throws NotInitializedException {
         this.generated = false;
         if (this.chunkPosTask != null) {
             this.setChunkPos(this.chunkPosTask.execute(this.getCategory(), random, world));
+        }
+        if (this.generatableTask != null) {
+            Boolean value = this.generatableTask.execute(this.getCategory(), random, world);
+            if (value != null) {
+                this.setGeneratable(value);
+            }
         }
     }
 }

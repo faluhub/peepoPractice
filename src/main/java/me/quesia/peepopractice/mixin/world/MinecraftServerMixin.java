@@ -2,6 +2,7 @@ package me.quesia.peepopractice.mixin.world;
 
 import com.google.common.collect.ImmutableList;
 import me.quesia.peepopractice.PeepoPractice;
+import me.quesia.peepopractice.core.NotInitializedException;
 import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.core.category.properties.StructureProperties;
@@ -89,10 +90,27 @@ public abstract class MinecraftServerMixin {
         RegistryKey<DimensionType> registryKey = this.dimensionTracker.getDimensionTypeRegistry().getKey(dimensionType).orElseThrow(() -> new IllegalStateException("Unregistered dimension type: " + dimensionType));
         ServerWorld serverWorld = new ServerWorld((MinecraftServer) (Object) this, this.workerExecutor, this.session, serverWorldProperties, PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey(), registryKey, dimensionType, worldGenerationProgressListener, chunkGenerator, bl, m, PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey().equals(World.OVERWORLD) ? list : ImmutableList.of(), true);
 
-        Random random = new Random(((ChunkGeneratorAccessor) chunkGenerator).getField_24748());
-        for (PracticeCategory category : PracticeCategories.ALL) {
-            for (StructureProperties properties : category.getStructureProperties()) {
-                properties.reset(random, serverWorld);
+        boolean initializedStructures = false;
+        if (PeepoPractice.CATEGORY.hasPlayerProperties()) {
+            try {
+                PeepoPractice.CATEGORY.getPlayerProperties().reset(new Random(((ChunkGeneratorAccessor) chunkGenerator).getField_24748()), serverWorld);
+            } catch (NotInitializedException ignored) {
+                try {
+                    for (StructureProperties properties : PeepoPractice.CATEGORY.getStructureProperties()) {
+                        properties.reset(new Random(((ChunkGeneratorAccessor) chunkGenerator).getField_24748()), serverWorld);
+                    }
+                    initializedStructures = true;
+                    PeepoPractice.CATEGORY.getPlayerProperties().reset(new Random(((ChunkGeneratorAccessor) chunkGenerator).getField_24748()), serverWorld);
+                } catch (NotInitializedException ignored1) {
+                    PeepoPractice.log(PeepoPractice.CATEGORY.getId() + " in an infinite loop, retrying at spawn. (Occurrence 1)");
+                    PeepoPractice.RETRY_PLAYER_INITIALIZATION = true;
+                }
+            }
+        }
+        if (!initializedStructures) {
+            for (StructureProperties properties : PeepoPractice.CATEGORY.getStructureProperties()) {
+                try { properties.reset(new Random(((ChunkGeneratorAccessor) chunkGenerator).getField_24748()), serverWorld); }
+                catch (NotInitializedException ignored) { PeepoPractice.log(PeepoPractice.CATEGORY.getId() + " in an infinite loop. (Occurrence 2)"); }
             }
         }
 

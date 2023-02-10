@@ -10,11 +10,15 @@ import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.level.storage.LevelStorage;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.nio.file.Path;
 
 @Mixin(CreateWorldScreen.class)
 public abstract class CreateWorldScreenMixin extends Screen {
@@ -23,6 +27,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
     @Shadow private boolean cheatsEnabled;
     @Shadow private boolean tweakedCheats;
     @Shadow protected abstract void createLevel();
+    @Shadow private String levelName;
 
     protected CreateWorldScreenMixin(Text title) {
         super(title);
@@ -32,8 +37,8 @@ public abstract class CreateWorldScreenMixin extends Screen {
     private void setDefaultDifficulty(CallbackInfo ci) {
         if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
             this.field_24289 = this.field_24290 = Difficulty.EASY;
-            this.cheatsEnabled = true;
-            this.tweakedCheats = true;
+            this.cheatsEnabled = this.tweakedCheats = true;
+            this.levelName = PeepoPractice.CATEGORY.getName(false);
         }
     }
 
