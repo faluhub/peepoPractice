@@ -22,7 +22,6 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
 
-import java.util.ConcurrentModificationException;
 import java.util.concurrent.TimeUnit;
 
 public class SplitEvent {
@@ -114,36 +113,29 @@ public class SplitEvent {
             if (completed) {
                 new Thread(() -> {
                     for (int i = 0; i < 5; i++) {
-                        try {
-                            if (client.player != null) {
-                                while (((ServerWorldAccessor) serverPlayerEntity.getServerWorld()).getInEntityTick()) {}
-                                client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 3.0F, 0.5F + .2F * (i + i / 4.0F));
-                                try { TimeUnit.MILLISECONDS.sleep(180); }
-                                catch (InterruptedException ignored) {}
-                            }
-                        } catch (ConcurrentModificationException ignored) {}
+                        if (client.player != null) {
+                            client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 3.0F, 0.5F + .2F * (i + i / 4.0F));
+                            try { TimeUnit.MILLISECONDS.sleep(180); }
+                            catch (InterruptedException ignored) {}
+                        }
                     }
                     if (isPb) {
                         try {
                             if (client.player != null) {
-                                while (((ServerWorldAccessor) serverPlayerEntity.getServerWorld()).getInEntityTick()) {}
                                 TimeUnit.MILLISECONDS.sleep(180);
                                 client.player.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, 3.0F, 1.0F);
                             }
-                        } catch (InterruptedException | ConcurrentModificationException ignored) {}
+                        } catch (InterruptedException ignored) {}
                     }
                 }).start();
             } else {
                 new Thread(() -> {
                     for (int i = 0; i < 2; i++) {
-                        try {
-                            if (client.player != null) {
-                                while (((ServerWorldAccessor) serverPlayerEntity.getServerWorld()).getInEntityTick()) {}
-                                client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS, 3.0F, 1.2F - i * 0.5F);
-                                try { TimeUnit.MILLISECONDS.sleep(180); }
-                                catch (InterruptedException ignored) {}
-                            }
-                        } catch (ConcurrentModificationException ignored) {}
+                        if (client.player != null) {
+                            client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS, 3.0F, 1.2F - i * 0.5F);
+                            try { TimeUnit.MILLISECONDS.sleep(180); }
+                            catch (InterruptedException ignored) {}
+                        }
                     }
                 }).start();
             }

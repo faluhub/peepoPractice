@@ -48,17 +48,22 @@ public class PracticeWriter {
             writer.write(new GsonBuilder().setPrettyPrinting().create().toJson(this.local));
             writer.flush();
             writer.close();
+
+            PeepoPractice.log("Wrote to '" + this.file.getName() + "'.");
         } catch (IOException ignored) {}
-        this.local = null;
+        this.update();
     }
 
     public void update() {
         this.local = null;
         this.local = this.get();
+
+        PeepoPractice.log("Updated local json object.");
     }
 
     public JsonObject get() {
         if (this.local != null) { return this.local; }
+
 
         this.create(this.file.getName());
 
@@ -67,9 +72,8 @@ public class PracticeWriter {
             JsonParser parser = new JsonParser();
 
             Object obj = parser.parse(reader);
-            JsonObject value = obj == null || obj.equals(JsonNull.INSTANCE) ? new JsonObject() : (JsonObject) obj;
-            this.local = value;
-            return value;
+
+            return obj == null || obj.equals(JsonNull.INSTANCE) ? new JsonObject() : (JsonObject) obj;
         } catch (IOException ignored) {}
 
         return null;

@@ -74,17 +74,12 @@ public class PracticeTypes {
 
     public enum CompareType {
         PB("PB"),
-        AVERAGE();
+        AVERAGE("Average");
 
         private final String label;
 
-        @SuppressWarnings("SameParameterValue")
         CompareType(String label) {
             this.label = label;
-        }
-
-        CompareType() {
-            this.label = parseEnumName(this.name());
         }
 
         public String getLabel() {

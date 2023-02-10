@@ -149,10 +149,9 @@ public class CategoryPreference {
                 setValue(category, id, categoryPreference.getDefaultChoice());
                 return categoryPreference.getDefaultChoice();
             }
-            return categoryObject.get(id).getAsString();
         }
 
-        return null;
+        return categoryObject.get(id).getAsString();
     }
 
     public static String getValue(PracticeCategory category, CategoryPreference categoryPreference) {
