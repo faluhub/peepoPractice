@@ -62,7 +62,6 @@ public class MinecraftClientMixin {
     @Inject(method = "openScreen", at = @At("HEAD"))
     private void resetCategory(Screen screen, CallbackInfo ci) {
         if (screen instanceof TitleScreen) {
-            PeepoPractice.CATEGORY.reset();
             if (PeepoPractice.RESET_CATEGORY) {
                 PeepoPractice.CATEGORY = PracticeCategories.EMPTY;
             }

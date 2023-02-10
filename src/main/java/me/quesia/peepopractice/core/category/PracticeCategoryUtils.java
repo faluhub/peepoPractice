@@ -1,8 +1,6 @@
 package me.quesia.peepopractice.core.category;
 
-import me.quesia.peepopractice.PeepoPractice;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.SaveLevelScreen;
 import net.minecraft.client.gui.screen.TitleScreen;

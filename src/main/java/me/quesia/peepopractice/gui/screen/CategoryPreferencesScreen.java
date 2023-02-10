@@ -45,14 +45,16 @@ public class CategoryPreferencesScreen extends Screen {
                             new LiteralText(preference.getLabel() + ":\n" + currentValue),
                             b -> {
                                 String value = CategoryPreference.getValue(this.category, preference.getId());
-                                int currentIndex = CategoryPreference.getIndex(value, preference.getChoices());
-                                String next;
+                                if (value != null) {
+                                    int currentIndex = CategoryPreference.getIndex(value, preference.getChoices());
+                                    String next;
 
-                                try { next = preference.getChoices().get(currentIndex + 1); }
-                                catch (IndexOutOfBoundsException ignored) { next = preference.getChoices().get(0); }
+                                    try { next = preference.getChoices().get(currentIndex + 1); }
+                                    catch (IndexOutOfBoundsException ignored) { next = preference.getChoices().get(0); }
 
-                                b.setMessage(new LiteralText(b.getMessage().getString().replaceAll(value, next)));
-                                CategoryPreference.setValue(this.category, preference.getId(), next);
+                                    b.setMessage(new LiteralText(b.getMessage().getString().replaceAll(value, next)));
+                                    CategoryPreference.setValue(this.category, preference.getId(), next);
+                                }
                             },
                             (button, matrices, mouseX, mouseY) -> this.renderTooltip(matrices, new LiteralText(preference.getDescription()), mouseX, mouseY)
                     )

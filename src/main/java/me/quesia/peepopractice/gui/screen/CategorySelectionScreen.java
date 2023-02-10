@@ -1,12 +1,10 @@
 package me.quesia.peepopractice.gui.screen;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.PracticeWriter;
 import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.gui.widget.CategoryListWidget;
 import me.quesia.peepopractice.gui.widget.LimitlessButtonWidget;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.BackgroundHelper;
 import net.minecraft.client.gui.screen.FatalErrorScreen;
 import net.minecraft.client.gui.screen.Screen;

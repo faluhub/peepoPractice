@@ -1,7 +1,5 @@
 package me.quesia.peepopractice.core.category;
 
-import com.redlimerl.speedrunigt.timer.InGameTimer;
-import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.CustomPortalForcer;
 import me.quesia.peepopractice.core.NotInitializedException;
 import me.quesia.peepopractice.core.category.properties.PlayerProperties;
@@ -13,9 +11,7 @@ import me.quesia.peepopractice.core.category.properties.event.ThrowEntitySplitEv
 import me.quesia.peepopractice.core.category.properties.preset.BastionPreset;
 import me.quesia.peepopractice.mixin.access.ChunkGeneratorAccessor;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Items;
-import net.minecraft.server.network.SpawnLocating;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.Identifier;
@@ -24,7 +20,6 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biomes;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.*;
 

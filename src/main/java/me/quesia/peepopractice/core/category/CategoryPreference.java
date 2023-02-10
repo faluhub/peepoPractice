@@ -111,10 +111,12 @@ public class CategoryPreference {
     }
 
     public static boolean getBoolValue(PracticeCategory category, String id) {
-        String value = getValue(category, id);
-        if (value != null) {
-            return PracticeCategoryUtils.parseBoolean(value);
-        }
+        try {
+            String value = getValue(category, id);
+            if (value != null) {
+                return PracticeCategoryUtils.parseBoolean(value);
+            }
+        } catch (NullPointerException ignored) {}
         return false;
     }
 

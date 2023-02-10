@@ -5,7 +5,6 @@ import net.minecraft.util.math.Vec3i;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 
 public class PracticeTypes {
     private static String parseEnumName(String name) {
@@ -79,6 +78,7 @@ public class PracticeTypes {
 
         private final String label;
 
+        @SuppressWarnings("SameParameterValue")
         CompareType(String label) {
             this.label = label;
         }

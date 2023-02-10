@@ -1,7 +1,6 @@
 package me.quesia.peepopractice.gui.hud;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.redlimerl.speedrunigt.timer.InGameTimer;
 import me.quesia.peepopractice.PeepoPractice;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;

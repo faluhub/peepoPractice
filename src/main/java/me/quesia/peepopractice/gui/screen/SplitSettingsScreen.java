@@ -4,7 +4,6 @@ import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.PracticeWriter;
 import me.quesia.peepopractice.core.category.CategoryPreference;
 import me.quesia.peepopractice.core.category.PracticeCategory;
-import me.quesia.peepopractice.core.category.PracticeCategoryUtils;
 import me.quesia.peepopractice.core.category.PracticeTypes;
 import me.quesia.peepopractice.gui.widget.LimitlessButtonWidget;
 import net.minecraft.client.gui.screen.Screen;
