@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@SuppressWarnings("UnusedDeclaration")
 public class CategoryPreference {
     private String id;
     private String label;
@@ -60,11 +59,6 @@ public class CategoryPreference {
         return this;
     }
 
-    public CategoryPreference addChoice(String choice) {
-        this.choices.add(choice);
-        return this;
-    }
-
     public String getDefaultChoice() {
         return this.defaultChoice;
     }
@@ -111,12 +105,10 @@ public class CategoryPreference {
     }
 
     public static boolean getBoolValue(PracticeCategory category, String id) {
-        try {
-            String value = getValue(category, id);
-            if (value != null) {
-                return PracticeCategoryUtils.parseBoolean(value);
-            }
-        } catch (NullPointerException ignored) {}
+        String value = getValue(category, id);
+        if (value != null) {
+            return PracticeCategoryUtils.parseBoolean(value);
+        }
         return false;
     }
 
@@ -151,7 +143,8 @@ public class CategoryPreference {
             }
         }
 
-        return categoryObject.get(id).getAsString();
+        try { return categoryObject.get(id).getAsString(); }
+        catch (NullPointerException ignored) { return null; }
     }
 
     public static String getValue(PracticeCategory category, CategoryPreference categoryPreference) {
@@ -169,7 +162,8 @@ public class CategoryPreference {
             return categoryPreference.getDefaultChoice();
         }
 
-        return categoryObject.get(id).getAsString();
+        try { return categoryObject.get(id).getAsString(); }
+        catch (NullPointerException ignored) { return null; }
     }
 
     public static void setValue(PracticeCategory category, String id, String value) {

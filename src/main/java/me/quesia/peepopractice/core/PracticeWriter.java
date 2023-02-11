@@ -57,13 +57,10 @@ public class PracticeWriter {
     public void update() {
         this.local = null;
         this.local = this.get();
-
-        PeepoPractice.log("Updated local json object.");
     }
 
     public JsonObject get() {
         if (this.local != null) { return this.local; }
-
 
         this.create(this.file.getName());
 

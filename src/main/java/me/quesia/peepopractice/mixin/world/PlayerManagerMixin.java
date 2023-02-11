@@ -27,10 +27,10 @@ public class PlayerManagerMixin {
 
     @Inject(method = "onPlayerConnect", at = @At("TAIL"))
     private void setInventory(ClientConnection connection, ServerPlayerEntity player, CallbackInfo ci) {
-        if (PeepoPractice.CATEGORY != PracticeCategories.EMPTY) {
+        if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
             MinecraftClient.getInstance().inGameHud.setTitles(null, null, -1, -1, -1);
             InventoryUtils.putItems(player.inventory, PeepoPractice.CATEGORY);
-            player.getHungerManager().setSaturationLevelClient(20.0F);
+            player.getHungerManager().setSaturationLevelClient(10.0F);
         }
     }
 }

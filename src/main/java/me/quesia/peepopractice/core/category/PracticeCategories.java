@@ -153,7 +153,7 @@ public class PracticeCategories {
                         BlockPos blockPos = strongholds.get(random.nextInt(maxStrongholds)).toBlockPos(4, 0, 4);
                         blockPos = PracticeCategoryUtils.getRandomBlockInRadius(max, min, blockPos, random);
                         blockPos = new BlockPos(blockPos.getX(), PracticeCategoryUtils.findTopPos(world, blockPos), blockPos.getZ());
-                        blockPos = CustomPortalForcer.createPortal(blockPos, world).down();
+                        blockPos = CustomPortalForcer.createPortal(blockPos, world).down(2);
                         return blockPos;
                     })
             )
