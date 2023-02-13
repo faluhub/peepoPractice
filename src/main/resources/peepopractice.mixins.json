@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_10",
   "client": [
     "access.ChunkGeneratorAccessor",
+    "access.InGameTimerAccessor",
     "access.ItemEntryAccessor",
     "access.LootPoolAccessor",
     "access.LootTableAccessor",
@@ -14,6 +15,7 @@
 
     "compat.InGameTimerUtilsMixin",
     "compat.LocateCommandMixin",
+    "compat.PracticeTimerManagerMixin",
 
     "gui.hud.InGameHudMixin",
     "gui.hud.SubtitlesHudMixin",
@@ -38,6 +40,8 @@
     "world.biome.MultiNoiseBiomeSourceMixin",
 
     "world.entity.ClientPlayerEntityMixin",
+    "world.entity.MobEntityMixin",
+    "world.entity.PiglinBrainMixin",
     "world.entity.ServerPlayerEntityMixin",
     "world.entity.ThrownItemEntityMixin",
 

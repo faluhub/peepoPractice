@@ -28,7 +28,6 @@ import java.io.IOException;
 @Mixin(MinecraftClient.class)
 public class MinecraftClientMixin {
     @Shadow @Final public File runDirectory;
-
     @Shadow @Final private DataFixer dataFixer;
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;runTasks()V"))

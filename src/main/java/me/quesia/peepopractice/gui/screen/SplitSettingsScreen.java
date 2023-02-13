@@ -48,6 +48,7 @@ public class SplitSettingsScreen extends Screen {
             String currentValue = CategoryPreference.getValue(this.category, preference);
             this.addButton(new LimitlessButtonWidget(false, preference.getIcon(), null, this.width / 2 - width / 2, this.height * (index + 1) / (amount + 1) - height / 2, width, height, new LiteralText(preference.getLabel() + ": " + currentValue), b -> {
                 String value = CategoryPreference.getValue(this.category, preference);
+                if (value == null) { return; }
                 int currentIndex = CategoryPreference.getIndex(value, preference.getChoices());
                 String next;
 

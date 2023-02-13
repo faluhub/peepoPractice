@@ -31,87 +31,87 @@ public class SplitEvent {
     public void complete(boolean completed) {
         if (this.category == null) { return; }
 
-        PracticeWriter writer = PracticeWriter.COMPLETIONS_WRITER;
-        JsonObject object = writer.get();
+        new Thread(() -> {
+            PracticeWriter writer = PracticeWriter.COMPLETIONS_WRITER;
+            JsonObject object = writer.get();
 
-        MinecraftClient client = MinecraftClient.getInstance();
+            MinecraftClient client = MinecraftClient.getInstance();
 
-        if (client.player == null || client.getServer() == null) { return; }
-        ServerPlayerEntity serverPlayerEntity = client.getServer().getPlayerManager().getPlayer(client.player.getUuid());
-        if (serverPlayerEntity == null || serverPlayerEntity.getScoreboardTags().contains("completed")) { return; }
+            if (client.player == null || client.getServer() == null) { return; }
+            ServerPlayerEntity serverPlayerEntity = client.getServer().getPlayerManager().getPlayer(client.player.getUuid());
+            if (serverPlayerEntity == null || serverPlayerEntity.getScoreboardTags().contains("completed")) { return; }
 
-        InGameTimer timer = InGameTimer.getInstance();
-        if (timer.isCompleted() || timer.getStatus().equals(TimerStatus.NONE)) { return; }
-        InGameTimer.complete();
-        long igt = timer.getInGameTime();
+            InGameTimer timer = InGameTimer.getInstance();
+            if (timer.isCompleted() || timer.getStatus().equals(TimerStatus.NONE)) { return; }
+            InGameTimer.complete();
+            long igt = timer.getInGameTime();
 
-        boolean isPb;
-        if (this.hasPb()) {
-            long pb = getPbLong();
-            isPb = igt <= pb;
-        } else {
-            isPb = true;
-        }
-        PeepoPractice.CATEGORY.putCustomValue("isCompletion", completed);
-        if (completed) {
-            JsonObject categoryObject = new JsonObject();
-            JsonArray array = new JsonArray();
-            if (object.has(this.category.getId())) {
-                categoryObject = object.get(this.category.getId()).getAsJsonObject();
-                if (categoryObject.has("completions")) {
-                    array = categoryObject.get("completions").getAsJsonArray();
-                }
+            boolean isPb;
+            if (this.hasPb()) {
+                long pb = getPbLong();
+                isPb = igt <= pb;
+            } else {
+                isPb = true;
             }
-            array.add(igt);
-            categoryObject.add("completions", array);
-            if (isPb) {
-                categoryObject.addProperty("pb", igt);
-            }
-            writer.put(this.category.getId(), categoryObject);
-            writer.write();
-        } else {
-            this.incrementFailCount();
-        }
-
-        String time = getTimeString(igt);
-
-        if (client.player != null) {
-            client.inGameHud.setTitles(
-                    completed
-                            ? new LiteralText(Formatting.AQUA + "Completed"
-                            + (isPb ? Formatting.YELLOW + " (PB!)" : ""))
-                            : new LiteralText(Formatting.RED + "Failed"),
-                    new LiteralText(Formatting.GRAY + time),
-                    10,
-                    100,
-                    10
-            );
-            serverPlayerEntity.setGameMode(GameMode.SPECTATOR);
-            float yaw = 0.0F;
-            float pitch = 0.0F;
-            BlockPos pos = client.getServer().getOverworld().getSpawnPos();
-            RegistryKey<World> registryKey = client.getServer().getOverworld().getRegistryKey();
-            if (this.category.hasWorldProperties() && this.category.getWorldProperties().hasWorldRegistryKey()) {
-                registryKey = this.category.getWorldProperties().getWorldRegistryKey();
-            }
-            if (this.category.hasPlayerProperties()) {
-                if (this.category.getPlayerProperties().getSpawnAngle() != null) {
-                    Vec2f angle = this.category.getPlayerProperties().getSpawnAngle();
-                    yaw = angle.x;
-                    pitch = angle.y;
-                }
-                if (this.category.getPlayerProperties().getSpawnPos() != null) {
-                    pos = this.category.getPlayerProperties().getSpawnPos();
-                }
-            }
-
-            while (((ServerWorldAccessor) serverPlayerEntity.getServerWorld()).getInEntityTick()) {}
-            PeepoPractice.log("Done waiting for entity tick");
-            serverPlayerEntity.teleport(client.getServer().getWorld(registryKey), pos.getX(), pos.getY(), pos.getZ(), yaw, pitch);
-            serverPlayerEntity.addScoreboardTag("completed");
-
+            PeepoPractice.CATEGORY.putCustomValue("isCompletion", completed);
             if (completed) {
-                new Thread(() -> {
+                JsonObject categoryObject = new JsonObject();
+                JsonArray array = new JsonArray();
+                if (object.has(this.category.getId())) {
+                    categoryObject = object.get(this.category.getId()).getAsJsonObject();
+                    if (categoryObject.has("completions")) {
+                        array = categoryObject.get("completions").getAsJsonArray();
+                    }
+                }
+                array.add(igt);
+                categoryObject.add("completions", array);
+                if (isPb) {
+                    categoryObject.addProperty("pb", igt);
+                }
+                writer.put(this.category.getId(), categoryObject);
+                writer.write();
+            } else {
+                this.incrementFailCount();
+            }
+
+            String time = getTimeString(igt);
+
+            if (client.player != null) {
+                client.inGameHud.setTitles(
+                        completed
+                                ? new LiteralText(Formatting.AQUA + "Completed"
+                                + (isPb ? Formatting.YELLOW + " (PB!)" : ""))
+                                : new LiteralText(Formatting.RED + "Failed"),
+                        new LiteralText(Formatting.GRAY + time),
+                        10,
+                        100,
+                        10
+                );
+                serverPlayerEntity.setGameMode(GameMode.SPECTATOR);
+                float yaw = 0.0F;
+                float pitch = 0.0F;
+                BlockPos pos = client.getServer().getOverworld().getSpawnPos();
+                RegistryKey<World> registryKey = client.getServer().getOverworld().getRegistryKey();
+                if (this.category.hasWorldProperties() && this.category.getWorldProperties().hasWorldRegistryKey()) {
+                    registryKey = this.category.getWorldProperties().getWorldRegistryKey();
+                }
+                if (this.category.hasPlayerProperties()) {
+                    if (this.category.getPlayerProperties().getSpawnAngle() != null) {
+                        Vec2f angle = this.category.getPlayerProperties().getSpawnAngle();
+                        yaw = angle.x;
+                        pitch = angle.y;
+                    }
+                    if (this.category.getPlayerProperties().getSpawnPos() != null) {
+                        pos = this.category.getPlayerProperties().getSpawnPos();
+                    }
+                }
+
+                while (((ServerWorldAccessor) serverPlayerEntity.getServerWorld()).getInEntityTick()) {}
+                PeepoPractice.log("Done waiting for entity tick");
+                serverPlayerEntity.teleport(client.getServer().getWorld(registryKey), pos.getX(), pos.getY(), pos.getZ(), yaw, pitch);
+                serverPlayerEntity.addScoreboardTag("completed");
+
+                if (completed) {
                     for (int i = 0; i < 5; i++) {
                         if (client.player != null) {
                             client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 3.0F, 0.5F + .2F * (i + i / 4.0F));
@@ -127,9 +127,7 @@ public class SplitEvent {
                             }
                         } catch (InterruptedException ignored) {}
                     }
-                }).start();
-            } else {
-                new Thread(() -> {
+                } else {
                     for (int i = 0; i < 2; i++) {
                         if (client.player != null) {
                             client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS, 3.0F, 1.2F - i * 0.5F);
@@ -137,9 +135,9 @@ public class SplitEvent {
                             catch (InterruptedException ignored) {}
                         }
                     }
-                }).start();
+                }
             }
-        }
+        }).start();
     }
 
     public boolean hasPb() {

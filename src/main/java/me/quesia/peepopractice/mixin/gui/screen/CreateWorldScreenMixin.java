@@ -64,6 +64,5 @@ public abstract class CreateWorldScreenMixin extends Screen {
             }
             PracticeCategoryUtils.quit(false);
         }
-        PeepoPractice.CATEGORY.reset();
     }
 }

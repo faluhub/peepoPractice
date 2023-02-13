@@ -89,6 +89,7 @@ public abstract class MinecraftServerMixin {
         ServerWorld serverWorld = new ServerWorld((MinecraftServer) (Object) this, this.workerExecutor, this.session, serverWorldProperties, PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey(), registryKey, dimensionType, worldGenerationProgressListener, chunkGenerator, bl, m, PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey().equals(World.OVERWORLD) ? list : ImmutableList.of(), true);
 
         boolean initializedStructures = false;
+        PeepoPractice.CATEGORY.reset();
         if (PeepoPractice.CATEGORY.hasPlayerProperties()) {
             try {
                 PeepoPractice.CATEGORY.getPlayerProperties().reset(new Random(((ChunkGeneratorAccessor) chunkGenerator).getField_24748()), serverWorld);

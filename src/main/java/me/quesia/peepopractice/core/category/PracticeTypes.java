@@ -161,7 +161,8 @@ public class PracticeTypes {
     public enum StrongholdDistanceType {
         CLOSE(200, 500),
         AVERAGE(700, 1000),
-        FAR(1200, 1600);
+        FAR(1200, 1600),
+        RANDOM(200, 1600);
 
         private final int min;
         private final int max;

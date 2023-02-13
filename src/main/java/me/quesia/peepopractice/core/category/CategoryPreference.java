@@ -64,8 +64,7 @@ public class CategoryPreference {
     }
 
     public CategoryPreference setDefaultChoice(String defaultChoice) {
-        if (this.choices.contains(this.defaultChoice)) { this.defaultChoice = defaultChoice; }
-        else if (this.choices.size() > 0) { this.defaultChoice = this.choices.get(0); }
+        this.defaultChoice = defaultChoice;
         return this;
     }
 
@@ -112,10 +111,6 @@ public class CategoryPreference {
         return false;
     }
 
-    public static String getValue(String id) {
-        return getValue(PeepoPractice.CATEGORY, id);
-    }
-
     public static String getValue(PracticeCategory category, String id, String def) {
         String value = getValue(category, id);
         if (value == null) {
@@ -157,10 +152,12 @@ public class CategoryPreference {
         }
 
         String id = categoryPreference.getId();
-        if (!categoryObject.has(id) || !categoryPreference.getChoices().contains(categoryObject.get(id).getAsString())) {
-            setValue(category, id, categoryPreference.getDefaultChoice());
-            return categoryPreference.getDefaultChoice();
-        }
+        try {
+            if (!categoryObject.has(id) || !categoryPreference.getChoices().contains(categoryObject.get(id).getAsString())) {
+                setValue(category, id, categoryPreference.getDefaultChoice());
+                return categoryPreference.getDefaultChoice();
+            }
+        } catch (NullPointerException ignored) {}
 
         try { return categoryObject.get(id).getAsString(); }
         catch (NullPointerException ignored) { return null; }

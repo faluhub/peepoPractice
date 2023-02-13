@@ -194,11 +194,12 @@ public class PracticeCategory {
     }
 
     public boolean hasConfiguredInventory() {
+        if (FabricLoader.getInstance().isDevelopmentEnvironment()) { return true; }
         PracticeWriter writer = PracticeWriter.INVENTORY_WRITER;
         JsonObject config = writer.get();
         if (!config.has(this.getId())) { return false; }
         JsonObject inventory = config.get(this.getId()).getAsJsonObject();
-        return inventory.size() > 0 || FabricLoader.getInstance().isDevelopmentEnvironment();
+        return inventory.size() > 0;
     }
 
     public void reset() {
