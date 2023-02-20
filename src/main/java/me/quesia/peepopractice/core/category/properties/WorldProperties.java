@@ -3,7 +3,6 @@ package me.quesia.peepopractice.core.category.properties;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;

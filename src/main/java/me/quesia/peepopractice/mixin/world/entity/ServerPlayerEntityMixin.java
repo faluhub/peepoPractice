@@ -10,7 +10,6 @@ import me.quesia.peepopractice.core.category.PracticeTypes;
 import me.quesia.peepopractice.core.category.properties.event.ChangeDimensionSplitEvent;
 import me.quesia.peepopractice.core.category.properties.event.SplitEvent;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -39,9 +38,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     @Shadow @Nullable public abstract BlockPos getSpawnPointPosition();
     @Shadow public abstract void setGameMode(GameMode gameMode);
     @Shadow public abstract void sendMessage(Text message, boolean actionBar);
-
     @Shadow public abstract boolean startRiding(Entity entity, boolean force);
-
     private Long comparingTime;
     private PracticeTypes.PaceTimerShowType showType;
 

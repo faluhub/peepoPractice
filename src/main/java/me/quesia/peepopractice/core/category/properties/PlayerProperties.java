@@ -4,7 +4,6 @@ import me.quesia.peepopractice.core.NotInitializedException;
 import me.quesia.peepopractice.core.category.PracticeCategory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec2f;
