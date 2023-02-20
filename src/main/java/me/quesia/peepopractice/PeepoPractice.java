@@ -1,18 +1,23 @@
 package me.quesia.peepopractice;
 
+import me.quesia.peepopractice.core.KeyBindingHelper;
 import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.core.resource.LocalResourceManager;
 import me.quesia.peepopractice.core.playerless.PlayerlessInventory;
 import me.quesia.peepopractice.core.playerless.PlayerlessPlayerScreenHandler;
+import me.voidxwalker.autoreset.Atum;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.gui.hud.BackgroundHelper;
+import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.resource.ServerResourceManager;
 import net.minecraft.world.level.storage.LevelStorage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -33,6 +38,7 @@ public class PeepoPractice implements ClientModInitializer {
     public static final int BACKGROUND_OVERLAY_COLOUR = BackgroundHelper.ColorMixer.getArgb(60, 0, 0, 0);
     public static LevelStorage PRACTICE_LEVEL_STORAGE;
     public static boolean RETRY_PLAYER_INITIALIZATION = false;
+    public static KeyBinding REPLAY_SPLIT_KEY;
 
     public static void log(Object message) {
         LOGGER.info(message);
@@ -47,5 +53,26 @@ public class PeepoPractice implements ClientModInitializer {
         thread.start();
 
         log("Using " + MOD_NAME + " v" + MOD_VERSION);
+
+        REPLAY_SPLIT_KEY = KeyBindingHelper.registerKeyBinding(
+                new KeyBinding(
+                        KeyBindingHelper.getTranslation("key." + MOD_CONTAINER.getMetadata().getId() + ".replay_split", "Replay Split").getString(),
+                        InputUtil.Type.KEYSYM,
+                        GLFW.GLFW_KEY_H,
+                        KeyBindingHelper.getTranslation("key.categories." + MOD_CONTAINER.getMetadata().getId(), MOD_NAME).getString()
+                )
+        );
+    }
+
+    public static void disableAtumKey() {
+        if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY) && FabricLoader.getInstance().getModContainer("atum").isPresent()) {
+            Atum.hotkeyPressed = false;
+        }
+    }
+
+    public static void disableAtumReset() {
+        if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY) && FabricLoader.getInstance().getModContainer("atum").isPresent()) {
+            Atum.isRunning = false;
+        }
     }
 }

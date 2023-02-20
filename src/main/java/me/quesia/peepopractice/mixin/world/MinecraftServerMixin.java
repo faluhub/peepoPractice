@@ -26,7 +26,10 @@ import net.minecraft.world.PersistentStateManager;
 import net.minecraft.world.SaveProperties;
 import net.minecraft.world.WanderingTraderManager;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.layer.BiomeLayers;
 import net.minecraft.world.biome.source.BiomeAccess;
+import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.border.WorldBorder;
 import net.minecraft.world.border.WorldBorderListener;
 import net.minecraft.world.dimension.DimensionOptions;
@@ -44,6 +47,7 @@ import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Executor;
@@ -178,5 +182,18 @@ public abstract class MinecraftServerMixin {
             this.save(true, true, false);
             this.method_16208();
         }
+    }
+
+    @Redirect(method = "setupSpawn", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/biome/source/BiomeSource;getSpawnBiomes()Ljava/util/List;"))
+    private static List<Biome> addOceanSpawnBiome(BiomeSource instance) {
+        List<Biome> spawnBiomes = instance.getSpawnBiomes();
+        if (PeepoPractice.CATEGORY.hasWorldProperties()) {
+            PeepoPractice.CATEGORY.getWorldProperties().getProBiomeRangeMap().forEach((k, v) -> {
+                if (BiomeLayers.isOcean(Registry.BIOME.getRawId(k))) {
+                    spawnBiomes.add(k);
+                }
+            });
+        }
+        return spawnBiomes;
     }
 }

@@ -7,8 +7,10 @@ import me.quesia.peepopractice.core.category.StandardSettingsUtils;
 import me.quesia.peepopractice.core.resource.LocalResourceManager;
 import me.quesia.peepopractice.mixin.access.ThreadExecutorAccessor;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.OpenToLanScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.registry.RegistryTracker;
 import net.minecraft.world.gen.GeneratorOptions;
 import net.minecraft.world.level.LevelInfo;
@@ -68,13 +70,13 @@ public class MinecraftClientMixin {
     }
 
     @Inject(method = "method_29607", at = @At("HEAD"))
-    private void standardSettings_resetSettings(String worldName, LevelInfo levelInfo, RegistryTracker.Modifiable registryTracker, GeneratorOptions generatorOptions, CallbackInfo ci) {
+    private void resetSettings1(String worldName, LevelInfo levelInfo, RegistryTracker.Modifiable registryTracker, GeneratorOptions generatorOptions, CallbackInfo ci) {
         PeepoPractice.log("Triggered first standard settings call for " + PeepoPractice.CATEGORY.getId());
         StandardSettingsUtils.triggerStandardSettings(PeepoPractice.CATEGORY);
     }
 
     @Inject(method = "method_29607", at = @At("TAIL"))
-    private void standardSettings_onWorldLoad(String worldName, LevelInfo levelInfo, RegistryTracker.Modifiable registryTracker, GeneratorOptions generatorOptions, CallbackInfo ci) {
+    private void resetSettings2(String worldName, LevelInfo levelInfo, RegistryTracker.Modifiable registryTracker, GeneratorOptions generatorOptions, CallbackInfo ci) {
         PeepoPractice.log("Triggered second standard settings call for " + PeepoPractice.CATEGORY.getId());
         StandardSettingsUtils.triggerStandardSettings(PeepoPractice.CATEGORY);
     }
@@ -92,5 +94,10 @@ public class MinecraftClientMixin {
         if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY) && PeepoPractice.PRACTICE_LEVEL_STORAGE != null) {
             cir.setReturnValue(PeepoPractice.PRACTICE_LEVEL_STORAGE);
         }
+    }
+
+    @Inject(method = "joinWorld", at = @At("HEAD"))
+    private void disableAtumReset(ClientWorld world, CallbackInfo ci) {
+        PeepoPractice.disableAtumReset();
     }
 }

@@ -2,6 +2,9 @@ package me.quesia.peepopractice.core.category.properties;
 
 import me.quesia.peepopractice.core.NotInitializedException;
 import me.quesia.peepopractice.core.category.PracticeCategory;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec2f;
@@ -14,6 +17,7 @@ public class PlayerProperties extends BaseProperties {
     private PracticeCategory.ExecuteReturnTask<BlockPos> spawnPosTask;
     private Vec2f spawnAngle;
     private PracticeCategory.ExecuteReturnTask<Vec2f> spawnAngleTask;
+    private EntityType<? extends Entity> vehicle;
 
     public BlockPos getSpawnPos() {
         return this.spawnPos != null ? this.spawnPos : new BlockPos(0, 62, 0);
@@ -48,6 +52,19 @@ public class PlayerProperties extends BaseProperties {
 
     public PlayerProperties setSpawnAngle(PracticeCategory.ExecuteReturnTask<Vec2f> spawnAngleTask) {
         this.spawnAngleTask = spawnAngleTask;
+        return this;
+    }
+
+    public EntityType<? extends Entity> getVehicle() {
+        return this.vehicle;
+    }
+
+    public boolean hasVehicle() {
+        return this.vehicle != null;
+    }
+
+    public PlayerProperties setVehicle(EntityType<? extends Entity> vehicle) {
+        this.vehicle = vehicle;
         return this;
     }
 

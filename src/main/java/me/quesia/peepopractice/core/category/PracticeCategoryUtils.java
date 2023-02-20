@@ -82,7 +82,7 @@ public class PracticeCategoryUtils {
             double hyp = Math.sqrt(random.nextDouble()) * radius;
             double adj = Math.cos(ang) * hyp;
             double opp = Math.sin(ang) * hyp;
-            newPos = new BlockPos(blockPos.getX() + adj, 0, blockPos.getZ() + opp);
+            newPos = new BlockPos(blockPos.getX() + adj, blockPos.getY(), blockPos.getZ() + opp);
         } while (newPos.isWithinDistance(blockPos, min));
         return newPos;
     }

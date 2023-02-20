@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public abstract class CommandManagerMixin {
     @Shadow @Final private CommandDispatcher<ServerCommandSource> dispatcher;
 
-    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;findAmbiguities(Lcom/mojang/brigadier/AmbiguityConsumer;)V"))
+    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;findAmbiguities(Lcom/mojang/brigadier/AmbiguityConsumer;)V", remap = false))
     private void cancelAmbiguities(CommandDispatcher<?> instance, AmbiguityConsumer<ServerCommandSource> consumer) {
         if (PeepoPractice.SERVER_RESOURCE_MANAGER.get() == null) { return; }
         this.dispatcher.findAmbiguities(consumer);

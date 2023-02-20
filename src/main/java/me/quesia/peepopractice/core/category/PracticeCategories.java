@@ -1,5 +1,6 @@
 package me.quesia.peepopractice.core.category;
 
+import com.google.common.collect.Lists;
 import me.quesia.peepopractice.core.CustomPortalForcer;
 import me.quesia.peepopractice.core.NotInitializedException;
 import me.quesia.peepopractice.core.category.properties.PlayerProperties;
@@ -7,19 +8,28 @@ import me.quesia.peepopractice.core.category.properties.StructureProperties;
 import me.quesia.peepopractice.core.category.properties.WorldProperties;
 import me.quesia.peepopractice.core.category.properties.event.ChangeDimensionSplitEvent;
 import me.quesia.peepopractice.core.category.properties.event.GetAdvancementSplitEvent;
+import me.quesia.peepopractice.core.category.properties.event.InteractLootableContainerSplitEvent;
 import me.quesia.peepopractice.core.category.properties.event.ThrowEntitySplitEvent;
 import me.quesia.peepopractice.core.category.properties.preset.BastionPreset;
 import me.quesia.peepopractice.mixin.access.ChunkGeneratorAccessor;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.Items;
+import net.minecraft.loot.LootTables;
+import net.minecraft.server.network.SpawnLocating;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec2f;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.biome.source.BiomeSource;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.*;
 
@@ -33,6 +43,88 @@ public class PracticeCategories {
     public static PracticeCategory EMPTY = new PracticeCategory()
             .setId("empty")
             .setHidden(true);
+    public static PracticeCategory MAPLESS_SPLIT = new PracticeCategory()
+            .setId("mapless_split")
+            .setPlayerProperties(new PlayerProperties()
+                    .setSpawnPos((category, random, world) -> {
+                        BlockPos spawnPos = null;
+                        BlockPos btPos = null;
+                        do {
+                            if (btPos == null) {
+                                btPos = new BlockPos(0, 0, 0);
+                            }
+                            btPos = world.locateStructure(StructureFeature.BURIED_TREASURE, new BlockPos(-btPos.getX(), 0, -btPos.getZ()), 100, false);
+                            if (btPos != null) {
+                                BiomeSource biomeSource = world.getChunkManager().getChunkGenerator().getBiomeSource();
+                                List<Biome> biomes = Lists.newArrayList(Biomes.BEACH, Biomes.SNOWY_BEACH);
+                                BlockPos pos = biomeSource.locateBiome(btPos.getX(), world.getChunkManager().getChunkGenerator().getSpawnHeight(), btPos.getZ(), 42, biomes, random);
+                                if (pos != null) {
+                                    spawnPos = world.getRandomPosInChunk(pos.getX(), pos.getY(), pos.getZ(), 15);
+                                    spawnPos = SpawnLocating.findServerSpawnPoint(world, new ChunkPos(spawnPos), false);
+                                }
+                            }
+                        } while (spawnPos == null);
+                        return spawnPos;
+                    })
+            )
+            .addStructureProperties(new StructureProperties()
+                    .setStructure(DefaultBiomeFeatures.BEACHED_SHIPWRECK)
+                    .setGeneratable(false)
+            )
+            .addStructureProperties(new StructureProperties()
+                    .setStructure(DefaultBiomeFeatures.SUNKEN_SHIPWRECK)
+                    .setGeneratable(false)
+            )
+            .addStructureProperties(new StructureProperties()
+                    .setStructure(DefaultBiomeFeatures.COLD_OCEAN_RUIN)
+                    .setGeneratable(false)
+            )
+            .addStructureProperties(new StructureProperties()
+                    .setStructure(DefaultBiomeFeatures.WARM_OCEAN_RUIN)
+                    .setGeneratable(false)
+            )
+            .addStructureProperties(new StructureProperties()
+                    .setStructure(DefaultBiomeFeatures.NORMAL_MINESHAFT)
+                    .setGeneratable(false)
+            )
+            .setWorldProperties(new WorldProperties()
+                    .setWorldRegistryKey(World.OVERWORLD)
+            )
+            .setSplitEvent(new InteractLootableContainerSplitEvent()
+                    .setBlockEntityType(BlockEntityType.CHEST)
+                    .setLootTable(LootTables.BURIED_TREASURE_CHEST)
+            );
+    public static PracticeCategory RAVINE_ENTER_SPLIT = new PracticeCategory()
+            .setId("ravine_enter_split")
+            .setPlayerProperties(new PlayerProperties()
+                    .setVehicle(EntityType.BOAT)
+                    .setSpawnPos((category, random, world) -> {
+                        if (category.hasCustomValue("ravinePosition")) {
+                            BlockPos ravinePos = (BlockPos) category.getCustomValue("ravinePosition");
+                            BlockPos pos = new BlockPos(ravinePos.getX(), world.getChunkManager().getChunkGenerator().getSeaLevel(), ravinePos.getZ());
+                            return PracticeCategoryUtils.getRandomBlockInRadius(20, pos, random);
+                        }
+                        throw new NotInitializedException();
+                    })
+                    .setSpawnAngle((category, random, world) -> {
+                        if (category.hasPlayerProperties() && category.getPlayerProperties().getSpawnPos() != null) {
+                            if (category.hasCustomValue("ravinePosition")) {
+                                BlockPos targetPos = (BlockPos) category.getCustomValue("ravinePosition");
+                                BlockPos spawnPos = category.getPlayerProperties().getSpawnPos();
+                                float yaw = (float) Math.toDegrees(Math.atan((float) (spawnPos.getZ() - targetPos.getZ()) / (spawnPos.getX() - targetPos.getX())));
+                                return new Vec2f(yaw + 90, 45);
+                            }
+                        }
+                        throw new NotInitializedException();
+                    })
+            )
+            .setWorldProperties(new WorldProperties()
+                    .setWorldRegistryKey(World.OVERWORLD)
+                    .addProBiomeRange(Biomes.DEEP_OCEAN, null)
+            )
+            .setSplitEvent(new ChangeDimensionSplitEvent()
+                    .setDimension(World.NETHER)
+            );
     public static PracticeCategory BASTION_SPLIT = new PracticeCategory()
             .setId("bastion_split")
             .addStructureProperties(new StructureProperties()

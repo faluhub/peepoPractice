@@ -8,8 +8,14 @@ accessible method net/minecraft/client/gui/screen/world/CreateWorldScreen <init>
 accessible method net/minecraft/client/font/TextRenderer draw (Ljava/lang/String;FFILnet/minecraft/util/math/Matrix4f;ZZ)I
 accessible method net/minecraft/client/gui/widget/EntryListWidget getMaxScroll ()I
 accessible method net/minecraft/client/gui/widget/EntryListWidget getRowBottom (I)I
+accessible method net/minecraft/world/biome/layer/BiomeLayers isOcean (I)Z
+accessible method net/minecraft/entity/player/PlayerEntity closeHandledScreen ()V
+accessible method net/minecraft/client/gui/screen/world/MoreOptionsDialog setGeneratorOptions (Lnet/minecraft/world/gen/GeneratorOptions;)V
+accessible method net/minecraft/client/world/GeneratorType method_29079 (Lnet/minecraft/world/gen/GeneratorOptions;Lnet/minecraft/client/world/GeneratorType;Lnet/minecraft/world/biome/Biome;)Lnet/minecraft/world/gen/GeneratorOptions;
 
 accessible field net/minecraft/state/property/EnumProperty values Lcom/google/common/collect/ImmutableSet;
 accessible field net/minecraft/client/gui/widget/EntryListWidget renderHeader Z
 accessible field net/minecraft/client/gui/widget/EntryListWidget renderSelection Z
 accessible field net/minecraft/client/render/debug/DebugRenderer showChunkBorder Z
+accessible field net/minecraft/client/world/GeneratorType SINGLE_BIOME_SURFACE Lnet/minecraft/client/world/GeneratorType;
+accessible field net/minecraft/client/gui/screen/world/MoreOptionsDialog field_25049 Ljava/util/Optional;

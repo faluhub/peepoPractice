@@ -3,6 +3,7 @@ package me.quesia.peepopractice.core.category.properties;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biomes;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -13,6 +14,7 @@ public class WorldProperties extends BaseProperties {
     private RegistryKey<World> worldRegistryKey;
     private boolean spawnChunksDisabled = false;
     private final Map<Biome, @Nullable Integer> antiBiomeRangeMap = new HashMap<>();
+    private final Map<Biome, @Nullable Integer> proBiomeRangeMap = new HashMap<>();
 
     public RegistryKey<World> getWorldRegistryKey() {
         return this.worldRegistryKey;
@@ -42,6 +44,15 @@ public class WorldProperties extends BaseProperties {
 
     public WorldProperties addAntiBiomeRange(Biome biome, @Nullable Integer range) {
         this.antiBiomeRangeMap.put(biome, range);
+        return this;
+    }
+
+    public Map<Biome, Integer> getProBiomeRangeMap() {
+        return this.proBiomeRangeMap;
+    }
+
+    public WorldProperties addProBiomeRange(Biome biome, @Nullable Integer range) {
+        this.proBiomeRangeMap.put(biome, range);
         return this;
     }
 }

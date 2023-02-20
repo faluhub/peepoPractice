@@ -7,6 +7,7 @@
     "access.ChunkGeneratorAccessor",
     "access.InGameTimerAccessor",
     "access.ItemEntryAccessor",
+    "access.KeyBindingAccessor",
     "access.LootPoolAccessor",
     "access.LootTableAccessor",
     "access.MinecraftClientAccessor",
@@ -14,6 +15,7 @@
     "access.ThreadExecutorAccessor",
 
     "compat.InGameTimerUtilsMixin",
+    "compat.KeyboardMixin",
     "compat.LocateCommandMixin",
     "compat.PracticeTimerManagerMixin",
 
@@ -24,9 +26,13 @@
 
     "gui.screen.CreateWorldScreenMixin",
     "gui.screen.GameMenuScreenMixin",
+    "gui.screen.OpenToLanScreenMixin",
     "gui.screen.TitleScreenMixin",
 
     "gui.ItemStackMixin",
+
+    "keybinding.GameOptionsMixin",
+    "keybinding.MinecraftClientMixin",
 
     "structure.category.BastionRemnantFeatureConfigMixin",
     "structure.category.DungeonFeatureMixin",
@@ -38,6 +44,9 @@
     "structure.StructureStartMixin",
 
     "world.biome.MultiNoiseBiomeSourceMixin",
+    "world.biome.VanillaLayeredBiomeSourceMixin",
+
+    "world.category.CarverMixin",
 
     "world.entity.ClientPlayerEntityMixin",
     "world.entity.MobEntityMixin",
@@ -45,15 +54,18 @@
     "world.entity.ServerPlayerEntityMixin",
     "world.entity.ThrownItemEntityMixin",
 
+    "world.LootableContainerBlockEntityMixin",
     "world.MinecraftServerMixin",
     "world.PlayerManagerMixin",
     "world.ServerWorldMixin",
+    "world.UnderwaterCaveCarverMixin",
 
     "ClientAdvancementManagerMixin",
     "ClientPlayNetworkHandlerMixin",
     "CommandManagerMixin",
     "GameOptionsMixin",
-    "MinecraftClientMixin"
+    "MinecraftClientMixin",
+    "ServerPlayNetworkHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

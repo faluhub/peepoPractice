@@ -10,6 +10,7 @@ import me.quesia.peepopractice.core.category.PracticeTypes;
 import me.quesia.peepopractice.core.category.properties.event.ChangeDimensionSplitEvent;
 import me.quesia.peepopractice.core.category.properties.event.SplitEvent;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -38,6 +39,9 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     @Shadow @Nullable public abstract BlockPos getSpawnPointPosition();
     @Shadow public abstract void setGameMode(GameMode gameMode);
     @Shadow public abstract void sendMessage(Text message, boolean actionBar);
+
+    @Shadow public abstract boolean startRiding(Entity entity, boolean force);
+
     private Long comparingTime;
     private PracticeTypes.PaceTimerShowType showType;
 
@@ -92,7 +96,20 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
                 spawnPos = PeepoPractice.CATEGORY.getPlayerProperties().getSpawnPos();
                 ((LevelProperties) world.getLevelProperties()).setSpawnPos(PeepoPractice.CATEGORY.getPlayerProperties().getSpawnPos());
             }
-            this.refreshPositionAndAngles(spawnPos, yaw, pitch);
+
+            if (PeepoPractice.CATEGORY.getPlayerProperties().hasVehicle()) {
+                Entity entity = PeepoPractice.CATEGORY.getPlayerProperties().getVehicle().create(world);
+                if (entity != null) {
+                    world.spawnEntity(entity);
+                    this.startRiding(entity, true);
+                    entity.refreshPositionAndAngles(spawnPos, yaw, pitch);
+                    this.refreshPositionAndAngles(spawnPos, yaw, pitch);
+                } else {
+                    PeepoPractice.LOGGER.warn("Couldn't create vehicle entity.");
+                }
+            } else {
+                this.refreshPositionAndAngles(spawnPos, yaw, pitch);
+            }
 
             ci.cancel();
         }
@@ -105,7 +122,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
         if (this.comparingTime != null) {
             long difference = this.comparingTime - igt;
             boolean flip = false;
-            if (difference < 0) {
+            if (difference <= 0) {
                 difference = igt - this.comparingTime;
                 flip = true;
             }
