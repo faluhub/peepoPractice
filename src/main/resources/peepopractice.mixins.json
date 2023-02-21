@@ -14,10 +14,11 @@
     "access.ServerWorldAccessor",
     "access.ThreadExecutorAccessor",
 
-    "compat.InGameTimerUtilsMixin",
+    "compat.timer.InGameTimerUtilsMixin",
+    "compat.timer.PracticeTimerManagerMixin",
+
     "compat.KeyboardMixin",
     "compat.LocateCommandMixin",
-    "compat.PracticeTimerManagerMixin",
 
     "gui.hud.InGameHudMixin",
     "gui.hud.SubtitlesHudMixin",
@@ -26,13 +27,11 @@
 
     "gui.screen.CreateWorldScreenMixin",
     "gui.screen.GameMenuScreenMixin",
+    "gui.screen.LevelLoadingScreenMixin",
     "gui.screen.OpenToLanScreenMixin",
     "gui.screen.TitleScreenMixin",
 
     "gui.ItemStackMixin",
-
-    "keybinding.GameOptionsMixin",
-    "keybinding.MinecraftClientMixin",
 
     "structure.category.BastionRemnantFeatureConfigMixin",
     "structure.category.DungeonFeatureMixin",

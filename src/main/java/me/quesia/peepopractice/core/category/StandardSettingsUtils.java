@@ -28,10 +28,7 @@ public class StandardSettingsUtils {
                     MinecraftClient.getInstance().options.entityDistanceScaling = entry.getValue().getAsFloat();
                     break;
                 case "sprinting":
-                    MinecraftClient.getInstance().options.sprintToggled = entry.getValue().getAsBoolean();
-                    if (MinecraftClient.getInstance().options.sprintToggled && entry.getValue().getAsBoolean() != MinecraftClient.getInstance().options.keySprint.isPressed()) {
-                        MinecraftClient.getInstance().options.keySprint.setPressed(MinecraftClient.getInstance().options.sprintToggled);
-                    }
+                    MinecraftClient.getInstance().options.keySprint.setPressed(true);
                     break;
                 case "chunk_borders":
                     MinecraftClient.getInstance().debugRenderer.showChunkBorder = entry.getValue().getAsBoolean();

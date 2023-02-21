@@ -23,7 +23,7 @@ public class PlayerProperties extends BaseProperties {
     }
 
     public boolean hasSpawnPos() {
-        return this.spawnPos != null || this.spawnPosTask != null;
+        return this.spawnPos != null;
     }
 
     public PlayerProperties setSpawnPos(BlockPos spawnPos) {
@@ -41,7 +41,7 @@ public class PlayerProperties extends BaseProperties {
     }
 
     public boolean hasSpawnAngle() {
-        return this.spawnAngle != null || this.spawnAngleTask != null;
+        return this.spawnAngle != null;
     }
 
     public PlayerProperties setSpawnAngle(float yaw, float pitch) {

@@ -1,4 +1,4 @@
-package me.quesia.peepopractice.mixin.compat;
+package me.quesia.peepopractice.mixin.compat.timer;
 
 import com.redlimerl.speedrunigt.timer.PracticeTimerManager;
 import me.quesia.peepopractice.PeepoPractice;

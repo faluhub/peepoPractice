@@ -158,7 +158,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
             boolean end = true;
             if (this.getServer() != null && this.getServer().getOverworld() != null && this.getSpawnPointPosition() != null) {
                 if (this.getSpawnPointPosition() != this.getServer().getOverworld().getSpawnPos()) {
-                    if (this.getSpawnPointPosition().isWithinDistance(this.getPos(), 4.0D)) {
+                    if (this.getSpawnPointPosition().isWithinDistance(new BlockPos(this.getPos().x, this.getSpawnPointPosition().getY(), this.getPos().z), 5.0D)) {
                         end = false;
                     }
                 }

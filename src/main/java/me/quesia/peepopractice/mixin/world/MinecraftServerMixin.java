@@ -3,6 +3,7 @@ package me.quesia.peepopractice.mixin.world;
 import com.google.common.collect.ImmutableList;
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.NotInitializedException;
+import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.category.properties.StructureProperties;
 import me.quesia.peepopractice.mixin.access.ChunkGeneratorAccessor;
 import net.minecraft.command.DataCommandStorage;
@@ -163,14 +164,6 @@ public abstract class MinecraftServerMixin {
         }
     }
 
-    @Redirect(method = "prepareStartRegion", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;getSpawnPos()Lnet/minecraft/util/math/BlockPos;"))
-    private BlockPos customSpawnPos(ServerWorld instance) {
-        if (PeepoPractice.CATEGORY.hasPlayerProperties() && PeepoPractice.CATEGORY.getPlayerProperties().hasSpawnPos()) {
-            return PeepoPractice.CATEGORY.getPlayerProperties().getSpawnPos();
-        }
-        return instance.getSpawnPos();
-    }
-
     @Inject(method = "prepareStartRegion", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;getMeasuringTimeMs()J", ordinal = 2))
     private void removeTicketsAfterGen(WorldGenerationProgressListener worldGenerationProgressListener, CallbackInfo ci) {
         if (PeepoPractice.CATEGORY.hasWorldProperties() && PeepoPractice.CATEGORY.getWorldProperties().isSpawnChunksDisabled()) {
@@ -195,5 +188,12 @@ public abstract class MinecraftServerMixin {
             });
         }
         return spawnBiomes;
+    }
+
+    @Inject(method = "getSpawnRadius", at = @At("RETURN"), cancellable = true)
+    private void removeSpawnRadius(ServerWorld world, CallbackInfoReturnable<Integer> cir) {
+        if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
+            cir.setReturnValue(0);
+        }
     }
 }

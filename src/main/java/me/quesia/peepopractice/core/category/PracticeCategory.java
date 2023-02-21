@@ -25,11 +25,11 @@ public class PracticeCategory {
     private SplitEvent splitEvent;
     private final List<CategoryPreference> preferences;
     private boolean hidden;
+    private boolean canHaveEmptyInventory = false;
     private final Map<String, Object> customValues = new HashMap<>();
 
     public PracticeCategory() {
         this.preferences = new ArrayList<>();
-
         PracticeCategories.ALL.add(this);
     }
 
@@ -137,6 +137,15 @@ public class PracticeCategory {
         return this;
     }
 
+    public boolean getCanHaveEmptyInventory() {
+        return this.canHaveEmptyInventory;
+    }
+
+    public PracticeCategory setCanHaveEmptyInventory(boolean canHaveEmptyInventory) {
+        this.canHaveEmptyInventory = canHaveEmptyInventory;
+        return this;
+    }
+
     public Object getCustomValue(String key) {
         return this.customValues.get(key);
     }
@@ -195,6 +204,7 @@ public class PracticeCategory {
 
     public boolean hasConfiguredInventory() {
         if (FabricLoader.getInstance().isDevelopmentEnvironment()) { return true; }
+        if (this.canHaveEmptyInventory) { return true; }
         PracticeWriter writer = PracticeWriter.INVENTORY_WRITER;
         JsonObject config = writer.get();
         if (!config.has(this.getId())) { return false; }

@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ServerWorld.class)
 public abstract class ServerWorldMixin {
@@ -21,6 +22,13 @@ public abstract class ServerWorldMixin {
     private void removeTicket(BlockPos pos, CallbackInfo ci) {
         if (PeepoPractice.CATEGORY.hasWorldProperties() && PeepoPractice.CATEGORY.getWorldProperties().isSpawnChunksDisabled()) {
             this.getChunkManager().removeTicket(ChunkTicketType.START, new ChunkPos(pos), 11, Unit.INSTANCE);
+        }
+    }
+
+    @Inject(method = "getSpawnPos", at = @At("RETURN"), cancellable = true)
+    private void getCustomSpawnPos(CallbackInfoReturnable<BlockPos> cir) {
+        if (PeepoPractice.CATEGORY.hasPlayerProperties() && PeepoPractice.CATEGORY.getPlayerProperties().hasSpawnPos()) {
+            cir.setReturnValue(PeepoPractice.CATEGORY.getPlayerProperties().getSpawnPos());
         }
     }
 }

@@ -69,6 +69,7 @@ public class PracticeWriter {
             JsonParser parser = new JsonParser();
 
             Object obj = parser.parse(reader);
+            reader.close();
 
             return obj == null || obj.equals(JsonNull.INSTANCE) ? new JsonObject() : (JsonObject) obj;
         } catch (IOException ignored) {}

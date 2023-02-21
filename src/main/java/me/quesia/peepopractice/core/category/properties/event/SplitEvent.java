@@ -22,9 +22,13 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class SplitEvent {
+public abstract class SplitEvent {
+    public static Map<String, SplitEvent> ID_TO_EVENT = new HashMap<>();
     private PracticeCategory category;
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -96,12 +100,12 @@ public class SplitEvent {
                     registryKey = this.category.getWorldProperties().getWorldRegistryKey();
                 }
                 if (this.category.hasPlayerProperties()) {
-                    if (this.category.getPlayerProperties().getSpawnAngle() != null) {
+                    if (this.category.getPlayerProperties().hasSpawnAngle()) {
                         Vec2f angle = this.category.getPlayerProperties().getSpawnAngle();
                         yaw = angle.x;
                         pitch = angle.y;
                     }
-                    if (this.category.getPlayerProperties().getSpawnPos() != null) {
+                    if (this.category.getPlayerProperties().hasSpawnPos()) {
                         pos = this.category.getPlayerProperties().getSpawnPos();
                     }
                 }

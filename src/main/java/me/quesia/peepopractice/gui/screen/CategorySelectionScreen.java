@@ -22,7 +22,6 @@ public class CategorySelectionScreen extends Screen {
 
     public CategorySelectionScreen(Screen parent) {
         super(new LiteralText("Select Practice Category"));
-
         this.parent = parent;
     }
 
@@ -44,7 +43,12 @@ public class CategorySelectionScreen extends Screen {
 
     public void play() {
         if (this.client != null && this.categoryListWidget != null && this.categoryListWidget.getSelected() != null) {
-            PeepoPractice.CATEGORY = this.categoryListWidget.getSelected().category;
+            PracticeCategory selected = this.categoryListWidget.getSelected().category;
+            if (!selected.hasConfiguredInventory()) {
+                this.client.openScreen(new FatalErrorScreen(new LiteralText("You haven't configured your inventory for this category yet!"), new LiteralText("")));
+                return;
+            }
+            PeepoPractice.CATEGORY = selected;
             this.client.openScreen(new CreateWorldScreen(this));
         }
     }
@@ -74,13 +78,6 @@ public class CategorySelectionScreen extends Screen {
                                 if (this.doneButton.getMessage().getString().equals(ScreenTexts.BACK.getString())) {
                                     this.client.openScreen(this.parent);
                                 } else {
-                                    if (this.categoryListWidget != null && this.categoryListWidget.getSelected() != null) {
-                                        PracticeCategory selected = this.categoryListWidget.getSelected().category;
-                                        if (!selected.hasConfiguredInventory()) {
-                                            this.client.openScreen(new FatalErrorScreen(new LiteralText("You haven't configured your inventory for this category yet!"), new LiteralText("")));
-                                            return;
-                                        }
-                                    }
                                     this.play();
                                 }
                             }

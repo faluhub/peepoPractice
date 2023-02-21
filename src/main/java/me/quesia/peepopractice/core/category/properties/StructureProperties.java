@@ -49,7 +49,7 @@ public class StructureProperties extends BaseProperties {
     }
 
     public boolean hasChunkPos() {
-        return this.chunkPos != null || this.chunkPosTask != null;
+        return this.chunkPos != null;
     }
 
     public StructureProperties setChunkPos(ChunkPos structureChunkPos) {

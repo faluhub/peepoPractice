@@ -9,8 +9,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
 public class PeepoPauseManHud extends DrawableHelper {
-    private static final Identifier PEEPO_PAUSE_MAN = new Identifier(PeepoPractice.MOD_CONTAINER.getMetadata().getId(), "sprite/peepopauseman.png");
-    private static final Identifier PEEPO_PAG_MAN = new Identifier(PeepoPractice.MOD_CONTAINER.getMetadata().getId(), "sprite/peepopagman.png");
+    private static final Identifier PEEPO_PAUSE_MAN = new Identifier(PeepoPractice.MOD_ID, "sprite/peepopauseman.png");
+    private static final Identifier PEEPO_PAG_MAN = new Identifier(PeepoPractice.MOD_ID, "sprite/peepopagman.png");
     private final MinecraftClient client;
     private Long startTime;
 

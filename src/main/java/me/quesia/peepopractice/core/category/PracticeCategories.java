@@ -44,6 +44,7 @@ public class PracticeCategories {
             .setHidden(true);
     public static PracticeCategory MAPLESS_SPLIT = new PracticeCategory()
             .setId("mapless_split")
+            .setCanHaveEmptyInventory(true)
             .setPlayerProperties(new PlayerProperties()
                     .setSpawnPos((category, random, world) -> {
                         BlockPos spawnPos = null;
@@ -52,7 +53,7 @@ public class PracticeCategories {
                             if (btPos == null) {
                                 btPos = new BlockPos(0, 0, 0);
                             }
-                            btPos = world.locateStructure(StructureFeature.BURIED_TREASURE, new BlockPos(-btPos.getX(), 0, -btPos.getZ()), 100, false);
+                            btPos = world.locateStructure(StructureFeature.BURIED_TREASURE, new BlockPos(-btPos.getX() * 1.5D, 0, -btPos.getZ() * 1.5D), 100, false);
                             if (btPos != null) {
                                 BiomeSource biomeSource = world.getChunkManager().getChunkGenerator().getBiomeSource();
                                 List<Biome> biomes = Lists.newArrayList(Biomes.BEACH, Biomes.SNOWY_BEACH);
@@ -101,12 +102,12 @@ public class PracticeCategories {
                         if (category.hasCustomValue("ravinePosition")) {
                             BlockPos ravinePos = (BlockPos) category.getCustomValue("ravinePosition");
                             BlockPos pos = new BlockPos(ravinePos.getX(), world.getChunkManager().getChunkGenerator().getSeaLevel(), ravinePos.getZ());
-                            return PracticeCategoryUtils.getRandomBlockInRadius(20, pos, random);
+                            return PracticeCategoryUtils.getRandomBlockInRadius(20, 5, pos, random);
                         }
                         throw new NotInitializedException();
                     })
                     .setSpawnAngle((category, random, world) -> {
-                        if (category.hasPlayerProperties() && category.getPlayerProperties().getSpawnPos() != null) {
+                        if (category.hasPlayerProperties() && category.getPlayerProperties().hasSpawnPos()) {
                             if (category.hasCustomValue("ravinePosition")) {
                                 BlockPos targetPos = (BlockPos) category.getCustomValue("ravinePosition");
                                 BlockPos spawnPos = category.getPlayerProperties().getSpawnPos();
@@ -116,6 +117,10 @@ public class PracticeCategories {
                         }
                         throw new NotInitializedException();
                     })
+            )
+            .addStructureProperties(new StructureProperties()
+                    .setStructure(DefaultBiomeFeatures.MONUMENT)
+                    .setGeneratable(false)
             )
             .setWorldProperties(new WorldProperties()
                     .setWorldRegistryKey(World.OVERWORLD)

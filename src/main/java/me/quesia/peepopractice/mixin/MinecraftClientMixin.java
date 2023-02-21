@@ -9,11 +9,13 @@ import me.quesia.peepopractice.mixin.access.ThreadExecutorAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
+import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.registry.RegistryTracker;
 import net.minecraft.world.gen.GeneratorOptions;
 import net.minecraft.world.level.LevelInfo;
 import net.minecraft.world.level.storage.LevelStorage;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -27,9 +29,12 @@ import java.io.File;
 import java.io.IOException;
 
 @Mixin(MinecraftClient.class)
-public class MinecraftClientMixin {
+public abstract class MinecraftClientMixin {
     @Shadow @Final public File runDirectory;
     @Shadow @Final private DataFixer dataFixer;
+    @Shadow @Nullable public ClientWorld world;
+    @Shadow public abstract boolean isIntegratedServerRunning();
+    @Shadow public abstract void openScreen(@Nullable Screen screen);
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;runTasks()V"))
     private void runMoreTasks(MinecraftClient instance) {
@@ -65,6 +70,7 @@ public class MinecraftClientMixin {
             if (PeepoPractice.RESET_CATEGORY) {
                 PeepoPractice.CATEGORY = PracticeCategories.EMPTY;
             }
+            PeepoPractice.RESET_CATEGORY = true;
         }
     }
 
@@ -98,5 +104,14 @@ public class MinecraftClientMixin {
     @Inject(method = "joinWorld", at = @At("HEAD"))
     private void disableAtumReset(ClientWorld world, CallbackInfo ci) {
         PeepoPractice.disableAtumReset();
+    }
+
+    @Inject(method = "tick", at = @At("HEAD"))
+    private void listenToKeyBindings(CallbackInfo ci) {
+        if (PeepoPractice.REPLAY_SPLIT_KEY.isPressed()) {
+            if (this.world != null && this.isIntegratedServerRunning() && !PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
+                this.openScreen(new CreateWorldScreen(null));
+            }
+        }
     }
 }
