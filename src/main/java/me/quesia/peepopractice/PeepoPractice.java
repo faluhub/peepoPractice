@@ -3,6 +3,8 @@ package me.quesia.peepopractice;
 import me.quesia.peepopractice.core.KeyBindingHelper;
 import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.category.PracticeCategory;
+import me.quesia.peepopractice.core.exception.InvalidCategorySyntaxException;
+import me.quesia.peepopractice.core.resource.CustomCategoryResourceManager;
 import me.quesia.peepopractice.core.resource.LocalResourceManager;
 import me.quesia.peepopractice.core.playerless.PlayerlessInventory;
 import me.quesia.peepopractice.core.playerless.PlayerlessPlayerScreenHandler;
@@ -21,6 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class PeepoPractice implements ClientModInitializer {
@@ -65,6 +68,13 @@ public class PeepoPractice implements ClientModInitializer {
                         KeyBindingHelper.getTranslation("key.categories." + MOD_ID, MOD_NAME).getString()
                 )
         );
+        try {
+            CustomCategoryResourceManager.register();
+        } catch (InvalidCategorySyntaxException e) {
+            if (e.getMessage() != null && !e.getMessage().isEmpty()) {
+                LOGGER.error(e.getMessage());
+            }
+        }
     }
 
     public static void disableAtumKey() {

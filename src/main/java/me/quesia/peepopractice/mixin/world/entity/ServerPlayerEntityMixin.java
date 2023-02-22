@@ -4,7 +4,7 @@ import com.mojang.authlib.GameProfile;
 import com.redlimerl.speedrunigt.timer.InGameTimer;
 import com.redlimerl.speedrunigt.timer.TimerStatus;
 import me.quesia.peepopractice.PeepoPractice;
-import me.quesia.peepopractice.core.NotInitializedException;
+import me.quesia.peepopractice.core.exception.NotInitializedException;
 import me.quesia.peepopractice.core.category.CategoryPreference;
 import me.quesia.peepopractice.core.category.PracticeTypes;
 import me.quesia.peepopractice.core.category.properties.event.ChangeDimensionSplitEvent;

@@ -1,7 +1,7 @@
 package me.quesia.peepopractice.core.category;
 
 import com.google.gson.JsonObject;
-import me.quesia.peepopractice.core.NotInitializedException;
+import me.quesia.peepopractice.core.exception.NotInitializedException;
 import me.quesia.peepopractice.core.PracticeWriter;
 import me.quesia.peepopractice.core.category.properties.PlayerProperties;
 import me.quesia.peepopractice.core.category.properties.StructureProperties;
@@ -26,11 +26,25 @@ public class PracticeCategory {
     private final List<CategoryPreference> preferences;
     private boolean hidden;
     private boolean canHaveEmptyInventory = false;
+    private final boolean custom;
     private final Map<String, Object> customValues = new HashMap<>();
 
     public PracticeCategory() {
+        this(false);
+    }
+
+    public PracticeCategory(boolean custom) {
         this.preferences = new ArrayList<>();
-        PracticeCategories.ALL.add(this);
+        this.custom = custom;
+        if (!this.custom) {
+            PracticeCategories.ALL.add(this);
+        }
+    }
+
+    public void register() {
+        if (this.custom) {
+            PracticeCategories.ALL.add(this);
+        }
     }
 
     public String getId() {

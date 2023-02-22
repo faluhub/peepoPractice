@@ -1,6 +1,6 @@
 package me.quesia.peepopractice.core.category.properties.preset;
 
-import me.quesia.peepopractice.core.NotInitializedException;
+import me.quesia.peepopractice.core.exception.NotInitializedException;
 import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.core.category.PracticeTypes;
 import me.quesia.peepopractice.core.category.properties.StructureProperties;

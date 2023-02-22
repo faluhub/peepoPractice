@@ -1,6 +1,6 @@
 package me.quesia.peepopractice.core.category.properties;
 
-import me.quesia.peepopractice.core.NotInitializedException;
+import me.quesia.peepopractice.core.exception.NotInitializedException;
 import me.quesia.peepopractice.core.category.PracticeCategory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;

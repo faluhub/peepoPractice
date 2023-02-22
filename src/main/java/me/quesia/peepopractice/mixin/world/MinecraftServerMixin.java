@@ -2,7 +2,7 @@ package me.quesia.peepopractice.mixin.world;
 
 import com.google.common.collect.ImmutableList;
 import me.quesia.peepopractice.PeepoPractice;
-import me.quesia.peepopractice.core.NotInitializedException;
+import me.quesia.peepopractice.core.exception.NotInitializedException;
 import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.category.properties.StructureProperties;
 import me.quesia.peepopractice.mixin.access.ChunkGeneratorAccessor;

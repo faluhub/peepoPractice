@@ -7,6 +7,7 @@ import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.core.category.properties.event.SplitEvent;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.hud.BackgroundHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.gui.widget.EntryListWidget;
@@ -114,7 +115,7 @@ public abstract class CategoryListWidget extends AlwaysSelectedEntryListWidget<C
         int j = i + 6;
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuffer();
-        RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.fillGradient(matrices, this.left, this.top, this.right, this.bottom, PeepoPractice.BACKGROUND_COLOUR, PeepoPractice.BACKGROUND_COLOUR);
         this.fillGradient(matrices, this.left, this.top, this.right, this.bottom, PeepoPractice.BACKGROUND_OVERLAY_COLOUR, PeepoPractice.BACKGROUND_OVERLAY_COLOUR);
         int k = this.getRowLeft();
@@ -136,15 +137,11 @@ public abstract class CategoryListWidget extends AlwaysSelectedEntryListWidget<C
         if (o > 0) {
             int p = (int)((float)((this.bottom - this.top) * (this.bottom - this.top)) / (float)this.getMaxPosition());
             p = MathHelper.clamp(p, 32, this.bottom - this.top - 8);
-            int q = (int)this.getScrollAmount() * (this.bottom - this.top - p) / o + this.top;
+            int q = (int) this.getScrollAmount() * (this.bottom - this.top - p) / o + this.top;
             if (q < this.top) {
                 q = this.top;
             }
             bufferBuilder.begin(7, VertexFormats.POSITION_TEXTURE_COLOR);
-            bufferBuilder.vertex(i, this.bottom, 0.0).texture(0.0f, 1.0f).color(0, 0, 0, 255).next();
-            bufferBuilder.vertex(j, this.bottom, 0.0).texture(1.0f, 1.0f).color(0, 0, 0, 255).next();
-            bufferBuilder.vertex(j, this.top, 0.0).texture(1.0f, 0.0f).color(0, 0, 0, 255).next();
-            bufferBuilder.vertex(i, this.top, 0.0).texture(0.0f, 0.0f).color(0, 0, 0, 255).next();
             bufferBuilder.vertex(i, q + p, 0.0).texture(0.0f, 1.0f).color(128, 128, 128, 255).next();
             bufferBuilder.vertex(j, q + p, 0.0).texture(1.0f, 1.0f).color(128, 128, 128, 255).next();
             bufferBuilder.vertex(j, q, 0.0).texture(1.0f, 0.0f).color(128, 128, 128, 255).next();

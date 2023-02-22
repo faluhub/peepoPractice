@@ -2,7 +2,7 @@ package me.quesia.peepopractice.core.category;
 
 import com.google.common.collect.Lists;
 import me.quesia.peepopractice.core.CustomPortalForcer;
-import me.quesia.peepopractice.core.NotInitializedException;
+import me.quesia.peepopractice.core.exception.NotInitializedException;
 import me.quesia.peepopractice.core.category.properties.PlayerProperties;
 import me.quesia.peepopractice.core.category.properties.StructureProperties;
 import me.quesia.peepopractice.core.category.properties.WorldProperties;
