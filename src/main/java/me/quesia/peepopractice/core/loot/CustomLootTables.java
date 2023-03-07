@@ -1,4 +1,4 @@
-package me.quesia.peepopractice.core;
+package me.quesia.peepopractice.core.loot;
 
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.Items;
