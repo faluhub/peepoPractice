@@ -1,6 +1,5 @@
 package me.quesia.peepopractice.mixin.structure.category;
 
-import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.category.CategoryPreference;
 import me.quesia.peepopractice.core.category.PracticeTypes;
 import net.minecraft.structure.StrongholdGenerator;

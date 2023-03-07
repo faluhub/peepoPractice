@@ -2,7 +2,6 @@ package me.quesia.peepopractice.mixin.world;
 
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.category.CategoryPreference;
-import me.quesia.peepopractice.core.category.PracticeCategory;
 import net.minecraft.block.Blocks;
 import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.server.world.ServerChunkManager;

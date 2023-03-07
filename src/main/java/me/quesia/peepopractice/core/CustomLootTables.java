@@ -11,7 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Util;
 
 public class CustomLootTables {
-    public static LootTable CUSTOM_PIGLIN_BARTER = LootTable.builder()
+    public static final LootTable CUSTOM_PIGLIN_BARTER = LootTable.builder()
             .pool(LootPool.builder()
                     .rolls(ConstantLootTableRange.create(1))
                     .with(ItemEntry.builder(Items.BOOK)

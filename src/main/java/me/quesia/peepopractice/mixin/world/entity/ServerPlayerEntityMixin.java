@@ -40,7 +40,6 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     @Shadow public abstract void setGameMode(GameMode gameMode);
     @Shadow public abstract void sendMessage(Text message, boolean actionBar);
     @Shadow public abstract boolean startRiding(Entity entity, boolean force);
-
     @Shadow private int joinInvulnerabilityTicks;
     private Long comparingTime;
     private PracticeTypes.PaceTimerShowType showType;

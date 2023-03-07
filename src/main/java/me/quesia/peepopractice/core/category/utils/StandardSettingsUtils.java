@@ -1,7 +1,6 @@
 package me.quesia.peepopractice.core.category.utils;
 
 import com.google.gson.JsonObject;
-import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.PracticeWriter;
 import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.mixin.access.MinecraftClientAccessor;
