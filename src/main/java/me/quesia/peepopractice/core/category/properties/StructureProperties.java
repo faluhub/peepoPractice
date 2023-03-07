@@ -19,6 +19,7 @@ public class StructureProperties extends BaseProperties {
     private Direction orientation;
     private BlockRotation rotation;
     private Integer structureTopY;
+    private PracticeCategory.ExecuteReturnTask<Integer> structureTopYTask;
     private boolean generatable = false;
     private PracticeCategory.ExecuteReturnTask<Boolean> generatableTask;
     private boolean generated = false;
@@ -101,6 +102,11 @@ public class StructureProperties extends BaseProperties {
         return this;
     }
 
+    public StructureProperties setStructureTopY(PracticeCategory.ExecuteReturnTask<Integer> task) {
+        this.structureTopYTask = task;
+        return this;
+    }
+
     public boolean isGeneratable() {
         return this.generatable;
     }
@@ -127,6 +133,12 @@ public class StructureProperties extends BaseProperties {
         this.generated = false;
         if (this.chunkPosTask != null) {
             this.setChunkPos(this.chunkPosTask.execute(this.getCategory(), random, world));
+        }
+        if (this.structureTopYTask != null) {
+            Integer value = this.structureTopYTask.execute(this.getCategory(), random, world);
+            if (value != null) {
+                this.setStructureTopY(value);
+            }
         }
         if (this.generatableTask != null) {
             Boolean value = this.generatableTask.execute(this.getCategory(), random, world);

@@ -25,17 +25,7 @@ public class SettingsTypeSelectionScreen extends Screen {
                     return "This category has no preferences to configure.";
                 }
             }),
-            new ButtonChoice(new LiteralText("Standard Settings"), new Identifier(PeepoPractice.MOD_ID, "icon/gear.png"), category -> new StandardSettingsScreen(this, category), new ButtonDisabledInfo() {
-                @Override
-                public boolean isDisabled(PracticeCategory category) {
-                    return PeepoPractice.HAS_STANDARD_SETTINGS;
-                }
-
-                @Override
-                public String getReason() {
-                    return "The mod 'standardsettings' is present, therefore you cannot access these options.";
-                }
-            }),
+            new ButtonChoice(new LiteralText("Standard Settings"), new Identifier(PeepoPractice.MOD_ID, "icon/gear.png"), category -> new StandardSettingsScreen(this, category)),
             new ButtonChoice(new LiteralText("Split"), new Identifier("textures/item/clock_00.png"), category -> new SplitSettingsScreen(this, category), new ButtonDisabledInfo() {
                 @Override
                 public boolean isDisabled(PracticeCategory category) {

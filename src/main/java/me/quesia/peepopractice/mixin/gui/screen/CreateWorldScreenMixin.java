@@ -2,7 +2,7 @@ package me.quesia.peepopractice.mixin.gui.screen;
 
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.category.PracticeCategories;
-import me.quesia.peepopractice.core.category.PracticeCategoryUtils;
+import me.quesia.peepopractice.core.category.utils.PracticeCategoryUtils;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -58,29 +58,34 @@ public abstract class CreateWorldScreenMixin extends Screen {
                 }
             });
         }
-        if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY) && !Screen.hasShiftDown()) {
+        if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
             this.createLevel();
         }
     }
 
     @Inject(method = "createLevel", at = @At("HEAD"))
     private void checkDisconnected(CallbackInfo ci) {
-        if (this.client != null && this.client.isIntegratedServerRunning()) {
-            if (PeepoPractice.HAS_FAST_RESET) {
-                GameMenuScreen screen = new GameMenuScreen(true);
-                screen.init(this.client, this.width, this.height);
-                for (Element element : screen.children()) {
-                    if (element instanceof ButtonWidget) {
-                        ButtonWidget button = (ButtonWidget) element;
-                        if (button.getMessage().getString().equals("Save & Quit")) {
-                            PeepoPractice.RESET_CATEGORY = false;
-                            button.onPress();
-                            return;
+        if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
+            if (this.client != null && this.client.isIntegratedServerRunning()) {
+                if (PeepoPractice.HAS_FAST_RESET) {
+                    GameMenuScreen screen = new GameMenuScreen(true);
+                    screen.init(this.client, this.width, this.height);
+                    for (Element element : screen.children()) {
+                        if (element instanceof ButtonWidget) {
+                            ButtonWidget button = (ButtonWidget) element;
+                            if (button.getMessage().getString().equals("Save & Quit")) {
+                                PeepoPractice.RESET_CATEGORY = false;
+                                button.onPress();
+                                return;
+                            }
                         }
                     }
                 }
+                PracticeCategoryUtils.quit(false);
             }
-            PracticeCategoryUtils.quit(false);
+            if (PeepoPractice.CATEGORY.hasSplitEvent()) {
+                PeepoPractice.CATEGORY.getSplitEvent().incrementAttempts();
+            }
         }
     }
 }

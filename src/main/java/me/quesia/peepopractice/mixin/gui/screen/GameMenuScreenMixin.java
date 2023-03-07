@@ -3,7 +3,8 @@ package me.quesia.peepopractice.mixin.gui.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.category.PracticeCategories;
-import me.quesia.peepopractice.core.category.PracticeCategoryUtils;
+import me.quesia.peepopractice.core.category.utils.PracticeCategoryUtils;
+import me.quesia.peepopractice.gui.screen.SettingsTypeSelectionScreen;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
@@ -22,6 +23,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class GameMenuScreenMixin extends Screen {
     private ButtonWidget quitButton;
     private boolean renderTitle = false;
+    private final Text replayText = new LiteralText("Replay Split");
+    private final Text configureText = new LiteralText("Configure Split");
+    private ButtonWidget replayButton;
 
     protected GameMenuScreenMixin(Text title) {
         super(title);
@@ -57,16 +61,20 @@ public abstract class GameMenuScreenMixin extends Screen {
             this.addButton(this.quitButton);
         }
 
-        return this.addButton(
+        return this.replayButton = this.addButton(
                 new ButtonWidget(
                         this.width / 2 + 4,
                         this.height / 4 + 120 + i,
                         98,
                         20,
-                        new LiteralText("Replay Split"),
+                        this.replayText,
                         b -> {
                             b.active = false;
-                            this.client.openScreen(new CreateWorldScreen(null));
+                            if (b.getMessage().equals(this.replayText)) {
+                                this.client.openScreen(new CreateWorldScreen(null));
+                            } else {
+                                this.client.openScreen(new SettingsTypeSelectionScreen(this, PeepoPractice.CATEGORY));
+                            }
                         }
                 )
         );
@@ -87,6 +95,11 @@ public abstract class GameMenuScreenMixin extends Screen {
     @SuppressWarnings("deprecation")
     @Inject(method = "render", at = @At("TAIL"))
     private void renderTitle(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+        if (this.replayButton != null && this.replayButton.active) {
+            if (Screen.hasShiftDown()) { this.replayButton.setMessage(this.configureText); }
+            else { this.replayButton.setMessage(this.replayText); }
+        }
+
         if (this.renderTitle) {
             RenderSystem.pushMatrix();
             RenderSystem.scalef(2.0F, 2.0F, 2.0F);

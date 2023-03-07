@@ -201,4 +201,31 @@ public class PracticeTypes {
             return null;
         }
     }
+
+    public enum StartNodeType {
+        RANDOM,
+        FRONT,
+        BACK;
+
+        public String getLabel() {
+            return parseEnumName(this.name());
+        }
+
+        public static List<String> all() {
+            List<String> labels = new ArrayList<>();
+            for (StartNodeType type : StartNodeType.values()) {
+                labels.add(type.getLabel());
+            }
+            return labels;
+        }
+
+        public static StartNodeType fromLabel(String label) {
+            for (StartNodeType type : StartNodeType.values()) {
+                if (type.getLabel().equals(label)) {
+                    return type;
+                }
+            }
+            return null;
+        }
+    }
 }

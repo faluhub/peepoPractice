@@ -1,15 +1,14 @@
-package me.quesia.peepopractice.core.category;
+package me.quesia.peepopractice.core.category.utils;
 
 import com.google.gson.JsonObject;
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.PracticeWriter;
+import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.mixin.access.MinecraftClientAccessor;
 import net.minecraft.client.MinecraftClient;
 
 public class StandardSettingsUtils {
     public static void triggerStandardSettings(PracticeCategory category) {
-        if (PeepoPractice.HAS_STANDARD_SETTINGS) { return; }
-
         PracticeWriter writer = PracticeWriter.STANDARD_SETTINGS_WRITER;
         JsonObject config = writer.get();
         if (!config.has(category.getId())) { return; }
@@ -32,6 +31,9 @@ public class StandardSettingsUtils {
                     break;
                 case "chunk_borders":
                     MinecraftClient.getInstance().debugRenderer.showChunkBorder = entry.getValue().getAsBoolean();
+                    break;
+                case "hitboxes":
+                    MinecraftClient.getInstance().getEntityRenderManager().setRenderHitboxes(entry.getValue().getAsBoolean());
                     break;
                 case "piechart":
                     String value = entry.getValue().getAsString();

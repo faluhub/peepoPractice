@@ -42,7 +42,7 @@ public class ClientAdvancementManagerMixin {
                     }
 
                     if (advancement.getId().getPath().equals("nether/find_fortress") && InGameTimer.getInstance().getStatus() != TimerStatus.NONE) {
-                        if (InGameTimer.getInstance().getInGameTime() / 1000 <= 240 && PeepoPractice.CATEGORY.equals(PracticeCategories.NETHER_SPLIT)) {
+                        if (InGameTimer.getInstance().getInGameTime() / 1000 <= 180 && PeepoPractice.CATEGORY.equals(PracticeCategories.NETHER_SPLIT)) {
                             PeepoPractice.CATEGORY.putCustomValue("showPauseBoy", true);
                         }
                     }

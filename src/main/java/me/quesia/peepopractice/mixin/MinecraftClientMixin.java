@@ -3,7 +3,7 @@ package me.quesia.peepopractice.mixin;
 import com.mojang.datafixers.DataFixer;
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.category.PracticeCategories;
-import me.quesia.peepopractice.core.category.StandardSettingsUtils;
+import me.quesia.peepopractice.core.category.utils.StandardSettingsUtils;
 import me.quesia.peepopractice.core.resource.LocalResourceManager;
 import me.quesia.peepopractice.mixin.access.ThreadExecutorAccessor;
 import net.minecraft.client.MinecraftClient;
@@ -72,18 +72,6 @@ public abstract class MinecraftClientMixin {
             }
             PeepoPractice.RESET_CATEGORY = true;
         }
-    }
-
-    @Inject(method = "method_29607", at = @At("HEAD"))
-    private void resetSettings1(String worldName, LevelInfo levelInfo, RegistryTracker.Modifiable registryTracker, GeneratorOptions generatorOptions, CallbackInfo ci) {
-        PeepoPractice.log("Triggered first standard settings call for " + PeepoPractice.CATEGORY.getId());
-        StandardSettingsUtils.triggerStandardSettings(PeepoPractice.CATEGORY);
-    }
-
-    @Inject(method = "method_29607", at = @At("TAIL"))
-    private void resetSettings2(String worldName, LevelInfo levelInfo, RegistryTracker.Modifiable registryTracker, GeneratorOptions generatorOptions, CallbackInfo ci) {
-        PeepoPractice.log("Triggered second standard settings call for " + PeepoPractice.CATEGORY.getId());
-        StandardSettingsUtils.triggerStandardSettings(PeepoPractice.CATEGORY);
     }
 
     @Redirect(method = "startIntegratedServer(Ljava/lang/String;Lnet/minecraft/util/registry/RegistryTracker$Modifiable;Ljava/util/function/Function;Lcom/mojang/datafixers/util/Function4;ZLnet/minecraft/client/MinecraftClient$WorldLoadAction;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/storage/LevelStorage;createSession(Ljava/lang/String;)Lnet/minecraft/world/level/storage/LevelStorage$Session;"))

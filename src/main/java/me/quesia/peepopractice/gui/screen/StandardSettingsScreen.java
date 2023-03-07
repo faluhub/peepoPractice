@@ -4,7 +4,7 @@ import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.PracticeWriter;
 import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.category.PracticeCategory;
-import me.quesia.peepopractice.core.category.StandardSettingsUtils;
+import me.quesia.peepopractice.core.category.utils.StandardSettingsUtils;
 import me.quesia.peepopractice.gui.CustomOption;
 import me.quesia.peepopractice.gui.widget.LimitlessButtonWidget;
 import net.minecraft.client.gui.screen.Screen;
@@ -19,9 +19,9 @@ public class StandardSettingsScreen extends Screen {
             CustomOption.FOV,
             CustomOption.RENDER_DISTANCE,
             CustomOption.ENTITY_DISTANCE_SCALING,
-            CustomOption.SPRINTING,
             CustomOption.CHUNK_BORDERS,
-            CustomOption.ENABLED
+            CustomOption.HITBOXES,
+            CustomOption.TRIGGER
     };
     private final Screen parent;
     private TextFieldWidget pieChartDirectoryField;
@@ -47,6 +47,7 @@ public class StandardSettingsScreen extends Screen {
         this.pieChartDirectoryField.setText(StandardSettingsUtils.getSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "piechart", "root.gameRenderer.level.entities"));
         this.children.add(this.pieChartDirectoryField);
         index++;
+
         this.addButton(new LimitlessButtonWidget(null, null, null, this.width / 2 - btnWidth / 2, 30 + (20 + 5) * index, btnWidth, 20, ScreenTexts.DONE, b -> this.onClose()));
     }
 

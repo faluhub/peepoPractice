@@ -3,6 +3,7 @@ package me.quesia.peepopractice.core.category;
 import com.google.gson.JsonObject;
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.PracticeWriter;
+import me.quesia.peepopractice.core.category.utils.PracticeCategoryUtils;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
@@ -111,6 +112,10 @@ public class CategoryPreference {
         return false;
     }
 
+    public static String getValue(String id) {
+        return getValue(PeepoPractice.CATEGORY, id);
+    }
+
     public static String getValue(PracticeCategory category, String id, String def) {
         String value = getValue(category, id);
         if (value == null) {
@@ -133,7 +138,6 @@ public class CategoryPreference {
 
         if (categoryPreference != null) {
             if (!categoryObject.has(id) || !categoryPreference.getChoices().contains(categoryObject.get(id).getAsString())) {
-                setValue(category, id, categoryPreference.getDefaultChoice());
                 return categoryPreference.getDefaultChoice();
             }
         }

@@ -3,11 +3,11 @@
   "id": "peepopractice",
   "version": "${version}",
   "name": "PeepoPractice",
-  "description": "Practice mod (passion project)",
+  "description": "The best and most advanced MCSR Practice mod!",
   "authors": ["Quesia"],
   "contributors": ["RedLime"],
   "contact": {
-    "homepage": "https://github.com/QuesiaSR"
+    "homepage": "https://github.com/QuesiaSR/peepoPractice"
   },
   "license": "MIT",
   "icon": "assets/peepopractice/icon.png",
@@ -20,10 +20,8 @@
   "mixins": ["peepopractice.mixins.json"],
   "accessWidener": "peepopractice.accesswidener",
   "depends": {
-    "minecraft": "1.16.1"
-  },
-  "conflicts": {
-    "worldpreview": "*"
+    "minecraft": "1.16.1",
+    "speedrunigt": ">=7.0"
   },
   "recommends": {
     "speedrunigt": ">=13.2"

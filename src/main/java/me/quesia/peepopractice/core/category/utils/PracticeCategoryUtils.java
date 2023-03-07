@@ -1,4 +1,4 @@
-package me.quesia.peepopractice.core.category;
+package me.quesia.peepopractice.core.category.utils;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;

@@ -7,7 +7,6 @@ import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.core.category.properties.event.SplitEvent;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.hud.BackgroundHelper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
 import net.minecraft.client.gui.widget.EntryListWidget;
@@ -173,7 +172,7 @@ public abstract class CategoryListWidget extends AlwaysSelectedEntryListWidget<C
                 SplitEvent event = this.category.getSplitEvent();
                 label = label.copy().append(
                         Formatting.GRAY + " (" +
-                        Formatting.WHITE + event.getPlayCount() +
+                        Formatting.WHITE + event.getAttempts() +
                         Formatting.GRAY + "/" +
                         Formatting.GREEN + event.getCompletionCount() +
                         Formatting.GRAY + "/" +

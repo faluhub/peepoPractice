@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfile;
 import com.redlimerl.speedrunigt.timer.InGameTimer;
 import com.redlimerl.speedrunigt.timer.TimerStatus;
 import me.quesia.peepopractice.PeepoPractice;
+import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.exception.NotInitializedException;
 import me.quesia.peepopractice.core.category.CategoryPreference;
 import me.quesia.peepopractice.core.category.PracticeTypes;
@@ -39,6 +40,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     @Shadow public abstract void setGameMode(GameMode gameMode);
     @Shadow public abstract void sendMessage(Text message, boolean actionBar);
     @Shadow public abstract boolean startRiding(Entity entity, boolean force);
+
+    @Shadow private int joinInvulnerabilityTicks;
     private Long comparingTime;
     private PracticeTypes.PaceTimerShowType showType;
 
@@ -60,7 +63,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
                         break;
                 }
             }
-            this.showType = PracticeTypes.PaceTimerShowType.fromLabel(CategoryPreference.getValue(PeepoPractice.CATEGORY, "pace_timer_show_type", PracticeTypes.PaceTimerShowType.ALWAYS.getLabel()));
+            this.showType = PracticeTypes.PaceTimerShowType.fromLabel(CategoryPreference.getValue("pace_timer_show_type"));
         }
 
         if (PeepoPractice.CATEGORY.hasPlayerProperties()) {
@@ -97,10 +100,10 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
             if (PeepoPractice.CATEGORY.getPlayerProperties().hasVehicle()) {
                 Entity entity = PeepoPractice.CATEGORY.getPlayerProperties().getVehicle().create(world);
                 if (entity != null) {
-                    world.spawnEntity(entity);
-                    this.startRiding(entity, true);
                     entity.refreshPositionAndAngles(spawnPos, yaw, pitch);
+                    world.spawnEntity(entity);
                     this.refreshPositionAndAngles(spawnPos, yaw, pitch);
+                    this.startRiding(entity, true);
                 } else {
                     PeepoPractice.LOGGER.warn("Couldn't create vehicle entity.");
                 }
@@ -109,6 +112,13 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
             }
 
             ci.cancel();
+        }
+    }
+
+    @Inject(method = "tick", at = @At("HEAD"))
+    private void removeSpawnProtection(CallbackInfo ci) {
+        if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
+            this.joinInvulnerabilityTicks = 0;
         }
     }
 
@@ -124,11 +134,11 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
                 flip = true;
             }
             String timeString = Formatting.GRAY + "Pace: ";
-            timeString += !flip ? Formatting.GREEN + "+" : Formatting.RED + "-";
+            timeString += !flip ? Formatting.GREEN + "-" : Formatting.RED + "+";
             timeString += SplitEvent.getTimeString(difference);
             this.sendMessage(new LiteralText(timeString), true);
         } else {
-            this.sendMessage(new LiteralText(Formatting.GRAY + "Pace: " + Formatting.GREEN + "+" + SplitEvent.getTimeString(igt)), true);
+            this.sendMessage(new LiteralText(Formatting.GRAY + "Pace: " + Formatting.GREEN + "-" + SplitEvent.getTimeString(igt)), true);
         }
     }
 

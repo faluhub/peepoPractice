@@ -22,13 +22,9 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public abstract class SplitEvent {
-    public static Map<String, SplitEvent> ID_TO_EVENT = new HashMap<>();
     private PracticeCategory category;
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -57,7 +53,9 @@ public abstract class SplitEvent {
             } else {
                 isPb = true;
             }
+
             PeepoPractice.CATEGORY.putCustomValue("isCompletion", completed);
+
             if (completed) {
                 JsonObject categoryObject = new JsonObject();
                 JsonArray array = new JsonArray();
@@ -218,7 +216,7 @@ public abstract class SplitEvent {
         }
     }
 
-    public void incrementFailCount() {
+    private void incrementCount(String name) {
         PracticeWriter writer = PracticeWriter.COMPLETIONS_WRITER;
         JsonObject config = writer.get();
         JsonObject categoryObject = new JsonObject();
@@ -226,28 +224,40 @@ public abstract class SplitEvent {
             categoryObject = config.get(this.category.getId()).getAsJsonObject();
         }
         int playCount = 1;
-        if (categoryObject.has("fail_count")) {
-            playCount = categoryObject.get("fail_count").getAsInt() + 1;
+        if (categoryObject.has(name)) {
+            playCount = categoryObject.get(name).getAsInt() + 1;
         }
-        categoryObject.addProperty("fail_count", playCount);
+        categoryObject.addProperty(name, playCount);
         writer.put(this.category.getId(), categoryObject);
         writer.write();
     }
 
-    public int getFailCount() {
+    private int getCount(String name) {
         PracticeWriter writer = PracticeWriter.COMPLETIONS_WRITER;
         JsonObject config = writer.get();
         if (config.has(this.category.getId())) {
             JsonObject categoryObject = config.get(this.category.getId()).getAsJsonObject();
-            if (categoryObject.has("fail_count")) {
-                return categoryObject.get("fail_count").getAsInt();
+            if (categoryObject.has(name)) {
+                return categoryObject.get(name).getAsInt();
             }
         }
         return 0;
     }
 
-    public int getPlayCount() {
-        return this.getCompletionCount() + this.getFailCount();
+    public void incrementFailCount() {
+        this.incrementCount("fail_count");
+    }
+
+    public int getFailCount() {
+        return this.getCount("fail_count");
+    }
+
+    public void incrementAttempts() {
+        this.incrementCount("attempts");
+    }
+
+    public int getAttempts() {
+        return this.getCount("attempts");
     }
 
     public static String getTimeString(long igt) {

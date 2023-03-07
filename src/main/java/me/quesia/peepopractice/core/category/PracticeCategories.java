@@ -2,6 +2,7 @@ package me.quesia.peepopractice.core.category;
 
 import com.google.common.collect.Lists;
 import me.quesia.peepopractice.core.CustomPortalForcer;
+import me.quesia.peepopractice.core.category.utils.PracticeCategoryUtils;
 import me.quesia.peepopractice.core.exception.NotInitializedException;
 import me.quesia.peepopractice.core.category.properties.PlayerProperties;
 import me.quesia.peepopractice.core.category.properties.StructureProperties;
@@ -12,6 +13,7 @@ import me.quesia.peepopractice.core.category.properties.event.InteractLootableCo
 import me.quesia.peepopractice.core.category.properties.event.ThrowEntitySplitEvent;
 import me.quesia.peepopractice.core.category.properties.preset.BastionPreset;
 import me.quesia.peepopractice.mixin.access.ChunkGeneratorAccessor;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.EntityType;
@@ -156,9 +158,17 @@ public class PracticeCategories {
                     .setId("bastion_type")
                     .setLabel("Bastion Type")
                     .setDescription("The bastion type.")
-                    .setIcon(new Identifier("textures/item/golden_helmet.png"))
                     .setChoices(PracticeTypes.BastionType.all())
                     .setDefaultChoice(PracticeTypes.BastionType.RANDOM.getLabel())
+                    .setIcon(new Identifier("textures/item/golden_helmet.png"))
+            )
+            .addPreference(new CategoryPreference()
+                    .setId("ranked_loot_table")
+                    .setLabel("Ranked Loot Table")
+                    .setDescription("If enabled, the game will use the piglin barter loot table used in MCSR Ranked.")
+                    .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
+                    .setDefaultChoice(PracticeCategoryUtils.ENABLED)
+                    .setIcon(new Identifier("textures/item/ender_pearl.png"))
             );
     public static PracticeCategory FORTRESS_SPLIT = new PracticeCategory()
             .setId("fortress_split")
@@ -189,6 +199,14 @@ public class PracticeCategories {
             )
             .setSplitEvent(new ChangeDimensionSplitEvent()
                     .setDimension(World.OVERWORLD)
+            )
+            .addPreference(new CategoryPreference()
+                    .setId("good_blaze_rates")
+                    .setLabel("Good Blaze Rates")
+                    .setDescription("If enabled, blazes will always drop a rod.")
+                    .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
+                    .setDefaultChoice(PracticeCategoryUtils.ENABLED)
+                    .setIcon(new Identifier("textures/item/blaze_rod.png"))
             );
     public static PracticeCategory NETHER_SPLIT = new PracticeCategory()
             .setId("nether_split")
@@ -234,12 +252,28 @@ public class PracticeCategories {
                     .setIcon(new Identifier("textures/item/golden_helmet.png"))
                     .setChoices(PracticeTypes.BastionType.all())
                     .setDefaultChoice(PracticeTypes.BastionType.RANDOM.getLabel())
+            )
+            .addPreference(new CategoryPreference()
+                    .setId("ranked_loot_table")
+                    .setLabel("Ranked Loot Table")
+                    .setDescription("If enabled, the game will use the piglin barter loot table used in MCSR Ranked.")
+                    .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
+                    .setDefaultChoice(PracticeCategoryUtils.ENABLED)
+                    .setIcon(new Identifier("textures/item/ender_pearl.png"))
+            )
+            .addPreference(new CategoryPreference()
+                    .setId("good_blaze_rates")
+                    .setLabel("Good Blaze Rates")
+                    .setDescription("If enabled, blazes will always drop a rod.")
+                    .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
+                    .setDefaultChoice(PracticeCategoryUtils.ENABLED)
+                    .setIcon(new Identifier("textures/item/blaze_rod.png"))
             );
     public static PracticeCategory POST_BLIND_SPLIT = new PracticeCategory()
             .setId("post_blind_split")
             .setPlayerProperties(new PlayerProperties()
                     .setSpawnPos((category, random, world) -> {
-                        PracticeTypes.StrongholdDistanceType distanceType = PracticeTypes.StrongholdDistanceType.fromLabel(CategoryPreference.getValue(category, "stronghold_distance", PracticeTypes.StrongholdDistanceType.AVERAGE.getLabel()));
+                        PracticeTypes.StrongholdDistanceType distanceType = PracticeTypes.StrongholdDistanceType.fromLabel(CategoryPreference.getValue(category, "stronghold_distance"));
                         int max = Objects.requireNonNullElse(distanceType, PracticeTypes.StrongholdDistanceType.AVERAGE).getMax();
                         int min = Objects.requireNonNullElse(distanceType, PracticeTypes.StrongholdDistanceType.AVERAGE).getMin();
                         ChunkGenerator chunkGenerator = world.getChunkManager().getChunkGenerator();
@@ -290,10 +324,23 @@ public class PracticeCategories {
                     .setChunkPos(new ChunkPos(0, 0))
                     .setOrientation(Direction.SOUTH)
                     .setGeneratable(true)
-                    .setStructureTopY(40)
+                    .setStructureTopY((category, random, world) -> random.nextInt(40, 55))
             )
             .setPlayerProperties(new PlayerProperties()
-                    .setSpawnPos(new BlockPos(4, 31, 4))
+                    .setSpawnPos((category, random, world) -> {
+                        StructureProperties properties = category.findStructureProperties(DefaultBiomeFeatures.STRONGHOLD);
+                        if (properties != null) {
+                            if (properties.hasStructureTopY()) {
+                                BlockPos pos = new BlockPos(4, properties.getStructureTopY() - 9, 4);
+                                BlockState state = world.getBlockState(pos.add(0, -1, 0));
+                                if (state.isOf(Blocks.AIR) || state.isOf(Blocks.CAVE_AIR)) {
+                                    return pos.add(0, 6, -1);
+                                }
+                                return pos;
+                            }
+                        }
+                        throw new NotInitializedException();
+                    })
                     .setSpawnAngle(0.0F, 0.0F)
             )
             .setWorldProperties(new WorldProperties()
@@ -345,5 +392,37 @@ public class PracticeCategories {
             )
             .setSplitEvent(new ChangeDimensionSplitEvent()
                     .setDimension(World.OVERWORLD)
+            )
+            .addPreference(new CategoryPreference()
+                    .setId("no_early_flyaway")
+                    .setLabel("No Early Flyaway")
+                    .setDescription("If enabled, the dragon will never fly away early.")
+                    .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
+                    .setDefaultChoice(PracticeCategoryUtils.ENABLED)
+                    .setIcon(new Identifier("textures/mob_effect/levitation.png"))
+            )
+            .addPreference(new CategoryPreference()
+                    .setId("no_cage_spawn")
+                    .setLabel("No Cage Spawn")
+                    .setDescription("If enabled, you won't spawn underground.")
+                    .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
+                    .setDefaultChoice(PracticeCategoryUtils.DISABLED)
+                    .setIcon(new Identifier("textures/mob_effect/jump_boost.png"))
+            )
+            .addPreference(new CategoryPreference()
+                    .setId("start_node")
+                    .setLabel("Start Node")
+                    .setDescription("Choose which side the dragon starts at.")
+                    .setChoices(PracticeTypes.StartNodeType.all())
+                    .setDefaultChoice(PracticeTypes.StartNodeType.RANDOM.getLabel())
+                    .setIcon(new Identifier("textures/block/obsidian.png"))
+            )
+            .addPreference(new CategoryPreference()
+                    .setId("one_in_eight")
+                    .setLabel("One In Eight")
+                    .setDescription("If enabled, the dragon will always be at the center tower. (Disabled = random)")
+                    .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
+                    .setDefaultChoice(PracticeCategoryUtils.DISABLED)
+                    .setIcon(new Identifier("textures/item/brick.png"))
             );
 }

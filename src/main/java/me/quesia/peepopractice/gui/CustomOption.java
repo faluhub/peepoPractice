@@ -1,7 +1,7 @@
 package me.quesia.peepopractice.gui;
 
 import me.quesia.peepopractice.PeepoPractice;
-import me.quesia.peepopractice.core.category.StandardSettingsUtils;
+import me.quesia.peepopractice.core.category.utils.StandardSettingsUtils;
 import net.minecraft.client.options.BooleanOption;
 import net.minecraft.client.options.DoubleOption;
 import net.minecraft.text.MutableText;
@@ -27,7 +27,7 @@ public abstract class CustomOption {
         double d = doubleOption.get(gameOptions);
         return doubleOption.getDisplayPrefix().append(new TranslatableText("options.entityDistancePercent", (int)(d * 100.0)));
     });
-    public static final BooleanOption SPRINTING = new BooleanOption("Sprinting", gameOptions -> StandardSettingsUtils.getSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "sprinting", true), (gameOptions, aBoolean) -> StandardSettingsUtils.setSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "sprinting", aBoolean));
     public static final BooleanOption CHUNK_BORDERS = new BooleanOption("Chunk Borders", gameOptions -> StandardSettingsUtils.getSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "chunk_borders", false), (gameOptions, aBoolean) -> StandardSettingsUtils.setSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "chunk_borders", aBoolean));
-    public static final BooleanOption ENABLED = new BooleanOption("Enabled", gameOptions -> StandardSettingsUtils.getSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "enabled", true), (gameOptions, aBoolean) -> StandardSettingsUtils.setSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "enabled", aBoolean));
+    public static final BooleanOption HITBOXES = new BooleanOption("Hitboxes", gameOptions -> StandardSettingsUtils.getSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "hitboxes", false), (gameOptions, aBoolean) -> StandardSettingsUtils.setSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "hitboxes", aBoolean));
+    public static final BooleanOption TRIGGER = new BooleanOption("Trigger StandardSettings", gameOptions -> StandardSettingsUtils.getSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "enabled", true), (gameOptions, aBoolean) -> StandardSettingsUtils.setSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "enabled", aBoolean));
 }

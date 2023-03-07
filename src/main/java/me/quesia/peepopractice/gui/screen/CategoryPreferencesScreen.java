@@ -28,7 +28,7 @@ public class CategoryPreferencesScreen extends Screen {
         int size = this.width / 6 + offset;
         int column = 0;
         int row = 0;
-        int values = this.category.getPreferences().size();
+        int values = Math.max(this.category.getPreferences().size(), 3);
         int maxColumns = Math.round(this.width / (float) (size * values)) + 2;
 
         for (CategoryPreference preference : this.category.getPreferences()) {
@@ -38,7 +38,7 @@ public class CategoryPreferencesScreen extends Screen {
                             null,
                             preference.getIcon(),
                             (int) (32 * ((size - offset) / 110.0F)),
-                            this.width * (column + 1) / (maxColumns + 1) - size / 2 + column * 3,
+                            this.width * (column + 1) / (Math.max(maxColumns, 3) + 1) - size / 2,
                             32 + size * row,
                             size,
                             size - offset,

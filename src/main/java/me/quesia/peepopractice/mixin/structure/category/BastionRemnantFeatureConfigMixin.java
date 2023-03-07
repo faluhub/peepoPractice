@@ -23,7 +23,7 @@ public class BastionRemnantFeatureConfigMixin {
     @Inject(method = "getRandom", at = @At("RETURN"), cancellable = true)
     private void bastionType(Random random, CallbackInfoReturnable<StructurePoolFeatureConfig> cir) {
         if (PeepoPractice.CATEGORY.findStructureProperties(StructureFeature.BASTION_REMNANT) != null) {
-            PracticeTypes.BastionType bastionType = PracticeTypes.BastionType.fromLabel(CategoryPreference.getValue(PeepoPractice.CATEGORY, "bastion_type", PracticeTypes.BastionType.RANDOM.getLabel()));
+            PracticeTypes.BastionType bastionType = PracticeTypes.BastionType.fromLabel(CategoryPreference.getValue("bastion_type"));
             if (bastionType != null) {
                 int index;
                 if (bastionType == PracticeTypes.BastionType.RANDOM) { index = this.possibleConfigs.indexOf(cir.getReturnValue()); }
