@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = MinecraftClient.class, priority = -1000)
 public class MinecraftClientMixin {
-    @Inject(method = "method_29607", at = @At(value = "HEAD", shift = At.Shift.BY, by = 1))
+    @Inject(method = "method_29607", at = @At("HEAD"))
     private void resetSettings1(String worldName, LevelInfo levelInfo, RegistryTracker.Modifiable registryTracker, GeneratorOptions generatorOptions, CallbackInfo ci) {
         PeepoPractice.log("Triggered first standard settings call for " + PeepoPractice.CATEGORY.getId());
         StandardSettingsUtils.triggerStandardSettings(PeepoPractice.CATEGORY);
@@ -27,13 +27,13 @@ public class MinecraftClientMixin {
         }
     }
 
-    @Inject(method = "onWindowFocusChanged", at = @At(value = "HEAD", shift = At.Shift.BY, by = 1))
+    @Inject(method = "onWindowFocusChanged", at = @At("HEAD"))
     private void resetSettings3(boolean focused, CallbackInfo ci) {
         PeepoPractice.log("Triggered third standard settings call for " + PeepoPractice.CATEGORY.getId());
         StandardSettingsUtils.triggerStandardSettings(PeepoPractice.CATEGORY);
     }
 
-    @Inject(method = "onResolutionChanged", at = @At(value = "HEAD", shift = At.Shift.BY, by = 1))
+    @Inject(method = "onResolutionChanged", at = @At("HEAD"))
     private void resetSettings4(CallbackInfo ci) {
         PeepoPractice.log("Triggered fourth standard settings call for " + PeepoPractice.CATEGORY.getId());
         StandardSettingsUtils.triggerStandardSettings(PeepoPractice.CATEGORY);
