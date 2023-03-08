@@ -1,15 +1,9 @@
 accessWidener v1 named
 
-accessible class net/minecraft/loot/condition/LootConditionManager$AndCondition
-
-accessible method net/minecraft/loot/condition/LootConditionManager$AndCondition <init> ([Lnet/minecraft/loot/condition/LootCondition;)V
-accessible method net/minecraft/server/network/SpawnLocating findOverworldSpawn (Lnet/minecraft/server/world/ServerWorld;IIZ)Lnet/minecraft/util/math/BlockPos;
-accessible method net/minecraft/client/gui/screen/world/CreateWorldScreen <init> (Lnet/minecraft/client/gui/screen/Screen;Lnet/minecraft/client/gui/screen/world/MoreOptionsDialog;)V
 accessible method net/minecraft/client/font/TextRenderer draw (Ljava/lang/String;FFILnet/minecraft/util/math/Matrix4f;ZZ)I
 accessible method net/minecraft/client/gui/widget/EntryListWidget getMaxScroll ()I
 accessible method net/minecraft/client/gui/widget/EntryListWidget getRowBottom (I)I
 accessible method net/minecraft/world/biome/layer/BiomeLayers isOcean (I)Z
-accessible method net/minecraft/entity/player/PlayerEntity closeHandledScreen ()V
 accessible method net/minecraft/client/gui/screen/world/MoreOptionsDialog setGeneratorOptions (Lnet/minecraft/world/gen/GeneratorOptions;)V
 accessible method net/minecraft/client/world/GeneratorType method_29079 (Lnet/minecraft/world/gen/GeneratorOptions;Lnet/minecraft/client/world/GeneratorType;Lnet/minecraft/world/biome/Biome;)Lnet/minecraft/world/gen/GeneratorOptions;
 accessible method net/minecraft/entity/mob/PiglinBrain getBarteredItem (Lnet/minecraft/entity/mob/PiglinEntity;)Ljava/util/List;
@@ -20,3 +14,4 @@ accessible field net/minecraft/client/gui/widget/EntryListWidget renderSelection
 accessible field net/minecraft/client/render/debug/DebugRenderer showChunkBorder Z
 accessible field net/minecraft/client/world/GeneratorType SINGLE_BIOME_SURFACE Lnet/minecraft/client/world/GeneratorType;
 accessible field net/minecraft/client/gui/screen/world/MoreOptionsDialog field_25049 Ljava/util/Optional;
+accessible field net/minecraft/world/gen/chunk/FlatChunkGeneratorConfig STRUCTURE_TO_FEATURES Ljava/util/Map;

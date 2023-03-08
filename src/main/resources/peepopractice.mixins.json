@@ -14,14 +14,12 @@
     "access.ServerWorldAccessor",
     "access.ThreadExecutorAccessor",
 
-    "compat.standardsettings.MinecraftClientMixin",
-    "compat.standardsettings.StandardSettingsMixin",
-
     "compat.timer.InGameTimerUtilsMixin",
     "compat.timer.PracticeTimerManagerMixin",
 
     "compat.KeyboardMixin",
     "compat.LocateCommandMixin",
+    "compat.StandardSettingsMixin",
 
     "gui.hud.InGameHudMixin",
     "gui.hud.SubtitlesHudMixin",
@@ -60,7 +58,7 @@
     "world.entity.ServerPlayerEntityMixin",
     "world.entity.ThrownItemEntityMixin",
 
-    "world.LootableContainerBlockEntityMixin",
+    "world.ChestBlockEntityMixin",
     "world.MinecraftServerMixin",
     "world.PlayerManagerMixin",
     "world.ServerWorldMixin",

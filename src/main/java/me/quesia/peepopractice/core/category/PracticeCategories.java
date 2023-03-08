@@ -9,7 +9,7 @@ import me.quesia.peepopractice.core.category.properties.StructureProperties;
 import me.quesia.peepopractice.core.category.properties.WorldProperties;
 import me.quesia.peepopractice.core.category.properties.event.ChangeDimensionSplitEvent;
 import me.quesia.peepopractice.core.category.properties.event.GetAdvancementSplitEvent;
-import me.quesia.peepopractice.core.category.properties.event.InteractLootableContainerSplitEvent;
+import me.quesia.peepopractice.core.category.properties.event.InteractLootChestSplitEvent;
 import me.quesia.peepopractice.core.category.properties.event.ThrowEntitySplitEvent;
 import me.quesia.peepopractice.core.category.properties.preset.BastionPreset;
 import me.quesia.peepopractice.mixin.access.ChunkGeneratorAccessor;
@@ -92,9 +92,9 @@ public class PracticeCategories {
             .setWorldProperties(new WorldProperties()
                     .setWorldRegistryKey(World.OVERWORLD)
             )
-            .setSplitEvent(new InteractLootableContainerSplitEvent()
-                    .setBlockEntityType(BlockEntityType.CHEST)
+            .setSplitEvent(new InteractLootChestSplitEvent()
                     .setLootTable(LootTables.BURIED_TREASURE_CHEST)
+                    .setOnClose(true)
             );
     public static PracticeCategory RAVINE_ENTER_SPLIT = new PracticeCategory()
             .setId("ravine_enter_split")

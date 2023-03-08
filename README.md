@@ -94,6 +94,11 @@ EXAMPLE -> {...}
 CHILD VALUES ->
   TYPE -> Array
   CHILD VALUES ->
+    "feature"
+    TYPE -> Structure Feature ID
+    DESCRIPTION -> The ID of the structure. (Same as /locate)
+    EXAMPLE -> "bastion_remnant"
+  
     "chunk_pos"
     TYPE -> Array (2 members)
     DESCRIPTION -> The first 2 values of the array are used as the x and z chunk coordinates of the structure.
@@ -186,17 +191,16 @@ POSSIBLE VALUES ->
   DESCRIPTION -> This triggers whenever the player gets the specified advancement.
   EXAMPLE -> {...}
   
-  "interact_lootable_container"
+  "interact_loot_chest"
   CHILD VALUES ->
-    "block_entity_type"
-    TYPE -> BlockEntity ID
-    DESCRIPTION -> The ID of the block entity that carries the container.
-    EXAMPLE -> "minecraft:chest"
-    
     "loot_table"
     TYPE -> LootTable Type
     DESCRIPTION -> The path of the Loottable the game should check for. The paths for these can be found in the game's data files.
     EXAMPLE -> chests/buried_treasure
+    
+    "on_close"
+    TYPE -> Boolean
+    DESCRIPTION -> If it triggers when the chest closes. (Default is false)
   DESCRIPTION -> This triggers whenever the player opens a container attached to a block entity that has a loot table connected to it.
   EXAMPLE -> {...}
   

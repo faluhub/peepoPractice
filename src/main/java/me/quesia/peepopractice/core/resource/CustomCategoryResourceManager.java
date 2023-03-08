@@ -21,6 +21,9 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.chunk.FlatChunkGeneratorConfig;
+import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
+import net.minecraft.world.gen.feature.StructureFeature;
 
 import java.io.File;
 import java.io.FileReader;
@@ -94,6 +97,11 @@ public class CustomCategoryResourceManager {
                                 if (element instanceof JsonObject) {
                                     JsonObject structureProperties = (JsonObject) element;
                                     StructureProperties properties = new StructureProperties();
+                                    if (structureProperties.has("feature")) {
+                                        StructureFeature<?> feature = Registry.STRUCTURE_FEATURE.get(new Identifier(structureProperties.get("feature").getAsString()));
+                                        ConfiguredStructureFeature<?, ?> configuredFeature = FlatChunkGeneratorConfig.STRUCTURE_TO_FEATURES.get(feature);
+                                        properties.setStructure(configuredFeature);
+                                    }
                                     if (structureProperties.has("chunk_pos")) {
                                         JsonArray chunkPos = structureProperties.get("chunk_pos").getAsJsonArray();
                                         properties = properties.setChunkPos(new ChunkPos(chunkPos.get(0).getAsInt(), chunkPos.get(1).getAsInt()));
@@ -201,13 +209,14 @@ public class CustomCategoryResourceManager {
                                         category = category.setSplitEvent(event);
                                     }
                                     break;
-                                case "interact_lootable_container":
-                                    if (splitEvent.has("block_entity_type") && splitEvent.has("loot_table")) {
-                                        InteractLootableContainerSplitEvent event = new InteractLootableContainerSplitEvent();
-                                        BlockEntityType<? extends BlockEntity> blockEntityType = Registry.BLOCK_ENTITY_TYPE.get(new Identifier(splitEvent.get("block_entity_type").getAsString()));
+                                case "interact_loot_chest":
+                                    if (splitEvent.has("loot_table")) {
+                                        InteractLootChestSplitEvent event = new InteractLootChestSplitEvent();
                                         Identifier lootTable = new Identifier(splitEvent.get("loot_table").getAsString());
-                                        event = event.setBlockEntityType(blockEntityType);
                                         event = event.setLootTable(lootTable);
+                                        if (splitEvent.has("on_close")) {
+                                            event = event.setOnClose(splitEvent.get("on_close").getAsBoolean());
+                                        }
                                         category = category.setSplitEvent(event);
                                     }
                                     break;

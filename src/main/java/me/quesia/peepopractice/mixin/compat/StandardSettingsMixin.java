@@ -1,4 +1,4 @@
-package me.quesia.peepopractice.mixin.compat.standardsettings;
+package me.quesia.peepopractice.mixin.compat;
 
 import com.kingcontaria.standardsettings.StandardSettings;
 import me.quesia.peepopractice.PeepoPractice;
