@@ -10,7 +10,6 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin {
-
     @Shadow @Nullable public abstract CompoundTag getTag();
 
     @ModifyExpressionValue(method = "getTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;hasCustomName()Z", ordinal = 0))
