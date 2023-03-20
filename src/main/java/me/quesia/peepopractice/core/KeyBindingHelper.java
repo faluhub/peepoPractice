@@ -20,7 +20,7 @@ public class KeyBindingHelper {
     }
 
     private static Map<String, Integer> getCategoryMap() {
-        return KeyBindingAccessor.invokeGetCategoryMap();
+        return KeyBindingAccessor.peepoPractice$getCategoryMap();
     }
 
     private static boolean noCategory(String key) {

@@ -1,20 +1,15 @@
 package me.quesia.peepopractice.mixin.world.entity;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import me.quesia.peepopractice.PeepoPractice;
 import net.minecraft.client.network.ClientPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ClientPlayerEntity.class)
-public class ClientPlayerEntityMixin {
-    @Inject(method = "showsDeathScreen", at = @At("RETURN"), cancellable = true)
-    private void noDeathScreen(CallbackInfoReturnable<Boolean> cir) {
-        if (cir.getReturnValue()) {
-            if (PeepoPractice.CATEGORY.hasSplitEvent()) {
-                cir.setReturnValue(false);
-            }
-        }
+public abstract class ClientPlayerEntityMixin {
+    @ModifyReturnValue(method = "showsDeathScreen", at = @At("RETURN"))
+    private boolean peepoPractice$noDeathScreen(boolean showsDeathScreen) {
+        return showsDeathScreen && !PeepoPractice.CATEGORY.hasSplitEvent();
     }
 }

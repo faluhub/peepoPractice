@@ -22,7 +22,6 @@
     "compat.StandardSettingsMixin",
 
     "gui.hud.InGameHudMixin",
-    "gui.hud.SubtitlesHudMixin",
 
     "gui.renderer.ItemRendererMixin",
 
@@ -30,6 +29,7 @@
     "gui.screen.GameMenuScreenMixin",
     "gui.screen.LevelLoadingScreenMixin",
     "gui.screen.OpenToLanScreenMixin",
+    "gui.screen.ScreenMixin",
     "gui.screen.TitleScreenMixin",
 
     "gui.ItemStackMixin",
@@ -51,14 +51,17 @@
     "world.entity.ai.HoldingPatternPhaseMixin",
 
     "world.entity.category.BlazeEntityMixin",
+    "world.entity.category.MobEntityMixin",
 
     "world.entity.ClientPlayerEntityMixin",
     "world.entity.MobEntityMixin",
     "world.entity.PiglinBrainMixin",
+    "world.entity.PlayerEntityMixin",
     "world.entity.ServerPlayerEntityMixin",
     "world.entity.ThrownItemEntityMixin",
 
     "world.ChestBlockEntityMixin",
+    "world.LootableContainerBlockEntityMixin",
     "world.MinecraftServerMixin",
     "world.PlayerManagerMixin",
     "world.ServerWorldMixin",

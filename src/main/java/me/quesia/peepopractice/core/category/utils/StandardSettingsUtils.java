@@ -37,7 +37,7 @@ public class StandardSettingsUtils {
                 case "piechart":
                     String value = entry.getValue().getAsString();
                     if (value.split("\\.")[0].equals("root")) {
-                        ((MinecraftClientAccessor) MinecraftClient.getInstance()).setOpenProfilerSection(value.replace('.', '\u001e'));
+                        ((MinecraftClientAccessor) MinecraftClient.getInstance()).peepoPractice$setOpenProfilerSection(value.replace('.', '\u001e'));
                     }
                     break;
             }

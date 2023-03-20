@@ -18,11 +18,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.List;
 
 @Mixin(StructureStart.class)
-public class StructureStartMixin {
+public abstract class StructureStartMixin {
     @Mutable @Shadow @Final protected List<StructurePiece> children;
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void customChildrenListType(StructureFeature<?> feature, int chunkX, int chunkZ, BlockBox box, int references, long seed, CallbackInfo ci) {
+    private void peepoPractice$customChildrenListType(StructureFeature<?> feature, int chunkX, int chunkZ, BlockBox box, int references, long seed, CallbackInfo ci) {
         this.children = new ExecuteAtIndexArrayList<>(piece -> {
             for (StructureProperties properties : PeepoPractice.CATEGORY.getStructureProperties()) {
                 if (properties.isSameStructure(feature) && properties.hasOrientation()) {
