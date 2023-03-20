@@ -14,16 +14,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Screen.class)
 public abstract class ScreenMixin extends AbstractParentElement {
-
     @Shadow @Nullable protected MinecraftClient client;
-
     @Shadow public int width;
-
     @Shadow public int height;
-
     @Shadow protected TextRenderer textRenderer;
 
     @Inject(method = "addButton", at = @At("HEAD"))
-    protected  <T extends AbstractButtonWidget> void peepoPractice$onButtonAdded(T button, CallbackInfoReturnable<T> cir) {
-    }
+    protected <T extends AbstractButtonWidget> void peepoPractice$onButtonAdded(T button, CallbackInfoReturnable<T> cir) {}
 }
