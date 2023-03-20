@@ -21,7 +21,6 @@ import java.util.Map;
 
 @Mixin(ClientAdvancementManager.class)
 public abstract class ClientAdvancementManagerMixin {
-
     @Shadow @Final private AdvancementManager manager;
     @Shadow @Final private MinecraftClient client;
 
