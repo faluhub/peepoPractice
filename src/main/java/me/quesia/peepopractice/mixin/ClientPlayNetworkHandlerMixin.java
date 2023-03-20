@@ -10,7 +10,6 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin {
-
     @WrapWithCondition(method = "onEntityPassengersSet", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;warn(Ljava/lang/String;)V", remap = false))
     private boolean peepoPractice$ignoreWarning(Logger instance, String s) {
         return PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY);
