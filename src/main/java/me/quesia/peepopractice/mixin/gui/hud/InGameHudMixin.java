@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InGameHud.class)
-public class InGameHudMixin {
+public abstract class InGameHudMixin {
     @Shadow private @Nullable Text title;
     @Shadow private @Nullable Text subtitle;
     @Shadow private int titleTotalTicks;
@@ -24,8 +24,9 @@ public class InGameHudMixin {
     @Shadow @Final private MinecraftClient client;
     private PeepoPauseManHud peepoPauseManHud;
 
+    // TODO: this is extremely concerning
     @Inject(method = "setTitles", at = @At("HEAD"), cancellable = true)
-    private void cancelDefaultFunc(Text text, Text text2, int i, int j, int k, CallbackInfo ci) {
+    private void peepoPractice$cancelDefaultFunc(Text text, Text text2, int i, int j, int k, CallbackInfo ci) {
         ci.cancel();
 
         if (text == null && text2 == null && i < 0 && j < 0 && k < 0) {
@@ -56,7 +57,7 @@ public class InGameHudMixin {
     }
 
     @Inject(method = "render", at = @At("TAIL"))
-    private void renderPeepoPauseMan(MatrixStack matrixStack, float f, CallbackInfo ci) {
+    private void peepoPractice$renderPeepoPauseMan(MatrixStack matrixStack, float f, CallbackInfo ci) {
         if (this.peepoPauseManHud == null) {
             this.peepoPauseManHud = new PeepoPauseManHud(this.client);
         }

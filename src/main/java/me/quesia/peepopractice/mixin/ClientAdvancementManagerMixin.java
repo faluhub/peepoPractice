@@ -20,12 +20,13 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import java.util.Map;
 
 @Mixin(ClientAdvancementManager.class)
-public class ClientAdvancementManagerMixin {
+public abstract class ClientAdvancementManagerMixin {
+
     @Shadow @Final private AdvancementManager manager;
     @Shadow @Final private MinecraftClient client;
 
     @ModifyVariable(method = "onAdvancements", at = @At(value = "INVOKE", target = "Ljava/util/Map$Entry;getValue()Ljava/lang/Object;"))
-    public Map.Entry<Identifier, AdvancementProgress> advancement(Map.Entry<Identifier, AdvancementProgress> value) {
+    private Map.Entry<Identifier, AdvancementProgress> peepoPractice$advancement(Map.Entry<Identifier, AdvancementProgress> value) {
         if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
             Advancement advancement = this.manager.get(value.getKey());
             AdvancementProgress advancementProgress = value.getValue();

@@ -15,7 +15,6 @@ import me.quesia.peepopractice.core.category.properties.preset.BastionPreset;
 import me.quesia.peepopractice.mixin.access.ChunkGeneratorAccessor;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootTables;
@@ -277,8 +276,8 @@ public class PracticeCategories {
                         int max = Objects.requireNonNullElse(distanceType, PracticeTypes.StrongholdDistanceType.AVERAGE).getMax();
                         int min = Objects.requireNonNullElse(distanceType, PracticeTypes.StrongholdDistanceType.AVERAGE).getMin();
                         ChunkGenerator chunkGenerator = world.getChunkManager().getChunkGenerator();
-                        ((ChunkGeneratorAccessor) chunkGenerator).invokeMethod_28509();
-                        List<ChunkPos> strongholds = ((ChunkGeneratorAccessor) chunkGenerator).getField_24749();
+                        ((ChunkGeneratorAccessor) chunkGenerator).peepoPractice$invokeMethod_28509();
+                        List<ChunkPos> strongholds = ((ChunkGeneratorAccessor) chunkGenerator).peepoPractice$getField_24749();
                         int maxStrongholds = 9;
                         BlockPos blockPos = strongholds.get(random.nextInt(maxStrongholds)).toBlockPos(4, 0, 4);
                         blockPos = PracticeCategoryUtils.getRandomBlockInRadius(max, min, blockPos, random);

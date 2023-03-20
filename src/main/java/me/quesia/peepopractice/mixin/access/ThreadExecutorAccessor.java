@@ -6,5 +6,5 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(ThreadExecutor.class)
 public interface ThreadExecutorAccessor {
-    @Invoker("runTasks") void invokeRunTasks();
+    @Invoker("runTasks") void peepoPractice$invokeRunTasks();
 }

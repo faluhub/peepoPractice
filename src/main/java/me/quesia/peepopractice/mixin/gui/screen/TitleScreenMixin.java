@@ -13,12 +13,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(TitleScreen.class)
 public abstract class TitleScreenMixin extends Screen {
+
     protected TitleScreenMixin(Text title) {
         super(title);
     }
 
     @Inject(method = "initWidgetsNormal", at = @At("TAIL"))
-    private void addPracticeButton(int y, int spacingY, CallbackInfo ci) {
+    private void peepoPractice$addPracticeButton(int y, int spacingY, CallbackInfo ci) {
         this.addButton(
                 new ButtonWidget(
                         this.width / 2 - 100,

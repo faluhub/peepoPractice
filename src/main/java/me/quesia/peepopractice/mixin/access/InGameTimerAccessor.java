@@ -6,5 +6,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(value = InGameTimer.class, remap = false)
 public interface InGameTimerAccessor {
-    @Accessor("firstInput") String getFirstInput();
+    @Accessor("firstInput") String peepoPractice$getFirstInput();
 }

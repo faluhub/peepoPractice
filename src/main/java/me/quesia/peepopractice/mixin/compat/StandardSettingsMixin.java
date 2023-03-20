@@ -9,15 +9,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = StandardSettings.class, remap = false)
-public class StandardSettingsMixin {
-    @Inject(method = "load([Ljava/lang/String;)V", at = @At("TAIL"))
-    private static void customSettings1(String[] lines, CallbackInfo ci) {
-        PeepoPractice.log("Triggered second standard settings call for " + PeepoPractice.CATEGORY.getId());
-        StandardSettingsUtils.triggerStandardSettings(PeepoPractice.CATEGORY);
-    }
+public abstract class StandardSettingsMixin {
 
-    @Inject(method = "changeSettingsOnJoin", at = @At("TAIL"))
-    private static void customSettings2(CallbackInfo ci) {
+    @Inject(method = {"load([Ljava/lang/String;)V", "changeSettingsOnJoin"}, at = @At("TAIL"), require = 2)
+    private static void peepoPractice$customSettings1(CallbackInfo ci) {
         PeepoPractice.log("Triggered second standard settings call for " + PeepoPractice.CATEGORY.getId());
         StandardSettingsUtils.triggerStandardSettings(PeepoPractice.CATEGORY);
     }

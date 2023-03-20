@@ -16,9 +16,10 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerManager.class)
-public class PlayerManagerMixin {
+public abstract class PlayerManagerMixin {
+
     @ModifyVariable(method = "onPlayerConnect", at = @At("STORE"))
-    private RegistryKey<World> otherDimension(RegistryKey<World> value) {
+    private RegistryKey<World> peepoPractice$otherDimension(RegistryKey<World> value) {
         if (PeepoPractice.CATEGORY.hasWorldProperties() && PeepoPractice.CATEGORY.getWorldProperties().hasWorldRegistryKey()) {
             return PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey();
         }
@@ -26,7 +27,7 @@ public class PlayerManagerMixin {
     }
 
     @Inject(method = "onPlayerConnect", at = @At("TAIL"))
-    private void setInventory(ClientConnection connection, ServerPlayerEntity player, CallbackInfo ci) {
+    private void peepoPractice$setInventory(ClientConnection connection, ServerPlayerEntity player, CallbackInfo ci) {
         if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
             MinecraftClient.getInstance().inGameHud.setTitles(null, null, -1, -1, -1);
             InventoryUtils.putItems(player.inventory, PeepoPractice.CATEGORY);

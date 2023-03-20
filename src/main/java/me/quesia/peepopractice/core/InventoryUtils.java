@@ -42,12 +42,12 @@ public class InventoryUtils {
         synchronized (PeepoPractice.SERVER_RESOURCE_MANAGER) {
             LootTable lootTable = PeepoPractice.SERVER_RESOURCE_MANAGER.get().getLootManager().getTable(identifier);
 
-            for (LootPool pool : ((LootTableAccessor) lootTable).getPools()) {
-                LootPoolEntry[] entries = ((LootPoolAccessor) pool).getEntries();
+            for (LootPool pool : ((LootTableAccessor) lootTable).peepoPractice$getPools()) {
+                LootPoolEntry[] entries = ((LootPoolAccessor) pool).peepoPractice$getEntries();
                 outer: for (LootPoolEntry entry : entries) {
                     if (entry instanceof ItemEntry) {
                         ItemEntry itemEntry = (ItemEntry) entry;
-                        Item item = ((ItemEntryAccessor) itemEntry).getItem();
+                        Item item = ((ItemEntryAccessor) itemEntry).peepoPractice$getItem();
                         for (ItemStack stack1 : list) {
                             if (stack1.getItem() == item) {
                                 continue outer;
