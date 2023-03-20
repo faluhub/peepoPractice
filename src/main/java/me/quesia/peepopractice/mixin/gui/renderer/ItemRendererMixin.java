@@ -13,7 +13,6 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 @Mixin(ItemRenderer.class)
 public abstract class ItemRendererMixin {
-
     @Shadow public float zOffset;
 
     @WrapOperation(method = "renderGuiItemModel", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;scalef(FFF)V", ordinal = 1))
