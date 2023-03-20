@@ -34,7 +34,6 @@ import java.util.Random;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
-
     @Shadow public abstract void refreshPositionAfterTeleport(double x, double y, double z);
     @Shadow @Nullable public abstract BlockPos getSpawnPointPosition();
     @Shadow public abstract void setGameMode(GameMode gameMode);
