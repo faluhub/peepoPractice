@@ -24,16 +24,26 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(GameMenuScreen.class)
 public abstract class GameMenuScreenMixin extends ScreenMixin {
-
     private ButtonWidget quitButton;
     private boolean renderTitle = false;
     private final Text replayText = new LiteralText("Replay Split");
     private final Text configureText = new LiteralText("Configure Split");
     private AbstractButtonWidget replayButton;
 
-    @WrapOperation(method = "initWidgets", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/GameMenuScreen;addButton(Lnet/minecraft/client/gui/widget/AbstractButtonWidget;)Lnet/minecraft/client/gui/widget/AbstractButtonWidget;", ordinal = 0), slice = @Slice(
-            from = @At(value = "CONSTANT", args = "stringValue=menu.returnToMenu")
-    ))
+    @WrapOperation(
+            method = "initWidgets",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/screen/GameMenuScreen;addButton(Lnet/minecraft/client/gui/widget/AbstractButtonWidget;)Lnet/minecraft/client/gui/widget/AbstractButtonWidget;",
+                    ordinal = 0
+            ),
+            slice = @Slice(
+                    from = @At(
+                            value = "CONSTANT",
+                            args = "stringValue=menu.returnToMenu"
+                    )
+            )
+    )
     private AbstractButtonWidget peepoPractice$customButtons(GameMenuScreen screen, AbstractButtonWidget abstractButtonWidget, Operation<AbstractButtonWidget> original) {
         assert this.client != null;
         this.renderTitle = !PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY);
