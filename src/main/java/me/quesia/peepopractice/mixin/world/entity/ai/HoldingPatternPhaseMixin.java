@@ -9,10 +9,20 @@ import org.spongepowered.asm.mixin.injection.Slice;
 
 @Mixin(HoldingPatternPhase.class)
 public abstract class HoldingPatternPhaseMixin {
-
-    @ModifyExpressionValue(method = "method_6841", at = @At(value = "INVOKE", target = "Ljava/util/Random;nextInt(I)I", ordinal = 0), slice = @Slice(
-            from = @At(value = "INVOKE", target = "Lnet/minecraft/entity/boss/dragon/EnderDragonEntity;getNearestPathNodeIndex()I")
-    ))
+    @ModifyExpressionValue(
+            method = "method_6841",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Ljava/util/Random;nextInt(I)I",
+                    ordinal = 0
+            ),
+            slice = @Slice(
+                    from = @At(
+                            value = "INVOKE",
+                            target = "Lnet/minecraft/entity/boss/dragon/EnderDragonEntity;getNearestPathNodeIndex()I"
+                    )
+            )
+    )
     private int peepoPractice$oneInEight(int randomInt) {
         if (CategoryPreference.getBoolValue("one_in_eight")) { return 0; }
         return randomInt;
