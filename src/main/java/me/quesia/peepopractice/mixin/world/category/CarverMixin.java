@@ -15,7 +15,6 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(Carver.class)
 public abstract class CarverMixin {
-
     @Shadow public abstract Codec<ConfiguredCarver<ProbabilityConfig>> getCodec();
     @Shadow @Final public static Carver<ProbabilityConfig> UNDERWATER_CANYON;
 
