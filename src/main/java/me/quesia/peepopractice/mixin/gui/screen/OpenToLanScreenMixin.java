@@ -12,7 +12,6 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(OpenToLanScreen.class)
 public abstract class OpenToLanScreenMixin {
-
     @SuppressWarnings("DefaultAnnotationParam")
     @WrapOperation(method = "method_19851", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/integrated/IntegratedServer;openToLan(Lnet/minecraft/world/GameMode;ZI)Z", remap = true), remap = false)
     private boolean peepoPractice$disableLan(IntegratedServer server, GameMode gameMode, boolean cheatsAllowed, int port, Operation<Boolean> original) {
