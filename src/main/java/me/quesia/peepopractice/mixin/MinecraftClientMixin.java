@@ -26,7 +26,6 @@ import java.io.File;
 
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin {
-
     @Shadow @Final public File runDirectory;
     @Shadow @Final private DataFixer dataFixer;
     @Shadow @Nullable public ClientWorld world;
