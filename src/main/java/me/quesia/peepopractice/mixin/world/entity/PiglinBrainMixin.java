@@ -19,7 +19,6 @@ import java.util.Random;
 
 @Mixin(PiglinBrain.class)
 public abstract class PiglinBrainMixin {
-
     @ModifyReturnValue(method = "method_29276", at = @At("RETURN"))
     private static boolean peepoPractice$danceOnPlayerKill(boolean bl, LivingEntity livingEntity, LivingEntity livingEntity2) {
         return bl || livingEntity2.getType().equals(EntityType.PLAYER);
