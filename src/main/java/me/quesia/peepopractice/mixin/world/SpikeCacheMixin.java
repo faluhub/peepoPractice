@@ -12,7 +12,6 @@ import java.util.Random;
 
 @Mixin(targets = "net/minecraft/world/gen/feature/EndSpikeFeature$SpikeCache")
 public abstract class SpikeCacheMixin {
-
     @WrapOperation(method = "load(Ljava/lang/Long;)Ljava/util/List;", at = @At(value = "INVOKE", target = "Ljava/util/Collections;shuffle(Ljava/util/List;Ljava/util/Random;)V"))
     private void peepoPractice$modifyTowerOrder(List<Integer> towers, Random random, Operation<Void> original) {
         PracticeTypes.StartNodeType configValue = PracticeTypes.StartNodeType.fromLabel(CategoryPreference.getValue("start_node"));
