@@ -25,7 +25,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Mixin(CreateWorldScreen.class)
 public abstract class CreateWorldScreenMixin extends Screen {
-
     @Shadow private Difficulty field_24289;
     @Shadow private Difficulty field_24290;
     @Shadow private boolean cheatsEnabled;
