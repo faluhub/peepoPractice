@@ -15,7 +15,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(BlazeEntity.class)
 public abstract class BlazeEntityMixin extends MobEntityMixin {
-
     protected BlazeEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
         super(entityType, world);
     }
