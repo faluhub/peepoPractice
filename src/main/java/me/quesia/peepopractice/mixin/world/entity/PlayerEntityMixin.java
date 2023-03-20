@@ -12,12 +12,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin extends LivingEntity {
-
     protected PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
         super(entityType, world);
     }
 
     @Inject(method = "onDeath", at = @At("HEAD"))
-    protected void peepoPractice$onPlayerDeath(CallbackInfo ci) {
-    }
+    protected void peepoPractice$onPlayerDeath(CallbackInfo ci) {}
 }
