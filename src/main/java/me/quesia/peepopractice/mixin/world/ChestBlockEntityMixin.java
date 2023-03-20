@@ -14,7 +14,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ChestBlockEntity.class)
 public abstract class ChestBlockEntityMixin extends LootableContainerBlockEntityMixin {
-
     private Identifier peepoPractice$localLootTableId = this.lootTableId;
     private boolean peepoPractice$valid = false;
 
