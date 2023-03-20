@@ -4,12 +4,6 @@
   "package": "me.quesia.peepopractice.mixin",
   "compatibilityLevel": "JAVA_10",
   "client": [
-    "ClientAdvancementManagerMixin",
-    "ClientPlayNetworkHandlerMixin",
-    "CommandManagerMixin",
-    "GameOptionsMixin",
-    "MinecraftClientMixin",
-    "ServerPlayNetworkHandlerMixin",
     "access.ChunkGeneratorAccessor",
     "access.InGameTimerAccessor",
     "access.ItemEntryAccessor",
@@ -19,50 +13,69 @@
     "access.MinecraftClientAccessor",
     "access.ServerWorldAccessor",
     "access.ThreadExecutorAccessor",
+
+    "compat.timer.InGameTimerUtilsMixin",
+    "compat.timer.PracticeTimerManagerMixin",
+
     "compat.KeyboardMixin",
     "compat.LocateCommandMixin",
     "compat.StandardSettingsMixin",
-    "compat.timer.InGameTimerUtilsMixin",
-    "compat.timer.PracticeTimerManagerMixin",
-    "gui.ItemStackMixin",
+
     "gui.hud.InGameHudMixin",
+
     "gui.renderer.ItemRendererMixin",
+
     "gui.screen.CreateWorldScreenMixin",
     "gui.screen.GameMenuScreenMixin",
     "gui.screen.LevelLoadingScreenMixin",
     "gui.screen.OpenToLanScreenMixin",
     "gui.screen.ScreenMixin",
     "gui.screen.TitleScreenMixin",
+
+    "gui.ItemStackMixin",
+
+    "structure.category.BastionRemnantFeatureConfigMixin",
+    "structure.category.DungeonFeatureMixin",
+    "structure.category.PortalRoomMixin",
+
     "structure.ChunkGeneratorMixin",
     "structure.StructureFeatureMixin",
     "structure.StructurePoolBasedGeneratorMixin",
     "structure.StructureStartMixin",
-    "structure.category.BastionRemnantFeatureConfigMixin",
-    "structure.category.DungeonFeatureMixin",
-    "structure.category.PortalRoomMixin",
+
+    "world.biome.MultiNoiseBiomeSourceMixin",
+    "world.biome.VanillaLayeredBiomeSourceMixin",
+
+    "world.category.CarverMixin",
+
+    "world.entity.ai.HoldingPatternPhaseMixin",
+
+    "world.entity.category.BlazeEntityMixin",
+    "world.entity.category.MobEntityMixin",
+
+    "world.entity.ClientPlayerEntityMixin",
+    "world.entity.MobEntityMixin",
+    "world.entity.PiglinBrainMixin",
+    "world.entity.PlayerEntityMixin",
+    "world.entity.ServerPlayerEntityMixin",
+    "world.entity.ThrownItemEntityMixin",
+
     "world.ChestBlockEntityMixin",
+    "world.LootableContainerBlockEntityMixin",
     "world.MinecraftServerMixin",
     "world.PlayerManagerMixin",
     "world.ServerWorldMixin",
     "world.SpikeCacheMixin",
     "world.UnderwaterCaveCarverMixin",
-    "world.biome.MultiNoiseBiomeSourceMixin",
-    "world.biome.VanillaLayeredBiomeSourceMixin",
-    "world.category.CarverMixin",
-    "world.entity.ClientPlayerEntityMixin",
-    "world.entity.MobEntityMixin",
-    "world.entity.PiglinBrainMixin",
-    "world.entity.ServerPlayerEntityMixin",
-    "world.entity.ThrownItemEntityMixin",
-    "world.entity.ai.HoldingPatternPhaseMixin",
-    "world.entity.category.BlazeEntityMixin"
+
+    "ClientAdvancementManagerMixin",
+    "ClientPlayNetworkHandlerMixin",
+    "CommandManagerMixin",
+    "GameOptionsMixin",
+    "MinecraftClientMixin",
+    "ServerPlayNetworkHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
-  },
-  "mixins": [
-    "world.LootableContainerBlockEntityMixin",
-    "world.entity.PlayerEntityMixin",
-    "world.entity.category.MobEntityMixin"
-  ]
+  }
 }
