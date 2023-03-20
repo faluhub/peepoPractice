@@ -11,7 +11,6 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(CommandManager.class)
 public abstract class CommandManagerMixin {
-
     @WrapWithCondition(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;findAmbiguities(Lcom/mojang/brigadier/AmbiguityConsumer;)V", remap = false))
     private boolean peepoPractice$cancelAmbiguities(CommandDispatcher<?> dispatcher, AmbiguityConsumer<ServerCommandSource> consumer) {
         return PeepoPractice.SERVER_RESOURCE_MANAGER.get() != null;
