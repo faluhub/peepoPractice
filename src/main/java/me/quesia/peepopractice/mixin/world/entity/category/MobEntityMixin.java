@@ -11,13 +11,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MobEntity.class)
 public abstract class MobEntityMixin extends LivingEntity {
-
     protected MobEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
         super(entityType, world);
     }
 
     @SuppressWarnings("CancellableInjectionUsage") // we're cancelling in the overriding method which mcdev doesn't understand
     @Inject(method = "dropLoot", at = @At("HEAD"), cancellable = true)
-    protected void peepoPractice$onDropLoot(CallbackInfo ci) {
-    }
+    protected void peepoPractice$onDropLoot(CallbackInfo ci) {}
 }
