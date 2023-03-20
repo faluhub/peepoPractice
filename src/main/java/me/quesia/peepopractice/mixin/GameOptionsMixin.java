@@ -19,7 +19,6 @@ import java.io.File;
 
 @Mixin(GameOptions.class)
 public abstract class GameOptionsMixin {
-
     @Mutable @Shadow @Final public KeyBinding[] keysAll;
 
     @Inject(method = "<init>", at = @At("TAIL"))
