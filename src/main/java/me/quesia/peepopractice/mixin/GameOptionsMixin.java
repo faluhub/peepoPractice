@@ -2,7 +2,6 @@ package me.quesia.peepopractice.mixin;
 
 import me.quesia.peepopractice.core.KeyBindingHelper;
 import me.quesia.peepopractice.gui.CustomOption;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.options.Option;
@@ -12,10 +11,7 @@ import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.io.File;
 
 @Mixin(GameOptions.class)
 public abstract class GameOptionsMixin {

@@ -15,7 +15,7 @@ public abstract class MobEntityMixin extends LivingEntity {
         super(entityType, world);
     }
 
-    @SuppressWarnings("CancellableInjectionUsage") // we're cancelling in the overriding method which mcdev doesn't understand
+    @SuppressWarnings("CancellableInjectionUsage")
     @Inject(method = "dropLoot", at = @At("HEAD"), cancellable = true)
     protected void peepoPractice$onDropLoot(CallbackInfo ci) {}
 }

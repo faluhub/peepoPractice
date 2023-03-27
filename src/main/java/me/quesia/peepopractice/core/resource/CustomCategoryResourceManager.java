@@ -9,8 +9,6 @@ import me.quesia.peepopractice.core.category.properties.WorldProperties;
 import me.quesia.peepopractice.core.category.properties.event.*;
 import me.quesia.peepopractice.core.exception.InvalidCategorySyntaxException;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.Item;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.Identifier;
