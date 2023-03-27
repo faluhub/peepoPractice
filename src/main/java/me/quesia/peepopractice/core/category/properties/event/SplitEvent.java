@@ -26,10 +26,11 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class SplitEvent {
     private PracticeCategory category;
+    private boolean isRunningThread = false;
 
     @SuppressWarnings("StatementWithEmptyBody")
     public void complete(boolean completed) {
-        if (this.category == null) { return; }
+        if (this.category == null || this.isRunningThread) { return; }
 
         new Thread(() -> {
             PracticeWriter writer = PracticeWriter.COMPLETIONS_WRITER;
@@ -115,31 +116,42 @@ public abstract class SplitEvent {
 
                 if (completed) {
                     for (int i = 0; i < 5; i++) {
-                        if (client.player != null) {
-                            client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 3.0F, 0.5F + .2F * (i + i / 4.0F));
-                            try { TimeUnit.MILLISECONDS.sleep(180); }
-                            catch (InterruptedException ignored) {}
-                        }
+                        int finalI = i;
+                        client.execute(() -> {
+                            if (client.player != null) {
+                                client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_CHIME, 3.0F, 0.5F + .2F * (finalI + finalI / 4.0F));
+                            }
+                        });
+                        try { TimeUnit.MILLISECONDS.sleep(180); }
+                        catch (InterruptedException ignored) {}
                     }
                     if (isPb) {
-                        try {
+                        try { TimeUnit.MILLISECONDS.sleep(180); }
+                        catch (InterruptedException ignored) {}
+                        client.execute(() -> {
                             if (client.player != null) {
-                                TimeUnit.MILLISECONDS.sleep(180);
                                 client.player.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, 3.0F, 1.0F);
                             }
-                        } catch (InterruptedException ignored) {}
+                        });
                     }
                 } else {
                     for (int i = 0; i < 2; i++) {
-                        if (client.player != null) {
-                            client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS, 3.0F, 1.2F - i * 0.5F);
-                            try { TimeUnit.MILLISECONDS.sleep(180); }
-                            catch (InterruptedException ignored) {}
-                        }
+                        int finalI = i;
+                        client.execute(() -> {
+                            if (client.player != null) {
+                                client.player.playSound(SoundEvents.BLOCK_NOTE_BLOCK_BASS, 3.0F, 1.2F - finalI * 0.5F);
+                            }
+                        });
+                        try { TimeUnit.MILLISECONDS.sleep(180); }
+                        catch (InterruptedException ignored) {}
                     }
                 }
+
+                this.isRunningThread = false;
             }
         }).start();
+
+        this.isRunningThread = true;
     }
 
     public boolean hasPb() {
