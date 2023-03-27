@@ -19,7 +19,7 @@ public abstract class ThrownItemEntityMixin extends ThrownEntity {
     }
 
     @Inject(method = "setItem", at = @At("HEAD"))
-    private void onItemThrown(ItemStack item, CallbackInfo ci) {
+    private void peepoPractice$onItemThrown(ItemStack item, CallbackInfo ci) {
         if (PeepoPractice.CATEGORY.hasSplitEvent()) {
             if (PeepoPractice.CATEGORY.getSplitEvent() instanceof ThrowEntitySplitEvent) {
                 ThrowEntitySplitEvent event = (ThrowEntitySplitEvent) PeepoPractice.CATEGORY.getSplitEvent();

@@ -10,7 +10,7 @@ import java.util.List;
 
 @Mixin(ChunkGenerator.class)
 public interface ChunkGeneratorAccessor {
-    @Accessor("field_24748") long getField_24748();
-    @Accessor("field_24749") List<ChunkPos> getField_24749();
-    @Invoker("method_28509") void invokeMethod_28509();
+    @Accessor("field_24748") long peepoPractice$getField_24748();
+    @Accessor("field_24749") List<ChunkPos> peepoPractice$getField_24749();
+    @Invoker("method_28509") void peepoPractice$invokeMethod_28509();
 }

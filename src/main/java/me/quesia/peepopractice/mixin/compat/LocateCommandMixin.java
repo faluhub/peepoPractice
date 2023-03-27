@@ -13,15 +13,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LocateCommand.class)
-public class LocateCommandMixin {
-    private static final SimpleCommandExceptionType AFFECTED_EXCEPTION = new SimpleCommandExceptionType(new LiteralText("This structure cannot be located as it is affected by the current practice category."));
+public abstract class LocateCommandMixin {
+
+    private static final SimpleCommandExceptionType PEEPO_PRACTICE$AFFECTED_EXCEPTION = new SimpleCommandExceptionType(new LiteralText("This structure cannot be located as it is affected by the current practice category."));
 
     @Inject(method = "execute", at = @At("HEAD"))
-    private static void cancelAffectedLocate(ServerCommandSource source, StructureFeature<?> structureFeature, CallbackInfoReturnable<Integer> cir) throws CommandSyntaxException {
-        if (PeepoPractice.CATEGORY.hasStructureProperties()) {
-            if (PeepoPractice.CATEGORY.findStructureProperties(structureFeature) != null) {
-                throw AFFECTED_EXCEPTION.create();
-            }
+    private static void peepoPractice$cancelAffectedLocate(ServerCommandSource source, StructureFeature<?> structureFeature, CallbackInfoReturnable<Integer> cir) throws CommandSyntaxException {
+        if (PeepoPractice.CATEGORY.hasStructureProperties() && PeepoPractice.CATEGORY.findStructureProperties(structureFeature) != null) {
+            throw PEEPO_PRACTICE$AFFECTED_EXCEPTION.create();
         }
     }
 }

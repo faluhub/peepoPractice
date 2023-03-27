@@ -28,7 +28,7 @@ public abstract class ChunkGeneratorMixin {
     @Shadow protected abstract void method_28508(ConfiguredStructureFeature<?, ?> configuredStructureFeature, StructureAccessor structureAccessor, Chunk chunk, StructureManager structureManager, long l, ChunkPos chunkPos, Biome biome);
     @Shadow @Final private List<ChunkPos> field_24749;
 
-    private StructureProperties getUniqueStronghold() {
+    private StructureProperties peepoPractice$getUniqueStronghold() {
         for (StructureProperties properties : PeepoPractice.CATEGORY.getStructureProperties()) {
             if (properties.isSameStructure(StructureFeature.STRONGHOLD) && !properties.isGeneratable()) {
                 return properties;
@@ -38,7 +38,7 @@ public abstract class ChunkGeneratorMixin {
     }
 
     @Inject(method = "setStructureStarts", at = @At("HEAD"))
-    private void customStructureStarts(StructureAccessor structureAccessor, Chunk chunk, StructureManager structureManager, long l, CallbackInfo ci) {
+    private void peepoPractice$customStructureStarts(StructureAccessor structureAccessor, Chunk chunk, StructureManager structureManager, long l, CallbackInfo ci) {
         for (StructureProperties properties : PeepoPractice.CATEGORY.getStructureProperties()) {
             if (!properties.isSameStructure(StructureFeature.STRONGHOLD)) {
                 MinecraftClient client = MinecraftClient.getInstance();
@@ -52,8 +52,8 @@ public abstract class ChunkGeneratorMixin {
     }
 
     @Inject(method = "method_28509", at = @At("HEAD"), cancellable = true)
-    private void cancelStrongholdLocations(CallbackInfo ci) {
-        StructureProperties properties = this.getUniqueStronghold();
+    private void peepoPractice$cancelStrongholdLocations(CallbackInfo ci) {
+        StructureProperties properties = this.peepoPractice$getUniqueStronghold();
         if (properties != null) {
             if (properties.hasChunkPos()) {
                 this.field_24749.add(properties.getChunkPos());

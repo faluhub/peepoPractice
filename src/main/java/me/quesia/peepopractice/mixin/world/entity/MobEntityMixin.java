@@ -20,23 +20,23 @@ public abstract class MobEntityMixin extends LivingEntity {
         super(entityType, world);
     }
 
-    private boolean isInactive() {
+    private boolean peepoPractice$isInactive() {
         if (SpeedRunOption.getOption(SpeedRunOptions.WAITING_FIRST_INPUT).isFirstInput(InGameTimer.getInstance())) {
-            return ((InGameTimerAccessor) InGameTimer.getInstance()).getFirstInput().isEmpty();
+            return ((InGameTimerAccessor) InGameTimer.getInstance()).peepoPractice$getFirstInput().isEmpty();
         }
         return false;
     }
 
     @Inject(method = "canMoveVoluntarily", at = @At("RETURN"), cancellable = true)
-    private void cancelMovement(CallbackInfoReturnable<Boolean> cir) {
-        if (this.isInactive()) {
+    private void peepoPractice$cancelMovement(CallbackInfoReturnable<Boolean> cir) {
+        if (this.peepoPractice$isInactive()) {
             cir.setReturnValue(false);
         }
     }
 
     @Inject(method = "playAmbientSound", at = @At("HEAD"), cancellable = true)
-    private void cancelSounds(CallbackInfo ci) {
-        if (this.isInactive()) {
+    private void peepoPractice$cancelSounds(CallbackInfo ci) {
+        if (this.peepoPractice$isInactive()) {
             ci.cancel();
         }
     }

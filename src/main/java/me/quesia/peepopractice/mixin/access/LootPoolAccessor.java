@@ -7,5 +7,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(LootPool.class)
 public interface LootPoolAccessor {
-    @Accessor("entries") LootPoolEntry[] getEntries();
+    @Accessor("entries") LootPoolEntry[] peepoPractice$getEntries();
 }

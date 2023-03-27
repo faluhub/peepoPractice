@@ -8,9 +8,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = Keyboard.class, priority = 1005)
-public class KeyboardMixin {
+public abstract class KeyboardMixin {
     @Inject(method = "onKey", at = @At("HEAD"))
-    public void preventAtumReset(long window, int key, int scancode, int i, int j, CallbackInfo ci) {
+    private void peepoPractice$preventAtumReset(CallbackInfo ci) {
         PeepoPractice.disableAtumKey();
     }
 }

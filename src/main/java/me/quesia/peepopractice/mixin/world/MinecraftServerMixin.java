@@ -1,6 +1,8 @@
 package me.quesia.peepopractice.mixin.world;
 
 import com.google.common.collect.ImmutableList;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.exception.NotInitializedException;
 import me.quesia.peepopractice.core.category.PracticeCategories;
@@ -30,7 +32,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.BiomeLayers;
 import net.minecraft.world.biome.source.BiomeAccess;
-import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.border.WorldBorder;
 import net.minecraft.world.border.WorldBorderListener;
 import net.minecraft.world.dimension.DimensionOptions;
@@ -46,7 +47,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
 import java.util.Map;
@@ -70,12 +70,13 @@ public abstract class MinecraftServerMixin {
     @SuppressWarnings("UnusedReturnValue") @Shadow public abstract boolean save(boolean bl, boolean bl2, boolean bl3);
     @Shadow protected abstract void method_16208();
 
+    // TODO: this needs reworking
     /**
      * @author Quesia
      * @reason Custom start dimension
      */
     @Inject(method = "createWorlds", at = @At("HEAD"), cancellable = true)
-    private void createWorlds(WorldGenerationProgressListener worldGenerationProgressListener, CallbackInfo ci) {
+    private void peepoPractice$createWorlds(WorldGenerationProgressListener worldGenerationProgressListener, CallbackInfo ci) {
         if (!PeepoPractice.CATEGORY.hasWorldProperties() || !PeepoPractice.CATEGORY.getWorldProperties().hasWorldRegistryKey()) { return; }
         ci.cancel();
 
@@ -97,14 +98,14 @@ public abstract class MinecraftServerMixin {
         PeepoPractice.CATEGORY.reset();
         if (PeepoPractice.CATEGORY.hasPlayerProperties()) {
             try {
-                PeepoPractice.CATEGORY.getPlayerProperties().reset(new Random(((ChunkGeneratorAccessor) chunkGenerator).getField_24748()), serverWorld);
+                PeepoPractice.CATEGORY.getPlayerProperties().reset(new Random(((ChunkGeneratorAccessor) chunkGenerator).peepoPractice$getField_24748()), serverWorld);
             } catch (NotInitializedException ignored) {
                 try {
                     for (StructureProperties properties : PeepoPractice.CATEGORY.getStructureProperties()) {
-                        properties.reset(new Random(((ChunkGeneratorAccessor) chunkGenerator).getField_24748()), serverWorld);
+                        properties.reset(new Random(((ChunkGeneratorAccessor) chunkGenerator).peepoPractice$getField_24748()), serverWorld);
                     }
                     initializedStructures = true;
-                    PeepoPractice.CATEGORY.getPlayerProperties().reset(new Random(((ChunkGeneratorAccessor) chunkGenerator).getField_24748()), serverWorld);
+                    PeepoPractice.CATEGORY.getPlayerProperties().reset(new Random(((ChunkGeneratorAccessor) chunkGenerator).peepoPractice$getField_24748()), serverWorld);
                 } catch (NotInitializedException ignored1) {
                     PeepoPractice.log(PeepoPractice.CATEGORY.getId() + " in an infinite loop, retrying at spawn. (Occurrence 1)");
                     PeepoPractice.RETRY_PLAYER_INITIALIZATION = true;
@@ -113,7 +114,7 @@ public abstract class MinecraftServerMixin {
         }
         if (!initializedStructures) {
             for (StructureProperties properties : PeepoPractice.CATEGORY.getStructureProperties()) {
-                try { properties.reset(new Random(((ChunkGeneratorAccessor) chunkGenerator).getField_24748()), serverWorld); }
+                try { properties.reset(new Random(((ChunkGeneratorAccessor) chunkGenerator).peepoPractice$getField_24748()), serverWorld); }
                 catch (NotInitializedException ignored) { PeepoPractice.log(PeepoPractice.CATEGORY.getId() + " in an infinite loop. (Occurrence 2)"); }
             }
         }
@@ -157,15 +158,16 @@ public abstract class MinecraftServerMixin {
         }
     }
 
-    @Inject(method = "getOverworld", at = @At("RETURN"), cancellable = true)
-    private void customSpawnDimension(CallbackInfoReturnable<ServerWorld> cir) {
+    @ModifyReturnValue(method = "getOverworld", at = @At("RETURN"))
+    private ServerWorld peepoPractice$customSpawnDimension(ServerWorld world) {
         if (PeepoPractice.CATEGORY.hasWorldProperties() && PeepoPractice.CATEGORY.getWorldProperties().hasWorldRegistryKey()) {
-            cir.setReturnValue(this.worlds.get(PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey()));
+            return this.worlds.get(PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey());
         }
+        return world;
     }
 
     @Inject(method = "prepareStartRegion", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;getMeasuringTimeMs()J", ordinal = 2))
-    private void removeTicketsAfterGen(WorldGenerationProgressListener worldGenerationProgressListener, CallbackInfo ci) {
+    private void peepoPractice$removeTicketsAfterGen(WorldGenerationProgressListener worldGenerationProgressListener, CallbackInfo ci) {
         if (PeepoPractice.CATEGORY.hasWorldProperties() && PeepoPractice.CATEGORY.getWorldProperties().isSpawnChunksDisabled()) {
             BlockPos blockPos = this.getOverworld().getSpawnPos();
             if (PeepoPractice.CATEGORY.hasPlayerProperties() && PeepoPractice.CATEGORY.getPlayerProperties().hasSpawnPos()) {
@@ -177,9 +179,8 @@ public abstract class MinecraftServerMixin {
         }
     }
 
-    @Redirect(method = "setupSpawn", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/biome/source/BiomeSource;getSpawnBiomes()Ljava/util/List;"))
-    private static List<Biome> addOceanSpawnBiome(BiomeSource instance) {
-        List<Biome> spawnBiomes = instance.getSpawnBiomes();
+    @ModifyExpressionValue(method = "setupSpawn", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/biome/source/BiomeSource;getSpawnBiomes()Ljava/util/List;"))
+    private static List<Biome> peepoPractice$addOceanSpawnBiome(List<Biome> spawnBiomes) {
         if (PeepoPractice.CATEGORY.hasWorldProperties()) {
             PeepoPractice.CATEGORY.getWorldProperties().getProBiomeRangeMap().forEach((k, v) -> {
                 if (BiomeLayers.isOcean(Registry.BIOME.getRawId(k))) {
@@ -190,10 +191,11 @@ public abstract class MinecraftServerMixin {
         return spawnBiomes;
     }
 
-    @Inject(method = "getSpawnRadius", at = @At("RETURN"), cancellable = true)
-    private void removeSpawnRadius(ServerWorld world, CallbackInfoReturnable<Integer> cir) {
+    @ModifyReturnValue(method = "getSpawnRadius", at = @At("RETURN"))
+    private int peepoPractice$removeSpawnRadius(int spawnRadius) {
         if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
-            cir.setReturnValue(0);
+            return 0;
         }
+        return spawnRadius;
     }
 }

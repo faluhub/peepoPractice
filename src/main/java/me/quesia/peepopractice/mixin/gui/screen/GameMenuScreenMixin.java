@@ -1,5 +1,7 @@
 package me.quesia.peepopractice.mixin.gui.screen;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.category.PracticeCategories;
@@ -16,31 +18,38 @@ import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(GameMenuScreen.class)
-public abstract class GameMenuScreenMixin extends Screen {
+public abstract class GameMenuScreenMixin extends ScreenMixin {
     private ButtonWidget quitButton;
     private boolean renderTitle = false;
     private final Text replayText = new LiteralText("Replay Split");
     private final Text configureText = new LiteralText("Configure Split");
-    private ButtonWidget replayButton;
+    private AbstractButtonWidget replayButton;
 
-    protected GameMenuScreenMixin(Text title) {
-        super(title);
-    }
-
-    @Redirect(method = "initWidgets", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/GameMenuScreen;addButton(Lnet/minecraft/client/gui/widget/AbstractButtonWidget;)Lnet/minecraft/client/gui/widget/AbstractButtonWidget;", ordinal = 7))
-    private AbstractButtonWidget customButtons(GameMenuScreen instance, AbstractButtonWidget abstractButtonWidget) {
-        if (this.client == null) { return null; }
+    @WrapOperation(
+            method = "initWidgets",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/screen/GameMenuScreen;addButton(Lnet/minecraft/client/gui/widget/AbstractButtonWidget;)Lnet/minecraft/client/gui/widget/AbstractButtonWidget;",
+                    ordinal = 0
+            ),
+            slice = @Slice(
+                    from = @At(
+                            value = "CONSTANT",
+                            args = "stringValue=menu.returnToMenu"
+                    )
+            )
+    )
+    private AbstractButtonWidget peepoPractice$customButtons(GameMenuScreen screen, AbstractButtonWidget abstractButtonWidget, Operation<AbstractButtonWidget> original) {
+        assert this.client != null;
         this.renderTitle = !PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY);
 
         if (PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
-            if (abstractButtonWidget instanceof ButtonWidget) {
-                ButtonWidget buttonWidget = (ButtonWidget) abstractButtonWidget;
-                return this.addButton(buttonWidget);
-            }
+            return original.call(screen, abstractButtonWidget);
         }
 
         int i = -16;
@@ -58,10 +67,10 @@ public abstract class GameMenuScreenMixin extends Screen {
         );
 
         if (!PeepoPractice.HAS_FAST_RESET) {
-            this.addButton(this.quitButton);
+            original.call(screen, this.quitButton);
         }
 
-        return this.replayButton = this.addButton(
+        return this.replayButton = original.call(screen,
                 new ButtonWidget(
                         this.width / 2 + 4,
                         this.height / 4 + 120 + i,
@@ -73,7 +82,7 @@ public abstract class GameMenuScreenMixin extends Screen {
                             if (b.getMessage().equals(this.replayText)) {
                                 this.client.openScreen(new CreateWorldScreen(null));
                             } else {
-                                this.client.openScreen(new SettingsTypeSelectionScreen(this, PeepoPractice.CATEGORY));
+                                this.client.openScreen(new SettingsTypeSelectionScreen((Screen) (Object) this, PeepoPractice.CATEGORY));
                             }
                         }
                 )
@@ -81,20 +90,18 @@ public abstract class GameMenuScreenMixin extends Screen {
     }
 
     @Override
-    protected <T extends AbstractButtonWidget> T addButton(T button) {
+    protected  <T extends AbstractButtonWidget> void peepoPractice$onButtonAdded(T button, CallbackInfoReturnable<T> cir) {
         if (this.quitButton != null && button.getMessage().getString().equals("menu.quitWorld")) {
             button.setWidth(this.quitButton.getWidth());
             button.x = this.quitButton.x;
             button.y = this.quitButton.y;
             button.setMessage(this.quitButton.getMessage());
-            return super.addButton(button);
         }
-        return super.addButton(button);
     }
 
     @SuppressWarnings("deprecation")
     @Inject(method = "render", at = @At("TAIL"))
-    private void renderTitle(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+    private void peepoPractice$renderTitle(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         if (this.replayButton != null && this.replayButton.active) {
             if (Screen.hasShiftDown()) { this.replayButton.setMessage(this.configureText); }
             else { this.replayButton.setMessage(this.replayText); }

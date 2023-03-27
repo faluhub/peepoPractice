@@ -1,6 +1,5 @@
 package me.quesia.peepopractice.mixin.world.entity;
 
-import com.mojang.authlib.GameProfile;
 import com.redlimerl.speedrunigt.timer.InGameTimer;
 import com.redlimerl.speedrunigt.timer.TimerStatus;
 import me.quesia.peepopractice.PeepoPractice;
@@ -11,8 +10,8 @@ import me.quesia.peepopractice.core.category.PracticeTypes;
 import me.quesia.peepopractice.core.category.properties.event.ChangeDimensionSplitEvent;
 import me.quesia.peepopractice.core.category.properties.event.SplitEvent;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
@@ -34,7 +33,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Random;
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class ServerPlayerEntityMixin extends PlayerEntity {
+public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
     @Shadow public abstract void refreshPositionAfterTeleport(double x, double y, double z);
     @Shadow @Nullable public abstract BlockPos getSpawnPointPosition();
     @Shadow public abstract void setGameMode(GameMode gameMode);
@@ -44,12 +43,12 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     private Long comparingTime;
     private PracticeTypes.PaceTimerShowType showType;
 
-    public ServerPlayerEntityMixin(World world, BlockPos blockPos, GameProfile gameProfile) {
-        super(world, blockPos, gameProfile);
+    protected ServerPlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
+        super(entityType, world);
     }
 
     @Inject(method = "moveToSpawn", at = @At("HEAD"), cancellable = true)
-    private void customSpawn(ServerWorld world, CallbackInfo ci) {
+    private void peepoPractice$customSpawn(ServerWorld world, CallbackInfo ci) {
         if (PeepoPractice.CATEGORY.hasSplitEvent()) {
             PracticeTypes.CompareType compareType = PracticeTypes.CompareType.fromLabel(CategoryPreference.getValue(PeepoPractice.CATEGORY, "compare_type", PracticeTypes.CompareType.PB.getLabel()));
             if (compareType != null) {
@@ -115,14 +114,14 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     }
 
     @Inject(method = "tick", at = @At("HEAD"))
-    private void removeSpawnProtection(CallbackInfo ci) {
+    private void peepoPractice$removeSpawnProtection(CallbackInfo ci) {
         if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
             this.joinInvulnerabilityTicks = 0;
         }
     }
 
     @Inject(method = "tick", at = @At("TAIL"))
-    private void setPaceMessage(CallbackInfo ci) {
+    private void peepoPractice$setPaceMessage(CallbackInfo ci) {
         if (this.showType == null || this.showType.equals(PracticeTypes.PaceTimerShowType.NEVER) || (this.showType.equals(PracticeTypes.PaceTimerShowType.END) && !InGameTimer.getInstance().isCompleted())) { return; }
         long igt = InGameTimer.getInstance().getInGameTime();
         if (this.comparingTime != null) {
@@ -142,12 +141,11 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
     }
 
     @Inject(method = "changeDimension", at = @At("HEAD"), cancellable = true)
-    private void triggerSplitEvent(ServerWorld destination, CallbackInfoReturnable<Entity> cir) {
+    private void peepoPractice$triggerSplitEvent(ServerWorld destination, CallbackInfoReturnable<Entity> cir) {
         if (PeepoPractice.CATEGORY.hasSplitEvent()) {
             if (PeepoPractice.CATEGORY.getSplitEvent() instanceof ChangeDimensionSplitEvent) {
                 if (InGameTimer.getInstance().isCompleted() && this.getScoreboardTags().contains("completed")) {
                     cir.setReturnValue(this);
-                    cir.cancel();
                     return;
                 }
 
@@ -155,14 +153,13 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
                 if (InGameTimer.getInstance().getStatus() != TimerStatus.NONE && event.hasDimension() && event.getDimension() == destination.getRegistryKey()) {
                     event.complete(!this.isDead());
                     cir.setReturnValue(this);
-                    cir.cancel();
                 }
             }
         }
     }
 
     @Override
-    public void onDeath(DamageSource source) {
+    protected void peepoPractice$onPlayerDeath(CallbackInfo ci) {
         if (PeepoPractice.CATEGORY.hasSplitEvent()) {
             boolean end = true;
             if (this.getServer() != null && this.getServer().getOverworld() != null && this.getSpawnPointPosition() != null) {
@@ -177,6 +174,5 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
                 PeepoPractice.CATEGORY.getSplitEvent().complete(false);
             }
         }
-        super.onDeath(source);
     }
 }

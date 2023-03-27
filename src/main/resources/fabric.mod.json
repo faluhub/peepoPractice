@@ -13,6 +13,9 @@
   "icon": "assets/peepopractice/icon.png",
   "environment": "client",
   "entrypoints": {
+    "preLaunch": [
+      "com.llamalad7.mixinextras.MixinExtrasBootstrap::init"
+    ],
     "client": [
       "me.quesia.peepopractice.PeepoPractice"
     ]

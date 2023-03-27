@@ -9,9 +9,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = PracticeTimerManager.class, remap = false)
-public class PracticeTimerManagerMixin {
+public abstract class PracticeTimerManagerMixin {
     @Inject(method = "startPractice", at = @At("HEAD"), cancellable = true)
-    private static void disablePracticeTimer(float offsetTime, CallbackInfo ci) {
+    private static void peepoPractice$disablePracticeTimer(CallbackInfo ci) {
         if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
             ci.cancel();
         }

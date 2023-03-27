@@ -109,7 +109,7 @@ public abstract class SplitEvent {
                     }
                 }
 
-                while (((ServerWorldAccessor) serverPlayerEntity.getServerWorld()).getInEntityTick()) {}
+                while (((ServerWorldAccessor) serverPlayerEntity.getServerWorld()).peepoPractice$getInEntityTick()) {}
                 PeepoPractice.log("Done waiting for entity tick");
                 serverPlayerEntity.teleport(client.getServer().getWorld(registryKey), pos.getX(), pos.getY(), pos.getZ(), yaw, pitch);
                 serverPlayerEntity.addScoreboardTag("completed");

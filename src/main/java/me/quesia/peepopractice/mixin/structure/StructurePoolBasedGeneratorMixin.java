@@ -1,5 +1,7 @@
 package me.quesia.peepopractice.mixin.structure;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.category.properties.StructureProperties;
 import net.minecraft.structure.PoolStructurePiece;
@@ -19,27 +21,26 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 import java.util.Random;
 
 @Mixin(StructurePoolBasedGenerator.class)
-public class StructurePoolBasedGeneratorMixin {
+public abstract class StructurePoolBasedGeneratorMixin {
     @Shadow @Final public static StructurePoolRegistry REGISTRY;
     private static StructurePieceType TYPE;
 
     @Inject(method = "addPieces", at = @At("HEAD"))
-    private static void capturePieceType(Identifier startPoolId, int size, StructurePoolBasedGenerator.PieceFactory pieceFactory, ChunkGenerator chunkGenerator, StructureManager structureManager, BlockPos blockPos, List<? super PoolStructurePiece> list, Random random, boolean bl, boolean bl2, CallbackInfo ci) {
+    private static void peepoPractice$capturePieceType(Identifier startPoolId, int size, StructurePoolBasedGenerator.PieceFactory pieceFactory, ChunkGenerator chunkGenerator, StructureManager structureManager, BlockPos blockPos, List<? super PoolStructurePiece> list, Random random, boolean bl, boolean bl2, CallbackInfo ci) {
         StructurePool structurePool = REGISTRY.get(startPoolId);
         StructurePoolElement structurePoolElement = structurePool.getRandomElement(random);
         PoolStructurePiece poolStructurePiece = pieceFactory.create(structureManager, structurePoolElement, blockPos, structurePoolElement.getGroundLevelDelta(), BlockRotation.NONE, structurePoolElement.getBoundingBox(structureManager, blockPos, BlockRotation.NONE));
         TYPE = poolStructurePiece.getType();
     }
 
-    @Redirect(method = "addPieces", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/BlockRotation;random(Ljava/util/Random;)Lnet/minecraft/util/BlockRotation;"))
-    private static BlockRotation setOrientation(Random random) {
+    @WrapOperation(method = "addPieces", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/BlockRotation;random(Ljava/util/Random;)Lnet/minecraft/util/BlockRotation;"))
+    private static BlockRotation peepoPractice$setOrientation(Random random, Operation<BlockRotation> original) {
         for (StructureProperties properties : PeepoPractice.CATEGORY.getStructureProperties()) {
             if (properties.hasRotation()) {
                 if (TYPE != null) {
@@ -61,6 +62,6 @@ public class StructurePoolBasedGeneratorMixin {
                 }
             }
         }
-        return BlockRotation.random(random);
+        return original.call(random);
     }
 }
