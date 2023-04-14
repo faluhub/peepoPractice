@@ -1,0 +1,5 @@
+Ideas for settings:
+- Background colour
+- Play next split with same inventory
+
+add no eye breaks setting to post blind

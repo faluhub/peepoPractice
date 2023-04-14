@@ -3,8 +3,11 @@ package me.quesia.peepopractice.mixin;
 import com.llamalad7.mixinextras.injector.ModifyReceiver;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.mojang.datafixers.DataFixer;
+import com.redlimerl.speedrunigt.timer.InGameTimer;
 import me.quesia.peepopractice.PeepoPractice;
+import me.quesia.peepopractice.core.InventoryUtils;
 import me.quesia.peepopractice.core.category.PracticeCategories;
+import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.core.category.utils.StandardSettingsUtils;
 import me.quesia.peepopractice.core.resource.LocalResourceManager;
 import net.minecraft.client.MinecraftClient;
@@ -91,8 +94,14 @@ public abstract class MinecraftClientMixin {
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void peepoPractice$listenToKeyBindings(CallbackInfo ci) {
-        if (PeepoPractice.REPLAY_SPLIT_KEY.isPressed()) {
-            if (this.world != null && this.isIntegratedServerRunning() && !PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
+        if (this.world != null && this.isIntegratedServerRunning() && !PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
+            PracticeCategory nextCategory = PeepoPractice.getNextCategory();
+            boolean next = PeepoPractice.NEXT_SPLIT_KEY.isPressed() && nextCategory != null;
+            if (PeepoPractice.REPLAY_SPLIT_KEY.isPressed() || next) {
+                if (next && InGameTimer.getInstance().isCompleted()) {
+                    PeepoPractice.CATEGORY = nextCategory;
+                    InventoryUtils.saveCurrentPlayerInventory();
+                }
                 this.openScreen(new CreateWorldScreen(null));
             }
         }

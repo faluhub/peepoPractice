@@ -29,7 +29,11 @@ public abstract class PlayerManagerMixin {
     private void peepoPractice$setInventory(ClientConnection connection, ServerPlayerEntity player, CallbackInfo ci) {
         if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
             MinecraftClient.getInstance().inGameHud.setTitles(null, null, -1, -1, -1);
-            InventoryUtils.putItems(player.inventory, PeepoPractice.CATEGORY);
+            if (InventoryUtils.PREVIOUS_INVENTORY != null) {
+                player.inventory.clone(InventoryUtils.PREVIOUS_INVENTORY);
+                InventoryUtils.PREVIOUS_INVENTORY = null;
+            }
+            else { InventoryUtils.putItems(player.inventory, PeepoPractice.CATEGORY); }
             player.getHungerManager().setSaturationLevelClient(10.0F);
         }
     }

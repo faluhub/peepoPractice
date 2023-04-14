@@ -65,6 +65,9 @@ public abstract class CreateWorldScreenMixin extends Screen {
     @Inject(method = "createLevel", at = @At("HEAD"))
     private void peepoPractice$checkDisconnected(CallbackInfo ci) {
         if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
+            if (PeepoPractice.CATEGORY.hasSplitEvent()) {
+                PeepoPractice.CATEGORY.getSplitEvent().incrementAttempts();
+            }
             if (this.client != null && this.client.isIntegratedServerRunning()) {
                 if (PeepoPractice.HAS_FAST_RESET) {
                     GameMenuScreen screen = new GameMenuScreen(true);
@@ -81,9 +84,6 @@ public abstract class CreateWorldScreenMixin extends Screen {
                     }
                 }
                 PracticeCategoryUtils.quit(false);
-            }
-            if (PeepoPractice.CATEGORY.hasSplitEvent()) {
-                PeepoPractice.CATEGORY.getSplitEvent().incrementAttempts();
             }
         }
     }

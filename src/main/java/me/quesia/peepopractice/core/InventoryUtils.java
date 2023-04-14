@@ -7,6 +7,8 @@ import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.mixin.access.ItemEntryAccessor;
 import me.quesia.peepopractice.mixin.access.LootPoolAccessor;
 import me.quesia.peepopractice.mixin.access.LootTableAccessor;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -35,6 +37,7 @@ public class InventoryUtils {
             return "Loot Tables";
         }
     };
+    public static PlayerInventory PREVIOUS_INVENTORY;
 
     public static List<ItemStack> getLootTableItems(Identifier identifier) {
         List<ItemStack> list = new ArrayList<>();
@@ -77,6 +80,13 @@ public class InventoryUtils {
                     PeepoPractice.LOGGER.error("Couldn't parse slot index: '{}' is not a valid number.", set.getKey());
                 }
             });
+        }
+    }
+
+    public static void saveCurrentPlayerInventory() {
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (client.player != null && !PeepoPractice.CATEGORY.isFillerCategory()) {
+            PREVIOUS_INVENTORY = client.player.inventory;
         }
     }
 }

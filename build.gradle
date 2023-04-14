@@ -20,7 +20,6 @@ loom {
 
 configurations {
 	modIncludeImplementation
-
 	include.extendsFrom modIncludeImplementation
 	modImplementation.extendsFrom modIncludeImplementation
 }
@@ -34,9 +33,7 @@ dependencies {
 	modIncludeImplementation(fabricApi.module("fabric-api-base", project.fabric_version))
 	modIncludeImplementation(fabricApi.module("fabric-resource-loader-v0", project.fabric_version))
 	modCompileOnlyApi files("lib/atum-1.1.3+1.16.1.jar", "lib/worldpreview-2.3.3+1.16.1.jar", "lib/standardsettings-1.2.2+1.16.1.jar")
-
-	// MixinExtras
-	include(annotationProcessor(implementation("com.github.LlamaLad7:MixinExtras:${project.mixinextras_version}")))
+	include annotationProcessor(implementation("com.github.LlamaLad7:MixinExtras:${project.mixinextras_version}"))
 }
 
 processResources {

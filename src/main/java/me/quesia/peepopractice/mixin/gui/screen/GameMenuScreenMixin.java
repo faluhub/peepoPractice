@@ -3,8 +3,11 @@ package me.quesia.peepopractice.mixin.gui.screen;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.redlimerl.speedrunigt.timer.InGameTimer;
 import me.quesia.peepopractice.PeepoPractice;
+import me.quesia.peepopractice.core.InventoryUtils;
 import me.quesia.peepopractice.core.category.PracticeCategories;
+import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.core.category.utils.PracticeCategoryUtils;
 import me.quesia.peepopractice.gui.screen.SettingsTypeSelectionScreen;
 import net.minecraft.client.gui.screen.GameMenuScreen;
@@ -29,6 +32,8 @@ public abstract class GameMenuScreenMixin extends ScreenMixin {
     private final Text replayText = new LiteralText("Replay Split");
     private final Text configureText = new LiteralText("Configure Split");
     private AbstractButtonWidget replayButton;
+    private AbstractButtonWidget nextButton;
+    private boolean hasNextCategory;
 
     @WrapOperation(
             method = "initWidgets",
@@ -70,7 +75,8 @@ public abstract class GameMenuScreenMixin extends ScreenMixin {
             original.call(screen, this.quitButton);
         }
 
-        return this.replayButton = original.call(screen,
+        this.replayButton = original.call(
+                screen,
                 new ButtonWidget(
                         this.width / 2 + 4,
                         this.height / 4 + 120 + i,
@@ -87,6 +93,30 @@ public abstract class GameMenuScreenMixin extends ScreenMixin {
                         }
                 )
         );
+        this.nextButton = original.call(
+                screen,
+                new ButtonWidget(
+                        this.width / 2 + 4,
+                        this.height / 4 + 144 + i,
+                        98,
+                        20,
+                        new LiteralText("Next Split"),
+                        b -> {
+                            b.active = false;
+                            PracticeCategory nextCategory = PeepoPractice.getNextCategory();
+                            if (nextCategory != null && InGameTimer.getInstance().isCompleted()) {
+                                PeepoPractice.CATEGORY = nextCategory;
+                                InventoryUtils.saveCurrentPlayerInventory();
+                                this.client.openScreen(new CreateWorldScreen(null));
+                            }
+                        }
+                )
+        );
+        this.nextButton.visible = InGameTimer.getInstance().isCompleted();
+        this.hasNextCategory = PeepoPractice.hasNextCategory();
+        this.nextButton.active = this.hasNextCategory;
+
+        return this.replayButton;
     }
 
     @Override
@@ -105,6 +135,12 @@ public abstract class GameMenuScreenMixin extends ScreenMixin {
         if (this.replayButton != null && this.replayButton.active) {
             if (Screen.hasShiftDown()) { this.replayButton.setMessage(this.configureText); }
             else { this.replayButton.setMessage(this.replayText); }
+        }
+        if (this.nextButton != null) {
+            this.nextButton.visible = InGameTimer.getInstance().isCompleted();
+            if (this.nextButton.visible) {
+                this.nextButton.active = this.hasNextCategory;
+            }
         }
 
         if (this.renderTitle) {

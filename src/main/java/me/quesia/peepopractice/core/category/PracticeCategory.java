@@ -25,7 +25,8 @@ public class PracticeCategory {
     private SplitEvent splitEvent;
     private final List<CategoryPreference> preferences;
     private boolean hidden;
-    private boolean canHaveEmptyInventory = false;
+    private boolean canHaveEmptyInventory;
+    private boolean fillerCategory;
     private final boolean custom;
     private final Map<String, Object> customValues = new HashMap<>();
 
@@ -157,6 +158,15 @@ public class PracticeCategory {
 
     public PracticeCategory setCanHaveEmptyInventory(boolean canHaveEmptyInventory) {
         this.canHaveEmptyInventory = canHaveEmptyInventory;
+        return this;
+    }
+
+    public boolean isFillerCategory() {
+        return this.fillerCategory;
+    }
+
+    public PracticeCategory setIsFillerCategory(boolean fillerCategory) {
+        this.fillerCategory = fillerCategory;
         return this;
     }
 
