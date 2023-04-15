@@ -1,7 +1,7 @@
 package me.quesia.peepopractice.mixin.world;
 
 import me.quesia.peepopractice.PeepoPractice;
-import me.quesia.peepopractice.core.InventoryUtils;
+import me.quesia.peepopractice.core.category.utils.InventoryUtils;
 import me.quesia.peepopractice.core.category.PracticeCategories;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.ClientConnection;
@@ -30,10 +30,12 @@ public abstract class PlayerManagerMixin {
         if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
             MinecraftClient.getInstance().inGameHud.setTitles(null, null, -1, -1, -1);
             if (InventoryUtils.PREVIOUS_INVENTORY != null) {
+                PeepoPractice.log("Using inventory from previous split.");
                 player.inventory.clone(InventoryUtils.PREVIOUS_INVENTORY);
-                InventoryUtils.PREVIOUS_INVENTORY = null;
+            } else {
+                PeepoPractice.log("Using configured inventory.");
+                InventoryUtils.putItems(player.inventory, PeepoPractice.CATEGORY);
             }
-            else { InventoryUtils.putItems(player.inventory, PeepoPractice.CATEGORY); }
             player.getHungerManager().setSaturationLevelClient(10.0F);
         }
     }

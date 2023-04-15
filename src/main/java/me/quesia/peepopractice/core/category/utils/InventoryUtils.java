@@ -1,8 +1,9 @@
-package me.quesia.peepopractice.core;
+package me.quesia.peepopractice.core.category.utils;
 
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.quesia.peepopractice.PeepoPractice;
+import me.quesia.peepopractice.core.PracticeWriter;
 import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.mixin.access.ItemEntryAccessor;
 import me.quesia.peepopractice.mixin.access.LootPoolAccessor;
@@ -44,7 +45,6 @@ public class InventoryUtils {
 
         synchronized (PeepoPractice.SERVER_RESOURCE_MANAGER) {
             LootTable lootTable = PeepoPractice.SERVER_RESOURCE_MANAGER.get().getLootManager().getTable(identifier);
-
             for (LootPool pool : ((LootTableAccessor) lootTable).peepoPractice$getPools()) {
                 LootPoolEntry[] entries = ((LootPoolAccessor) pool).peepoPractice$getEntries();
                 outer: for (LootPoolEntry entry : entries) {

@@ -5,7 +5,7 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.mojang.datafixers.DataFixer;
 import com.redlimerl.speedrunigt.timer.InGameTimer;
 import me.quesia.peepopractice.PeepoPractice;
-import me.quesia.peepopractice.core.InventoryUtils;
+import me.quesia.peepopractice.core.category.utils.InventoryUtils;
 import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.core.category.utils.StandardSettingsUtils;
@@ -66,6 +66,7 @@ public abstract class MinecraftClientMixin {
         if (screen instanceof TitleScreen) {
             if (PeepoPractice.RESET_CATEGORY) {
                 PeepoPractice.CATEGORY = PracticeCategories.EMPTY;
+                InventoryUtils.PREVIOUS_INVENTORY = null;
             }
             PeepoPractice.RESET_CATEGORY = true;
         }
@@ -99,8 +100,8 @@ public abstract class MinecraftClientMixin {
             boolean next = PeepoPractice.NEXT_SPLIT_KEY.isPressed() && nextCategory != null;
             if (PeepoPractice.REPLAY_SPLIT_KEY.isPressed() || next) {
                 if (next && InGameTimer.getInstance().isCompleted()) {
-                    PeepoPractice.CATEGORY = nextCategory;
                     InventoryUtils.saveCurrentPlayerInventory();
+                    PeepoPractice.CATEGORY = nextCategory;
                 }
                 this.openScreen(new CreateWorldScreen(null));
             }

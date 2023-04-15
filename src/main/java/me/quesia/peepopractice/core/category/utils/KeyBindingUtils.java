@@ -1,4 +1,4 @@
-package me.quesia.peepopractice.core;
+package me.quesia.peepopractice.core.category.utils;
 
 import com.google.common.collect.Lists;
 import me.quesia.peepopractice.mixin.access.KeyBindingAccessor;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class KeyBindingHelper {
+public class KeyBindingUtils {
     public static final List<KeyBinding> KEY_BINDINGS = Lists.newArrayList();
 
     public static Text getTranslation(String path, String text) {

@@ -1,6 +1,6 @@
 package me.quesia.peepopractice.mixin;
 
-import me.quesia.peepopractice.core.KeyBindingHelper;
+import me.quesia.peepopractice.core.category.utils.KeyBindingUtils;
 import me.quesia.peepopractice.gui.CustomOption;
 import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.options.KeyBinding;
@@ -24,6 +24,6 @@ public abstract class GameOptionsMixin {
 
     @Inject(method = "load", at = @At("HEAD"))
     private void peepoPractice$registerKeyBindings(CallbackInfo ci) {
-        this.keysAll = KeyBindingHelper.process(this.keysAll);
+        this.keysAll = KeyBindingUtils.process(this.keysAll);
     }
 }

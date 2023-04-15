@@ -20,7 +20,14 @@ import java.util.Random;
 public class PracticeCategoryUtils {
     public static final String ENABLED = "Enabled";
     public static final String DISABLED = "Disabled";
+    public static final String RANDOM = "Random";
     public static final String[] BOOLEAN_LIST = new String[] { ENABLED, DISABLED };
+    public static final String[] ALL_LIST = new String[] { ENABLED, DISABLED, RANDOM };
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public static boolean isRandom(String string) {
+        return string.equals(RANDOM);
+    }
 
     public static boolean parseBoolean(String value) {
         List<String> list = Arrays.asList(BOOLEAN_LIST);

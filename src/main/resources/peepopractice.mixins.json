@@ -54,9 +54,9 @@
     "world.entity.category.MobEntityMixin",
 
     "world.entity.ClientPlayerEntityMixin",
+    "world.entity.EyeOfEnderEntityMixin",
     "world.entity.MobEntityMixin",
     "world.entity.PiglinBrainMixin",
-    "world.entity.PlayerEntityMixin",
     "world.entity.ServerPlayerEntityMixin",
     "world.entity.ThrownItemEntityMixin",
 

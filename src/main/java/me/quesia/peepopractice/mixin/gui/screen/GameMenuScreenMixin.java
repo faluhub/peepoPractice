@@ -5,7 +5,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.redlimerl.speedrunigt.timer.InGameTimer;
 import me.quesia.peepopractice.PeepoPractice;
-import me.quesia.peepopractice.core.InventoryUtils;
+import me.quesia.peepopractice.core.category.utils.InventoryUtils;
 import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.core.category.utils.PracticeCategoryUtils;
@@ -105,14 +105,14 @@ public abstract class GameMenuScreenMixin extends ScreenMixin {
                             b.active = false;
                             PracticeCategory nextCategory = PeepoPractice.getNextCategory();
                             if (nextCategory != null && InGameTimer.getInstance().isCompleted()) {
-                                PeepoPractice.CATEGORY = nextCategory;
                                 InventoryUtils.saveCurrentPlayerInventory();
+                                PeepoPractice.CATEGORY = nextCategory;
                                 this.client.openScreen(new CreateWorldScreen(null));
                             }
                         }
                 )
         );
-        this.nextButton.visible = InGameTimer.getInstance().isCompleted();
+        this.nextButton.visible = PeepoPractice.CATEGORY.hasCustomValue("isCompletion") && (Boolean) PeepoPractice.CATEGORY.getCustomValue("isCompletion");
         this.hasNextCategory = PeepoPractice.hasNextCategory();
         this.nextButton.active = this.hasNextCategory;
 
@@ -120,7 +120,7 @@ public abstract class GameMenuScreenMixin extends ScreenMixin {
     }
 
     @Override
-    protected  <T extends AbstractButtonWidget> void peepoPractice$onButtonAdded(T button, CallbackInfoReturnable<T> cir) {
+    protected <T extends AbstractButtonWidget> void peepoPractice$onButtonAdded(T button, CallbackInfoReturnable<T> cir) {
         if (this.quitButton != null && button.getMessage().getString().equals("menu.quitWorld")) {
             button.setWidth(this.quitButton.getWidth());
             button.x = this.quitButton.x;
@@ -137,7 +137,7 @@ public abstract class GameMenuScreenMixin extends ScreenMixin {
             else { this.replayButton.setMessage(this.replayText); }
         }
         if (this.nextButton != null) {
-            this.nextButton.visible = InGameTimer.getInstance().isCompleted();
+            this.nextButton.visible = PeepoPractice.CATEGORY.hasCustomValue("isCompletion") && (Boolean) PeepoPractice.CATEGORY.getCustomValue("isCompletion");
             if (this.nextButton.visible) {
                 this.nextButton.active = this.hasNextCategory;
             }

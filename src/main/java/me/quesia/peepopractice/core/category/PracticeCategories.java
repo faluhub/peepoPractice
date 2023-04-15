@@ -42,6 +42,7 @@ public class PracticeCategories {
     public static List<PracticeCategory> ALL = new ArrayList<>();
     public static PracticeCategory EMPTY = new PracticeCategory()
             .setId("empty")
+            .setIsFillerCategory(true)
             .setHidden(true);
     public static PracticeCategory MAPLESS_SPLIT = new PracticeCategory()
             .setId("mapless_split")
@@ -338,6 +339,14 @@ public class PracticeCategories {
                     .setIcon(new Identifier("textures/mob_effect/speed.png"))
                     .setChoices(PracticeTypes.StrongholdDistanceType.all())
                     .setDefaultChoice(PracticeTypes.StrongholdDistanceType.AVERAGE.getLabel())
+            )
+            .addPreference(new CategoryPreference()
+                    .setId("eye_breaks")
+                    .setLabel("Eye Breaks")
+                    .setDescription("Change if eyes of ender break.")
+                    .setIcon(new Identifier("textures/item/ender_eye.png"))
+                    .setChoices(PracticeCategoryUtils.ALL_LIST)
+                    .setDefaultChoice(PracticeCategoryUtils.RANDOM)
             );
     public static PracticeCategory STRONGHOLD_SPLIT = new PracticeCategory()
             .setId("stronghold_split")
@@ -442,8 +451,8 @@ public class PracticeCategories {
             .addPreference(new CategoryPreference()
                     .setId("one_in_eight")
                     .setLabel("One In Eight")
-                    .setDescription("If enabled, the dragon will always be at the center tower. (Disabled = random)")
-                    .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
+                    .setDescription("If enabled, the dragon will always be at the center tower.")
+                    .setChoices(PracticeCategoryUtils.ALL_LIST)
                     .setDefaultChoice(PracticeCategoryUtils.DISABLED)
                     .setIcon(new Identifier("textures/item/brick.png"))
             );

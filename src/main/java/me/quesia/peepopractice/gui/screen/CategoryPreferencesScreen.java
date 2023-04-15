@@ -4,10 +4,14 @@ import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.PracticeWriter;
 import me.quesia.peepopractice.core.category.CategoryPreference;
 import me.quesia.peepopractice.core.category.PracticeCategory;
+import me.quesia.peepopractice.core.category.utils.PracticeCategoryUtils;
 import me.quesia.peepopractice.gui.widget.LimitlessButtonWidget;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
+import net.minecraft.util.Formatting;
+
+import java.util.List;
 
 public class CategoryPreferencesScreen extends Screen {
     private final Screen parent;
@@ -15,9 +19,19 @@ public class CategoryPreferencesScreen extends Screen {
 
     public CategoryPreferencesScreen(Screen parent, PracticeCategory category) {
         super(new LiteralText("Configure (" + category.getName(false) + ")"));
-
         this.parent = parent;
         this.category = category;
+    }
+
+    private LiteralText getFormattedText(CategoryPreference preference, String currentValue) {
+        String add = "";
+        boolean isBoolValue = List.of(PracticeCategoryUtils.BOOLEAN_LIST).contains(currentValue);
+        if (isBoolValue) {
+            add += PracticeCategoryUtils.parseBoolean(currentValue) ? Formatting.GREEN : Formatting.RED;
+        } else if (currentValue.equals(PracticeCategoryUtils.RANDOM)) {
+            add += Formatting.YELLOW;
+        }
+        return new LiteralText(Formatting.BOLD + preference.getLabel() + ":\n" + Formatting.RESET + add + currentValue);
     }
 
     @Override
@@ -42,7 +56,7 @@ public class CategoryPreferencesScreen extends Screen {
                             32 + size * row,
                             size,
                             size - offset,
-                            new LiteralText(preference.getLabel() + ":\n" + currentValue),
+                            this.getFormattedText(preference, currentValue),
                             b -> {
                                 String value = CategoryPreference.getValue(this.category, preference.getId());
                                 if (value != null) {
@@ -52,7 +66,7 @@ public class CategoryPreferencesScreen extends Screen {
                                     try { next = preference.getChoices().get(currentIndex + 1); }
                                     catch (IndexOutOfBoundsException ignored) { next = preference.getChoices().get(0); }
 
-                                    b.setMessage(new LiteralText(b.getMessage().getString().replaceAll(value, next)));
+                                    b.setMessage(this.getFormattedText(preference, next));
                                     CategoryPreference.setValue(this.category, preference.getId(), next);
                                 }
                             },

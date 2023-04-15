@@ -1,6 +1,6 @@
 package me.quesia.peepopractice;
 
-import me.quesia.peepopractice.core.KeyBindingHelper;
+import me.quesia.peepopractice.core.category.utils.KeyBindingUtils;
 import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.core.exception.InvalidCategorySyntaxException;
@@ -13,17 +13,16 @@ import me.voidxwalker.worldpreview.WorldPreview;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.BackgroundHelper;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.resource.ServerResourceManager;
 import net.minecraft.world.level.storage.LevelStorage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -45,8 +44,7 @@ public class PeepoPractice implements ClientModInitializer {
     public static final int BACKGROUND_OVERLAY_COLOUR = BackgroundHelper.ColorMixer.getArgb(60, 0, 0, 0);
     public static LevelStorage PRACTICE_LEVEL_STORAGE;
     public static boolean RETRY_PLAYER_INITIALIZATION;
-    public static PlayerInventory PLAYER_INVENTORY;
-    private static final String KEYBINDING_CATEGORY = KeyBindingHelper.getTranslation("key.categories." + MOD_ID, MOD_NAME).getString();
+    private static final String KEYBINDING_CATEGORY = KeyBindingUtils.getTranslation("key.categories." + MOD_ID, MOD_NAME).getString();
     public static KeyBinding REPLAY_SPLIT_KEY;
     public static KeyBinding NEXT_SPLIT_KEY;
 
@@ -64,17 +62,17 @@ public class PeepoPractice implements ClientModInitializer {
 
         log("Using " + MOD_NAME + " v" + MOD_VERSION);
 
-        REPLAY_SPLIT_KEY = KeyBindingHelper.registerKeyBinding(
+        REPLAY_SPLIT_KEY = KeyBindingUtils.registerKeyBinding(
                 new KeyBinding(
-                        KeyBindingHelper.getTranslation("key." + MOD_ID + ".replay_split", "Replay Split").getString(),
+                        KeyBindingUtils.getTranslation("key." + MOD_ID + ".replay_split", "Replay Split").getString(),
                         InputUtil.Type.KEYSYM,
                         GLFW.GLFW_KEY_H,
                         KEYBINDING_CATEGORY
                 )
         );
-        NEXT_SPLIT_KEY = KeyBindingHelper.registerKeyBinding(
+        NEXT_SPLIT_KEY = KeyBindingUtils.registerKeyBinding(
                 new KeyBinding(
-                        KeyBindingHelper.getTranslation("key." + MOD_ID + ".next_split", "Next Split").getString(),
+                        KeyBindingUtils.getTranslation("key." + MOD_ID + ".next_split", "Next Split").getString(),
                         InputUtil.Type.KEYSYM,
                         GLFW.GLFW_KEY_J,
                         KEYBINDING_CATEGORY
@@ -108,7 +106,7 @@ public class PeepoPractice implements ClientModInitializer {
     }
 
     public static PracticeCategory getNextCategory() {
-        List<PracticeCategory> categories = PracticeCategories.ALL;
+        List<PracticeCategory> categories = new ArrayList<>(List.copyOf(PracticeCategories.ALL));
         categories.removeIf(PracticeCategory::isFillerCategory);
         int index = categories.indexOf(PeepoPractice.CATEGORY);
         if (categories.size() - 1 >= index + 1) {
@@ -121,6 +119,10 @@ public class PeepoPractice implements ClientModInitializer {
     }
 
     public static boolean hasNextCategory() {
-        return getNextCategory() != null;
+        PracticeCategory next = getNextCategory();
+        if (next != null) {
+            return next.hasConfiguredInventory();
+        }
+        return false;
     }
 }

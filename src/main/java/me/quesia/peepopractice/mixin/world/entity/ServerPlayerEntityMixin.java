@@ -12,6 +12,7 @@ import me.quesia.peepopractice.core.category.properties.event.SplitEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
@@ -33,7 +34,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Random;
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
+public abstract class ServerPlayerEntityMixin extends LivingEntity {
     @Shadow public abstract void refreshPositionAfterTeleport(double x, double y, double z);
     @Shadow @Nullable public abstract BlockPos getSpawnPointPosition();
     @Shadow public abstract void setGameMode(GameMode gameMode);
@@ -158,8 +159,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
         }
     }
 
-    @Override
-    protected void peepoPractice$onPlayerDeath(CallbackInfo ci) {
+    @Inject(method = "onDeath", at = @At("HEAD"))
+    protected void peepoPractice$onPlayerDeath(DamageSource source, CallbackInfo ci) {
         if (PeepoPractice.CATEGORY.hasSplitEvent()) {
             boolean end = true;
             if (this.getServer() != null && this.getServer().getOverworld() != null && this.getSpawnPointPosition() != null) {

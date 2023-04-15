@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.datafixers.util.Pair;
 import me.quesia.peepopractice.PeepoPractice;
-import me.quesia.peepopractice.core.InventoryUtils;
+import me.quesia.peepopractice.core.category.utils.InventoryUtils;
 import me.quesia.peepopractice.core.PracticeWriter;
 import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.core.playerless.PlayerlessHandledScreen;

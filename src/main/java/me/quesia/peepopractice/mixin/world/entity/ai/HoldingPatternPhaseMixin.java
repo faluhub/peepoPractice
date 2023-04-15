@@ -2,6 +2,7 @@ package me.quesia.peepopractice.mixin.world.entity.ai;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import me.quesia.peepopractice.core.category.CategoryPreference;
+import me.quesia.peepopractice.core.category.utils.PracticeCategoryUtils;
 import net.minecraft.entity.boss.dragon.phase.HoldingPatternPhase;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,7 +25,11 @@ public abstract class HoldingPatternPhaseMixin {
             )
     )
     private int peepoPractice$oneInEight(int randomInt) {
-        if (CategoryPreference.getBoolValue("one_in_eight")) { return 0; }
+        String value = CategoryPreference.getValue("one_in_eight");
+        if (!PracticeCategoryUtils.isRandom(value)) {
+            boolean boolValue = PracticeCategoryUtils.parseBoolean(value);
+            return boolValue ? 0 : 1;
+        }
         return randomInt;
     }
 
