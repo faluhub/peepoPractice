@@ -189,7 +189,7 @@ public class PracticeCategory {
     }
 
     public String getName(boolean showPb) {
-        StringBuilder text = new StringBuilder();
+        StringBuilder text = new StringBuilder("" + (this.isFillerCategory() ? Formatting.ITALIC : ""));
         boolean shouldCapitalise = true;
         for (Character c : this.getId().toCharArray()) {
             if (shouldCapitalise) {
@@ -202,6 +202,7 @@ public class PracticeCategory {
                 text.append(c.toString().toLowerCase(Locale.ROOT));
             }
         }
+        text.append(Formatting.RESET);
         if (showPb && this.hasSplitEvent()) {
             PracticeTypes.CompareType compareType = PracticeTypes.CompareType.fromLabel(CategoryPreference.getValue(this, "compare_type", PracticeTypes.CompareType.PB.getLabel()));
             if (compareType != null) {

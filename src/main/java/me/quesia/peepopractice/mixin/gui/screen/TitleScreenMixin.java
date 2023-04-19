@@ -1,6 +1,7 @@
 package me.quesia.peepopractice.mixin.gui.screen;
 
 import me.quesia.peepopractice.gui.screen.CategorySelectionScreen;
+import me.quesia.peepopractice.gui.screen.GlobalConfigScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -23,12 +24,26 @@ public abstract class TitleScreenMixin extends Screen {
                 new ButtonWidget(
                         this.width / 2 - 100,
                         y - spacingY,
-                        200,
+                        98,
                         20,
-                        new LiteralText("Practice"),
+                        new LiteralText("PeepoPractice"),
                         b -> {
                             if (this.client != null) {
                                 this.client.openScreen(new CategorySelectionScreen(this));
+                            }
+                        }
+                )
+        );
+        this.addButton(
+                new ButtonWidget(
+                        this.width / 2 + 2,
+                        y - spacingY,
+                        98,
+                        20,
+                        new LiteralText("Global Config"),
+                        b -> {
+                            if (this.client != null) {
+                                this.client.openScreen(new GlobalConfigScreen());
                             }
                         }
                 )

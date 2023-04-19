@@ -1,5 +1,8 @@
 Ideas for settings:
 - Background colour
 - Play next split with same inventory
+- Change title toggle
+- Change toggle standardsettings text to avoid confusion
 
-add no eye breaks setting to post blind
+Fix weird inventory clone issue
+Fix pace timer not showing up on next split (might be fake)

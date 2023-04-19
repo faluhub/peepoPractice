@@ -7,9 +7,15 @@ import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.core.category.utils.StandardSettingsUtils;
 import me.quesia.peepopractice.gui.CustomOption;
 import me.quesia.peepopractice.gui.widget.LimitlessButtonWidget;
+import me.quesia.peepopractice.gui.widget.LimitlessDoubleOptionSliderWidget;
+import me.quesia.peepopractice.mixin.access.ButtonWidgetAccessor;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
+import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.DoubleOptionSliderWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.options.DoubleOption;
 import net.minecraft.client.options.Option;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
@@ -37,18 +43,34 @@ public class StandardSettingsScreen extends Screen {
         if (this.client == null) { return; }
 
         int index = 0;
-        int btnWidth = 170;
+        int btnIndex = 0;
+        int btnWidth = this.width / 4;
+        int btnHeight = this.height / 8;
+        int yOffset = btnHeight / 8;
+        boolean otherSide;
         for (Option option : OPTIONS) {
-            this.addButton(option.createButton(this.client.options, this.width / 2 - btnWidth / 2, 30 + (20 + 5) * index, btnWidth));
+            otherSide = index + 1 > OPTIONS.length / 2;
+            if (otherSide && index == OPTIONS.length / 2) { btnIndex = 0; }
+            int x = this.width / 2 - btnWidth / 2 + (otherSide ? btnWidth / 2 : -btnWidth / 2);
+            int y = 30 + (btnHeight + yOffset) * btnIndex;
+            AbstractButtonWidget button = option.createButton(this.client.options, x, y, btnWidth);
+            if (button instanceof ButtonWidget) {
+                ButtonWidget.PressAction action = ((ButtonWidgetAccessor) button).getOnPress();
+                button = new LimitlessButtonWidget(x, y, btnWidth, btnHeight, button.getMessage(), action);
+            } else if (button instanceof DoubleOptionSliderWidget) {
+                button = new LimitlessDoubleOptionSliderWidget(this.client.options, x, y, btnWidth, btnHeight, (DoubleOption) option);
+            }
+            this.addButton(button);
+            btnIndex++;
             index++;
         }
-        this.pieChartDirectoryField = new TextFieldWidget(this.textRenderer, this.width / 2 - btnWidth / 2, 30 + (20 + 5) * index, btnWidth, 20, new LiteralText("PieChart Directory"));
+        btnIndex++;
+        this.pieChartDirectoryField = new TextFieldWidget(this.textRenderer, this.width / 2 - btnWidth, 30 + (btnHeight + yOffset) * (btnIndex - 1) + (20 + yOffset), btnWidth * 2, 20, new LiteralText("PieChart Directory"));
         this.pieChartDirectoryField.setMaxLength(99);
         this.pieChartDirectoryField.setText(StandardSettingsUtils.getSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "piechart", "root.gameRenderer.level.entities"));
         this.children.add(this.pieChartDirectoryField);
-        index++;
 
-        this.addButton(new LimitlessButtonWidget(null, null, null, this.width / 2 - btnWidth / 2, 30 + (20 + 5) * index, btnWidth, 20, ScreenTexts.DONE, b -> this.onClose()));
+        this.addButton(new LimitlessButtonWidget(this.width / 2 - btnWidth, this.height - btnHeight - yOffset * 4, btnWidth * 2, btnHeight, ScreenTexts.DONE, b -> this.onClose()));
     }
 
     @Override

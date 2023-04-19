@@ -14,6 +14,7 @@ public class PracticeWriter {
     public static final PracticeWriter INVENTORY_WRITER = new PracticeWriter("inventory.json");
     public static final PracticeWriter COMPLETIONS_WRITER = new PracticeWriter("completions.json");
     public static final PracticeWriter STANDARD_SETTINGS_WRITER = new PracticeWriter("standard_settings.json");
+    public static final PracticeWriter GLOBAL_CONFIG = new PracticeWriter("global_config.json");
     private final File file;
     private JsonObject local;
 
@@ -77,7 +78,7 @@ public class PracticeWriter {
         return null;
     }
 
-    public void put(String element, JsonObject obj) {
+    public void put(String element, JsonElement obj) {
         if (this.local == null) {
             this.update();
         }

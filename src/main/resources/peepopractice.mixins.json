@@ -4,6 +4,7 @@
   "package": "me.quesia.peepopractice.mixin",
   "compatibilityLevel": "JAVA_10",
   "client": [
+    "access.ButtonWidgetAccessor",
     "access.ChunkGeneratorAccessor",
     "access.InGameTimerAccessor",
     "access.ItemEntryAccessor",
@@ -31,6 +32,8 @@
     "gui.screen.OpenToLanScreenMixin",
     "gui.screen.ScreenMixin",
     "gui.screen.TitleScreenMixin",
+
+    "gui.widget.SliderWidgetMixin",
 
     "gui.ItemStackMixin",
 

@@ -120,7 +120,7 @@ public class PeepoPractice implements ClientModInitializer {
 
     public static boolean hasNextCategory() {
         PracticeCategory next = getNextCategory();
-        if (next != null) {
+        if (next != null && PeepoPractice.CATEGORY.isFillerCategory()) {
             return next.hasConfiguredInventory();
         }
         return false;

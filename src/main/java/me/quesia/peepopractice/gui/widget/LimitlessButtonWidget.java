@@ -20,6 +20,10 @@ public class LimitlessButtonWidget extends ButtonWidget {
     public final Identifier icon;
     public final Integer textureSize;
 
+    public LimitlessButtonWidget(int x, int y, int width, int height, Text message, ButtonWidget.PressAction onPress) {
+        this(null, null, null, x, y, width, height, message, onPress);
+    }
+
     public LimitlessButtonWidget(@Nullable Boolean odd, @Nullable Identifier icon, @Nullable Integer textureSize, int x, int y, int width, int height, Text message, ButtonWidget.PressAction onPress) {
         super(x, y, width, height, message, onPress);
         this.odd = odd;
@@ -46,7 +50,7 @@ public class LimitlessButtonWidget extends ButtonWidget {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings({ "deprecation", "DuplicatedCode" })
     public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
         TextRenderer textRenderer = minecraftClient.textRenderer;
@@ -57,14 +61,14 @@ public class LimitlessButtonWidget extends ButtonWidget {
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
         this.drawTexture(matrices, this.x, this.y, 0, 46 + i * 20, 3, 3);
-        DrawableHelper.drawTexture(matrices, this.x + 3, this.y, this.width - 6, 3, 3, 46 + i * 20, 1, 3, 256, 256);
+        drawTexture(matrices, this.x + 3, this.y, this.width - 6, 3, 3, 46 + i * 20, 1, 3, 256, 256);
         this.drawTexture(matrices, this.x + this.width - 3, this.y, 197, 46 + i * 20, 3, 3);
-        DrawableHelper.drawTexture(matrices, this.x, this.y + 3, 3, this.height - 6, 0, 49 + i * 20, 3, 1, 256, 256);
+        drawTexture(matrices, this.x, this.y + 3, 3, this.height - 6, 0, 49 + i * 20, 3, 1, 256, 256);
         this.drawTexture(matrices, this.x, this.y + this.height - 3, 0, 46 + 17 + i * 20, 3, 3);
-        DrawableHelper.drawTexture(matrices, this.x + 3, this.y + this.height - 3, this.width - 6, 3, 3, 46 + 17 + i * 20, 1, 3, 256, 256);
+        drawTexture(matrices, this.x + 3, this.y + this.height - 3, this.width - 6, 3, 3, 46 + 17 + i * 20, 1, 3, 256, 256);
         this.drawTexture(matrices, this.x + this.width - 3, this.y + this.height - 3, 197, 46 + 17 + i * 20, 3, 3);
-        DrawableHelper.drawTexture(matrices, this.x + this.width - 3, this.y + 3, 3, this.height - 6, 197, 49 + i * 20, 3, 1, 256, 256);
-        DrawableHelper.fill(matrices, this.x + 3, this.y + 3, this.x + this.width - 3, this.y + this.height - 3, this.active ? BG_COLOR : BG_INACTIVE_COLOR);
+        drawTexture(matrices, this.x + this.width - 3, this.y + 3, 3, this.height - 6, 197, 49 + i * 20, 3, 1, 256, 256);
+        fill(matrices, this.x + 3, this.y + 3, this.x + this.width - 3, this.y + this.height - 3, PeepoPractice.BACKGROUND_OVERLAY_COLOUR);
 
         int j = this.active ? 0xFFFFFF : 0xA0A0A0;
         RenderSystem.pushMatrix();
