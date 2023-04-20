@@ -5,6 +5,7 @@ import me.quesia.peepopractice.core.category.utils.InventoryUtils;
 import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.global.GlobalOptions;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -35,7 +36,7 @@ public abstract class PlayerManagerMixin {
                 PeepoPractice.log("Using inventory from previous split.");
                 player.inventory.clear();
                 for (int i = 0; i < InventoryUtils.PREVIOUS_INVENTORY.size(); i++) {
-                    player.inventory.setStack(i, InventoryUtils.PREVIOUS_INVENTORY.get(i));
+                    player.inventory.setStack(i, InventoryUtils.PREVIOUS_INVENTORY.get(i).copy());
                 }
             } else {
                 PeepoPractice.log("Using configured inventory.");
