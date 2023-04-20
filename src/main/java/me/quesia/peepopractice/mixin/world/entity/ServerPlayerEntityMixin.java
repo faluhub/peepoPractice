@@ -22,6 +22,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec2f;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
 import net.minecraft.world.level.LevelProperties;
@@ -98,10 +99,17 @@ public abstract class ServerPlayerEntityMixin extends LivingEntity {
                 ((LevelProperties) world.getLevelProperties()).setSpawnPos(PeepoPractice.CATEGORY.getPlayerProperties().getSpawnPos());
             }
 
-            if (PeepoPractice.CATEGORY.getPlayerProperties().hasVehicle()) {
-                Entity entity = PeepoPractice.CATEGORY.getPlayerProperties().getVehicle().spawn(world, null, null, null, spawnPos, SpawnReason.STRUCTURE, true, false);
+            if (PeepoPractice.CATEGORY.getPlayerProperties().hasVehicle() && !world.isClient) {
+                Entity entity = PeepoPractice.CATEGORY.getPlayerProperties().getVehicle().create(world, null, null, null, spawnPos, SpawnReason.STRUCTURE, true, false);
                 if (entity != null) {
-                    entity.refreshPositionAndAngles(spawnPos, yaw, pitch);
+                    world.spawnEntity(entity);
+                    entity.updatePosition(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ());
+                    entity.prevX = spawnPos.getX();
+                    entity.prevY = spawnPos.getY();
+                    entity.prevZ = spawnPos.getZ();
+                    entity.yaw = entity.prevYaw = yaw;
+                    entity.pitch = entity.prevPitch = pitch;
+                    entity.setVelocity(Vec3d.ZERO);
                     this.refreshPositionAndAngles(spawnPos, yaw, pitch);
                     this.startRiding(entity, true);
                 } else {

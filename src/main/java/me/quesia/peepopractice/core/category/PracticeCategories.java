@@ -120,7 +120,6 @@ public class PracticeCategories {
     public static PracticeCategory RAVINE_ENTER_SPLIT = new PracticeCategory()
             .setId("ravine_enter_split")
             .setPlayerProperties(new PlayerProperties()
-                    .setVehicle(EntityType.BOAT)
                     .setSpawnPos((category, random, world) -> {
                         if (category.hasCustomValue("ravinePosition")) {
                             BlockPos ravinePos = (BlockPos) category.getCustomValue("ravinePosition");
