@@ -46,8 +46,6 @@ public class LimitlessDoubleOptionSliderWidget extends DoubleOptionSliderWidget 
         client.getTextureManager().bindTexture(WIDGETS_LOCATION);
         RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
         int i = (this.isHovered() ? 2 : 1) * 20;
-//        this.drawTexture(matrices, this.x + (int)(this.value * (double)(this.width - 8)), this.y, 0, 46 + i, 4, this.height);
-//        this.drawTexture(matrices, this.x + (int)(this.value * (double)(this.width - 8)) + 4, this.y, 196, 46 + i, 4, this.height);
         int dx = this.x + (int) (this.value * (double) (this.width - 8));
         drawTexture(matrices, dx, this.y, 4, 4, 0, 46 + i, 4, 4, 256, 256);
         drawTexture(matrices, dx + 4, this.y, 4, 4, 196, 46 + i, 4, 4, 256, 256);

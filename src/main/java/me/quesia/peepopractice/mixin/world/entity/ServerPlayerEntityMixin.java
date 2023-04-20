@@ -12,7 +12,9 @@ import me.quesia.peepopractice.core.category.properties.event.SplitEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.item.BoatItem;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
@@ -62,7 +64,7 @@ public abstract class ServerPlayerEntityMixin extends LivingEntity {
                         break;
                 }
             }
-            this.showType = PracticeTypes.PaceTimerShowType.fromLabel(CategoryPreference.getValue("pace_timer_show_type"));
+            this.showType = PracticeTypes.PaceTimerShowType.fromLabel(CategoryPreference.getValue(PeepoPractice.CATEGORY, "pace_timer_show_type", PracticeTypes.PaceTimerShowType.ALWAYS.getLabel()));
         }
 
         if (PeepoPractice.CATEGORY.hasPlayerProperties()) {
@@ -97,10 +99,9 @@ public abstract class ServerPlayerEntityMixin extends LivingEntity {
             }
 
             if (PeepoPractice.CATEGORY.getPlayerProperties().hasVehicle()) {
-                Entity entity = PeepoPractice.CATEGORY.getPlayerProperties().getVehicle().create(world);
+                Entity entity = PeepoPractice.CATEGORY.getPlayerProperties().getVehicle().spawn(world, null, null, null, spawnPos, SpawnReason.STRUCTURE, true, false);
                 if (entity != null) {
                     entity.refreshPositionAndAngles(spawnPos, yaw, pitch);
-                    world.spawnEntity(entity);
                     this.refreshPositionAndAngles(spawnPos, yaw, pitch);
                     this.startRiding(entity, true);
                 } else {

@@ -9,11 +9,14 @@ import me.quesia.peepopractice.core.category.utils.InventoryUtils;
 import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.core.category.utils.StandardSettingsUtils;
+import me.quesia.peepopractice.core.global.GlobalOptions;
 import me.quesia.peepopractice.core.resource.LocalResourceManager;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
+import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.world.level.storage.LevelStorage;
 import org.jetbrains.annotations.Nullable;
@@ -33,6 +36,7 @@ public abstract class MinecraftClientMixin {
     @Shadow @Nullable public ClientWorld world;
     @Shadow public abstract boolean isIntegratedServerRunning();
     @Shadow public abstract void openScreen(@Nullable Screen screen);
+    @Shadow @Final public GameOptions options;
 
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;runTasks()V", shift = At.Shift.AFTER))
     private void peepoPractice$runMoreTasks(CallbackInfo ci) {
@@ -66,7 +70,7 @@ public abstract class MinecraftClientMixin {
         if (screen instanceof TitleScreen) {
             if (PeepoPractice.RESET_CATEGORY) {
                 PeepoPractice.CATEGORY = PracticeCategories.EMPTY;
-                InventoryUtils.PREVIOUS_INVENTORY = null;
+                InventoryUtils.PREVIOUS_INVENTORY.clear();
             }
             PeepoPractice.RESET_CATEGORY = true;
         }
@@ -99,7 +103,7 @@ public abstract class MinecraftClientMixin {
             PracticeCategory nextCategory = PeepoPractice.getNextCategory();
             boolean next = PeepoPractice.NEXT_SPLIT_KEY.isPressed() && nextCategory != null;
             if (PeepoPractice.REPLAY_SPLIT_KEY.isPressed() || next) {
-                if (next && InGameTimer.getInstance().isCompleted()) {
+                if (next && (FabricLoader.getInstance().isDevelopmentEnvironment() || InGameTimer.getInstance().isCompleted())) {
                     InventoryUtils.saveCurrentPlayerInventory();
                     PeepoPractice.CATEGORY = nextCategory;
                 }
@@ -120,5 +124,13 @@ public abstract class MinecraftClientMixin {
             PeepoPractice.log("Triggered second standard settings call for " + PeepoPractice.CATEGORY.getId());
             StandardSettingsUtils.triggerStandardSettings(PeepoPractice.CATEGORY);
         }
+    }
+
+    @ModifyReturnValue(method = "getWindowTitle", at = @At("RETURN"))
+    private String peepoPractice$appendTitle(String value) {
+        if (GlobalOptions.CHANGE_WINDOW_TITLE.get(this.options)) {
+            return value + " (Practice)";
+        }
+        return value;
     }
 }

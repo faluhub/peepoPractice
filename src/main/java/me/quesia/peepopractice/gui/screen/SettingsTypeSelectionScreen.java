@@ -83,7 +83,7 @@ public class SettingsTypeSelectionScreen extends Screen {
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         this.fillGradient(matrices, 0, 0, this.width, this.height, PeepoPractice.BACKGROUND_COLOUR, PeepoPractice.BACKGROUND_COLOUR);
         super.render(matrices, mouseX, mouseY, delta);
-        this.drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 8, 16777215);
+        this.drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 13, 16777215);
     }
 
     private static class ButtonChoice {

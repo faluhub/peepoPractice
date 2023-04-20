@@ -1,5 +1,6 @@
 package me.quesia.peepopractice.core.category.utils;
 
+import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.quesia.peepopractice.PeepoPractice;
@@ -38,7 +39,7 @@ public class InventoryUtils {
             return "Loot Tables";
         }
     };
-    public static PlayerInventory PREVIOUS_INVENTORY;
+    public static final List<ItemStack> PREVIOUS_INVENTORY = new ArrayList<>();
 
     public static List<ItemStack> getLootTableItems(Identifier identifier) {
         List<ItemStack> list = new ArrayList<>();
@@ -86,7 +87,12 @@ public class InventoryUtils {
     public static void saveCurrentPlayerInventory() {
         MinecraftClient client = MinecraftClient.getInstance();
         if (client.player != null && !PeepoPractice.CATEGORY.isFillerCategory()) {
-            PREVIOUS_INVENTORY = client.player.inventory;
+            PeepoPractice.log("DEBUG saved");
+            PREVIOUS_INVENTORY.clear();
+            for (int i = 0; i < client.player.inventory.size(); i++) {
+                PREVIOUS_INVENTORY.add(i, client.player.inventory.getStack(i).copy());
+            }
+            client.player.inventory.clear();
         }
     }
 }

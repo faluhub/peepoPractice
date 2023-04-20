@@ -24,6 +24,10 @@ public class LimitlessButtonWidget extends ButtonWidget {
         this(null, null, null, x, y, width, height, message, onPress);
     }
 
+    public LimitlessButtonWidget(int x, int y, int width, int height, Text message, ButtonWidget.PressAction onPress, TooltipSupplier tooltipSupplier) {
+        this(null, null, null, x, y, width, height, message, onPress, tooltipSupplier);
+    }
+
     public LimitlessButtonWidget(@Nullable Boolean odd, @Nullable Identifier icon, @Nullable Integer textureSize, int x, int y, int width, int height, Text message, ButtonWidget.PressAction onPress) {
         super(x, y, width, height, message, onPress);
         this.odd = odd;

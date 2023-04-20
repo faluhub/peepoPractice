@@ -4,6 +4,8 @@ import me.quesia.peepopractice.core.category.utils.KeyBindingUtils;
 import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.core.exception.InvalidCategorySyntaxException;
+import me.quesia.peepopractice.core.global.GlobalConfig;
+import me.quesia.peepopractice.core.global.GlobalOptions;
 import me.quesia.peepopractice.core.resource.CustomCategoryResourceManager;
 import me.quesia.peepopractice.core.resource.LocalResourceManager;
 import me.quesia.peepopractice.core.playerless.PlayerlessInventory;
@@ -40,7 +42,7 @@ public class PeepoPractice implements ClientModInitializer {
     public static boolean RESET_CATEGORY = true;
     public static final boolean HAS_FAST_RESET = FabricLoader.getInstance().getModContainer("fast_reset").isPresent();
     public static final boolean HAS_STANDARD_SETTINGS = FabricLoader.getInstance().getModContainer("standardsettings").isPresent();
-    public static final int BACKGROUND_COLOUR = BackgroundHelper.ColorMixer.getArgb(255, 68, 112, 106);
+    public static int BACKGROUND_COLOUR = updateBackgroundColor();
     public static final int BACKGROUND_OVERLAY_COLOUR = BackgroundHelper.ColorMixer.getArgb(60, 0, 0, 0);
     public static LevelStorage PRACTICE_LEVEL_STORAGE;
     public static boolean RETRY_PLAYER_INITIALIZATION;
@@ -87,6 +89,10 @@ public class PeepoPractice implements ClientModInitializer {
         }
     }
 
+    public static int updateBackgroundColor() {
+        return BackgroundHelper.ColorMixer.getArgb(255, (int) GlobalOptions.BACKGROUND_RED.get(null), (int) GlobalOptions.BACKGROUND_GREEN.get(null), (int) GlobalOptions.BACKGROUND_BLUE.get(null));
+    }
+
     public static void disableAtumKey() {
         if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY) && FabricLoader.getInstance().getModContainer("atum").isPresent()) {
             Atum.hotkeyPressed = false;
@@ -110,18 +116,15 @@ public class PeepoPractice implements ClientModInitializer {
         categories.removeIf(PracticeCategory::isFillerCategory);
         int index = categories.indexOf(PeepoPractice.CATEGORY);
         if (categories.size() - 1 >= index + 1) {
-            PracticeCategory category = categories.get(index + 1);
-            if (!category.isFillerCategory()) {
-                return category;
-            }
+            return categories.get(index + 1);
         }
         return null;
     }
 
     public static boolean hasNextCategory() {
         PracticeCategory next = getNextCategory();
-        if (next != null && PeepoPractice.CATEGORY.isFillerCategory()) {
-            return next.hasConfiguredInventory();
+        if (next != null) {
+            return next.hasConfiguredInventory() || PeepoPractice.CATEGORY.isFillerCategory();
         }
         return false;
     }

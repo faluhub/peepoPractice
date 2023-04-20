@@ -26,7 +26,7 @@ public abstract class HoldingPatternPhaseMixin {
     )
     private int peepoPractice$oneInEight(int randomInt) {
         String value = CategoryPreference.getValue("one_in_eight");
-        if (!PracticeCategoryUtils.isRandom(value)) {
+        if (value != null && !PracticeCategoryUtils.isRandom(value)) {
             boolean boolValue = PracticeCategoryUtils.parseBoolean(value);
             return boolValue ? 0 : 1;
         }

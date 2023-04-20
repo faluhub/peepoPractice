@@ -18,7 +18,7 @@ public class EyeOfEnderEntityMixin {
     @Inject(method = "moveTowards", at = @At("TAIL"))
     private void peepoPractice$eyeBreakPreference(BlockPos pos, CallbackInfo ci) {
         String value = CategoryPreference.getValue("eye_breaks");
-        if (!PracticeCategoryUtils.isRandom(value)) {
+        if (value != null && !PracticeCategoryUtils.isRandom(value)) {
             this.dropsItem = !PracticeCategoryUtils.parseBoolean(value);
         }
     }

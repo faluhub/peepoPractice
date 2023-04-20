@@ -5,21 +5,19 @@ import com.google.gson.JsonPrimitive;
 import me.quesia.peepopractice.core.PracticeWriter;
 
 public class GlobalConfig {
-    public static int getIntValue(String key, int def) {
+    public static double getDoubleValue(String key, double def) {
         JsonObject object = PracticeWriter.GLOBAL_CONFIG.get();
         if (!object.has(key)) {
             PracticeWriter.GLOBAL_CONFIG.put(key, new JsonPrimitive(def));
-            PracticeWriter.GLOBAL_CONFIG.update();
             return def;
         }
-        return object.get(key).getAsInt();
+        return object.get(key).getAsDouble();
     }
 
     public static boolean getBoolValue(String key, boolean def) {
         JsonObject object = PracticeWriter.GLOBAL_CONFIG.get();
         if (!object.has(key)) {
             PracticeWriter.GLOBAL_CONFIG.put(key, new JsonPrimitive(def));
-            PracticeWriter.GLOBAL_CONFIG.update();
             return def;
         }
         return object.get(key).getAsBoolean();

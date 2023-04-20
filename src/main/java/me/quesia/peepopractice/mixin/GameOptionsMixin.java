@@ -1,7 +1,7 @@
 package me.quesia.peepopractice.mixin;
 
 import me.quesia.peepopractice.core.category.utils.KeyBindingUtils;
-import me.quesia.peepopractice.gui.CustomOption;
+import me.quesia.peepopractice.core.category.utils.StandardSettingsUtils;
 import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.options.Option;
@@ -19,7 +19,7 @@ public abstract class GameOptionsMixin {
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void peepoPractice$setRenderDistanceMax(CallbackInfo ci) {
-        CustomOption.RENDER_DISTANCE.setMax((float) Option.RENDER_DISTANCE.getMax());
+        StandardSettingsUtils.RENDER_DISTANCE.setMax((float) Option.RENDER_DISTANCE.getMax());
     }
 
     @Inject(method = "load", at = @At("HEAD"))

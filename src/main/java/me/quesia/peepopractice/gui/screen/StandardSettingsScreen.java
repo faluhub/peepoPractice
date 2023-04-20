@@ -5,7 +5,6 @@ import me.quesia.peepopractice.core.PracticeWriter;
 import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.core.category.utils.StandardSettingsUtils;
-import me.quesia.peepopractice.gui.CustomOption;
 import me.quesia.peepopractice.gui.widget.LimitlessButtonWidget;
 import me.quesia.peepopractice.gui.widget.LimitlessDoubleOptionSliderWidget;
 import me.quesia.peepopractice.mixin.access.ButtonWidgetAccessor;
@@ -22,12 +21,12 @@ import net.minecraft.text.LiteralText;
 
 public class StandardSettingsScreen extends Screen {
     private static final Option[] OPTIONS = new Option[] {
-            CustomOption.FOV,
-            CustomOption.RENDER_DISTANCE,
-            CustomOption.ENTITY_DISTANCE_SCALING,
-            CustomOption.CHUNK_BORDERS,
-            CustomOption.HITBOXES,
-            CustomOption.TRIGGER
+            StandardSettingsUtils.FOV,
+            StandardSettingsUtils.RENDER_DISTANCE,
+            StandardSettingsUtils.ENTITY_DISTANCE_SCALING,
+            StandardSettingsUtils.CHUNK_BORDERS,
+            StandardSettingsUtils.HITBOXES,
+            StandardSettingsUtils.PERSPECTIVE
     };
     private final Screen parent;
     private TextFieldWidget pieChartDirectoryField;
@@ -65,7 +64,7 @@ public class StandardSettingsScreen extends Screen {
             index++;
         }
         btnIndex++;
-        this.pieChartDirectoryField = new TextFieldWidget(this.textRenderer, this.width / 2 - btnWidth, 30 + (btnHeight + yOffset) * (btnIndex - 1) + (20 + yOffset), btnWidth * 2, 20, new LiteralText("PieChart Directory"));
+        this.pieChartDirectoryField = new TextFieldWidget(this.textRenderer, this.width / 2 - btnWidth, 30 + (btnHeight + yOffset) * (btnIndex - 1) + (20 + yOffset), btnWidth * 2, 20, new LiteralText(""));
         this.pieChartDirectoryField.setMaxLength(99);
         this.pieChartDirectoryField.setText(StandardSettingsUtils.getSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "piechart", "root.gameRenderer.level.entities"));
         this.children.add(this.pieChartDirectoryField);
@@ -78,6 +77,7 @@ public class StandardSettingsScreen extends Screen {
         this.fillGradient(matrices, 0, 0, this.width, this.height, PeepoPractice.BACKGROUND_COLOUR, PeepoPractice.BACKGROUND_COLOUR);
         if (this.pieChartDirectoryField != null) {
             this.pieChartDirectoryField.render(matrices, mouseX, mouseY, delta);
+            this.drawTextWithShadow(matrices, this.textRenderer, new LiteralText("PieChart Directory"), this.pieChartDirectoryField.x, this.pieChartDirectoryField.y - 10, 16777215);
         }
         this.drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 13, 16777215);
         super.render(matrices, mouseX, mouseY, delta);

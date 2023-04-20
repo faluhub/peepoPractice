@@ -10,6 +10,7 @@ import me.quesia.peepopractice.core.category.PracticeCategories;
 import me.quesia.peepopractice.core.category.PracticeCategory;
 import me.quesia.peepopractice.core.category.utils.PracticeCategoryUtils;
 import me.quesia.peepopractice.gui.screen.SettingsTypeSelectionScreen;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
@@ -104,7 +105,7 @@ public abstract class GameMenuScreenMixin extends ScreenMixin {
                         b -> {
                             b.active = false;
                             PracticeCategory nextCategory = PeepoPractice.getNextCategory();
-                            if (nextCategory != null && InGameTimer.getInstance().isCompleted()) {
+                            if (nextCategory != null && (FabricLoader.getInstance().isDevelopmentEnvironment() || InGameTimer.getInstance().isCompleted())) {
                                 InventoryUtils.saveCurrentPlayerInventory();
                                 PeepoPractice.CATEGORY = nextCategory;
                                 this.client.openScreen(new CreateWorldScreen(null));
@@ -112,7 +113,7 @@ public abstract class GameMenuScreenMixin extends ScreenMixin {
                         }
                 )
         );
-        this.nextButton.visible = PeepoPractice.CATEGORY.hasCustomValue("isCompletion") && (Boolean) PeepoPractice.CATEGORY.getCustomValue("isCompletion");
+        this.nextButton.visible = FabricLoader.getInstance().isDevelopmentEnvironment() || PeepoPractice.CATEGORY.hasCustomValue("isCompletion") && (Boolean) PeepoPractice.CATEGORY.getCustomValue("isCompletion");
         this.hasNextCategory = PeepoPractice.hasNextCategory();
         this.nextButton.active = this.hasNextCategory;
 
@@ -137,7 +138,7 @@ public abstract class GameMenuScreenMixin extends ScreenMixin {
             else { this.replayButton.setMessage(this.replayText); }
         }
         if (this.nextButton != null) {
-            this.nextButton.visible = PeepoPractice.CATEGORY.hasCustomValue("isCompletion") && (Boolean) PeepoPractice.CATEGORY.getCustomValue("isCompletion");
+            this.nextButton.visible = FabricLoader.getInstance().isDevelopmentEnvironment() || PeepoPractice.CATEGORY.hasCustomValue("isCompletion") && (Boolean) PeepoPractice.CATEGORY.getCustomValue("isCompletion");
             if (this.nextButton.visible) {
                 this.nextButton.active = this.hasNextCategory;
             }
