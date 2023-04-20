@@ -47,8 +47,13 @@ public class LimitlessDoubleOptionSliderWidget extends DoubleOptionSliderWidget 
         RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
         int i = (this.isHovered() ? 2 : 1) * 20;
 //        this.drawTexture(matrices, this.x + (int)(this.value * (double)(this.width - 8)), this.y, 0, 46 + i, 4, this.height);
-        drawTexture(matrices, this.x + (int) (this.value * (double) (this.width - 8)), this.y, 4, this.height, 0, 46 + i, 4, this.height, 256, 256);
 //        this.drawTexture(matrices, this.x + (int)(this.value * (double)(this.width - 8)) + 4, this.y, 196, 46 + i, 4, this.height);
-        drawTexture(matrices, this.x + (int) (this.value * (double) (this.width - 8)) + 4, this.y, 4, this.height, 196, 46 + i, 4, this.height, 256, 256);
+        int dx = this.x + (int) (this.value * (double) (this.width - 8));
+        drawTexture(matrices, dx, this.y, 4, 4, 0, 46 + i, 4, 4, 256, 256);
+        drawTexture(matrices, dx + 4, this.y, 4, 4, 196, 46 + i, 4, 4, 256, 256);
+        drawTexture(matrices, dx, this.y + this.height - 4, 4, 4, 0, 46 + i + 16, 4, 4, 256, 256);
+        drawTexture(matrices, dx + 4, this.y + this.height - 4, 4, 4, 196, 46 + i + 16, 4, 4, 256, 256);
+        drawTexture(matrices, dx, this.y + 4, 4, this.height - 8, 0, 46 + i + 4, 4, 1, 256, 256);
+        drawTexture(matrices, dx + 4, this.y + 4, 4, this.height - 8, 196, 46 + i + 4, 4, 1, 256, 256);
     }
 }
