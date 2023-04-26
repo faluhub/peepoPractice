@@ -62,6 +62,7 @@ public class CustomCategoryResourceManager {
                     if (obj != null && !obj.equals(JsonNull.INSTANCE)) {
                         JsonObject main = (JsonObject) obj;
                         PracticeCategory category = new PracticeCategory(true);
+                        category = category.setIsFillerCategory(true);
 
                         if (main.has("id")) {
                             category = category.setId(main.get("id").getAsString());

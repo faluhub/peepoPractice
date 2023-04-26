@@ -6,6 +6,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.PracticeWriter;
 import me.quesia.peepopractice.core.category.PracticeCategory;
+import me.quesia.peepopractice.core.category.utils.PracticeCategoryUtils;
 import me.quesia.peepopractice.gui.widget.CategoryListWidget;
 import me.quesia.peepopractice.gui.widget.LimitlessButtonWidget;
 import net.minecraft.client.gui.hud.BackgroundHelper;
@@ -22,6 +23,7 @@ public class CopyInventorySelectionScreen extends Screen {
     private final PracticeCategory category;
     private CategoryListWidget categoryListWidget;
     private ButtonWidget copyButton;
+    private boolean renderError;
 
     public CopyInventorySelectionScreen(PracticeCategory category) {
         super(new LiteralText("Copy Inventory"));
@@ -40,7 +42,25 @@ public class CopyInventorySelectionScreen extends Screen {
 
     @Override
     protected void init() {
-        this.categoryListWidget = new CategoryListWidget(this, this.client, true) {
+        if (!PracticeCategoryUtils.hasAnyConfiguredInventories(this.category)) {
+            this.renderError = true;
+            this.addButton(
+                    new LimitlessButtonWidget(
+                            null,
+                            null,
+                            null,
+                            this.width / 2 - 200 / 2,
+                            this.height - 50,
+                            200,
+                            40,
+                            ScreenTexts.BACK,
+                            b -> this.onClose()
+                    )
+            );
+            return;
+        }
+
+        this.categoryListWidget = new CategoryListWidget(this, this.client, true, true) {
             @Override
             public void onDoubleClick(PracticeCategory category) {
                 CopyInventorySelectionScreen.this.copyInventory(category);
@@ -114,6 +134,12 @@ public class CopyInventorySelectionScreen extends Screen {
     @SuppressWarnings("deprecation")
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         this.fillGradient(matrices, 0, 0, this.width, this.height, PeepoPractice.BACKGROUND_COLOUR, PeepoPractice.BACKGROUND_COLOUR);
+        super.render(matrices, mouseX, mouseY, delta);
+
+        if (this.renderError) {
+            this.drawCenteredText(matrices, this.textRenderer, new LiteralText("You have no configured configured inventories!"), this.width / 2, this.height / 2 - this.textRenderer.fontHeight, 0xD22B2B);
+            return;
+        }
 
         if (this.categoryListWidget != null) {
             this.categoryListWidget.render(matrices, mouseX, mouseY, delta);
@@ -129,7 +155,5 @@ public class CopyInventorySelectionScreen extends Screen {
             RenderSystem.popMatrix();
             this.copyButton.setMessage(!Screen.hasShiftDown() ? new LiteralText("Copy") : new LiteralText("Merge"));
         }
-
-        super.render(matrices, mouseX, mouseY, delta);
     }
 }

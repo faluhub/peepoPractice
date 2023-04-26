@@ -55,7 +55,7 @@ public class CategorySelectionScreen extends Screen {
 
     @Override
     protected void init() {
-        this.categoryListWidget = new CategoryListWidget(this, this.client, false) {
+        this.categoryListWidget = new CategoryListWidget(this, this.client, false, false) {
             @Override
             public void onDoubleClick(PracticeCategory category) {
                 CategorySelectionScreen.this.play();

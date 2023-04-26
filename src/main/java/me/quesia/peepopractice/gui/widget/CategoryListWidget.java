@@ -25,7 +25,7 @@ public abstract class CategoryListWidget extends AlwaysSelectedEntryListWidget<C
     private final Screen screen;
     private final boolean hideDecorations;
 
-    public CategoryListWidget(Screen screen, MinecraftClient client, boolean hideDecorations) {
+    public CategoryListWidget(Screen screen, MinecraftClient client, boolean hideDecorations, boolean hideUnconfigured) {
         super(
                 client,
                 screen.width,
@@ -39,6 +39,7 @@ public abstract class CategoryListWidget extends AlwaysSelectedEntryListWidget<C
 
         for (PracticeCategory category : PracticeCategories.ALL) {
             if (!category.isHidden()) {
+                if (hideUnconfigured && !category.hasConfiguredInventory()) { continue; }
                 this.addEntry(new CategoryEntry(category));
             }
         }

@@ -228,7 +228,7 @@ public class PracticeCategory {
     }
 
     public boolean hasConfiguredInventory() {
-        if (FabricLoader.getInstance().isDevelopmentEnvironment()) { return true; }
+//        if (FabricLoader.getInstance().isDevelopmentEnvironment()) { return true; }
         if (this.canHaveEmptyInventory) { return true; }
         PracticeWriter writer = PracticeWriter.INVENTORY_WRITER;
         JsonObject config = writer.get();

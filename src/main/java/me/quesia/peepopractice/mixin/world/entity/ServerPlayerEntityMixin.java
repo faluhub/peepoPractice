@@ -4,6 +4,7 @@ import com.redlimerl.speedrunigt.timer.InGameTimer;
 import com.redlimerl.speedrunigt.timer.TimerStatus;
 import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.category.PracticeCategories;
+import me.quesia.peepopractice.core.category.properties.event.EnterVehicleSplitEvent;
 import me.quesia.peepopractice.core.exception.NotInitializedException;
 import me.quesia.peepopractice.core.category.CategoryPreference;
 import me.quesia.peepopractice.core.category.PracticeTypes;
@@ -120,6 +121,22 @@ public abstract class ServerPlayerEntityMixin extends LivingEntity {
             }
 
             ci.cancel();
+        }
+    }
+
+    @Inject(method = "startRiding", at = @At("HEAD"), cancellable = true)
+    private void peepoPractice$checkVehicleSplit(Entity entity, boolean force, CallbackInfoReturnable<Boolean> cir) {
+        if (PeepoPractice.CATEGORY.hasSplitEvent()) {
+            if (PeepoPractice.CATEGORY.getSplitEvent() instanceof EnterVehicleSplitEvent) {
+                EnterVehicleSplitEvent event = (EnterVehicleSplitEvent) PeepoPractice.CATEGORY.getSplitEvent();
+                if (event.hasVehicle() && event.getVehicle().equals(entity.getType())) {
+                    if (InGameTimer.getInstance().isCompleted() && this.getScoreboardTags().contains("completed")) {
+                        cir.setReturnValue(false);
+                        return;
+                    }
+                    event.complete(!this.isDead());
+                }
+            }
         }
     }
 

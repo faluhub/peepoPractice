@@ -3,13 +3,13 @@ package me.quesia.peepopractice.core;
 import com.google.gson.*;
 import me.quesia.peepopractice.PeepoPractice;
 import net.fabricmc.loader.api.FabricLoader;
+import org.apache.commons.io.FileUtils;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 public class PracticeWriter {
+    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     public static final PracticeWriter PREFERENCES_WRITER = new PracticeWriter("preferences.json");
     public static final PracticeWriter INVENTORY_WRITER = new PracticeWriter("inventory.json");
     public static final PracticeWriter COMPLETIONS_WRITER = new PracticeWriter("completions.json");
@@ -33,6 +33,13 @@ public class PracticeWriter {
             File file = folder.toPath().resolve(fileName).toFile();
             if (!file.exists()) {
                 file.createNewFile();
+                InputStream stream = this.getClass().getClassLoader().getResourceAsStream(fileName);
+                if (stream != null) {
+                    FileWriter writer = new FileWriter(file);
+                    writer.write(GSON.toJson(new JsonParser().parse(new InputStreamReader(stream, StandardCharsets.UTF_8))));
+                    writer.flush();
+                    writer.close();
+                }
             }
             return file;
         } catch (IOException e) {
@@ -46,7 +53,7 @@ public class PracticeWriter {
         try {
             FileWriter writer = new FileWriter(this.file);
 
-            writer.write(new GsonBuilder().setPrettyPrinting().create().toJson(this.local));
+            writer.write(GSON.toJson(this.local));
             writer.flush();
             writer.close();
 

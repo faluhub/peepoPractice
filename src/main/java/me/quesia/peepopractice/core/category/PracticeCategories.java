@@ -1,20 +1,19 @@
 package me.quesia.peepopractice.core.category;
 
 import com.google.common.collect.Lists;
+import me.quesia.peepopractice.PeepoPractice;
 import me.quesia.peepopractice.core.CustomPortalForcer;
+import me.quesia.peepopractice.core.category.properties.event.*;
 import me.quesia.peepopractice.core.category.utils.PracticeCategoryUtils;
 import me.quesia.peepopractice.core.exception.NotInitializedException;
 import me.quesia.peepopractice.core.category.properties.PlayerProperties;
 import me.quesia.peepopractice.core.category.properties.StructureProperties;
 import me.quesia.peepopractice.core.category.properties.WorldProperties;
-import me.quesia.peepopractice.core.category.properties.event.ChangeDimensionSplitEvent;
-import me.quesia.peepopractice.core.category.properties.event.GetAdvancementSplitEvent;
-import me.quesia.peepopractice.core.category.properties.event.InteractLootChestSplitEvent;
-import me.quesia.peepopractice.core.category.properties.event.ThrowEntitySplitEvent;
 import me.quesia.peepopractice.core.category.properties.preset.BastionPreset;
 import me.quesia.peepopractice.mixin.access.ChunkGeneratorAccessor;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.LeavesBlock;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootTables;
@@ -26,10 +25,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec2f;
+import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.source.BiomeSource;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.*;
 
@@ -47,7 +49,6 @@ public class PracticeCategories {
     public static PracticeCategory MAPLESS_SPLIT = new PracticeCategory()
             .setId("mapless_split")
             .setCanHaveEmptyInventory(true)
-            .setIsFillerCategory(true)
             .setPlayerProperties(new PlayerProperties()
                     .setSpawnPos((category, random, world) -> {
                         BlockPos spawnPos = null;
@@ -116,6 +117,46 @@ public class PracticeCategories {
             .setSplitEvent(new InteractLootChestSplitEvent()
                     .setLootTable(LootTables.BURIED_TREASURE_CHEST)
                     .setOnClose(true)
+            );
+    public static PracticeCategory ISLAND_LEAVE_SPLIT = new PracticeCategory()
+            .setId("island_leave_split")
+            .setPlayerProperties(new PlayerProperties()
+                    .setSpawnPos((category, random, world) -> {
+                        BlockPos spawnPos = null;
+                        BlockPos lastPos = null;
+                        int mx = random.nextBoolean() ? 1 : -1;
+                        int mz = random.nextBoolean() ? 1 : -1;
+                        while (true) {
+                            if (lastPos == null) {
+                                lastPos = new BlockPos(0, 0, 0);
+                            }
+                            BiomeSource biomeSource = world.getChunkManager().getChunkGenerator().getBiomeSource();
+                            List<Biome> biomes = Lists.newArrayList(Biomes.BEACH, Biomes.SNOWY_BEACH);
+                            BlockPos pos = biomeSource.locateBiome(lastPos.getX(), world.getChunkManager().getChunkGenerator().getSpawnHeight(), lastPos.getZ(), 999, biomes, random);
+                            if (pos != null) {
+                                BlockPos tempPos = world.getRandomPosInChunk(pos.getX(), pos.getY(), pos.getZ(), 15);
+                                tempPos = SpawnLocating.findServerSpawnPoint(world, new ChunkPos(tempPos), true);
+                                if (tempPos != null) {
+                                    ChunkPos spawnChunkPos = new ChunkPos(tempPos.add(0, 0, 16));
+                                    for (int x = 0; x < 16; x++) {
+                                        for (int z = 0; z < 16; z++) {
+                                            Chunk chunk = world.getChunk(spawnChunkPos.x, spawnChunkPos.z, ChunkStatus.FULL);
+                                            BlockPos iterPos = spawnChunkPos.toBlockPos(x, 0, z);
+                                            BlockState state = chunk.getBlockState(world.getTopPosition(Heightmap.Type.MOTION_BLOCKING, iterPos).down());
+                                            if (state.getBlock() instanceof LeavesBlock) {
+                                                return tempPos;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            lastPos = lastPos.add(random.nextInt(100, 200) * mx, 0, random.nextInt(100, 200) * mz);
+                        }
+                    })
+            ).setWorldProperties(new WorldProperties()
+                    .setWorldRegistryKey(World.OVERWORLD)
+            ).setSplitEvent(new EnterVehicleSplitEvent()
+                    .setVehicle(EntityType.BOAT)
             );
     public static PracticeCategory RAVINE_ENTER_SPLIT = new PracticeCategory()
             .setId("ravine_enter_split")
