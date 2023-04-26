@@ -9,6 +9,7 @@ import me.quesia.peepopractice.core.category.properties.WorldProperties;
 import me.quesia.peepopractice.core.category.properties.event.*;
 import me.quesia.peepopractice.core.exception.InvalidCategorySyntaxException;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.Identifier;
@@ -198,6 +199,14 @@ public class CustomCategoryResourceManager {
                                                 break;
                                         }
                                         event = event.setDimension(registryKey);
+                                        category = category.setSplitEvent(event);
+                                    }
+                                    break;
+                                case "enter_vehicle":
+                                    if (splitEvent.has("vehicle")) {
+                                        EnterVehicleSplitEvent event = new EnterVehicleSplitEvent();
+                                        EntityType<?> type = Registry.ENTITY_TYPE.get(new Identifier(splitEvent.get("vehicle").getAsString()));
+                                        event = event.setVehicle(type);
                                         category = category.setSplitEvent(event);
                                     }
                                     break;

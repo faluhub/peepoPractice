@@ -182,6 +182,15 @@ POSSIBLE VALUES ->
   DESCRIPTION -> This triggers when the player enters the specified dimension.
   EXAMPLE -> {...}
   
+  "enter_vehicle"
+  CHILD VALUES ->
+    "vehicle"
+    TYPE -> Entity Type
+    DESCRIPTION -> The entity the player enters as a vehicle.
+    EXAMPLE -> "minecart"
+  DESCRIPTION -> This triggers whenever the player enters a vehicle.
+  EXAMPLE -> {...}
+  
   "get_advancement"
   CHILD VALUES ->
     "advancement"
