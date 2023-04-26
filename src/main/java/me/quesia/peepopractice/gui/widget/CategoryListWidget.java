@@ -53,7 +53,7 @@ public abstract class CategoryListWidget extends AlwaysSelectedEntryListWidget<C
 
     @Override
     protected int getScrollbarPositionX() {
-        return super.getScrollbarPositionX() + 20;
+        return this.width - 6;
     }
 
     @Override
