@@ -61,6 +61,14 @@ public abstract class CategoryListWidget extends AlwaysSelectedEntryListWidget<C
         return super.getRowWidth() + 50;
     }
 
+    public int getTop() {
+        return this.top;
+    }
+
+    public int getBottom() {
+        return this.bottom;
+    }
+
     @Override
     protected void renderBackground(MatrixStack matrices) {
         this.fillGradient(matrices, 0, 0, this.width, this.height, PeepoPractice.BACKGROUND_COLOUR, PeepoPractice.BACKGROUND_COLOUR);
