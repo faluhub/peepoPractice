@@ -288,14 +288,7 @@ public class PracticeCategories {
                     .setDimension(World.OVERWORLD)
             )
             .addPreference(FortressPreset.GOOD_BLAZE_RATES_PREFERENCE)
-            .addPreference(new CategoryPreference()
-                    .setId("ssv")
-                    .setIcon(new Identifier("textures/item/stone_sword.png"))
-                    .setLabel("Soul Sand Valley")
-                    .setDescription("If enabled, the fortress will always generate in a soul sand valley biome.")
-                    .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
-                    .setDefaultChoice(PracticeCategoryUtils.DISABLED)
-            )
+            .addPreference(FortressPreset.SOUL_SAND_VALLEY_PREFERENCE)
             .addPreference(StructurePreset.SPAWN_LOCATION_PREFERENCE);
     public static PracticeCategory NETHER_SPLIT = new PracticeCategory()
             .setId("nether_split")
@@ -330,6 +323,7 @@ public class PracticeCategories {
                     .setWorldRegistryKey(World.NETHER)
                     .setSpawnChunksDisabled(true)
                     .addAntiBiomeRange(Biomes.BASALT_DELTAS, null)
+                    .addProBiomeRange(Biomes.SOUL_SAND_VALLEY, null, () -> CategoryPreference.getBoolValue("ssv"))
             )
             .setSplitEvent(new ChangeDimensionSplitEvent()
                     .setDimension(World.OVERWORLD)
@@ -337,7 +331,8 @@ public class PracticeCategories {
             .addPreference(BastionPreset.BASTION_TYPE_PREFERENCE)
             .addPreference(BastionPreset.RANKED_LOOT_TABLE_PREFERENCE)
             .addPreference(FortressPreset.GOOD_BLAZE_RATES_PREFERENCE)
-            .addPreference(StructurePreset.SPAWN_LOCATION_PREFERENCE);
+            .addPreference(StructurePreset.SPAWN_LOCATION_PREFERENCE)
+            .addPreference(FortressPreset.SOUL_SAND_VALLEY_PREFERENCE);
     public static PracticeCategory POST_BLIND_SPLIT = new PracticeCategory()
             .setId("post_blind_split")
             .setPlayerProperties(new PlayerProperties()

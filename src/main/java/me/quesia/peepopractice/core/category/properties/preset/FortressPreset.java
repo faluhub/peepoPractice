@@ -11,4 +11,11 @@ public class FortressPreset {
             .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
             .setDefaultChoice(PracticeCategoryUtils.ENABLED)
             .setIcon(new Identifier("textures/item/blaze_rod.png"));
+    public static final CategoryPreference SOUL_SAND_VALLEY_PREFERENCE = new CategoryPreference()
+            .setId("ssv")
+            .setIcon(new Identifier("textures/item/stone_sword.png"))
+            .setLabel("Soul Sand Valley")
+            .setDescription("If enabled, the fortress will always generate in a soul sand valley biome.")
+            .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
+            .setDefaultChoice(PracticeCategoryUtils.DISABLED);
 }
