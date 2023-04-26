@@ -97,7 +97,7 @@ public abstract class ServerPlayerEntityMixin extends LivingEntity {
             BlockPos spawnPos = world.getSpawnPos();
             if (PeepoPractice.CATEGORY.getPlayerProperties().hasSpawnPos()) {
                 spawnPos = PeepoPractice.CATEGORY.getPlayerProperties().getSpawnPos();
-                ((LevelProperties) world.getLevelProperties()).setSpawnPos(PeepoPractice.CATEGORY.getPlayerProperties().getSpawnPos());
+                ((LevelProperties) world.getLevelProperties()).setSpawnPos(spawnPos);
             }
 
             if (PeepoPractice.CATEGORY.getPlayerProperties().hasVehicle() && !world.isClient) {

@@ -28,6 +28,9 @@ public class CategoryPreference {
     }
 
     public String getLabel() {
+        if (this.label == null && this.id != null) {
+            return PracticeCategoryUtils.getNameFromId(this.id);
+        }
         return this.label;
     }
 

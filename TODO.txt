@@ -1,0 +1,1 @@
+add terrain spawn setting to fort bastion and nether

@@ -1,6 +1,7 @@
 package me.quesia.peepopractice.core.category;
 
 import com.google.gson.JsonObject;
+import me.quesia.peepopractice.core.category.utils.PracticeCategoryUtils;
 import me.quesia.peepopractice.core.exception.NotInitializedException;
 import me.quesia.peepopractice.core.PracticeWriter;
 import me.quesia.peepopractice.core.category.properties.PlayerProperties;
@@ -189,20 +190,7 @@ public class PracticeCategory {
     }
 
     public String getName(boolean showPb) {
-        StringBuilder text = new StringBuilder("" + (this.isFillerCategory() ? Formatting.ITALIC : ""));
-        boolean shouldCapitalise = true;
-        for (Character c : this.getId().toCharArray()) {
-            if (shouldCapitalise) {
-                text.append(c.toString().toUpperCase(Locale.ROOT));
-                shouldCapitalise = false;
-            } else if (c.equals('_')) {
-                text.append(" ");
-                shouldCapitalise = true;
-            } else {
-                text.append(c.toString().toLowerCase(Locale.ROOT));
-            }
-        }
-        text.append(Formatting.RESET);
+        StringBuilder text = new StringBuilder((this.isFillerCategory() ? Formatting.ITALIC : "") + PracticeCategoryUtils.getNameFromId(this.getId()) + (showPb || this.isFillerCategory() ? Formatting.RESET : ""));
         if (showPb && this.hasSplitEvent()) {
             PracticeTypes.CompareType compareType = PracticeTypes.CompareType.fromLabel(CategoryPreference.getValue(this, "compare_type", PracticeTypes.CompareType.PB.getLabel()));
             if (compareType != null) {

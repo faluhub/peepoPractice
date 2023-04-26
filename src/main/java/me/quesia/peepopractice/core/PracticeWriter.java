@@ -33,7 +33,7 @@ public class PracticeWriter {
             File file = folder.toPath().resolve(fileName).toFile();
             if (!file.exists()) {
                 file.createNewFile();
-                InputStream stream = this.getClass().getClassLoader().getResourceAsStream(fileName);
+                InputStream stream = this.getClass().getClassLoader().getResourceAsStream("writer/" + fileName);
                 if (stream != null) {
                     FileWriter writer = new FileWriter(file);
                     writer.write(GSON.toJson(new JsonParser().parse(new InputStreamReader(stream, StandardCharsets.UTF_8))));

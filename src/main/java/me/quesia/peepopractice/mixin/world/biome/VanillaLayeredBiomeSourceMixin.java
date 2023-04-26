@@ -2,6 +2,7 @@ package me.quesia.peepopractice.mixin.world.biome;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import me.quesia.peepopractice.PeepoPractice;
+import me.quesia.peepopractice.core.category.properties.WorldProperties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.biome.Biome;
@@ -22,9 +23,13 @@ public abstract class VanillaLayeredBiomeSourceMixin {
                     return Biomes.PLAINS;
                 }
             }
-            for (Map.Entry<Biome, Integer> entry : PeepoPractice.CATEGORY.getWorldProperties().getProBiomeRangeMap().entrySet()) {
-                if (entry.getValue() == null) { break; }
-                else if (new BlockPos(biomeX, biomeY, biomeZ).isWithinDistance(new Vec3i(0, 62, 0), entry.getValue())) { return entry.getKey(); }
+            for (Map.Entry<Biome, WorldProperties.Range> entry : PeepoPractice.CATEGORY.getWorldProperties().getProBiomeRangeMap().entrySet()) {
+                if (entry.getValue().getRange() == null) { break; }
+                else if (new BlockPos(biomeX, biomeY, biomeZ).isWithinDistance(new Vec3i(0, 62, 0), entry.getValue().getRange())) {
+                    if (entry.getValue().shouldPlace()) {
+                        return entry.getKey();
+                    }
+                }
             }
         }
         return biome;

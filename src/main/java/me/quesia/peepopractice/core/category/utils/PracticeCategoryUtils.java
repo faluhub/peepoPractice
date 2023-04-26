@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 public class PracticeCategoryUtils {
@@ -104,5 +105,22 @@ public class PracticeCategoryUtils {
             }
         }
         return false;
+    }
+
+    public static String getNameFromId(String id) {
+        StringBuilder text = new StringBuilder();
+        boolean shouldCapitalise = true;
+        for (Character c : id.toCharArray()) {
+            if (shouldCapitalise) {
+                text.append(c.toString().toUpperCase(Locale.ROOT));
+                shouldCapitalise = false;
+            } else if (c.equals('_')) {
+                text.append(" ");
+                shouldCapitalise = true;
+            } else {
+                text.append(c.toString().toLowerCase(Locale.ROOT));
+            }
+        }
+        return text.toString();
     }
 }

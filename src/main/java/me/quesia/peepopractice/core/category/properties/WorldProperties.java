@@ -13,7 +13,7 @@ public class WorldProperties extends BaseProperties {
     private RegistryKey<World> worldRegistryKey;
     private boolean spawnChunksDisabled = false;
     private final Map<Biome, @Nullable Integer> antiBiomeRangeMap = new HashMap<>();
-    private final Map<Biome, @Nullable Integer> proBiomeRangeMap = new HashMap<>();
+    private final Map<Biome, Range> proBiomeRangeMap = new HashMap<>();
 
     public RegistryKey<World> getWorldRegistryKey() {
         return this.worldRegistryKey;
@@ -46,12 +46,38 @@ public class WorldProperties extends BaseProperties {
         return this;
     }
 
-    public Map<Biome, Integer> getProBiomeRangeMap() {
+    public Map<Biome, Range> getProBiomeRangeMap() {
         return this.proBiomeRangeMap;
     }
 
     public WorldProperties addProBiomeRange(Biome biome, @Nullable Integer range) {
-        this.proBiomeRangeMap.put(biome, range);
+        return this.addProBiomeRange(biome, range, () -> true);
+    }
+
+    public WorldProperties addProBiomeRange(Biome biome, @Nullable Integer range, ConditionTask condition) {
+        this.proBiomeRangeMap.put(biome, new Range(range, condition));
         return this;
+    }
+
+    public static class Range {
+        private final @Nullable Integer range;
+        private final ConditionTask condition;
+
+        public Range(@Nullable Integer range, ConditionTask condition) {
+            this.range = range;
+            this.condition = condition;
+        }
+
+        public @Nullable Integer getRange() {
+            return this.range;
+        }
+
+        public boolean shouldPlace() {
+            return this.condition.execute();
+        }
+    }
+
+    public interface ConditionTask {
+        boolean execute();
     }
 }
