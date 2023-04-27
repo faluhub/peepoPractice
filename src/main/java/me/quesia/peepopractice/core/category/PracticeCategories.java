@@ -159,6 +159,7 @@ public class PracticeCategories {
                     .setWorldRegistryKey(World.OVERWORLD)
             ).setSplitEvent(new EnterVehicleSplitEvent()
                     .setVehicle(EntityType.BOAT)
+                    .setKeepItem(true)
             );
     public static PracticeCategory RAVINE_ENTER_SPLIT = new PracticeCategory()
             .setId("ravine_enter_split")

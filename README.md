@@ -188,6 +188,11 @@ POSSIBLE VALUES ->
     TYPE -> Entity Type
     DESCRIPTION -> The entity the player enters as a vehicle.
     EXAMPLE -> "minecart"
+    
+    "keep_item"
+    TYPE -> Boolean
+    DESCRIPTION -> Whether or not the player keeps the item after placing the vehicle.
+    EXAMPLE -> true
   DESCRIPTION -> This triggers whenever the player enters a vehicle.
   EXAMPLE -> {...}
   

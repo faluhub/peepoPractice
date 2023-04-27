@@ -63,6 +63,9 @@
     "world.entity.ServerPlayerEntityMixin",
     "world.entity.ThrownItemEntityMixin",
 
+    "world.item.BoatItemMixin",
+    "world.item.MinecartItemMixin",
+
     "world.ChestBlockEntityMixin",
     "world.LootableContainerBlockEntityMixin",
     "world.MinecraftServerMixin",

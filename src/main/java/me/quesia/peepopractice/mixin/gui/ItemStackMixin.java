@@ -28,26 +28,4 @@ public abstract class ItemStackMixin {
         }
         return hasCustomName;
     }
-
-    @Inject(method = "decrement", at = @At("HEAD"), cancellable = true)
-    private void peepoPractice$disableDecrement(int amount, CallbackInfo ci) {
-        if (PeepoPractice.CATEGORY.hasSplitEvent()) {
-            if (PeepoPractice.CATEGORY.getSplitEvent() instanceof EnterVehicleSplitEvent) {
-                EnterVehicleSplitEvent event = (EnterVehicleSplitEvent) PeepoPractice.CATEGORY.getSplitEvent();
-                if (event.hasVehicle()) {
-                    if (
-                            event.getVehicle().equals(EntityType.BOAT) && (
-                                    this.getItem().equals(Items.ACACIA_BOAT) ||
-                                    this.getItem().equals(Items.BIRCH_BOAT) ||
-                                    this.getItem().equals(Items.DARK_OAK_BOAT) ||
-                                    this.getItem().equals(Items.OAK_BOAT) ||
-                                    this.getItem().equals(Items.JUNGLE_BOAT) ||
-                                    this.getItem().equals(Items.SPRUCE_BOAT)
-                            )
-                    ) { ci.cancel(); }
-                    else if (event.getVehicle().equals(EntityType.MINECART) && this.getItem().equals(Items.MINECART)) { ci.cancel(); }
-                }
-            }
-        }
-    }
 }

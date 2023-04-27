@@ -205,6 +205,9 @@ public class CustomCategoryResourceManager {
                                 case "enter_vehicle":
                                     if (splitEvent.has("vehicle")) {
                                         EnterVehicleSplitEvent event = new EnterVehicleSplitEvent();
+                                        if (splitEvent.has("keep_item")) {
+                                            event = event.setKeepItem(splitEvent.get("keep_item").getAsBoolean());
+                                        }
                                         EntityType<?> type = Registry.ENTITY_TYPE.get(new Identifier(splitEvent.get("vehicle").getAsString()));
                                         event = event.setVehicle(type);
                                         category = category.setSplitEvent(event);
