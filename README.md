@@ -8,6 +8,14 @@ PeepoPractice is a Fabric mod for 1.16.1 to practice splits of a Minecraft Any% 
 
 # FAQ:
 
+**How do I install the mod?**
+
+```
+- Install Fabric (download manual installer from https://fabricmc.net, or install through MultiMC or similar launchers).
+- Download the latest release from https://github.com/faluhub/peepoPractice/releases/latest and put it in your mods folder.
+- Download the latest SpeedRunIGT from https://redlime.github.io/SpeedRunIGT and put it in your mods folder.
+```
+
 **How do I make a loadout?**
 
 ```
