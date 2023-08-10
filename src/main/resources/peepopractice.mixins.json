@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "me.quesia.peepopractice.mixin",
+  "package": "me.falu.peepopractice.mixin",
   "compatibilityLevel": "JAVA_10",
   "client": [
     "access.ButtonWidgetAccessor",
@@ -59,7 +59,7 @@
     "world.entity.ClientPlayerEntityMixin",
     "world.entity.EyeOfEnderEntityMixin",
     "world.entity.MobEntityMixin",
-    "world.entity.PiglinBrainMixin",
+    "world.entity.ai.PiglinBrainMixin",
     "world.entity.ServerPlayerEntityMixin",
     "world.entity.ThrownItemEntityMixin",
 
