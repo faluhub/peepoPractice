@@ -4,10 +4,13 @@
   "version": "${version}",
   "name": "PeepoPractice",
   "description": "The best and most advanced MCSR Practice mod!",
-  "authors": ["Quesia"],
-  "contributors": ["RedLime"],
+  "authors": ["falu"],
+  "contributors": [
+    "RedLime",
+    "KingContaria"
+  ],
   "contact": {
-    "homepage": "https://github.com/QuesiaSR/peepoPractice"
+    "homepage": "https://github.com/faluhub/peepoPractice"
   },
   "license": "MIT",
   "icon": "assets/peepopractice/icon.png",
@@ -17,7 +20,7 @@
       "com.llamalad7.mixinextras.MixinExtrasBootstrap::init"
     ],
     "client": [
-      "me.quesia.peepopractice.PeepoPractice"
+      "me.falu.peepopractice.PeepoPractice"
     ]
   },
   "mixins": ["peepopractice.mixins.json"],
@@ -28,5 +31,8 @@
   },
   "recommends": {
     "speedrunigt": ">=13.2"
+  },
+  "breaks": {
+    "worldpreview": "*"
   }
 }

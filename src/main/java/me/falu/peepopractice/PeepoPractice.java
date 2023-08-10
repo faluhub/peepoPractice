@@ -10,7 +10,6 @@ import me.falu.peepopractice.core.resource.LocalResourceManager;
 import me.falu.peepopractice.core.playerless.PlayerlessInventory;
 import me.falu.peepopractice.core.playerless.PlayerlessPlayerScreenHandler;
 import me.voidxwalker.autoreset.Atum;
-import me.voidxwalker.worldpreview.WorldPreview;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
@@ -101,12 +100,6 @@ public class PeepoPractice implements ClientModInitializer {
     public static void disableAtumReset() {
         if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY) && FabricLoader.getInstance().getModContainer("atum").isPresent()) {
             Atum.isRunning = false;
-        }
-    }
-
-    public static void disableWorldPreview() {
-        if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY) && FabricLoader.getInstance().getModContainer("worldpreview").isPresent()) {
-            WorldPreview.freezePreview = true;
         }
     }
 

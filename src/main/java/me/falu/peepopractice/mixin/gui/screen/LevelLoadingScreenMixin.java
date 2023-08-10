@@ -25,11 +25,6 @@ public abstract class LevelLoadingScreenMixin extends Screen {
         super(title);
     }
 
-    @Inject(method = "render", at = @At("HEAD"))
-    private void peepoPractice$preventWorldPreview(CallbackInfo ci) {
-        PeepoPractice.disableWorldPreview();
-    }
-
     @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/LevelLoadingScreen;drawChunkMap(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/gui/WorldGenerationProgressTracker;IIII)V"))
     private void peepoPractice$noChunkMap(MatrixStack matrices, WorldGenerationProgressTracker worldGenerationProgressTracker, int i, int j, int k, int l, Operation<Void> original) {
         if (PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
