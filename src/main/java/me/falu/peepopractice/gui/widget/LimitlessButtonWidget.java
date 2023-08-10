@@ -13,8 +13,6 @@ import net.minecraft.util.math.Matrix4f;
 import org.jetbrains.annotations.Nullable;
 
 public class LimitlessButtonWidget extends ButtonWidget {
-    public static final int BG_INACTIVE_COLOR;
-    public static final int BG_COLOR = BG_INACTIVE_COLOR = PeepoPractice.BACKGROUND_OVERLAY_COLOUR;
     public final Boolean odd;
     public final Identifier icon;
     public final Integer textureSize;
@@ -53,7 +51,7 @@ public class LimitlessButtonWidget extends ButtonWidget {
     }
 
     @Override
-    @SuppressWarnings({ "deprecation", "DuplicatedCode" })
+    @SuppressWarnings({ "deprecation" })
     public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
         TextRenderer textRenderer = minecraftClient.textRenderer;

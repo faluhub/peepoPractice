@@ -9,6 +9,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -20,6 +21,7 @@ public abstract class MobEntityMixin extends LivingEntity {
         super(entityType, world);
     }
 
+    @Unique
     private boolean peepoPractice$isInactive() {
         if (SpeedRunOption.getOption(SpeedRunOptions.WAITING_FIRST_INPUT).isFirstInput(InGameTimer.getInstance())) {
             return ((InGameTimerAccessor) InGameTimer.getInstance()).peepoPractice$getFirstInput().isEmpty();

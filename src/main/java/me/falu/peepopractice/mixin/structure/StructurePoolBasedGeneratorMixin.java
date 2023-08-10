@@ -19,6 +19,7 @@ import net.minecraft.world.gen.feature.StructureFeature;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -29,7 +30,7 @@ import java.util.Random;
 @Mixin(StructurePoolBasedGenerator.class)
 public abstract class StructurePoolBasedGeneratorMixin {
     @Shadow @Final public static StructurePoolRegistry REGISTRY;
-    private static StructurePieceType TYPE;
+    @Unique private static StructurePieceType TYPE;
 
     @Inject(method = "addPieces", at = @At("HEAD"))
     private static void peepoPractice$capturePieceType(Identifier startPoolId, int size, StructurePoolBasedGenerator.PieceFactory pieceFactory, ChunkGenerator chunkGenerator, StructureManager structureManager, BlockPos blockPos, List<? super PoolStructurePiece> list, Random random, boolean bl, boolean bl2, CallbackInfo ci) {

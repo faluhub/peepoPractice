@@ -120,7 +120,7 @@ public abstract class PlayerlessHandledScreen extends Screen {
                 itemStack = itemStack.copy();
                 itemStack.setCount(this.draggedStackRemainder);
                 if (itemStack.isEmpty()) {
-                    string = "" + Formatting.YELLOW + "0";
+                    string = Formatting.YELLOW + "0";
                 }
             }
 

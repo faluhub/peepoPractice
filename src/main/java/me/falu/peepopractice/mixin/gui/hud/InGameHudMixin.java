@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -22,7 +23,7 @@ public abstract class InGameHudMixin {
     @Shadow private int titleRemainTicks;
     @Shadow private int titleFadeOutTicks;
     @Shadow @Final private MinecraftClient client;
-    private PeepoPauseManHud peepoPauseManHud;
+    @Unique private PeepoPauseManHud peepoPauseManHud;
 
     // TODO: this is extremely concerning
     @Inject(method = "setTitles", at = @At("HEAD"), cancellable = true)

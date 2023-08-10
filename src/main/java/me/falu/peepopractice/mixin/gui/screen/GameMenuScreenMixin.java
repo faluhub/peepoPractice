@@ -20,6 +20,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Slice;
@@ -28,13 +29,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(GameMenuScreen.class)
 public abstract class GameMenuScreenMixin extends ScreenMixin {
-    private ButtonWidget quitButton;
-    private boolean renderTitle = false;
-    private final Text replayText = new LiteralText("Replay Split");
-    private final Text configureText = new LiteralText("Configure Split");
-    private AbstractButtonWidget replayButton;
-    private AbstractButtonWidget nextButton;
-    private boolean hasNextCategory;
+    @Unique private ButtonWidget quitButton;
+    @Unique private boolean renderTitle = false;
+    @Unique private final Text replayText = new LiteralText("Replay Split");
+    @Unique private final Text configureText = new LiteralText("Configure Split");
+    @Unique private AbstractButtonWidget replayButton;
+    @Unique private AbstractButtonWidget nextButton;
+    @Unique private boolean hasNextCategory;
 
     @WrapOperation(
             method = "initWidgets",

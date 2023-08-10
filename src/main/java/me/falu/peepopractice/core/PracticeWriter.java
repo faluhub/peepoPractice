@@ -22,7 +22,7 @@ public class PracticeWriter {
         this.update();
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "BlockingMethodInNonBlockingContext"})
     private File create(String fileName) {
         try {
             File folder = FabricLoader.getInstance().getConfigDir().resolve(PeepoPractice.MOD_NAME).toFile();
@@ -47,6 +47,7 @@ public class PracticeWriter {
         return null;
     }
 
+    @SuppressWarnings("BlockingMethodInNonBlockingContext")
     public void write() {
         this.create(this.file.getName());
         try {
@@ -66,6 +67,7 @@ public class PracticeWriter {
         this.local = this.get();
     }
 
+    @SuppressWarnings("BlockingMethodInNonBlockingContext")
     public JsonObject get() {
         if (this.local != null) { return this.local; }
 

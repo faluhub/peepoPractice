@@ -28,7 +28,7 @@ public abstract class SplitEvent {
     private PracticeCategory category;
     private boolean isRunningThread = false;
 
-    @SuppressWarnings("StatementWithEmptyBody")
+    @SuppressWarnings({"StatementWithEmptyBody", "BlockingMethodInNonBlockingContext"})
     public void complete(boolean completed) {
         if (this.category == null || this.isRunningThread) { return; }
 

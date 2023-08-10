@@ -29,6 +29,7 @@ import net.minecraft.world.level.LevelProperties;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -44,8 +45,8 @@ public abstract class ServerPlayerEntityMixin extends LivingEntity {
     @Shadow public abstract void sendMessage(Text message, boolean actionBar);
     @Shadow public abstract boolean startRiding(Entity entity, boolean force);
     @Shadow private int joinInvulnerabilityTicks;
-    private Long comparingTime;
-    private PracticeTypes.PaceTimerShowType showType;
+    @Unique private Long comparingTime;
+    @Unique private PracticeTypes.PaceTimerShowType showType;
 
     protected ServerPlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
         super(entityType, world);

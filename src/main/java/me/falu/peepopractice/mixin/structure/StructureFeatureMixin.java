@@ -17,6 +17,7 @@ import net.minecraft.world.gen.feature.StructureFeature;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(StructureFeature.class)
 public abstract class StructureFeatureMixin<C extends FeatureConfig> {
@@ -25,6 +26,7 @@ public abstract class StructureFeatureMixin<C extends FeatureConfig> {
     @Shadow protected abstract StructureStart<C> method_28656(int i, int j, BlockBox blockBox, int k, long l);
     @Shadow public abstract String getName();
 
+    @Unique
     private boolean peepoPractice$checkArtificialStructure(ChunkPos chunkPos) {
         for (StructureProperties properties : PeepoPractice.CATEGORY.getStructureProperties()) {
             if (properties.isSameStructure((StructureFeature<?>) (Object) this)) {

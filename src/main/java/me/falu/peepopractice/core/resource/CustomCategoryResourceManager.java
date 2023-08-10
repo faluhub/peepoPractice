@@ -35,6 +35,7 @@ import java.util.Locale;
 public class CustomCategoryResourceManager {
     private static final File CATEGORIES_FOLDER = FabricLoader.getInstance().getConfigDir().resolve(PeepoPractice.MOD_NAME).resolve("categories").toFile();
 
+    @SuppressWarnings("BlockingMethodInNonBlockingContext")
     public static void register() throws InvalidCategorySyntaxException {
         try {
             if (CATEGORIES_FOLDER.exists()) {

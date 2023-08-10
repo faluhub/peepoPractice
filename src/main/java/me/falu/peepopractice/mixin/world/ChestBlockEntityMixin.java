@@ -7,6 +7,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -14,9 +15,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ChestBlockEntity.class)
 public abstract class ChestBlockEntityMixin extends LootableContainerBlockEntityMixin {
-    private Identifier peepoPractice$localLootTableId = this.lootTableId;
-    private boolean peepoPractice$valid = false;
+    @Unique private Identifier peepoPractice$localLootTableId = this.lootTableId;
+    @Unique private boolean peepoPractice$valid = false;
 
+    @Unique
     private InteractLootChestSplitEvent peepoPractice$getCorrespondingEvent(boolean close) {
         if (PeepoPractice.CATEGORY.hasSplitEvent()) {
             if (PeepoPractice.CATEGORY.getSplitEvent() instanceof InteractLootChestSplitEvent) {

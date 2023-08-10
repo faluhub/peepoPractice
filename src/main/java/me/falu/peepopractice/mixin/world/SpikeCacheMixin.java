@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import me.falu.peepopractice.core.category.CategoryPreference;
 import me.falu.peepopractice.core.category.PracticeTypes;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public abstract class SpikeCacheMixin {
         }
     }
 
+    @Unique
     private PracticeTypes.StartNodeType peepoPractice$getDragonType(List<Integer> towers) {
         return towers.get(0) > towers.get(5) ? PracticeTypes.StartNodeType.FRONT : PracticeTypes.StartNodeType.BACK;
     }
