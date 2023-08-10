@@ -51,7 +51,7 @@ public abstract class LevelLoadingScreenMixin extends Screen {
         RenderSystem.pushMatrix();
         float scale = 2.0F;
         RenderSystem.scalef(scale, scale, 1.0F);
-        screen.drawCenteredString(matrices, textRenderer, s, (int) (i / scale), (int) ((this.height / 2 + textRenderer.fontHeight * scale) / scale), k);
+        this.drawCenteredString(matrices, textRenderer, s, (int) (i / scale), (int) ((this.height / 2 + textRenderer.fontHeight * scale) / scale), k);
         RenderSystem.popMatrix();
     }
 
