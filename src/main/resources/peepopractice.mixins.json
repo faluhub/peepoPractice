@@ -6,7 +6,6 @@
   "client": [
     "access.ButtonWidgetAccessor",
     "access.ChunkGeneratorAccessor",
-    "access.InGameTimerAccessor",
     "access.ItemEntryAccessor",
     "access.KeyBindingAccessor",
     "access.LootPoolAccessor",

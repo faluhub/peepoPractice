@@ -314,7 +314,7 @@ public class PracticeCategories {
                         ChunkGenerator chunkGenerator = world.getChunkManager().getChunkGenerator();
                         ((ChunkGeneratorAccessor) chunkGenerator).peepoPractice$invokeMethod_28509();
                         List<ChunkPos> strongholds = ((ChunkGeneratorAccessor) chunkGenerator).peepoPractice$getField_24749();
-                        int maxStrongholds = 9;
+                        int maxStrongholds = 3;
                         BlockPos blockPos = strongholds.get(random.nextInt(maxStrongholds)).toBlockPos(4, 0, 4);
                         blockPos = PracticeCategoryUtils.getRandomBlockInRadius(max, min, blockPos, random);
                         blockPos = new BlockPos(blockPos.getX(), PracticeCategoryUtils.findTopPos(world, blockPos), blockPos.getZ());
@@ -347,7 +347,7 @@ public class PracticeCategories {
             )
             .addPreference(new CategoryPreference()
                     .setId("stronghold_distance")
-                    .setDescription("Close (200-500), Average (700-1000), Far (1200-1600) or Random (200-1600).")
+                    .setDescription("Close (200-500), Average (700-1000), Far (1200-1600) or Random (0-2300).")
                     .setIcon(new Identifier("textures/mob_effect/speed.png"))
                     .setChoices(PracticeTypes.StrongholdDistanceType.all())
                     .setDefaultChoice(PracticeTypes.StrongholdDistanceType.AVERAGE.getLabel())

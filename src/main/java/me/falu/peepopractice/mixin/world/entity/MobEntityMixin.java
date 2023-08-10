@@ -3,7 +3,6 @@ package me.falu.peepopractice.mixin.world.entity;
 import com.redlimerl.speedrunigt.option.SpeedRunOption;
 import com.redlimerl.speedrunigt.option.SpeedRunOptions;
 import com.redlimerl.speedrunigt.timer.InGameTimer;
-import me.falu.peepopractice.mixin.access.InGameTimerAccessor;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MobEntity;
@@ -24,7 +23,7 @@ public abstract class MobEntityMixin extends LivingEntity {
     @Unique
     private boolean peepoPractice$isInactive() {
         if (SpeedRunOption.getOption(SpeedRunOptions.WAITING_FIRST_INPUT).isFirstInput(InGameTimer.getInstance())) {
-            return ((InGameTimerAccessor) InGameTimer.getInstance()).peepoPractice$getFirstInput().isEmpty();
+            return !InGameTimer.getInstance().isStarted();
         }
         return false;
     }

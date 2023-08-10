@@ -162,7 +162,7 @@ public class PracticeTypes {
         CLOSE(200, 500),
         AVERAGE(700, 1000),
         FAR(1200, 1600),
-        RANDOM(200, 1600);
+        RANDOM(0, 2300);
 
         private final int min;
         private final int max;
