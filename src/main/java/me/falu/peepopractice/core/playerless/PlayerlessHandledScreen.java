@@ -563,8 +563,6 @@ public abstract class PlayerlessHandledScreen extends Screen {
         return false;
     }
 
-    public void removed() {}
-
     public boolean isPauseScreen() {
         return false;
     }

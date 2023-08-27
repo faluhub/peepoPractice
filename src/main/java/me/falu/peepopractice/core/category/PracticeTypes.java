@@ -5,7 +5,6 @@ import net.minecraft.util.math.Vec3i;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class PracticeTypes {
     public enum BastionType {
