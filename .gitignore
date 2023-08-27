@@ -32,4 +32,11 @@ bin/
 
 run/
 
+# node
+
+node_modules/
+package-lock.json
+
+# other
+
 TODO.txt
