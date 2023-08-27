@@ -103,12 +103,12 @@ public class CategorySelectionScreen extends Screen {
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        this.fillGradient(matrices, 0, 0, this.width, this.height, PeepoPractice.BACKGROUND_COLOUR, PeepoPractice.BACKGROUND_COLOUR);
+        PeepoPractice.drawBackground(matrices, this);
 
         if (this.categoryListWidget != null) {
             this.categoryListWidget.render(matrices, mouseX, mouseY, delta);
-            this.fillGradient(matrices, 0, 0, this.width, this.categoryListWidget.getTop(), PeepoPractice.BACKGROUND_COLOUR, PeepoPractice.BACKGROUND_COLOUR);
-            this.fillGradient(matrices, 0, this.categoryListWidget.getBottom(), this.width, this.height, PeepoPractice.BACKGROUND_COLOUR, PeepoPractice.BACKGROUND_COLOUR);
+            this.fillGradient(matrices, 0, 0, this.width, this.categoryListWidget.getTop(), PeepoPractice.BACKGROUND_COLOR[0], PeepoPractice.BACKGROUND_COLOR[0]);
+            this.fillGradient(matrices, 0, this.categoryListWidget.getBottom(), this.width, this.height, PeepoPractice.BACKGROUND_COLOR[1], PeepoPractice.BACKGROUND_COLOR[1]);
         }
 
         this.drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 13, 16777215);

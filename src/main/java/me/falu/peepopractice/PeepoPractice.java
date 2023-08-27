@@ -13,9 +13,12 @@ import me.voidxwalker.autoreset.Atum;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.BackgroundHelper;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.resource.ServerResourceManager;
 import net.minecraft.world.level.storage.LevelStorage;
 import org.apache.logging.log4j.LogManager;
@@ -40,8 +43,8 @@ public class PeepoPractice implements ClientModInitializer {
     public static boolean RESET_CATEGORY = true;
     public static final boolean HAS_FAST_RESET = FabricLoader.getInstance().getModContainer("fast_reset").isPresent();
     public static final boolean HAS_STANDARD_SETTINGS = FabricLoader.getInstance().getModContainer("standardsettings").isPresent();
-    public static int BACKGROUND_COLOUR = updateBackgroundColor();
-    public static final int BACKGROUND_OVERLAY_COLOUR = BackgroundHelper.ColorMixer.getArgb(60, 0, 0, 0);
+    public static int[] BACKGROUND_COLOR = updateBackgroundColor();
+    public static final int BACKGROUND_OVERLAY_COLOR = BackgroundHelper.ColorMixer.getArgb(60, 0, 0, 0);
     public static LevelStorage PRACTICE_LEVEL_STORAGE;
     public static boolean RETRY_PLAYER_INITIALIZATION;
     private static final String KEYBINDING_CATEGORY = KeyBindingUtils.getTranslation("key.categories." + MOD_ID, MOD_NAME).getString();
@@ -87,8 +90,20 @@ public class PeepoPractice implements ClientModInitializer {
         }
     }
 
-    public static int updateBackgroundColor() {
-        return BackgroundHelper.ColorMixer.getArgb(255, (int) GlobalOptions.BACKGROUND_RED.get(null), (int) GlobalOptions.BACKGROUND_GREEN.get(null), (int) GlobalOptions.BACKGROUND_BLUE.get(null));
+    public static int[] updateBackgroundColor() {
+        return new int[] {
+                BackgroundHelper.ColorMixer.getArgb(255, (int) GlobalOptions.BACKGROUND_RED.get(null), (int) GlobalOptions.BACKGROUND_GREEN.get(null), (int) GlobalOptions.BACKGROUND_BLUE.get(null)),
+                BackgroundHelper.ColorMixer.getArgb(255, (int) GlobalOptions.BACKGROUND_RED_2.get(null), (int) GlobalOptions.BACKGROUND_GREEN_2.get(null), (int) GlobalOptions.BACKGROUND_BLUE_2.get(null))
+        };
+    }
+
+
+    public static void drawBackground(MatrixStack matrices, Screen screen) {
+        drawBackground(matrices, screen, screen);
+    }
+
+    public static void drawBackground(MatrixStack matrices, DrawableHelper drawable, Screen screen) {
+        drawable.fillGradient(matrices, 0, 0, screen.width, screen.height, PeepoPractice.BACKGROUND_COLOR[0], PeepoPractice.BACKGROUND_COLOR[1]);
     }
 
     public static void disableAtumKey() {

@@ -19,7 +19,10 @@ public class GlobalConfigScreen extends Screen {
     private static final DoubleOption[] BACKGROUND_OPTIONS = {
             GlobalOptions.BACKGROUND_RED,
             GlobalOptions.BACKGROUND_GREEN,
-            GlobalOptions.BACKGROUND_BLUE
+            GlobalOptions.BACKGROUND_BLUE,
+            GlobalOptions.BACKGROUND_RED_2,
+            GlobalOptions.BACKGROUND_GREEN_2,
+            GlobalOptions.BACKGROUND_BLUE_2
     };
     private static final BooleanOption[] OPTIONS = {
             GlobalOptions.SAME_INVENTORY,
@@ -42,11 +45,15 @@ public class GlobalConfigScreen extends Screen {
         int btnWidth = this.width / 2;
         int btnHeight = this.height / 8;
         int yOffset = btnHeight / 8;
+        int actualWidth = btnWidth / (BACKGROUND_OPTIONS.length / 2) + 1;
 
         for (int i = -1; i <= 1; i++) {
             DoubleOption option = BACKGROUND_OPTIONS[i + 1];
-            int actualWidth = btnWidth / BACKGROUND_OPTIONS.length + 1;
-            this.addButton(new LimitlessDoubleOptionSliderWidget(this.client.options, this.width / 2 + actualWidth * i - actualWidth / 2, 8 + btnHeight, actualWidth, btnHeight, option));
+            this.addButton(new LimitlessDoubleOptionSliderWidget(this.client.options, this.width / 2 + actualWidth * i - actualWidth / 2, 16 + btnHeight / 2, actualWidth, btnHeight / 2, option));
+        }
+        for (int i = -1; i <= 1; i++) {
+            DoubleOption option = BACKGROUND_OPTIONS[i + 4];
+            this.addButton(new LimitlessDoubleOptionSliderWidget(this.client.options, this.width / 2 + actualWidth * i - actualWidth / 2, 16 + btnHeight, actualWidth, btnHeight / 2, option));
         }
 
         int index = 0;
@@ -64,14 +71,14 @@ public class GlobalConfigScreen extends Screen {
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        this.fillGradient(matrices, 0, 0, this.width, this.height, PeepoPractice.BACKGROUND_COLOUR, PeepoPractice.BACKGROUND_COLOUR);
+        PeepoPractice.drawBackground(matrices, this);
         super.render(matrices, mouseX, mouseY, delta);
         this.drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 13, 16777215);
     }
 
     @Override
     public void tick() {
-        PeepoPractice.BACKGROUND_COLOUR = PeepoPractice.updateBackgroundColor();
+        PeepoPractice.BACKGROUND_COLOR = PeepoPractice.updateBackgroundColor();
         super.tick();
     }
 

@@ -61,6 +61,6 @@ public abstract class LevelLoadingScreenMixin extends Screen {
             original.call(screen, matrices);
             return;
         }
-        this.fillGradient(matrices, 0, 0, this.width, this.height, PeepoPractice.BACKGROUND_COLOUR, PeepoPractice.BACKGROUND_COLOUR);
+        PeepoPractice.drawBackground(matrices, this);
     }
 }

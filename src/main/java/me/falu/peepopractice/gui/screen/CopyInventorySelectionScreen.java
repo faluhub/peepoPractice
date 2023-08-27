@@ -133,7 +133,7 @@ public class CopyInventorySelectionScreen extends Screen {
     @Override
     @SuppressWarnings("deprecation")
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        this.fillGradient(matrices, 0, 0, this.width, this.height, PeepoPractice.BACKGROUND_COLOUR, PeepoPractice.BACKGROUND_COLOUR);
+        PeepoPractice.drawBackground(matrices, this);
         super.render(matrices, mouseX, mouseY, delta);
 
         if (this.renderError) {

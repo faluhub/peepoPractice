@@ -7,6 +7,7 @@ accessible method net/minecraft/world/biome/layer/BiomeLayers isOcean (I)Z
 accessible method net/minecraft/client/gui/screen/world/MoreOptionsDialog setGeneratorOptions (Lnet/minecraft/world/gen/GeneratorOptions;)V
 accessible method net/minecraft/client/world/GeneratorType method_29079 (Lnet/minecraft/world/gen/GeneratorOptions;Lnet/minecraft/client/world/GeneratorType;Lnet/minecraft/world/biome/Biome;)Lnet/minecraft/world/gen/GeneratorOptions;
 accessible method net/minecraft/entity/mob/PiglinBrain getBarteredItem (Lnet/minecraft/entity/mob/PiglinEntity;)Ljava/util/List;
+accessible method net/minecraft/client/gui/DrawableHelper fillGradient (Lnet/minecraft/client/util/math/MatrixStack;IIIIII)V
 
 accessible field net/minecraft/state/property/EnumProperty values Lcom/google/common/collect/ImmutableSet;
 accessible field net/minecraft/client/gui/widget/EntryListWidget renderHeader Z

@@ -71,7 +71,7 @@ public abstract class CategoryListWidget extends AlwaysSelectedEntryListWidget<C
 
     @Override
     protected void renderBackground(MatrixStack matrices) {
-        this.fillGradient(matrices, 0, 0, this.width, this.height, PeepoPractice.BACKGROUND_COLOUR, PeepoPractice.BACKGROUND_COLOUR);
+        PeepoPractice.drawBackground(matrices, this, this.screen);
     }
 
     @Override
@@ -107,8 +107,8 @@ public abstract class CategoryListWidget extends AlwaysSelectedEntryListWidget<C
                 bufferBuilder.vertex(p, m - 2, 0.0).next();
                 tessellator.draw();
                 RenderSystem.color4f(0.0f, 0.0f, 0.0f, 1.0f);
-                this.fillGradient(matrices, p + 1, m - 1, q - 1, m + n + 1, PeepoPractice.BACKGROUND_COLOUR, PeepoPractice.BACKGROUND_COLOUR);
-                this.fillGradient(matrices, q - 1, m + n + 1, p + 1, m - 1, PeepoPractice.BACKGROUND_COLOUR, PeepoPractice.BACKGROUND_COLOUR);
+                this.fillGradient(matrices, p + 1, m - 1, q - 1, m + n + 1, PeepoPractice.BACKGROUND_COLOR[0], PeepoPractice.BACKGROUND_COLOR[1]);
+                this.fillGradient(matrices, q - 1, m + n + 1, p + 1, m - 1, PeepoPractice.BACKGROUND_COLOR[0], PeepoPractice.BACKGROUND_COLOR[1]);
                 RenderSystem.enableTexture();
             }
             p = this.getRowLeft();
@@ -124,8 +124,8 @@ public abstract class CategoryListWidget extends AlwaysSelectedEntryListWidget<C
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuffer();
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.fillGradient(matrices, this.left, this.top, this.right, this.bottom, PeepoPractice.BACKGROUND_COLOUR, PeepoPractice.BACKGROUND_COLOUR);
-        this.fillGradient(matrices, this.left, this.top, this.right, this.bottom, PeepoPractice.BACKGROUND_OVERLAY_COLOUR, PeepoPractice.BACKGROUND_OVERLAY_COLOUR);
+        this.fillGradient(matrices, this.left, this.top, this.right, this.bottom, PeepoPractice.BACKGROUND_COLOR[0], PeepoPractice.BACKGROUND_COLOR[1]);
+        this.fillGradient(matrices, this.left, this.top, this.right, this.bottom, PeepoPractice.BACKGROUND_OVERLAY_COLOR, PeepoPractice.BACKGROUND_OVERLAY_COLOR);
         int k = this.getRowLeft();
         int l = this.top + 4 - (int)this.getScrollAmount();
         if (this.renderHeader) {

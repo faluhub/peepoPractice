@@ -34,7 +34,7 @@ public class LimitlessDoubleOptionSliderWidget extends DoubleOptionSliderWidget 
         drawTexture(matrices, this.x + 3, this.y + this.height - 3, this.width - 6, 3, 3, 46 + 17 + i * 20, 1, 3, 256, 256);
         this.drawTexture(matrices, this.x + this.width - 3, this.y + this.height - 3, 197, 46 + 17 + i * 20, 3, 3);
         drawTexture(matrices, this.x + this.width - 3, this.y + 3, 3, this.height - 6, 197, 49 + i * 20, 3, 1, 256, 256);
-        fill(matrices, this.x + 3, this.y + 3, this.x + this.width - 3, this.y + this.height - 3, PeepoPractice.BACKGROUND_OVERLAY_COLOUR);
+        fill(matrices, this.x + 3, this.y + 3, this.x + this.width - 3, this.y + this.height - 3, PeepoPractice.BACKGROUND_OVERLAY_COLOR);
         this.renderBg(matrices, minecraftClient, mouseX, mouseY);
         int j = this.active ? 0xFFFFFF : 0xA0A0A0;
         this.drawCenteredText(matrices, textRenderer, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | MathHelper.ceil(this.alpha * 255.0f) << 24);

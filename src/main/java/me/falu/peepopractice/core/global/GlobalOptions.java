@@ -19,6 +19,18 @@ public class GlobalOptions {
         double value = doubleOption.get(gameOptions);
         return doubleOption.getDisplayPrefix().append(Integer.toString((int) value));
     });
+    public static final DoubleOption BACKGROUND_RED_2 = new DoubleOption("BG Red 2", 0.0D, 255.0D, 1.0F, gameOptions -> GlobalConfig.getDoubleValue("background_red_2", 68.0D), (gameOptions, aDouble) -> PracticeWriter.GLOBAL_CONFIG.put("background_red_2", new JsonPrimitive(aDouble)), (gameOptions, doubleOption) -> {
+        double value = doubleOption.get(gameOptions);
+        return doubleOption.getDisplayPrefix().append(Integer.toString((int) value));
+    });
+    public static final DoubleOption BACKGROUND_GREEN_2 = new DoubleOption("BG Green 2", 0.0D, 255.0D, 1.0F, gameOptions -> GlobalConfig.getDoubleValue("background_green_2", 112.0D), (gameOptions, aDouble) -> PracticeWriter.GLOBAL_CONFIG.put("background_green_2", new JsonPrimitive(aDouble)), (gameOptions, doubleOption) -> {
+        double value = doubleOption.get(gameOptions);
+        return doubleOption.getDisplayPrefix().append(Integer.toString((int) value));
+    });
+    public static final DoubleOption BACKGROUND_BLUE_2 = new DoubleOption("BG Blue 2", 0.0D, 255.0D, 1.0F, gameOptions -> GlobalConfig.getDoubleValue("background_blue_2", 106.0D), (gameOptions, aDouble) -> PracticeWriter.GLOBAL_CONFIG.put("background_blue_2", new JsonPrimitive(aDouble)), (gameOptions, doubleOption) -> {
+        double value = doubleOption.get(gameOptions);
+        return doubleOption.getDisplayPrefix().append(Integer.toString((int) value));
+    });
     public static final BooleanOption SAME_INVENTORY = new BooleanOption("Use Same Inventory", gameOptions -> GlobalConfig.getBoolValue("same_inventory", true), (gameOptions, aBoolean) -> PracticeWriter.GLOBAL_CONFIG.put("same_inventory", new JsonPrimitive(aBoolean)));
     public static final BooleanOption CHANGE_WINDOW_TITLE = new BooleanOption("Change Window Title", gameOptions -> GlobalConfig.getBoolValue("change_window_title", true), (gameOptions, aBoolean) -> {
         PracticeWriter.GLOBAL_CONFIG.put("change_window_title", new JsonPrimitive(aBoolean));

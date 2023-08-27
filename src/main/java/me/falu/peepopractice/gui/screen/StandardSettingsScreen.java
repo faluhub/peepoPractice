@@ -74,7 +74,7 @@ public class StandardSettingsScreen extends Screen {
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        this.fillGradient(matrices, 0, 0, this.width, this.height, PeepoPractice.BACKGROUND_COLOUR, PeepoPractice.BACKGROUND_COLOUR);
+        PeepoPractice.drawBackground(matrices, this);
         if (this.pieChartDirectoryField != null) {
             this.pieChartDirectoryField.render(matrices, mouseX, mouseY, delta);
             this.drawTextWithShadow(matrices, this.textRenderer, new LiteralText("PieChart Directory"), this.pieChartDirectoryField.x, this.pieChartDirectoryField.y - 10, 16777215);

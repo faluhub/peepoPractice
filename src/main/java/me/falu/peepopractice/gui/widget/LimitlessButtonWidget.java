@@ -69,11 +69,11 @@ public class LimitlessButtonWidget extends ButtonWidget {
         drawTexture(matrices, this.x + 3, this.y + this.height - 3, this.width - 6, 3, 3, 46 + 17 + i * 20, 1, 3, 256, 256);
         this.drawTexture(matrices, this.x + this.width - 3, this.y + this.height - 3, 197, 46 + 17 + i * 20, 3, 3);
         drawTexture(matrices, this.x + this.width - 3, this.y + 3, 3, this.height - 6, 197, 49 + i * 20, 3, 1, 256, 256);
-        fill(matrices, this.x + 3, this.y + 3, this.x + this.width - 3, this.y + this.height - 3, PeepoPractice.BACKGROUND_OVERLAY_COLOUR);
+        fill(matrices, this.x + 3, this.y + 3, this.x + this.width - 3, this.y + this.height - 3, PeepoPractice.BACKGROUND_OVERLAY_COLOR);
 
         int j = this.active ? 0xFFFFFF : 0xA0A0A0;
         RenderSystem.pushMatrix();
-        float colour = 0.3F;
+        float color = 0.3F;
         String[] parts = this.getMessage().getString().split("\n");
         int textWidth = textRenderer.getWidth(parts[0]);
         if (this.odd != null) {
@@ -81,7 +81,7 @@ public class LimitlessButtonWidget extends ButtonWidget {
                 this.drawText(parts, this.x + this.width / 4.0F - this.width / 8.0F, this.y + this.height / 2.0F - textRenderer.fontHeight / 4.0F, j | MathHelper.ceil(this.alpha * 255.0F) << 24, matrices.peek().getModel(), false);
                 if (this.icon != null) {
                     if (!this.active) {
-                        RenderSystem.color3f(colour, colour, colour);
+                        RenderSystem.color3f(color, color, color);
                     }
                     MinecraftClient.getInstance().getTextureManager().bindTexture(this.icon);
                     RenderSystem.translatef(0.0F, 0.0F, 10.0F);
@@ -91,7 +91,7 @@ public class LimitlessButtonWidget extends ButtonWidget {
                 this.drawText(parts, this.x + this.width - textWidth - this.width / 8.0F, this.y + this.height / 2.0F - textRenderer.fontHeight / 4.0F, j | MathHelper.ceil(this.alpha * 255.0F) << 24, matrices.peek().getModel(), true);
                 if (this.icon != null) {
                     if (!this.active) {
-                        RenderSystem.color3f(colour, colour, colour);
+                        RenderSystem.color3f(color, color, color);
                     }
                     MinecraftClient.getInstance().getTextureManager().bindTexture(this.icon);
                     RenderSystem.translatef(0.0F, 0.0F, 10.0F);
@@ -102,7 +102,7 @@ public class LimitlessButtonWidget extends ButtonWidget {
             if (this.icon != null) {
                 this.drawText(parts, this.x + this.width / 2.0F - textWidth / 2.0F, this.y + this.height / 6.0F - textRenderer.fontHeight / 4.0F, j | MathHelper.ceil(this.alpha * 255.0F) << 24, matrices.peek().getModel(), false);
                 if (!this.active) {
-                    RenderSystem.color3f(colour, colour, colour);
+                    RenderSystem.color3f(color, color, color);
                 }
                 MinecraftClient.getInstance().getTextureManager().bindTexture(this.icon);
                 RenderSystem.translatef(0.0F, 0.0F, -100.0F);
