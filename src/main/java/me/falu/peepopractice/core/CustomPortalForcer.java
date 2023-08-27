@@ -12,6 +12,7 @@ import net.minecraft.util.math.MathHelper;
  * Awful code copied from mojang.
  * Ignore the big huge ginormous duplicate.
  */
+@SuppressWarnings("DuplicatedCode")
 public class CustomPortalForcer {
     public static BlockPos getPortalPosition(BlockPos blockPos, ServerWorld world) {
         int ab;

@@ -145,6 +145,7 @@ public class PlayerlessInventory implements Inventory, Nameable {
         }
     }
 
+    @SuppressWarnings("DuplicatedCode")
     public ItemStack removeStack(int slot, int amount) {
         List<ItemStack> list = null;
 
@@ -160,6 +161,7 @@ public class PlayerlessInventory implements Inventory, Nameable {
         return list != null && !list.get(slot).isEmpty() ? Inventories.splitStack(list, slot, amount) : ItemStack.EMPTY;
     }
 
+    @SuppressWarnings("DuplicatedCode")
     public ItemStack removeStack(int slot) {
         DefaultedList<ItemStack> defaultedList = null;
 
@@ -181,6 +183,7 @@ public class PlayerlessInventory implements Inventory, Nameable {
         }
     }
 
+    @SuppressWarnings("DuplicatedCode")
     public void setStack(int slot, ItemStack stack) {
         DefaultedList<ItemStack> defaultedList = null;
 
@@ -238,6 +241,7 @@ public class PlayerlessInventory implements Inventory, Nameable {
         return false;
     }
 
+    @SuppressWarnings("DuplicatedCode")
     public ItemStack getStack(int slot) {
         List<ItemStack> list = null;
 

@@ -3,10 +3,7 @@ package me.falu.peepopractice;
 import me.falu.peepopractice.core.category.utils.KeyBindingUtils;
 import me.falu.peepopractice.core.category.PracticeCategories;
 import me.falu.peepopractice.core.category.PracticeCategory;
-import me.falu.peepopractice.core.exception.InvalidCategorySyntaxException;
 import me.falu.peepopractice.core.global.GlobalOptions;
-import me.falu.peepopractice.core.resource.CustomCategoryResourceManager;
-import me.falu.peepopractice.core.resource.LocalResourceManager;
 import me.falu.peepopractice.core.playerless.PlayerlessInventory;
 import me.falu.peepopractice.core.playerless.PlayerlessPlayerScreenHandler;
 import me.voidxwalker.autoreset.Atum;
@@ -19,7 +16,6 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.resource.ServerResourceManager;
 import net.minecraft.world.level.storage.LevelStorage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,7 +23,6 @@ import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class PeepoPractice implements ClientModInitializer {
     public static final ModContainer MOD_CONTAINER = FabricLoader.getInstance().getModContainer("peepopractice").orElseThrow(RuntimeException::new);
@@ -39,7 +34,6 @@ public class PeepoPractice implements ClientModInitializer {
     public static PracticeCategory CONFIGURING_CATEGORY = PracticeCategories.EMPTY;
     public static PlayerlessInventory PLAYERLESS_INVENTORY;
     public static PlayerlessPlayerScreenHandler PLAYERLESS_PLAYER_SCREEN_HANDLER;
-    public static final AtomicReference<ServerResourceManager> SERVER_RESOURCE_MANAGER = new AtomicReference<>();
     public static boolean RESET_CATEGORY = true;
     public static final boolean HAS_FAST_RESET = FabricLoader.getInstance().getModContainer("fast_reset").isPresent();
     public static final boolean HAS_STANDARD_SETTINGS = FabricLoader.getInstance().getModContainer("standardsettings").isPresent();
@@ -57,12 +51,6 @@ public class PeepoPractice implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        AtomicReference<LocalResourceManager> atomicReference = new AtomicReference<>();
-        Thread thread = new Thread(() -> atomicReference.get().tickTasks(), "Local Resource Manager");
-        thread.setUncaughtExceptionHandler((t, throwable) -> LOGGER.error(throwable));
-        atomicReference.set(new LocalResourceManager(thread));
-        thread.start();
-
         log("Using " + MOD_NAME + " v" + MOD_VERSION);
 
         REPLAY_SPLIT_KEY = KeyBindingUtils.registerKeyBinding(
@@ -81,13 +69,6 @@ public class PeepoPractice implements ClientModInitializer {
                         KEYBINDING_CATEGORY
                 )
         );
-
-        try { CustomCategoryResourceManager.register(); }
-        catch (InvalidCategorySyntaxException e) {
-            if (e.getMessage() != null && !e.getMessage().isEmpty()) {
-                LOGGER.error(e.getMessage());
-            }
-        }
     }
 
     public static int[] updateBackgroundColor() {

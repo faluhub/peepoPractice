@@ -13,6 +13,7 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
 
+@SuppressWarnings("DuplicatedCode")
 public class StandardSettingsUtils {
     public static final DoubleOption FOV = new DoubleOption("options.fov", 30.0D, 110.0D, 1.0F, gameOptions -> StandardSettingsUtils.getSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "fov", 70.0D), (gameOptions, aDouble) -> StandardSettingsUtils.setSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "fov", aDouble), (gameOptions, doubleOption) -> {
         double d = doubleOption.get(gameOptions);

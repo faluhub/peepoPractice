@@ -1,5 +1,6 @@
 package me.falu.peepopractice.core.category;
 
+import me.falu.peepopractice.core.category.utils.PracticeCategoryUtils;
 import net.minecraft.util.math.Vec3i;
 
 import java.util.ArrayList;
@@ -7,23 +8,6 @@ import java.util.List;
 import java.util.Locale;
 
 public class PracticeTypes {
-    private static String parseEnumName(String name) {
-        StringBuilder text = new StringBuilder();
-        boolean shouldCapitalise = true;
-        for (Character c : name.toCharArray()) {
-            if (shouldCapitalise) {
-                text.append(c.toString().toUpperCase(Locale.ROOT));
-                shouldCapitalise = false;
-            } else if (c.equals('_')) {
-                text.append(" ");
-                shouldCapitalise = true;
-            } else {
-                text.append(c.toString().toLowerCase(Locale.ROOT));
-            }
-        }
-        return text.toString();
-    }
-
     public enum BastionType {
         HOUSING(0, new Vec3i(-9, 83, 27), -90.0F),
         STABLES(1, new Vec3i(3, 54, 30), 90.0F),
@@ -51,7 +35,7 @@ public class PracticeTypes {
         }
 
         public String getLabel() {
-            return parseEnumName(this.name());
+            return PracticeCategoryUtils.getNameFromId(this.name());
         }
 
         public static List<String> all() {
@@ -110,7 +94,7 @@ public class PracticeTypes {
         NEVER;
 
         public String getLabel() {
-            return parseEnumName(this.name());
+            return PracticeCategoryUtils.getNameFromId(this.name());
         }
 
         public static List<String> all() {
@@ -137,7 +121,7 @@ public class PracticeTypes {
         NONE;
 
         public String getLabel() {
-            return parseEnumName(this.name());
+            return PracticeCategoryUtils.getNameFromId(this.name());
         }
 
         public static List<String> all() {
@@ -181,7 +165,7 @@ public class PracticeTypes {
         }
 
         public String getLabel() {
-            return parseEnumName(this.name());
+            return PracticeCategoryUtils.getNameFromId(this.name());
         }
 
         public static List<String> all() {
@@ -208,7 +192,7 @@ public class PracticeTypes {
         BACK;
 
         public String getLabel() {
-            return parseEnumName(this.name());
+            return PracticeCategoryUtils.getNameFromId(this.name());
         }
 
         public static List<String> all() {
@@ -234,7 +218,7 @@ public class PracticeTypes {
         TERRAIN;
 
         public String getLabel() {
-            return parseEnumName(this.name());
+            return PracticeCategoryUtils.getNameFromId(this.name());
         }
 
         public static List<String> all() {

@@ -18,11 +18,12 @@ import me.falu.peepopractice.gui.widget.LimitlessButtonWidget;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.FatalErrorScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.options.HotbarStorage;
+import net.minecraft.client.options.HotbarStorageEntry;
 import net.minecraft.client.search.SearchManager;
 import net.minecraft.client.search.SearchableContainer;
 import net.minecraft.client.util.InputUtil;
@@ -33,7 +34,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.*;
-import net.minecraft.loot.LootTables;
 import net.minecraft.nbt.*;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
@@ -92,21 +92,6 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         boolean bl = mouseX < (double)left || mouseY < (double)top || mouseX >= (double)(left + this.backgroundWidth) || mouseY >= (double)(top + this.backgroundHeight);
         this.lastClickOutsideBounds = bl && !this.isClickInTab(ItemGroup.GROUPS[SELECTED_TAB], mouseX, mouseY);
         return this.lastClickOutsideBounds;
-    }
-
-    @Override
-    public boolean shouldCloseOnEsc() {
-        if (SELECTED_TAB == InventoryUtils.LOOT_TABLES.getIndex()) {
-            PlayerlessCreativeScreenHandler handler1 = (PlayerlessCreativeScreenHandler) this.handler;
-            List<ItemStack> copy = new ArrayList<>(handler1.itemList);
-            handler1.initLootTableItems();
-            if (copy.size() != handler1.itemList.size()) {
-                this.setSelectedTab(InventoryUtils.LOOT_TABLES);
-                return false;
-            }
-        }
-
-        return true;
     }
 
     private void saveInventory() {
@@ -210,24 +195,6 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
                 } else {
                     PeepoPractice.PLAYERLESS_PLAYER_SCREEN_HANDLER.onSlotClick(slot == null ? invSlot : ((EditInventoryScreen.CreativeSlot) slot).slot.id, clickData, actionType, PeepoPractice.PLAYERLESS_INVENTORY);
                 }
-            } else if (
-                    SELECTED_TAB == InventoryUtils.LOOT_TABLES.getIndex()
-                    && actionType == SlotActionType.PICKUP
-                    && slot.getStack() != null
-                    && slot.getStack().getTag() != null
-                    && slot.getStack().getTag().contains("LootTableId")
-            ) {
-                ItemStack stack = slot.getStack();
-                this.scrollPosition = 0.0F;
-                Identifier identifier = new Identifier(stack.getTag().getString("LootTableId"));
-                List<ItemStack> items = InventoryUtils.getLootTableItems(identifier);
-                ((PlayerlessCreativeScreenHandler) this.handler).itemList.clear();
-
-                displayInv.clear();
-                for (ItemStack stack1 : items) {
-                    displayInv.addStack(stack1);
-                    ((PlayerlessCreativeScreenHandler) this.handler).itemList.add(items.indexOf(stack1), stack1);
-                }
             } else if (actionType != SlotActionType.QUICK_CRAFT && slot.inventory == displayInv) {
                 PlayerlessInventory playerInventory = PeepoPractice.PLAYERLESS_INVENTORY;
                 ItemStack itemStack2 = playerInventory.getCursorStack();
@@ -308,13 +275,6 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
     @Override
     protected void init() {
         if (this.client == null) { return; }
-
-        synchronized (PeepoPractice.SERVER_RESOURCE_MANAGER) {
-            if (PeepoPractice.SERVER_RESOURCE_MANAGER.get() == null) {
-                this.client.openScreen(new FatalErrorScreen(new LiteralText("Still reloading!"), new LiteralText("PeepoPractice is still reloading the local resource manager.")));
-                return;
-            }
-        }
 
         super.init();
         this.client.keyboard.enableRepeatEvents(true);
@@ -417,12 +377,30 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         int i = SELECTED_TAB;
         SELECTED_TAB = group.getIndex();
         this.cursorDragSlots.clear();
-        ((PlayerlessCreativeScreenHandler)this.handler).itemList.clear();
-        if (group == InventoryUtils.LOOT_TABLES || group != ItemGroup.SEARCH) {
-            if (group == InventoryUtils.LOOT_TABLES) {
-                ((PlayerlessCreativeScreenHandler) this.handler).initLootTableItems();
+        ((PlayerlessCreativeScreenHandler) this.handler).itemList.clear();
+        if (group == ItemGroup.HOTBAR && this.client != null) {
+            HotbarStorage hotbarStorage = this.client.getCreativeHotbarStorage();
+            for (int j = 0; j < 9; ++j) {
+                HotbarStorageEntry hotbarStorageEntry = hotbarStorage.getSavedHotbar(j);
+                if (hotbarStorageEntry.isEmpty()) {
+                    for (int k = 0; k < 9; ++k) {
+                        if (k == j) {
+                            ItemStack itemStack = new ItemStack(Items.PAPER);
+                            itemStack.getOrCreateSubTag("CustomCreativeLock");
+                            Text text = this.client.options.keysHotbar[j].getBoundKeyLocalizedText();
+                            Text text2 = this.client.options.keySaveToolbarActivator.getBoundKeyLocalizedText();
+                            itemStack.setCustomName(new TranslatableText("inventory.hotbarInfo", text2, text));
+                            ((PlayerlessCreativeScreenHandler) this.handler).itemList.add(itemStack);
+                            continue;
+                        }
+                        ((PlayerlessCreativeScreenHandler) this.handler).itemList.add(ItemStack.EMPTY);
+                    }
+                    continue;
+                }
+                ((PlayerlessCreativeScreenHandler) this.handler).itemList.addAll(hotbarStorageEntry);
             }
-            group.appendStacks(((PlayerlessCreativeScreenHandler)this.handler).itemList);
+        } else if (group != ItemGroup.SEARCH) {
+            group.appendStacks(((PlayerlessCreativeScreenHandler) this.handler).itemList);
         }
 
         if (group == ItemGroup.INVENTORY) {
@@ -587,6 +565,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         return super.mouseReleased(mouseX, mouseY, button);
     }
 
+    @SuppressWarnings("DuplicatedCode")
     protected boolean isClickInTab(ItemGroup group, double mouseX, double mouseY) {
         int i = group.getColumn();
         int j = 28 * i;
@@ -771,6 +750,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
 
     }
 
+    @SuppressWarnings("DuplicatedCode")
     protected boolean renderTabTooltipIfHovered(MatrixStack matrixStack, ItemGroup itemGroup, int i, int j) {
         int k = itemGroup.getColumn();
         int l = 28 * k;
@@ -904,57 +884,6 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
             }
 
             this.scrollItems(0.0F);
-        }
-
-        public void initLootTableItems() {
-            this.itemList.clear();
-
-            int index = 0;
-
-            List<String> tables = new ArrayList<>();
-            LootTables.getAll().forEach(identifier -> tables.add(identifier.toString()));
-            Collections.sort(tables);
-
-            Random random = new Random(3);
-
-            for (String key : tables) {
-                if (key.contains("chests/")) {
-                    StringBuilder name = new StringBuilder();
-                    boolean shouldCapitalise = true;
-
-                    String[] parts = key.split("/");
-                    String part = parts[parts.length - 1];
-
-                    for (Character c : part.toCharArray()) {
-                        if (shouldCapitalise) {
-                            name.append(c.toString().toUpperCase(Locale.ROOT));
-                            shouldCapitalise = false;
-                        } else if (c.equals('_')) {
-                            name.append(" ");
-                            shouldCapitalise = true;
-                        } else {
-                            name.append(c.toString().toLowerCase(Locale.ROOT));
-                        }
-                    }
-
-                    List<ItemStack> items = InventoryUtils.getLootTableItems(new Identifier(key));
-
-                    if (items.size() > 0) {
-                        ItemStack item = new ItemStack(Items.CHEST);
-
-                        CompoundTag tag = new CompoundTag();
-                        tag.putString("DisplayItem", Registry.ITEM.getId(items.get(items.size() > 1 ? random.nextInt(items.size() - 1) : 0).getItem()).toString());
-                        tag.putString("LootTableId", key);
-                        tag.putBoolean("IgnoreItalic", true);
-                        item.setTag(tag);
-                        item.setCustomName(new LiteralText(name.toString()));
-
-                        this.itemList.add(index, item);
-
-                        index++;
-                    }
-                }
-            }
         }
 
         public void scrollItems(float position) {

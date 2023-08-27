@@ -49,7 +49,7 @@ public abstract class SplitEvent {
 
             boolean isPb;
             if (this.hasPb()) {
-                long pb = getPbLong();
+                long pb = this.getPbLong();
                 isPb = igt <= pb;
             } else {
                 isPb = true;

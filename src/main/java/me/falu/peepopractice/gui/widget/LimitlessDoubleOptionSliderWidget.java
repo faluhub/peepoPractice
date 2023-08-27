@@ -16,7 +16,7 @@ public class LimitlessDoubleOptionSliderWidget extends DoubleOptionSliderWidget 
     }
 
     @Override
-    @SuppressWarnings({ "deprecation" })
+    @SuppressWarnings({"deprecation", "DuplicatedCode"})
     public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         MinecraftClient minecraftClient = MinecraftClient.getInstance();
         TextRenderer textRenderer = minecraftClient.textRenderer;

@@ -27,7 +27,7 @@ public class PiglinBarterState extends PersistentState {
     }
 
     public ItemStack guaranteeItem(PiglinEntity piglin, ItemStack itemStack, Random random) {
-        ItemStack newItem = guaranteeItem2(piglin, itemStack, random);
+        ItemStack newItem = this.guaranteeItem2(piglin, itemStack, random);
         this.currentGuarantee++;
         return newItem;
     }
@@ -41,29 +41,29 @@ public class PiglinBarterState extends PersistentState {
             this.obsidianCount = 6;
         }
         if (this.pearl == 0 && this.pearlCount > 0){
-            rollPearlIndex(random);
+            this.rollPearlIndex(random);
         }
         if (this.obsidian == 0 && this.obsidianCount > 0) {
-            rollObsidianIndex(random);
+            this.rollObsidianIndex(random);
         }
         if (itemStack.getItem() == Items.ENDER_PEARL) {
             if (this.pearlCount < 0) {
                 List<ItemStack> newBarterItem = PiglinBrain.getBarteredItem(piglin);
-                return guaranteeItem2(piglin, newBarterItem.get(0), random);
+                return this.guaranteeItem2(piglin, newBarterItem.get(0), random);
             }
-            rollPearlIndex(random);
+            this.rollPearlIndex(random);
             return itemStack;
         }
         if (itemStack.getItem() == Items.OBSIDIAN) {
-            rollObsidianIndex(random);
+            this.rollObsidianIndex(random);
             return itemStack;
         }
         if (this.pearl <= this.currentGuarantee && this.pearlCount >= 0) {
-            rollPearlIndex(random);
+            this.rollPearlIndex(random);
             return new ItemStack(Items.ENDER_PEARL, random.nextInt(5) + 4);
         }
         if (this.obsidian <= this.currentGuarantee && this.obsidianCount >= 0) {
-            rollObsidianIndex(random);
+            this.rollObsidianIndex(random);
             return new ItemStack(Items.OBSIDIAN);
         }
         return itemStack;

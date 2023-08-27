@@ -269,6 +269,7 @@ public abstract class PlayerlessHandledScreen extends Screen {
         return null;
     }
 
+    @SuppressWarnings("DuplicatedCode")
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (this.client == null) { return false; }
         if (!super.mouseClicked(mouseX, mouseY, button)) {
@@ -399,6 +400,7 @@ public abstract class PlayerlessHandledScreen extends Screen {
         return true;
     }
 
+    @SuppressWarnings("DuplicatedCode")
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         Slot slot = this.getSlotAt(mouseX, mouseY);
         int i = this.x;

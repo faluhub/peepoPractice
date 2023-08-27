@@ -6,10 +6,7 @@
   "client": [
     "access.ButtonWidgetAccessor",
     "access.ChunkGeneratorAccessor",
-    "access.ItemEntryAccessor",
     "access.KeyBindingAccessor",
-    "access.LootPoolAccessor",
-    "access.LootTableAccessor",
     "access.MinecraftClientAccessor",
     "access.ServerWorldAccessor",
     "access.ThreadExecutorAccessor",
@@ -33,8 +30,6 @@
     "gui.screen.TitleScreenMixin",
 
     "gui.widget.SliderWidgetMixin",
-
-    "gui.ItemStackMixin",
 
     "structure.category.BastionRemnantFeatureConfigMixin",
     "structure.category.DungeonFeatureMixin",
@@ -76,7 +71,6 @@
     "ClientAdvancementManagerMixin",
     "ClientPlayerInteractionManagerMixin",
     "ClientPlayNetworkHandlerMixin",
-    "CommandManagerMixin",
     "GameOptionsMixin",
     "MinecraftClientMixin",
     "ServerPlayNetworkHandlerMixin"

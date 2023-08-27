@@ -10,7 +10,6 @@ import me.falu.peepopractice.core.category.PracticeCategories;
 import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.core.category.utils.StandardSettingsUtils;
 import me.falu.peepopractice.core.global.GlobalOptions;
-import me.falu.peepopractice.core.resource.LocalResourceManager;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -38,30 +37,9 @@ public abstract class MinecraftClientMixin {
     @Shadow public abstract void openScreen(@Nullable Screen screen);
     @Shadow @Final public GameOptions options;
 
-    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;runTasks()V", shift = At.Shift.AFTER))
-    private void peepoPractice$runMoreTasks(CallbackInfo ci) {
-        LocalResourceManager.INSTANCE.submit(() -> LocalResourceManager.INSTANCE.tickTasks());
-    }
-
     @Inject(method = "<init>", at = @At("TAIL"))
     private void peepoPractice$getResources(CallbackInfo ci) {
         PeepoPractice.log("Reloading local resource manager...");
-
-        LocalResourceManager.INSTANCE.submit(() -> {
-            LocalResourceManager.INSTANCE.reload().whenComplete((serverResourceManager, throwable) -> {
-                if (throwable != null) {
-                    PeepoPractice.LOGGER.error(throwable);
-                    return;
-                }
-
-                PeepoPractice.log("Done reloading local resource manager.");
-                synchronized (PeepoPractice.SERVER_RESOURCE_MANAGER) {
-                    PeepoPractice.SERVER_RESOURCE_MANAGER.set(serverResourceManager);
-                    PeepoPractice.SERVER_RESOURCE_MANAGER.notifyAll();
-                }
-            });
-        });
-
         PeepoPractice.PRACTICE_LEVEL_STORAGE = new LevelStorage(this.runDirectory.toPath().resolve("practiceSaves"), this.runDirectory.toPath().resolve("backups"), this.dataFixer);
     }
 
