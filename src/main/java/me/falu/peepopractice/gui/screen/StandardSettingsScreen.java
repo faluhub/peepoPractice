@@ -8,6 +8,7 @@ import me.falu.peepopractice.core.category.utils.StandardSettingsUtils;
 import me.falu.peepopractice.gui.widget.LimitlessButtonWidget;
 import me.falu.peepopractice.gui.widget.LimitlessDoubleOptionSliderWidget;
 import me.falu.peepopractice.mixin.access.ButtonWidgetAccessor;
+import net.minecraft.client.Keyboard;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
@@ -40,6 +41,7 @@ public class StandardSettingsScreen extends Screen {
     @Override
     protected void init() {
         if (this.client == null) { return; }
+        this.client.keyboard.enableRepeatEvents(true);
 
         int index = 0;
         int btnIndex = 0;
@@ -81,6 +83,12 @@ public class StandardSettingsScreen extends Screen {
         }
         this.drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 13, 16777215);
         super.render(matrices, mouseX, mouseY, delta);
+    }
+
+    @Override
+    public void removed() {
+        if (this.client == null) { return; }
+        this.client.keyboard.enableRepeatEvents(false);
     }
 
     @Override
