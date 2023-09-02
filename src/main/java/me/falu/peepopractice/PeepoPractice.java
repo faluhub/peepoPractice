@@ -1,8 +1,10 @@
 package me.falu.peepopractice;
 
+import me.falu.peepopractice.core.category.CustomCategoryResourceManager;
 import me.falu.peepopractice.core.category.utils.KeyBindingUtils;
 import me.falu.peepopractice.core.category.PracticeCategories;
 import me.falu.peepopractice.core.category.PracticeCategory;
+import me.falu.peepopractice.core.exception.InvalidCategorySyntaxException;
 import me.falu.peepopractice.core.global.GlobalOptions;
 import me.falu.peepopractice.core.playerless.PlayerlessInventory;
 import me.falu.peepopractice.core.playerless.PlayerlessPlayerScreenHandler;
@@ -69,6 +71,13 @@ public class PeepoPractice implements ClientModInitializer {
                         KEYBINDING_CATEGORY
                 )
         );
+
+        try { CustomCategoryResourceManager.register(); }
+        catch (InvalidCategorySyntaxException e) {
+            if (e.getMessage() != null && !e.getMessage().isEmpty()) {
+                LOGGER.error(e.getMessage());
+            }
+        }
     }
 
     public static int[] updateBackgroundColor() {
