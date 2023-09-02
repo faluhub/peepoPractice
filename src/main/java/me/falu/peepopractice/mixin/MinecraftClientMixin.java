@@ -39,7 +39,6 @@ public abstract class MinecraftClientMixin {
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void peepoPractice$getResources(CallbackInfo ci) {
-        PeepoPractice.log("Reloading local resource manager...");
         PeepoPractice.PRACTICE_LEVEL_STORAGE = new LevelStorage(this.runDirectory.toPath().resolve("practiceSaves"), this.runDirectory.toPath().resolve("backups"), this.dataFixer);
     }
 
