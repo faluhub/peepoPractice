@@ -6,7 +6,6 @@ import me.falu.peepopractice.PeepoPractice;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 
 public class PracticeWriter {
     static { DefaultFileWriter.INSTANCE.writeDefaultFiles(); }

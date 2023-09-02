@@ -1,7 +1,6 @@
 package me.falu.peepopractice.mixin.gui.screen;
 
 import me.falu.peepopractice.gui.screen.CategorySelectionScreen;
-import me.falu.peepopractice.gui.screen.GlobalConfigScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;

@@ -165,8 +165,8 @@ public class CategorySelectionScreen extends Screen {
         ANY("Any%", PracticeCategoriesAny.ALL),
         AA("AA", PracticeCategoriesAA.ALL);
 
-        public String title;
-        public List<PracticeCategory> list;
+        public final String title;
+        public final List<PracticeCategory> list;
 
         SelectionType(String title, List<PracticeCategory> list) {
             this.title = title;
