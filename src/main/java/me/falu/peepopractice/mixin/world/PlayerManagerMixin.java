@@ -1,8 +1,8 @@
 package me.falu.peepopractice.mixin.world;
 
 import me.falu.peepopractice.PeepoPractice;
+import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import me.falu.peepopractice.core.category.utils.InventoryUtils;
-import me.falu.peepopractice.core.category.PracticeCategories;
 import me.falu.peepopractice.core.global.GlobalOptions;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.ClientConnection;
@@ -28,7 +28,7 @@ public abstract class PlayerManagerMixin {
 
     @Inject(method = "onPlayerConnect", at = @At("TAIL"))
     private void peepoPractice$setInventory(ClientConnection connection, ServerPlayerEntity player, CallbackInfo ci) {
-        if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
+        if (!PeepoPractice.CATEGORY.equals(PracticeCategoriesAny.EMPTY)) {
             MinecraftClient client = MinecraftClient.getInstance();
             client.inGameHud.setTitles(null, null, -1, -1, -1);
             if (GlobalOptions.SAME_INVENTORY.get(client.options) && !InventoryUtils.PREVIOUS_INVENTORY.isEmpty()) {

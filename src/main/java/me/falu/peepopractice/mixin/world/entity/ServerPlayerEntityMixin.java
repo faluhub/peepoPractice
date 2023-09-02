@@ -3,7 +3,7 @@ package me.falu.peepopractice.mixin.world.entity;
 import com.redlimerl.speedrunigt.timer.InGameTimer;
 import com.redlimerl.speedrunigt.timer.TimerStatus;
 import me.falu.peepopractice.PeepoPractice;
-import me.falu.peepopractice.core.category.PracticeCategories;
+import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import me.falu.peepopractice.core.category.properties.event.EnterVehicleSplitEvent;
 import me.falu.peepopractice.core.exception.NotInitializedException;
 import me.falu.peepopractice.core.category.CategoryPreference;
@@ -142,7 +142,7 @@ public abstract class ServerPlayerEntityMixin extends LivingEntity {
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void peepoPractice$removeSpawnProtection(CallbackInfo ci) {
-        if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
+        if (!PeepoPractice.CATEGORY.equals(PracticeCategoriesAny.EMPTY)) {
             this.joinInvulnerabilityTicks = 0;
         }
     }

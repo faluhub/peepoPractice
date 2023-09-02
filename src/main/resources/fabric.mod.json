@@ -33,6 +33,7 @@
     "speedrunigt": ">=13.2"
   },
   "breaks": {
-    "worldpreview": "*"
+    "worldpreview": "*",
+    "standardsettings": "<1.2.2"
   }
 }

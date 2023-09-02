@@ -3,7 +3,7 @@ package me.falu.peepopractice.mixin;
 import com.redlimerl.speedrunigt.timer.InGameTimer;
 import com.redlimerl.speedrunigt.timer.TimerStatus;
 import me.falu.peepopractice.PeepoPractice;
-import me.falu.peepopractice.core.category.PracticeCategories;
+import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import me.falu.peepopractice.core.category.properties.event.GetAdvancementSplitEvent;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementManager;
@@ -26,7 +26,7 @@ public abstract class ClientAdvancementManagerMixin {
 
     @ModifyVariable(method = "onAdvancements", at = @At(value = "INVOKE", target = "Ljava/util/Map$Entry;getValue()Ljava/lang/Object;"))
     private Map.Entry<Identifier, AdvancementProgress> peepoPractice$advancement(Map.Entry<Identifier, AdvancementProgress> value) {
-        if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
+        if (!PeepoPractice.CATEGORY.equals(PracticeCategoriesAny.EMPTY)) {
             Advancement advancement = this.manager.get(value.getKey());
             AdvancementProgress advancementProgress = value.getValue();
             if (advancement != null) {
@@ -42,7 +42,7 @@ public abstract class ClientAdvancementManagerMixin {
                     }
 
                     if (advancement.getId().getPath().equals("nether/find_fortress") && InGameTimer.getInstance().getStatus() != TimerStatus.NONE) {
-                        if (InGameTimer.getInstance().getInGameTime() / 1000 <= 180 && PeepoPractice.CATEGORY.equals(PracticeCategories.NETHER_SPLIT)) {
+                        if (InGameTimer.getInstance().getInGameTime() / 1000 <= 180 && PeepoPractice.CATEGORY.equals(PracticeCategoriesAny.NETHER_SPLIT)) {
                             PeepoPractice.CATEGORY.putCustomValue("showPauseBoy", true);
                         }
                     }

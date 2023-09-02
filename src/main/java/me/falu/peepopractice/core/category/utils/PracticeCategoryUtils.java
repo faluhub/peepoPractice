@@ -1,6 +1,6 @@
 package me.falu.peepopractice.core.category.utils;
 
-import me.falu.peepopractice.core.category.PracticeCategories;
+import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import me.falu.peepopractice.core.category.PracticeCategory;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
@@ -99,7 +99,7 @@ public class PracticeCategoryUtils {
     }
 
     public static boolean hasAnyConfiguredInventories(@Nullable PracticeCategory except) {
-        for (PracticeCategory category : PracticeCategories.ALL) {
+        for (PracticeCategory category : PracticeCategoriesAny.ALL) {
             if (!category.equals(except) && !category.getCanHaveEmptyInventory() && category.hasConfiguredInventory()) {
                 return true;
             }

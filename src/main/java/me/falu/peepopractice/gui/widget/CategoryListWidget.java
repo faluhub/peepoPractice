@@ -3,7 +3,7 @@ package me.falu.peepopractice.gui.widget;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.falu.peepopractice.PeepoPractice;
-import me.falu.peepopractice.core.category.PracticeCategories;
+import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.core.category.properties.event.SplitEvent;
 import net.minecraft.client.MinecraftClient;
@@ -37,7 +37,7 @@ public abstract class CategoryListWidget extends AlwaysSelectedEntryListWidget<C
         this.screen = screen;
         this.hideDecorations = hideDecorations;
 
-        for (PracticeCategory category : PracticeCategories.ALL) {
+        for (PracticeCategory category : PracticeCategoriesAny.ALL) {
             if (!category.isHidden()) {
                 if (hideUnconfigured && !category.hasConfiguredInventory()) { continue; }
                 this.addEntry(new CategoryEntry(category));

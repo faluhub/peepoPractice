@@ -1,7 +1,7 @@
 package me.falu.peepopractice.mixin.gui.screen;
 
 import me.falu.peepopractice.PeepoPractice;
-import me.falu.peepopractice.core.category.PracticeCategories;
+import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import me.falu.peepopractice.core.category.properties.WorldProperties;
 import me.falu.peepopractice.core.category.utils.PracticeCategoryUtils;
 import net.minecraft.client.gui.Element;
@@ -40,7 +40,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
 
     @Inject(method = "<init>*", at = @At("TAIL"))
     private void peepoPractice$setWorldProperties(CallbackInfo ci) {
-        if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
+        if (!PeepoPractice.CATEGORY.equals(PracticeCategoriesAny.EMPTY)) {
             this.field_24289 = this.field_24290 = Difficulty.EASY;
             this.cheatsEnabled = this.tweakedCheats = true;
             this.levelName = PracticeCategoryUtils.getNameFromId(PeepoPractice.CATEGORY.getId());
@@ -58,14 +58,14 @@ public abstract class CreateWorldScreenMixin extends Screen {
                 }
             }
         }
-        if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
+        if (!PeepoPractice.CATEGORY.equals(PracticeCategoriesAny.EMPTY)) {
             this.createLevel();
         }
     }
 
     @Inject(method = "createLevel", at = @At("HEAD"))
     private void peepoPractice$checkDisconnected(CallbackInfo ci) {
-        if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
+        if (!PeepoPractice.CATEGORY.equals(PracticeCategoriesAny.EMPTY)) {
             if (PeepoPractice.CATEGORY.hasSplitEvent()) {
                 PeepoPractice.CATEGORY.getSplitEvent().incrementAttempts();
             }

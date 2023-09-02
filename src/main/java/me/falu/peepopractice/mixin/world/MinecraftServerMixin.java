@@ -5,7 +5,7 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import me.falu.peepopractice.PeepoPractice;
 import me.falu.peepopractice.core.exception.NotInitializedException;
-import me.falu.peepopractice.core.category.PracticeCategories;
+import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import me.falu.peepopractice.core.category.properties.StructureProperties;
 import me.falu.peepopractice.mixin.access.ChunkGeneratorAccessor;
 import net.minecraft.command.DataCommandStorage;
@@ -193,7 +193,7 @@ public abstract class MinecraftServerMixin {
 
     @ModifyReturnValue(method = "getSpawnRadius", at = @At("RETURN"))
     private int peepoPractice$removeSpawnRadius(int spawnRadius) {
-        if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
+        if (!PeepoPractice.CATEGORY.equals(PracticeCategoriesAny.EMPTY)) {
             return 0;
         }
         return spawnRadius;

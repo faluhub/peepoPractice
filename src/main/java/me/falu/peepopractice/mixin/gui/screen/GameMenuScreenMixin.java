@@ -6,7 +6,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.redlimerl.speedrunigt.timer.InGameTimer;
 import me.falu.peepopractice.PeepoPractice;
 import me.falu.peepopractice.core.category.utils.InventoryUtils;
-import me.falu.peepopractice.core.category.PracticeCategories;
+import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.core.category.utils.PracticeCategoryUtils;
 import me.falu.peepopractice.gui.screen.SettingsTypeSelectionScreen;
@@ -53,9 +53,9 @@ public abstract class GameMenuScreenMixin extends ScreenMixin {
     )
     private AbstractButtonWidget peepoPractice$customButtons(GameMenuScreen screen, AbstractButtonWidget abstractButtonWidget, Operation<AbstractButtonWidget> original) {
         assert this.client != null;
-        this.renderTitle = !PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY);
+        this.renderTitle = !PeepoPractice.CATEGORY.equals(PracticeCategoriesAny.EMPTY);
 
-        if (PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
+        if (PeepoPractice.CATEGORY.equals(PracticeCategoriesAny.EMPTY)) {
             return original.call(screen, abstractButtonWidget);
         }
 

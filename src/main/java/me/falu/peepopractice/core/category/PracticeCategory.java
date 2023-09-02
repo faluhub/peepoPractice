@@ -31,20 +31,25 @@ public class PracticeCategory {
     private final Map<String, Object> customValues = new HashMap<>();
 
     public PracticeCategory() {
-        this(false);
+        this(false, false);
     }
 
-    public PracticeCategory(boolean custom) {
+    public PracticeCategory(boolean aa) {
+        this(aa, false);
+    }
+
+    public PracticeCategory(boolean aa, boolean custom) {
         this.preferences = new ArrayList<>();
         this.custom = custom;
         if (!this.custom) {
-            PracticeCategories.ALL.add(this);
+            if (aa) { PracticeCategoriesAA.ALL.add(this); }
+            else { PracticeCategoriesAny.ALL.add(this); }
         }
     }
 
     public void register() {
         if (this.custom) {
-            PracticeCategories.ALL.add(this);
+            PracticeCategoriesAny.ALL.add(this);
         }
     }
 

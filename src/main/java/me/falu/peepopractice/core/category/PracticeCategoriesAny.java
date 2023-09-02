@@ -41,8 +41,8 @@ import java.util.List;
 import java.util.Objects;
 
 @SuppressWarnings("UnusedDeclaration")
-public class PracticeCategories {
-    public static List<PracticeCategory> ALL = new ArrayList<>();
+public class PracticeCategoriesAny {
+    public static final List<PracticeCategory> ALL = new ArrayList<>();
     public static PracticeCategory EMPTY = new PracticeCategory()
             .setId("empty")
             .setIsFillerCategory(true)

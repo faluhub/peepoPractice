@@ -2,13 +2,12 @@ package me.falu.peepopractice.gui.screen;
 
 import me.falu.peepopractice.PeepoPractice;
 import me.falu.peepopractice.core.PracticeWriter;
-import me.falu.peepopractice.core.category.PracticeCategories;
+import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.core.category.utils.StandardSettingsUtils;
 import me.falu.peepopractice.gui.widget.LimitlessButtonWidget;
 import me.falu.peepopractice.gui.widget.LimitlessDoubleOptionSliderWidget;
 import me.falu.peepopractice.mixin.access.ButtonWidgetAccessor;
-import net.minecraft.client.Keyboard;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
@@ -95,7 +94,7 @@ public class StandardSettingsScreen extends Screen {
     public void onClose() {
         StandardSettingsUtils.setSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "piechart", this.pieChartDirectoryField.getText());
         PracticeWriter.STANDARD_SETTINGS_WRITER.write();
-        PeepoPractice.CONFIGURING_CATEGORY = PracticeCategories.EMPTY;
+        PeepoPractice.CONFIGURING_CATEGORY = PracticeCategoriesAny.EMPTY;
         if (this.client != null) {
             this.client.openScreen(this.parent);
             return;

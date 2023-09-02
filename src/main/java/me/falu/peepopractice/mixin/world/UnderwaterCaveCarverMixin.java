@@ -1,7 +1,7 @@
 package me.falu.peepopractice.mixin.world;
 
 import me.falu.peepopractice.PeepoPractice;
-import me.falu.peepopractice.core.category.PracticeCategories;
+import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.carver.Carver;
@@ -20,7 +20,7 @@ public abstract class UnderwaterCaveCarverMixin {
     @Inject(method = "carveAtPoint(Lnet/minecraft/world/gen/carver/Carver;Lnet/minecraft/world/chunk/Chunk;Ljava/util/BitSet;Ljava/util/Random;Lnet/minecraft/util/math/BlockPos$Mutable;IIIIIIII)Z", at = @At("HEAD"))
     private static void peepoPractice$captureCarverLocation(Carver<?> carver, Chunk chunk, BitSet mask, Random random, BlockPos.Mutable pos, int seaLevel, int mainChunkX, int mainChunkZ, int x, int z, int relativeX, int y, int relativeZ, CallbackInfoReturnable<Boolean> cir) {
         if (y < 10 && carver instanceof UnderwaterRavineCarver) {
-            if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
+            if (!PeepoPractice.CATEGORY.equals(PracticeCategoriesAny.EMPTY)) {
                 if (!PeepoPractice.CATEGORY.hasCustomValue("ravinePosition")) {
                     PeepoPractice.CATEGORY.putCustomValue("ravinePosition", new BlockPos(x, y, z));
                 }

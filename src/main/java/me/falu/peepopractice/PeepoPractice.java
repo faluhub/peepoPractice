@@ -1,8 +1,8 @@
 package me.falu.peepopractice;
 
 import me.falu.peepopractice.core.category.CustomCategoryResourceManager;
+import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import me.falu.peepopractice.core.category.utils.KeyBindingUtils;
-import me.falu.peepopractice.core.category.PracticeCategories;
 import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.core.exception.InvalidCategorySyntaxException;
 import me.falu.peepopractice.core.global.GlobalOptions;
@@ -32,8 +32,8 @@ public class PeepoPractice implements ClientModInitializer {
     public static final String MOD_NAME = MOD_CONTAINER.getMetadata().getName();
     public static final String MOD_ID = MOD_CONTAINER.getMetadata().getId();
     public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
-    public static PracticeCategory CATEGORY = PracticeCategories.EMPTY;
-    public static PracticeCategory CONFIGURING_CATEGORY = PracticeCategories.EMPTY;
+    public static PracticeCategory CATEGORY = PracticeCategoriesAny.EMPTY;
+    public static PracticeCategory CONFIGURING_CATEGORY = PracticeCategoriesAny.EMPTY;
     public static PlayerlessInventory PLAYERLESS_INVENTORY;
     public static PlayerlessPlayerScreenHandler PLAYERLESS_PLAYER_SCREEN_HANDLER;
     public static boolean RESET_CATEGORY = true;
@@ -97,19 +97,19 @@ public class PeepoPractice implements ClientModInitializer {
     }
 
     public static void disableAtumKey() {
-        if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY) && FabricLoader.getInstance().getModContainer("atum").isPresent()) {
+        if (!PeepoPractice.CATEGORY.equals(PracticeCategoriesAny.EMPTY) && FabricLoader.getInstance().getModContainer("atum").isPresent()) {
             Atum.hotkeyPressed = false;
         }
     }
 
     public static void disableAtumReset() {
-        if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY) && FabricLoader.getInstance().getModContainer("atum").isPresent()) {
+        if (!PeepoPractice.CATEGORY.equals(PracticeCategoriesAny.EMPTY) && FabricLoader.getInstance().getModContainer("atum").isPresent()) {
             Atum.isRunning = false;
         }
     }
 
     public static PracticeCategory getNextCategory() {
-        List<PracticeCategory> categories = new ArrayList<>(List.copyOf(PracticeCategories.ALL));
+        List<PracticeCategory> categories = new ArrayList<>(List.copyOf(PracticeCategoriesAny.ALL));
         categories.removeIf(PracticeCategory::isFillerCategory);
         int index = categories.indexOf(PeepoPractice.CATEGORY);
         if (categories.size() - 1 >= index + 1) {

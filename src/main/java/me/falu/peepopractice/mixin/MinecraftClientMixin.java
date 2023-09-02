@@ -6,7 +6,7 @@ import com.mojang.datafixers.DataFixer;
 import com.redlimerl.speedrunigt.timer.InGameTimer;
 import me.falu.peepopractice.PeepoPractice;
 import me.falu.peepopractice.core.category.utils.InventoryUtils;
-import me.falu.peepopractice.core.category.PracticeCategories;
+import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.core.category.utils.StandardSettingsUtils;
 import me.falu.peepopractice.core.global.GlobalOptions;
@@ -47,7 +47,7 @@ public abstract class MinecraftClientMixin {
     private void peepoPractice$resetCategory(Screen screen, CallbackInfo ci) {
         if (screen instanceof TitleScreen) {
             if (PeepoPractice.RESET_CATEGORY) {
-                PeepoPractice.CATEGORY = PracticeCategories.EMPTY;
+                PeepoPractice.CATEGORY = PracticeCategoriesAny.EMPTY;
                 InventoryUtils.PREVIOUS_INVENTORY.clear();
             }
             PeepoPractice.RESET_CATEGORY = true;
@@ -56,7 +56,7 @@ public abstract class MinecraftClientMixin {
 
     @ModifyReceiver(method = "startIntegratedServer(Ljava/lang/String;Lnet/minecraft/util/registry/RegistryTracker$Modifiable;Ljava/util/function/Function;Lcom/mojang/datafixers/util/Function4;ZLnet/minecraft/client/MinecraftClient$WorldLoadAction;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/storage/LevelStorage;createSession(Ljava/lang/String;)Lnet/minecraft/world/level/storage/LevelStorage$Session;"))
     private LevelStorage peepoPractice$differentSavesFolder(LevelStorage storage, String worldName) {
-        if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY) && PeepoPractice.PRACTICE_LEVEL_STORAGE != null) {
+        if (!PeepoPractice.CATEGORY.equals(PracticeCategoriesAny.EMPTY) && PeepoPractice.PRACTICE_LEVEL_STORAGE != null) {
             return PeepoPractice.PRACTICE_LEVEL_STORAGE;
         }
         return storage;
@@ -64,7 +64,7 @@ public abstract class MinecraftClientMixin {
 
     @ModifyReturnValue(method = "getLevelStorage", at = @At("RETURN"))
     private LevelStorage peepoPractice$customLevelStorage(LevelStorage storage) {
-        if (!PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY) && PeepoPractice.PRACTICE_LEVEL_STORAGE != null) {
+        if (!PeepoPractice.CATEGORY.equals(PracticeCategoriesAny.EMPTY) && PeepoPractice.PRACTICE_LEVEL_STORAGE != null) {
             return PeepoPractice.PRACTICE_LEVEL_STORAGE;
         }
         return storage;
@@ -77,7 +77,7 @@ public abstract class MinecraftClientMixin {
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void peepoPractice$listenToKeyBindings(CallbackInfo ci) {
-        if (this.world != null && this.isIntegratedServerRunning() && !PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
+        if (this.world != null && this.isIntegratedServerRunning() && !PeepoPractice.CATEGORY.equals(PracticeCategoriesAny.EMPTY)) {
             PracticeCategory nextCategory = PeepoPractice.getNextCategory();
             boolean next = PeepoPractice.NEXT_SPLIT_KEY.isPressed() && nextCategory != null;
             if (PeepoPractice.REPLAY_SPLIT_KEY.isPressed() || next) {

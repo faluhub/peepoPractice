@@ -4,7 +4,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.falu.peepopractice.PeepoPractice;
-import me.falu.peepopractice.core.category.PracticeCategories;
+import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.WorldGenerationProgressTracker;
 import net.minecraft.client.gui.screen.LevelLoadingScreen;
@@ -26,7 +26,7 @@ public abstract class LevelLoadingScreenMixin extends Screen {
 
     @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/LevelLoadingScreen;drawChunkMap(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/gui/WorldGenerationProgressTracker;IIII)V"))
     private void peepoPractice$noChunkMap(MatrixStack matrices, WorldGenerationProgressTracker worldGenerationProgressTracker, int i, int j, int k, int l, Operation<Void> original) {
-        if (PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
+        if (PeepoPractice.CATEGORY.equals(PracticeCategoriesAny.EMPTY)) {
             original.call(matrices, worldGenerationProgressTracker, i, j, k, l);
             return;
         }
@@ -44,7 +44,7 @@ public abstract class LevelLoadingScreenMixin extends Screen {
     @SuppressWarnings("deprecation")
     @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/LevelLoadingScreen;drawCenteredString(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;III)V"))
     private void peepoPractice$textPosition(LevelLoadingScreen screen, MatrixStack matrices, TextRenderer textRenderer, String s, int i, int j, int k, Operation<Void> original) {
-        if (PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
+        if (PeepoPractice.CATEGORY.equals(PracticeCategoriesAny.EMPTY)) {
             original.call(screen, matrices, textRenderer, s, i, j, k);
             return;
         }
@@ -57,7 +57,7 @@ public abstract class LevelLoadingScreenMixin extends Screen {
 
     @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/LevelLoadingScreen;renderBackground(Lnet/minecraft/client/util/math/MatrixStack;)V"))
     private void peepoPractice$customBackground(LevelLoadingScreen screen, MatrixStack matrices, Operation<Void> original) {
-        if (PeepoPractice.CATEGORY.equals(PracticeCategories.EMPTY)) {
+        if (PeepoPractice.CATEGORY.equals(PracticeCategoriesAny.EMPTY)) {
             original.call(screen, matrices);
             return;
         }
