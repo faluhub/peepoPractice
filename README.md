@@ -39,20 +39,6 @@ You can also copy the inventory from another category that you've already made a
 If the item can be enchanted by the selected enchantment book it will be added to the item's enchantments.
 ```
 
-**What is the "Loot Tables" tab on the inventory config screen?**
-
-```
-This is an inventory where you can view all the chest loot tables in the game.
-By clicking on one of the chests it will show you all of the possible items it can have.
-Press "Escape" to go back to the chests.
-```
-
-**Why can't I open the StandardSettings config screen?**
-```
-Because the "StandardSettings" mod is enabled.
-Disable it and re-open your game.
-```
-
 # Custom Categories
 
 ## How:
