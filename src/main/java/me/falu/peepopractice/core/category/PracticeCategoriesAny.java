@@ -43,11 +43,11 @@ import java.util.Objects;
 @SuppressWarnings("UnusedDeclaration")
 public class PracticeCategoriesAny {
     public static final List<PracticeCategory> ALL = new ArrayList<>();
-    public static PracticeCategory EMPTY = new PracticeCategory()
+    public static final PracticeCategory EMPTY = new PracticeCategory()
             .setId("empty")
             .setIsFillerCategory(true)
             .setHidden(true);
-    public static PracticeCategory MAPLESS_SPLIT = new PracticeCategory()
+    public static final PracticeCategory MAPLESS_SPLIT = new PracticeCategory()
             .setId("mapless_split")
             .setCanHaveEmptyInventory(true)
             .setPlayerProperties(new PlayerProperties()
@@ -119,7 +119,7 @@ public class PracticeCategoriesAny {
                     .setLootTable(LootTables.BURIED_TREASURE_CHEST)
                     .setOnClose(true)
             );
-    public static PracticeCategory ISLAND_LEAVE_SPLIT = new PracticeCategory()
+    public static final PracticeCategory ISLAND_LEAVE_SPLIT = new PracticeCategory()
             .setId("island_leave_split")
             .setPlayerProperties(new PlayerProperties()
                     .setSpawnPos((category, random, world) -> {
@@ -160,7 +160,7 @@ public class PracticeCategoriesAny {
                     .setVehicle(EntityType.BOAT)
                     .setKeepItem(true)
             );
-    public static PracticeCategory RAVINE_ENTER_SPLIT = new PracticeCategory()
+    public static final PracticeCategory RAVINE_ENTER_SPLIT = new PracticeCategory()
             .setId("ravine_enter_split")
             .setPlayerProperties(new PlayerProperties()
                     .setSpawnPos((category, random, world) -> {
@@ -201,7 +201,7 @@ public class PracticeCategoriesAny {
                     .setDefaultChoice(PracticeCategoryUtils.DISABLED)
                     .setIcon(new Identifier("textures/item/water_bucket.png"))
             );
-    public static PracticeCategory BASTION_SPLIT = new PracticeCategory()
+    public static final PracticeCategory BASTION_SPLIT = new PracticeCategory()
             .setId("bastion_split")
             .setIsFillerCategory(true)
             .addStructureProperties(new StructureProperties()
@@ -236,7 +236,7 @@ public class PracticeCategoriesAny {
             .addPreference(BastionPreset.BASTION_TYPE_PREFERENCE)
             .addPreference(BastionPreset.RANKED_LOOT_TABLE_PREFERENCE)
             .addPreference(StructurePreset.SPAWN_LOCATION_PREFERENCE);
-    public static PracticeCategory FORTRESS_SPLIT = new PracticeCategory()
+    public static final PracticeCategory FORTRESS_SPLIT = new PracticeCategory()
             .setId("fortress_split")
             .setIsFillerCategory(true)
             .addStructureProperties(new StructureProperties()
@@ -261,7 +261,7 @@ public class PracticeCategoriesAny {
             )
             .addPreference(FortressPreset.GOOD_BLAZE_RATES_PREFERENCE)
             .addPreference(FortressPreset.SOUL_SAND_VALLEY_PREFERENCE);
-    public static PracticeCategory NETHER_SPLIT = new PracticeCategory()
+    public static final PracticeCategory NETHER_SPLIT = new PracticeCategory()
             .setId("nether_split")
             .addStructureProperties(new StructureProperties()
                     .setStructure(DefaultBiomeFeatures.BASTION_REMNANT)
@@ -304,7 +304,7 @@ public class PracticeCategoriesAny {
             .addPreference(FortressPreset.GOOD_BLAZE_RATES_PREFERENCE)
             .addPreference(StructurePreset.SPAWN_LOCATION_PREFERENCE)
             .addPreference(FortressPreset.SOUL_SAND_VALLEY_PREFERENCE);
-    public static PracticeCategory POST_BLIND_SPLIT = new PracticeCategory()
+    public static final PracticeCategory POST_BLIND_SPLIT = new PracticeCategory()
             .setId("post_blind_split")
             .setPlayerProperties(new PlayerProperties()
                     .setSpawnPos((category, random, world) -> {
@@ -359,7 +359,7 @@ public class PracticeCategoriesAny {
                     .setChoices(PracticeCategoryUtils.ALL_LIST)
                     .setDefaultChoice(PracticeCategoryUtils.RANDOM)
             );
-    public static PracticeCategory STRONGHOLD_SPLIT = new PracticeCategory()
+    public static final PracticeCategory STRONGHOLD_SPLIT = new PracticeCategory()
             .setId("stronghold_split")
             .addStructureProperties(new StructureProperties()
                     .setStructure(DefaultBiomeFeatures.STRONGHOLD)
@@ -421,7 +421,7 @@ public class PracticeCategoriesAny {
                     .setDefaultChoice(PracticeTypes.EyeCountType.RANDOM.getLabel())
                     .setIcon(new Identifier("textures/item/ender_eye.png"))
             );
-    public static PracticeCategory END_SPLIT = new PracticeCategory()
+    public static final PracticeCategory END_SPLIT = new PracticeCategory()
             .setId("end_split")
             .setPlayerProperties(new PlayerProperties()
                     .setSpawnAngle(90.0F, 0.0F)

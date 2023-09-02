@@ -291,7 +291,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         this.setSelectedTab(ItemGroup.GROUPS[i]);
 
         this.addButton(new LimitlessButtonWidget(null, new Identifier("textures/item/barrier.png"), null, this.x - this.x / 2 - (this.width / 8) / 2, this.y, this.width / 8, this.backgroundHeight, ScreenTexts.DONE, b -> this.onClose()));
-        this.addButton(new LimitlessButtonWidget(null, new Identifier("textures/item/chest_minecart.png"), null, this.x + this.backgroundWidth + this.x / 2 - (this.width / 8) / 2, this.y, this.width / 8, this.backgroundHeight, new LiteralText("Copy\nInventory"), b -> {
+        this.addButton(new LimitlessButtonWidget(null, new Identifier("textures/item/chest_minecart.png"), null, this.x + this.backgroundWidth + this.x / 2 - (this.width / 8) / 2, this.y, this.width / 8, this.backgroundHeight, new LiteralText("Copy\nFrom\nExisting"), b -> {
             if (this.client != null) {
                 this.saveInventory();
                 this.client.openScreen(new CopyInventorySelectionScreen(this.category));

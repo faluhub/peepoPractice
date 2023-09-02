@@ -29,9 +29,11 @@ public class GlobalConfigScreen extends Screen {
             GlobalOptions.CHANGE_WINDOW_TITLE,
             GlobalOptions.GIVE_SATURATION
     };
+    private final Screen parent;
 
-    public GlobalConfigScreen() {
+    public GlobalConfigScreen(Screen parent) {
         super(new LiteralText("Global Config"));
+        this.parent = parent;
     }
 
     @Override
@@ -85,6 +87,8 @@ public class GlobalConfigScreen extends Screen {
     @Override
     public void onClose() {
         PracticeWriter.GLOBAL_CONFIG.write();
-        super.onClose();
+        if (this.client != null) {
+            this.client.openScreen(this.parent);
+        }
     }
 }

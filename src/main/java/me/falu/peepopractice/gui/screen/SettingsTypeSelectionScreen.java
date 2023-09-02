@@ -51,9 +51,7 @@ public class SettingsTypeSelectionScreen extends Screen {
     public void onClose() {
         if (this.client != null) {
             this.client.openScreen(this.parent);
-            return;
         }
-        super.onClose();
     }
 
     @Override

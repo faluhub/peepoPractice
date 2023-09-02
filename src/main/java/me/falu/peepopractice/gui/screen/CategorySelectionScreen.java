@@ -2,6 +2,8 @@ package me.falu.peepopractice.gui.screen;
 
 import me.falu.peepopractice.PeepoPractice;
 import me.falu.peepopractice.core.PracticeWriter;
+import me.falu.peepopractice.core.category.PracticeCategoriesAA;
+import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.gui.widget.CategoryListWidget;
 import me.falu.peepopractice.gui.widget.LimitlessButtonWidget;
@@ -14,8 +16,11 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 
+import java.util.List;
+
 public class CategorySelectionScreen extends Screen {
     private final Screen parent;
+    private SelectionType selectionType = SelectionType.ANY;
     public CategoryListWidget categoryListWidget;
     private ButtonWidget doneButton;
     private ButtonWidget configureButton;
@@ -36,8 +41,12 @@ public class CategorySelectionScreen extends Screen {
     }
 
     public void openConfig() {
-        if (this.client != null && this.categoryListWidget != null && this.categoryListWidget.getSelected() != null) {
-            this.client.openScreen(new SettingsTypeSelectionScreen(this, this.categoryListWidget.getSelected().category));
+        if (this.client != null) {
+            if (this.categoryListWidget != null && this.categoryListWidget.getSelected() != null) {
+                this.client.openScreen(new SettingsTypeSelectionScreen(this, this.categoryListWidget.getSelected().category));
+            } else {
+                this.client.openScreen(new GlobalConfigScreen(this));
+            }
         }
     }
 
@@ -55,7 +64,10 @@ public class CategorySelectionScreen extends Screen {
 
     @Override
     protected void init() {
-        this.categoryListWidget = new CategoryListWidget(this, this.client, false, false) {
+        this.children.clear();
+        this.buttons.clear();
+
+        this.categoryListWidget = new CategoryListWidget(this, this.client, false, false, this.selectionType) {
             @Override
             public void onDoubleClick(PracticeCategory category) {
                 CategorySelectionScreen.this.play();
@@ -93,12 +105,26 @@ public class CategorySelectionScreen extends Screen {
                         this.height - 50,
                         150,
                         40,
-                        new LiteralText("Configure"),
+                        new LiteralText("Global Config"),
                         b -> this.openConfig()
                 )
         );
-
-        super.init();
+        this.addButton(
+                new LimitlessButtonWidget(
+                        null,
+                        null,
+                        null,
+                        5,
+                        5,
+                        40,
+                        20,
+                        new LiteralText(this.selectionType.title),
+                        b -> {
+                            this.selectionType = SelectionType.opposite(this.selectionType);
+                            this.init();
+                        }
+                )
+        );
     }
 
     @Override
@@ -115,8 +141,9 @@ public class CategorySelectionScreen extends Screen {
         String text = PeepoPractice.MOD_NAME + " v" + PeepoPractice.MOD_VERSION;
         this.textRenderer.drawWithShadow(matrices, text, this.width - this.textRenderer.getWidth(text), this.height - this.textRenderer.fontHeight, BackgroundHelper.ColorMixer.getArgb(255 / 2, 255, 255, 255));
 
-        this.configureButton.active = this.categoryListWidget != null && this.categoryListWidget.getSelected() != null;
-        this.doneButton.setMessage(this.configureButton.active ? new LiteralText("Play!") : ScreenTexts.BACK);
+        boolean selected = this.categoryListWidget != null && this.categoryListWidget.getSelected() != null;
+        this.configureButton.setMessage(new LiteralText(selected ? "Configure" : "Global Config"));
+        this.doneButton.setMessage(selected ? new LiteralText("Play!") : ScreenTexts.BACK);
 
         super.render(matrices, mouseX, mouseY, delta);
     }
@@ -131,6 +158,24 @@ public class CategorySelectionScreen extends Screen {
             if (this.client != null) {
                 this.client.openScreen(null);
             }
+        }
+    }
+
+    public enum SelectionType {
+        ANY("Any%", PracticeCategoriesAny.ALL),
+        AA("AA", PracticeCategoriesAA.ALL);
+
+        public String title;
+        public List<PracticeCategory> list;
+
+        SelectionType(String title, List<PracticeCategory> list) {
+            this.title = title;
+            this.list = list;
+        }
+
+        public static SelectionType opposite(SelectionType type) {
+            if (type.equals(ANY)) { return AA; }
+            else { return ANY; }
         }
     }
 }

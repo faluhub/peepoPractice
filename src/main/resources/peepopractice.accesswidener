@@ -16,3 +16,4 @@ accessible field net/minecraft/client/render/debug/DebugRenderer showChunkBorder
 accessible field net/minecraft/client/world/GeneratorType SINGLE_BIOME_SURFACE Lnet/minecraft/client/world/GeneratorType;
 accessible field net/minecraft/client/gui/screen/world/MoreOptionsDialog field_25049 Ljava/util/Optional;
 accessible field net/minecraft/world/gen/chunk/FlatChunkGeneratorConfig STRUCTURE_TO_FEATURES Ljava/util/Map;
+accessible field net/minecraft/client/network/ClientAdvancementManager advancementProgresses Ljava/util/Map;

@@ -5,6 +5,7 @@ import com.redlimerl.speedrunigt.timer.TimerStatus;
 import me.falu.peepopractice.PeepoPractice;
 import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import me.falu.peepopractice.core.category.properties.event.GetAdvancementSplitEvent;
+import me.falu.peepopractice.core.category.utils.PracticeCategoryUtils;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementManager;
 import net.minecraft.advancement.AdvancementProgress;
@@ -28,14 +29,30 @@ public abstract class ClientAdvancementManagerMixin {
     private Map.Entry<Identifier, AdvancementProgress> peepoPractice$advancement(Map.Entry<Identifier, AdvancementProgress> value) {
         if (!PeepoPractice.CATEGORY.equals(PracticeCategoriesAny.EMPTY)) {
             Advancement advancement = this.manager.get(value.getKey());
-            AdvancementProgress advancementProgress = value.getValue();
+            AdvancementProgress progress = value.getValue();
             if (advancement != null) {
-                advancementProgress.init(advancement.getCriteria(), advancement.getRequirements());
-                if (advancementProgress.isDone()) {
+                progress.init(advancement.getCriteria(), advancement.getRequirements());
+                if (progress.isDone()) {
                     if (PeepoPractice.CATEGORY.hasSplitEvent()) {
                         if (PeepoPractice.CATEGORY.getSplitEvent() instanceof GetAdvancementSplitEvent) {
                             GetAdvancementSplitEvent event = (GetAdvancementSplitEvent) PeepoPractice.CATEGORY.getSplitEvent();
-                            if (event.hasAdvancement() && advancement.getId().getPath().equals(event.getAdvancement().getPath())) {
+                            if (event.allAdvancements()) {
+                                boolean completedAll = true;
+                                for (String advancementKey : PracticeCategoryUtils.ADVANCEMENTS) {
+                                    Advancement advancement1 = this.manager.get(new Identifier(advancementKey));
+                                    if (advancement1 != null) {
+                                        AdvancementProgress progress1 = new AdvancementProgress();
+                                        progress1.init(advancement1.getCriteria(), advancement1.getRequirements());
+                                        if (!progress1.isDone()) {
+                                            completedAll = false;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (completedAll) {
+                                    event.complete(this.client.player != null && !this.client.player.isDead());
+                                }
+                            } else if (advancement.getId().getPath().equals(event.getAdvancement().getPath())) {
                                 event.complete(this.client.player != null && !this.client.player.isDead());
                             }
                         }

@@ -31,6 +31,8 @@
 
     "gui.widget.SliderWidgetMixin",
 
+    "gui.MoreOptionsDialogMixin",
+
     "structure.category.BastionRemnantFeatureConfigMixin",
     "structure.category.DungeonFeatureMixin",
     "structure.category.PortalRoomMixin",

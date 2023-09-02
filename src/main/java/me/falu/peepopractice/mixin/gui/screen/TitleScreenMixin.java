@@ -24,26 +24,12 @@ public abstract class TitleScreenMixin extends Screen {
                 new ButtonWidget(
                         this.width / 2 - 100,
                         y - spacingY,
-                        98,
+                        200,
                         20,
                         new LiteralText("PeepoPractice"),
                         b -> {
                             if (this.client != null) {
                                 this.client.openScreen(new CategorySelectionScreen(this));
-                            }
-                        }
-                )
-        );
-        this.addButton(
-                new ButtonWidget(
-                        this.width / 2 + 2,
-                        y - spacingY,
-                        98,
-                        20,
-                        new LiteralText("Global Config"),
-                        b -> {
-                            if (this.client != null) {
-                                this.client.openScreen(new GlobalConfigScreen());
                             }
                         }
                 )

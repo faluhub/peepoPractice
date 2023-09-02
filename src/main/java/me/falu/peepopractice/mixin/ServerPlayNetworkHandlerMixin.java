@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(ServerPlayNetworkHandler.class)
 public abstract class ServerPlayNetworkHandlerMixin {
-    @ModifyReturnValue(method = {"validatePlayerMove", "validateVehicleMove"}, at = @At("RETURN"), require = 2)
+    @ModifyReturnValue(method = { "validatePlayerMove", "validateVehicleMove" }, at = @At("RETURN"), require = 2)
     private static boolean peepoPractice$alwaysValidMovement(boolean valid) {
         return valid && PeepoPractice.CATEGORY.equals(PracticeCategoriesAny.EMPTY);
     }

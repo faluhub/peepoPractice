@@ -2,7 +2,6 @@ package me.falu.peepopractice.core.category;
 
 import com.google.gson.*;
 import me.falu.peepopractice.PeepoPractice;
-import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.core.category.properties.PlayerProperties;
 import me.falu.peepopractice.core.category.properties.StructureProperties;
 import me.falu.peepopractice.core.category.properties.WorldProperties;

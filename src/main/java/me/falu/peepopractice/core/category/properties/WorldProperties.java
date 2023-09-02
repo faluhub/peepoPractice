@@ -12,6 +12,7 @@ import java.util.Map;
 public class WorldProperties extends BaseProperties {
     private RegistryKey<World> worldRegistryKey;
     private boolean spawnChunksDisabled = false;
+    private String seedListPath = null;
     private final Map<Biome, @Nullable Integer> antiBiomeRangeMap = new HashMap<>();
     private final Map<Biome, Range> proBiomeRangeMap = new HashMap<>();
 
@@ -56,6 +57,19 @@ public class WorldProperties extends BaseProperties {
 
     public WorldProperties addProBiomeRange(Biome biome, @Nullable Integer range, ConditionTask condition) {
         this.proBiomeRangeMap.put(biome, new Range(range, condition));
+        return this;
+    }
+
+    public String getSeedListPath() {
+        return this.seedListPath;
+    }
+
+    public boolean hasSeedListPath() {
+        return this.seedListPath != null;
+    }
+
+    public WorldProperties setSeedListPath(String seedListPath) {
+        this.seedListPath = seedListPath;
         return this;
     }
 

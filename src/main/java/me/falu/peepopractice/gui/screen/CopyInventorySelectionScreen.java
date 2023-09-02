@@ -21,6 +21,7 @@ import java.util.Map;
 
 public class CopyInventorySelectionScreen extends Screen {
     private final PracticeCategory category;
+    private CategorySelectionScreen.SelectionType selectionType;
     private CategoryListWidget categoryListWidget;
     private ButtonWidget copyButton;
     private boolean renderError;
@@ -28,6 +29,7 @@ public class CopyInventorySelectionScreen extends Screen {
     public CopyInventorySelectionScreen(PracticeCategory category) {
         super(new LiteralText("Copy Inventory"));
         this.category = category;
+        this.selectionType = this.category.isAA() ? CategorySelectionScreen.SelectionType.AA : CategorySelectionScreen.SelectionType.ANY;
     }
 
     @Override
@@ -42,6 +44,9 @@ public class CopyInventorySelectionScreen extends Screen {
 
     @Override
     protected void init() {
+        this.children.clear();
+        this.buttons.clear();
+
         if (!PracticeCategoryUtils.hasAnyConfiguredInventories(this.category)) {
             this.renderError = true;
             this.addButton(
@@ -59,8 +64,7 @@ public class CopyInventorySelectionScreen extends Screen {
             );
             return;
         }
-
-        this.categoryListWidget = new CategoryListWidget(this, this.client, true, true) {
+        this.categoryListWidget = new CategoryListWidget(this, this.client, true, true, this.selectionType) {
             @Override
             public void onDoubleClick(PracticeCategory category) {
                 CopyInventorySelectionScreen.this.copyInventory(category);
@@ -96,6 +100,22 @@ public class CopyInventorySelectionScreen extends Screen {
                                 this.copyInventory(this.categoryListWidget.getSelected().category);
                                 this.onClose();
                             }
+                        }
+                )
+        );
+        this.addButton(
+                new LimitlessButtonWidget(
+                        null,
+                        null,
+                        null,
+                        5,
+                        5,
+                        40,
+                        20,
+                        new LiteralText(this.selectionType.title),
+                        b -> {
+                            this.selectionType = CategorySelectionScreen.SelectionType.opposite(this.selectionType);
+                            this.init();
                         }
                 )
         );

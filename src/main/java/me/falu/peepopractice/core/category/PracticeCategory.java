@@ -28,6 +28,7 @@ public class PracticeCategory {
     private boolean canHaveEmptyInventory;
     private boolean fillerCategory;
     private final boolean custom;
+    private final boolean aa;
     private final Map<String, Object> customValues = new HashMap<>();
 
     public PracticeCategory() {
@@ -40,6 +41,7 @@ public class PracticeCategory {
 
     public PracticeCategory(boolean aa, boolean custom) {
         this.preferences = new ArrayList<>();
+        this.aa = aa;
         this.custom = custom;
         if (!this.custom) {
             if (aa) { PracticeCategoriesAA.ALL.add(this); }
@@ -217,6 +219,10 @@ public class PracticeCategory {
             }
         }
         return text.toString();
+    }
+
+    public boolean isAA() {
+        return this.aa;
     }
 
     public boolean hasConfiguredInventory() {

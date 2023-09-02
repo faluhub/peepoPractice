@@ -1,6 +1,7 @@
 package me.falu.peepopractice.core;
 
 import com.google.gson.*;
+import me.falu.peepopractice.DefaultFileWriter;
 import me.falu.peepopractice.PeepoPractice;
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -8,6 +9,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 public class PracticeWriter {
+    static { DefaultFileWriter.INSTANCE.writeDefaultFiles(); }
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     public static final PracticeWriter PREFERENCES_WRITER = new PracticeWriter("preferences.json");
     public static final PracticeWriter INVENTORY_WRITER = new PracticeWriter("inventory.json");
@@ -24,27 +26,16 @@ public class PracticeWriter {
 
     @SuppressWarnings({ "ResultOfMethodCallIgnored", "BlockingMethodInNonBlockingContext" })
     private File create(String fileName) {
-        try {
-            File folder = FabricLoader.getInstance().getConfigDir().resolve(PeepoPractice.MOD_NAME).toFile();
-            if (!folder.exists()) {
-                folder.mkdirs();
-            }
-            File file = folder.toPath().resolve(fileName).toFile();
-            if (!file.exists()) {
-                file.createNewFile();
-                InputStream stream = this.getClass().getClassLoader().getResourceAsStream("writer/" + fileName);
-                if (stream != null) {
-                    FileWriter writer = new FileWriter(file);
-                    writer.write(GSON.toJson(new JsonParser().parse(new InputStreamReader(stream, StandardCharsets.UTF_8))));
-                    writer.flush();
-                    writer.close();
-                }
-            }
-            return file;
-        } catch (IOException e) {
-            e.printStackTrace();
+        File folder = FabricLoader.getInstance().getConfigDir().resolve(PeepoPractice.MOD_NAME).toFile();
+        if (!folder.exists()) {
+            folder.mkdirs();
         }
-        return null;
+        File file = folder.toPath().resolve(fileName).toFile();
+        if (!file.exists()) {
+            try { file.createNewFile(); }
+            catch (IOException e) { throw new RuntimeException(e); }
+        }
+        return file;
     }
 
     @SuppressWarnings("BlockingMethodInNonBlockingContext")

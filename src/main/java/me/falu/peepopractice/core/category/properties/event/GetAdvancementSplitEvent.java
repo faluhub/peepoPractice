@@ -9,8 +9,8 @@ public class GetAdvancementSplitEvent extends SplitEvent {
         return this.advancement;
     }
 
-    public boolean hasAdvancement() {
-        return this.advancement != null;
+    public boolean allAdvancements() {
+        return this.advancement == null;
     }
 
     public GetAdvancementSplitEvent setAdvancement(Identifier advancement) {

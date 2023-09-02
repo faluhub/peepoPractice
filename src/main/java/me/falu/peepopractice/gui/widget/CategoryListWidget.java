@@ -6,6 +6,7 @@ import me.falu.peepopractice.PeepoPractice;
 import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.core.category.properties.event.SplitEvent;
+import me.falu.peepopractice.gui.screen.CategorySelectionScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AlwaysSelectedEntryListWidget;
@@ -25,7 +26,7 @@ public abstract class CategoryListWidget extends AlwaysSelectedEntryListWidget<C
     private final Screen screen;
     private final boolean hideDecorations;
 
-    public CategoryListWidget(Screen screen, MinecraftClient client, boolean hideDecorations, boolean hideUnconfigured) {
+    public CategoryListWidget(Screen screen, MinecraftClient client, boolean hideDecorations, boolean hideUnconfigured, CategorySelectionScreen.SelectionType type) {
         super(
                 client,
                 screen.width,
@@ -37,7 +38,7 @@ public abstract class CategoryListWidget extends AlwaysSelectedEntryListWidget<C
         this.screen = screen;
         this.hideDecorations = hideDecorations;
 
-        for (PracticeCategory category : PracticeCategoriesAny.ALL) {
+        for (PracticeCategory category : type.list) {
             if (!category.isHidden()) {
                 if (hideUnconfigured && !category.hasConfiguredInventory()) { continue; }
                 this.addEntry(new CategoryEntry(category));
