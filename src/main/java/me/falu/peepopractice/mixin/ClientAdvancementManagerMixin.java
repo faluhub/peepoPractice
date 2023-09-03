@@ -17,6 +17,7 @@ import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
@@ -27,9 +28,7 @@ import java.util.Set;
 public abstract class ClientAdvancementManagerMixin {
     @Shadow @Final private AdvancementManager manager;
     @Shadow @Final private MinecraftClient client;
-
     @Shadow public abstract AdvancementManager getManager();
-
     @Shadow @Final public Map<Advancement, AdvancementProgress> advancementProgresses;
 
     @ModifyVariable(method = "onAdvancements", at = @At(value = "INVOKE", target = "Ljava/util/Map$Entry;getValue()Ljava/lang/Object;"))
@@ -46,7 +45,7 @@ public abstract class ClientAdvancementManagerMixin {
                             if (event.allAdvancements()) {
                                 InGameTimer timer = InGameTimer.getInstance();
                                 int maxCount = timer.getMoreData(7441) == 0 ? 80 : timer.getMoreData(7441);
-                                if (this.getCompleteAdvancementsCount() >= maxCount) {
+                                if (this.peepoPractice$getCompleteAdvancementsCount() >= maxCount) {
                                     event.complete(this.client.player != null && !this.client.player.isDead());
                                 }
                             } else if (advancement.getId().getPath().equals(event.getAdvancement().getPath())) {
@@ -66,7 +65,8 @@ public abstract class ClientAdvancementManagerMixin {
         return value;
     }
 
-    private int getCompleteAdvancementsCount() {
+    @Unique
+    private int peepoPractice$getCompleteAdvancementsCount() {
         Set<String> completedAdvancements = Sets.newHashSet();
         for (Map.Entry<String, TimerAdvancementTracker.AdvancementTrack> track : InGameTimer.getInstance().getAdvancementsTracker().getAdvancements().entrySet()) {
             if (track.getValue().isAdvancement() && track.getValue().isComplete()) completedAdvancements.add(track.getKey());
