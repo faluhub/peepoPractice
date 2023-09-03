@@ -8,7 +8,10 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
+import net.minecraft.server.command.CommandOutput;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,6 +20,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.UUID;
 
 @Mixin(PlayerManager.class)
 public abstract class PlayerManagerMixin {
@@ -50,8 +55,36 @@ public abstract class PlayerManagerMixin {
             }
             if (PeepoPractice.CATEGORY.hasPlayerProperties()) {
                 for (String command : PeepoPractice.CATEGORY.getPlayerProperties().getCommands()) {
-                    PeepoPractice.log(command);
-                    this.getServer().getCommandManager().execute(player.getCommandSource(), command);
+                    this.getServer().getCommandManager().execute(
+                            new ServerCommandSource(
+                                    new CommandOutput() {
+                                            @Override
+                                            public void sendSystemMessage(Text message, UUID senderUuid) {}
+
+                                            @Override
+                                            public boolean shouldReceiveFeedback() {
+                                                return false;
+                                            }
+
+                                            @Override
+                                            public boolean shouldTrackOutput() {
+                                                return false;
+                                            }
+
+                                            @Override
+                                            public boolean shouldBroadcastConsoleToOps() {
+                                                return false;
+                                            }
+                                    },
+                                    player.getPos(),
+                                    player.getRotationClient(),
+                                    player.getServerWorld(),
+                                    player.getPermissionLevel(),
+                                    player.getName().getString(),
+                                    player.getDisplayName(),
+                                    this.getServer(),
+                                    player
+                    ), command);
                 }
             }
         }
