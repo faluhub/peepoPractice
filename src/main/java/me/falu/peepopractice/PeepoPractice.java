@@ -6,10 +6,11 @@ import me.falu.peepopractice.core.category.utils.KeyBindingUtils;
 import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.core.exception.InvalidCategorySyntaxException;
 import me.falu.peepopractice.core.global.GlobalOptions;
+import me.falu.peepopractice.core.item.RandomToolItem;
 import me.falu.peepopractice.core.playerless.PlayerlessInventory;
 import me.falu.peepopractice.core.playerless.PlayerlessPlayerScreenHandler;
 import me.voidxwalker.autoreset.Atum;
-import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.gui.DrawableHelper;
@@ -18,6 +19,9 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.Item;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.level.storage.LevelStorage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,7 +30,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PeepoPractice implements ClientModInitializer {
+public class PeepoPractice implements ModInitializer {
     public static final ModContainer MOD_CONTAINER = FabricLoader.getInstance().getModContainer("peepopractice").orElseThrow(RuntimeException::new);
     public static final String MOD_VERSION = String.valueOf(MOD_CONTAINER.getMetadata().getVersion());
     public static final String MOD_NAME = MOD_CONTAINER.getMetadata().getName();
@@ -52,8 +56,14 @@ public class PeepoPractice implements ClientModInitializer {
     }
 
     @Override
-    public void onInitializeClient() {
+    public void onInitialize() {
         log("Using " + MOD_NAME + " v" + MOD_VERSION);
+
+        Registry.register(Registry.ITEM, new Identifier(MOD_ID, "random_pickaxe"), new RandomToolItem(RandomToolItem.ToolType.PICKAXE));
+        Registry.register(Registry.ITEM, new Identifier(MOD_ID, "random_axe"), new RandomToolItem(RandomToolItem.ToolType.AXE));
+        Registry.register(Registry.ITEM, new Identifier(MOD_ID, "random_shovel"), new RandomToolItem(RandomToolItem.ToolType.SHOVEL));
+        Registry.register(Registry.ITEM, new Identifier(MOD_ID, "random_sword"), new RandomToolItem(RandomToolItem.ToolType.SWORD));
+        Registry.register(Registry.ITEM, new Identifier(MOD_ID, "random_hoe"), new RandomToolItem(RandomToolItem.ToolType.HOE));
 
         REPLAY_SPLIT_KEY = KeyBindingUtils.registerKeyBinding(
                 new KeyBinding(

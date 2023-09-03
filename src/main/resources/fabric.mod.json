@@ -19,7 +19,7 @@
     "preLaunch": [
       "com.llamalad7.mixinextras.MixinExtrasBootstrap::init"
     ],
-    "client": [
+    "main": [
       "me.falu.peepopractice.PeepoPractice"
     ]
   },

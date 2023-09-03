@@ -25,7 +25,7 @@ public class SettingsTypeSelectionScreen extends Screen {
                     return "This category has no preferences to configure.";
                 }
             }),
-            new ButtonChoice(new LiteralText("Standard Settings"), new Identifier(PeepoPractice.MOD_ID, "icon/gear.png"), category -> new StandardSettingsScreen(this, category)),
+            new ButtonChoice(new LiteralText("Standard Settings"), new Identifier(PeepoPractice.MOD_ID, "textures/gear.png"), category -> new StandardSettingsScreen(this, category)),
             new ButtonChoice(new LiteralText("Split"), new Identifier("textures/item/clock_00.png"), category -> new SplitSettingsScreen(this, category), new ButtonDisabledInfo() {
                 @Override
                 public boolean isDisabled(PracticeCategory category) {

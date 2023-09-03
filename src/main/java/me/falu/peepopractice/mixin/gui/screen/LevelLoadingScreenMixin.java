@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(value = LevelLoadingScreen.class, priority = 995)
 public abstract class LevelLoadingScreenMixin extends Screen {
-    @Unique private static final Identifier WIDE_PEEPO_HAPPY = new Identifier(PeepoPractice.MOD_ID, "sprite/widepeepohappy.png");
+    @Unique private static final Identifier WIDE_PEEPO_HAPPY = new Identifier(PeepoPractice.MOD_ID, "textures/widepeepohappy.png");
 
     protected LevelLoadingScreenMixin(Text title) {
         super(title);
