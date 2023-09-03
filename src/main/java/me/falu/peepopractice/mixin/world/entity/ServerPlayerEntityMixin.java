@@ -4,6 +4,7 @@ import com.redlimerl.speedrunigt.timer.InGameTimer;
 import com.redlimerl.speedrunigt.timer.TimerStatus;
 import me.falu.peepopractice.PeepoPractice;
 import me.falu.peepopractice.core.category.PracticeCategoriesAny;
+import me.falu.peepopractice.core.category.properties.WorldProperties;
 import me.falu.peepopractice.core.category.properties.event.EnterVehicleSplitEvent;
 import me.falu.peepopractice.core.exception.NotInitializedException;
 import me.falu.peepopractice.core.category.CategoryPreference;
@@ -14,6 +15,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -180,6 +182,16 @@ public abstract class ServerPlayerEntityMixin extends LivingEntity {
                 if (InGameTimer.getInstance().getStatus() != TimerStatus.NONE && event.hasDimension() && event.getDimension() == destination.getRegistryKey()) {
                     event.complete(!this.isDead());
                     cir.setReturnValue(this);
+                }
+            }
+        }
+        if (destination.getRegistryKey().equals(World.END)) {
+            if (PeepoPractice.CATEGORY.hasWorldProperties()) {
+                WorldProperties properties = PeepoPractice.CATEGORY.getWorldProperties();;
+                if (properties.getDragonKilled()) {
+                    for (EnderDragonEntity dragon : destination.getAliveEnderDragons()) {
+                        dragon.damage(DamageSource.MAGIC, 5000);
+                    }
                 }
             }
         }

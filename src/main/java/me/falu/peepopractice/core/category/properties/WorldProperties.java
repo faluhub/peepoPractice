@@ -15,6 +15,7 @@ public class WorldProperties extends BaseProperties {
     private String seedListPath = null;
     private final Map<Biome, @Nullable Integer> antiBiomeRangeMap = new HashMap<>();
     private final Map<Biome, Range> proBiomeRangeMap = new HashMap<>();
+    private boolean dragonKilled = false;
 
     public RegistryKey<World> getWorldRegistryKey() {
         return this.worldRegistryKey;
@@ -70,6 +71,15 @@ public class WorldProperties extends BaseProperties {
 
     public WorldProperties setSeedListPath(String seedListPath) {
         this.seedListPath = seedListPath;
+        return this;
+    }
+
+    public boolean getDragonKilled() {
+        return this.dragonKilled;
+    }
+
+    public WorldProperties setDragonKilled(boolean dragonKilled) {
+        this.dragonKilled = dragonKilled;
         return this;
     }
 
