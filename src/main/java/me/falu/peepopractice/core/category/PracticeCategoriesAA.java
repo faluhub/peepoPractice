@@ -16,6 +16,7 @@ import java.util.List;
  * - End game
  * - Uneasy Alliance
  * - Igloo
+ * - Raid
  */
 @SuppressWarnings("UnusedDeclaration")
 public class PracticeCategoriesAA {
@@ -36,9 +37,15 @@ public class PracticeCategoriesAA {
             );
     public static final PracticeCategory END_GAME = new PracticeCategory(true)
             .setId("end_game")
+            .setPlayerProperties(new PlayerProperties()
+                    .runCommands(new String[] {
+                            "execute at @a run summon minecraft:boat ~ ~7 ~ {Passengers:[{id:\"minecraft:shulker\",Color:16}]}"
+                    })
+            )
             .setWorldProperties(new WorldProperties()
                     .setWorldRegistryKey(World.OVERWORLD)
                     .setSeedListPath("end_game")
+                    .setDragonKilled(true)
             )
             .setSplitEvent(new GetAdvancementSplitEvent()
                     .setAdvancement(null)

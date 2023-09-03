@@ -6,11 +6,13 @@ import me.falu.peepopractice.core.category.utils.InventoryUtils;
 import me.falu.peepopractice.core.global.GlobalOptions;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.ClientConnection;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -18,6 +20,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerManager.class)
 public abstract class PlayerManagerMixin {
+    @Shadow public abstract MinecraftServer getServer();
+
     @ModifyVariable(method = "onPlayerConnect", at = @At("STORE"))
     private RegistryKey<World> peepoPractice$otherDimension(RegistryKey<World> value) {
         if (PeepoPractice.CATEGORY.hasWorldProperties() && PeepoPractice.CATEGORY.getWorldProperties().hasWorldRegistryKey()) {
@@ -43,6 +47,12 @@ public abstract class PlayerManagerMixin {
             }
             if (GlobalOptions.GIVE_SATURATION.get(client.options)) {
                 player.getHungerManager().setSaturationLevelClient(10.0F);
+            }
+            if (PeepoPractice.CATEGORY.hasPlayerProperties()) {
+                for (String command : PeepoPractice.CATEGORY.getPlayerProperties().getCommands()) {
+                    PeepoPractice.log(command);
+                    this.getServer().getCommandManager().execute(player.getCommandSource(), command);
+                }
             }
         }
     }
