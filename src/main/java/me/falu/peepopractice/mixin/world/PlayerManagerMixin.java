@@ -58,23 +58,23 @@ public abstract class PlayerManagerMixin {
                     this.getServer().getCommandManager().execute(
                             new ServerCommandSource(
                                     new CommandOutput() {
-                                            @Override
-                                            public void sendSystemMessage(Text message, UUID senderUuid) {}
+                                        @Override
+                                        public void sendSystemMessage(Text message, UUID senderUuid) {}
 
-                                            @Override
-                                            public boolean shouldReceiveFeedback() {
-                                                return false;
-                                            }
+                                        @Override
+                                        public boolean shouldReceiveFeedback() {
+                                            return false;
+                                        }
 
-                                            @Override
-                                            public boolean shouldTrackOutput() {
-                                                return false;
-                                            }
+                                        @Override
+                                        public boolean shouldTrackOutput() {
+                                            return false;
+                                        }
 
-                                            @Override
-                                            public boolean shouldBroadcastConsoleToOps() {
-                                                return false;
-                                            }
+                                        @Override
+                                        public boolean shouldBroadcastConsoleToOps() {
+                                            return false;
+                                        }
                                     },
                                     player.getPos(),
                                     player.getRotationClient(),
