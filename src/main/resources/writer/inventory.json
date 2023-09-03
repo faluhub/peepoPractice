@@ -207,7 +207,7 @@
     "7": "{id:\"minecraft:cooked_cod\",Count:2b}",
     "8": "{id:\"minecraft:cooked_salmon\",Count:4b}"
   },
-  "uneasy_alliance": {
+  "uneasy_alliance_split": {
     "0": "{id:\"minecraft:diamond_sword\",Count:1b,tag:{Damage:0,Enchantments:[{lvl:3s,id:\"minecraft:unbreaking\"},{lvl:4s,id:\"minecraft:smite\"},{lvl:3s,id:\"minecraft:looting\"}]}}",
     "1": "{id:\"minecraft:diamond_pickaxe\",Count:1b,tag:{Damage:0,Enchantments:[{lvl:3s,id:\"minecraft:unbreaking\"},{lvl:5s,id:\"minecraft:efficiency\"}]}}",
     "2": "{id:\"minecraft:diamond_axe\",Count:1b,tag:{Damage:0,Enchantments:[{lvl:3s,id:\"minecraft:unbreaking\"},{lvl:4s,id:\"minecraft:efficiency\"}]}}",
@@ -226,7 +226,7 @@
     "38": "{id:\"minecraft:elytra\",Count:1b,tag:{Damage:0,Enchantments:[{lvl:1s,id:\"minecraft:mending\"}]}}",
     "39": "{id:\"minecraft:diamond_helmet\",Count:1b,tag:{Damage:0,Enchantments:[{lvl:3s,id:\"minecraft:unbreaking\"},{lvl:4s,id:\"minecraft:protection\"}]}}"
   },
-  "end_game": {
+  "end_game_split": {
     "0": "{id:\"minecraft:diamond_sword\",Count:1b,tag:{Damage:0,Enchantments:[{lvl:3s,id:\"minecraft:unbreaking\"},{lvl:4s,id:\"minecraft:smite\"},{lvl:3s,id:\"minecraft:looting\"}]}}",
     "1": "{id:\"minecraft:diamond_pickaxe\",Count:1b,tag:{Damage:0,Enchantments:[{lvl:3s,id:\"minecraft:unbreaking\"},{lvl:5s,id:\"minecraft:efficiency\"}]}}",
     "2": "{id:\"minecraft:diamond_axe\",Count:1b,tag:{Damage:0,Enchantments:[{lvl:3s,id:\"minecraft:unbreaking\"},{lvl:4s,id:\"minecraft:efficiency\"}]}}",

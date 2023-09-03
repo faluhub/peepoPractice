@@ -69,7 +69,7 @@ public class WorldProperties extends BaseProperties {
         return this.seedListPath != null;
     }
 
-    public WorldProperties setSeedListPath(String seedListPath) {
+    public WorldProperties setSeedList(String seedListPath) {
         this.seedListPath = seedListPath;
         return this;
     }

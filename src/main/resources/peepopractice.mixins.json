@@ -46,11 +46,14 @@
     "world.biome.VanillaLayeredBiomeSourceMixin",
 
     "world.category.CarverMixin",
+    "world.category.IglooGeneratorMixin",
 
     "world.entity.ai.HoldingPatternPhaseMixin",
 
     "world.entity.category.BlazeEntityMixin",
     "world.entity.category.MobEntityMixin",
+
+    "world.entity.dragon.EnderDragonFightMixin",
 
     "world.entity.ClientPlayerEntityMixin",
     "world.entity.EyeOfEnderEntityMixin",

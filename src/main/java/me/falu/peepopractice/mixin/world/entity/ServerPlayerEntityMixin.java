@@ -185,16 +185,6 @@ public abstract class ServerPlayerEntityMixin extends LivingEntity {
                 }
             }
         }
-        if (destination.getRegistryKey().equals(World.END)) {
-            if (PeepoPractice.CATEGORY.hasWorldProperties()) {
-                WorldProperties properties = PeepoPractice.CATEGORY.getWorldProperties();
-                if (properties.getDragonKilled()) {
-                    for (EnderDragonEntity dragon : destination.getAliveEnderDragons()) {
-                        dragon.damage(DamageSource.MAGIC, 5000);
-                    }
-                }
-            }
-        }
     }
 
     @Inject(method = "onDeath", at = @At("HEAD"))

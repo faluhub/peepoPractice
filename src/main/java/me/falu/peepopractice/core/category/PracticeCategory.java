@@ -172,7 +172,7 @@ public class PracticeCategory {
         return this.fillerCategory;
     }
 
-    public PracticeCategory setIsFillerCategory(boolean fillerCategory) {
+    public PracticeCategory setFillerCategory(boolean fillerCategory) {
         this.fillerCategory = fillerCategory;
         return this;
     }
@@ -185,8 +185,9 @@ public class PracticeCategory {
         return this.customValues.containsKey(key);
     }
 
-    public void putCustomValue(String key, Object value) {
+    public PracticeCategory putCustomValue(String key, Object value) {
         this.customValues.put(key, value);
+        return this;
     }
 
     public void removeCustomValue(String key) {

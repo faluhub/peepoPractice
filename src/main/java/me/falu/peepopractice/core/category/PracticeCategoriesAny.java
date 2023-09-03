@@ -45,7 +45,7 @@ public class PracticeCategoriesAny {
     public static final List<PracticeCategory> ALL = new ArrayList<>();
     public static final PracticeCategory EMPTY = new PracticeCategory()
             .setId("empty")
-            .setIsFillerCategory(true)
+            .setFillerCategory(true)
             .setHidden(true);
     public static final PracticeCategory MAPLESS_SPLIT = new PracticeCategory()
             .setId("mapless_split")
@@ -203,7 +203,7 @@ public class PracticeCategoriesAny {
             );
     public static final PracticeCategory BASTION_SPLIT = new PracticeCategory()
             .setId("bastion_split")
-            .setIsFillerCategory(true)
+            .setFillerCategory(true)
             .addStructureProperties(new StructureProperties()
                     .setStructure(DefaultBiomeFeatures.BASTION_REMNANT)
                     .setChunkPos((category, random, world) -> {
@@ -238,7 +238,7 @@ public class PracticeCategoriesAny {
             .addPreference(StructurePreset.SPAWN_LOCATION_PREFERENCE);
     public static final PracticeCategory FORTRESS_SPLIT = new PracticeCategory()
             .setId("fortress_split")
-            .setIsFillerCategory(true)
+            .setFillerCategory(true)
             .addStructureProperties(new StructureProperties()
                     .setStructure(DefaultBiomeFeatures.FORTRESS)
                     .setChunkPos((category, random, world) -> new ChunkPos(0, 0))

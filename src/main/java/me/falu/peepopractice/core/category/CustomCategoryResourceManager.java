@@ -67,7 +67,7 @@ public class CustomCategoryResourceManager {
                             aa = main.get("aa").getAsBoolean();
                         }
                         PracticeCategory category = new PracticeCategory(aa, true);
-                        category = category.setIsFillerCategory(true);
+                        category = category.setFillerCategory(true);
 
                         if (main.has("id")) {
                             category = category.setId(main.get("id").getAsString());
