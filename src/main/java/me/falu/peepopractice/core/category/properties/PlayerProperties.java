@@ -8,6 +8,8 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec2f;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 @SuppressWarnings("UnusedDeclaration")
@@ -17,6 +19,7 @@ public class PlayerProperties extends BaseProperties {
     private Vec2f spawnAngle;
     private PracticeCategory.ExecuteReturnTask<Vec2f> spawnAngleTask;
     private EntityType<? extends Entity> vehicle;
+    private final List<String> commands = new ArrayList<>();
 
     public BlockPos getSpawnPos() {
         return this.spawnPos != null ? this.spawnPos : new BlockPos(0, 62, 0);
@@ -64,6 +67,15 @@ public class PlayerProperties extends BaseProperties {
 
     public PlayerProperties setVehicle(EntityType<? extends Entity> vehicle) {
         this.vehicle = vehicle;
+        return this;
+    }
+
+    public List<String> getCommands() {
+        return this.commands;
+    }
+
+    public PlayerProperties runCommands(String[] commands) {
+        this.commands.addAll(List.of(commands));
         return this;
     }
 
