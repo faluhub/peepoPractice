@@ -1,6 +1,8 @@
 package me.falu.peepopractice.mixin;
 
+import com.google.common.collect.Sets;
 import com.redlimerl.speedrunigt.timer.InGameTimer;
+import com.redlimerl.speedrunigt.timer.TimerAdvancementTracker;
 import com.redlimerl.speedrunigt.timer.TimerStatus;
 import me.falu.peepopractice.PeepoPractice;
 import me.falu.peepopractice.core.category.PracticeCategoriesAny;
@@ -19,11 +21,16 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 import java.util.Map;
+import java.util.Set;
 
 @Mixin(ClientAdvancementManager.class)
 public abstract class ClientAdvancementManagerMixin {
     @Shadow @Final private AdvancementManager manager;
     @Shadow @Final private MinecraftClient client;
+
+    @Shadow public abstract AdvancementManager getManager();
+
+    @Shadow @Final public Map<Advancement, AdvancementProgress> advancementProgresses;
 
     @ModifyVariable(method = "onAdvancements", at = @At(value = "INVOKE", target = "Ljava/util/Map$Entry;getValue()Ljava/lang/Object;"))
     private Map.Entry<Identifier, AdvancementProgress> peepoPractice$advancement(Map.Entry<Identifier, AdvancementProgress> value) {
@@ -37,19 +44,9 @@ public abstract class ClientAdvancementManagerMixin {
                         if (PeepoPractice.CATEGORY.getSplitEvent() instanceof GetAdvancementSplitEvent) {
                             GetAdvancementSplitEvent event = (GetAdvancementSplitEvent) PeepoPractice.CATEGORY.getSplitEvent();
                             if (event.allAdvancements()) {
-                                boolean completedAll = true;
-                                for (String advancementKey : PracticeCategoryUtils.ADVANCEMENTS) {
-                                    Advancement advancement1 = this.manager.get(new Identifier(advancementKey));
-                                    if (advancement1 != null) {
-                                        AdvancementProgress progress1 = new AdvancementProgress();
-                                        progress1.init(advancement1.getCriteria(), advancement1.getRequirements());
-                                        if (!progress1.isDone()) {
-                                            completedAll = false;
-                                            break;
-                                        }
-                                    }
-                                }
-                                if (completedAll) {
+                                InGameTimer timer = InGameTimer.getInstance();
+                                int maxCount = timer.getMoreData(7441) == 0 ? 80 : timer.getMoreData(7441);
+                                if (this.getCompleteAdvancementsCount() >= maxCount) {
                                     event.complete(this.client.player != null && !this.client.player.isDead());
                                 }
                             } else if (advancement.getId().getPath().equals(event.getAdvancement().getPath())) {
@@ -67,5 +64,25 @@ public abstract class ClientAdvancementManagerMixin {
             }
         }
         return value;
+    }
+
+    private int getCompleteAdvancementsCount() {
+        Set<String> completedAdvancements = Sets.newHashSet();
+        for (Map.Entry<String, TimerAdvancementTracker.AdvancementTrack> track : InGameTimer.getInstance().getAdvancementsTracker().getAdvancements().entrySet()) {
+            if (track.getValue().isAdvancement() && track.getValue().isComplete()) completedAdvancements.add(track.getKey());
+        }
+        for (Advancement advancement : this.getManager().getAdvancements()) {
+            if (this.advancementProgresses.containsKey(advancement) && advancement.getDisplay() != null) {
+                AdvancementProgress advancementProgress = this.advancementProgresses.get(advancement);
+
+                advancementProgress.init(advancement.getCriteria(), advancement.getRequirements());
+                String advancementID = advancement.getId().toString();
+                if (advancementProgress.isDone() && completedAdvancements.contains(advancementID)) {
+                    completedAdvancements.add(advancementID);
+                    InGameTimer.getInstance().tryInsertNewAdvancement(advancementID, null, true);
+                }
+            }
+        }
+        return completedAdvancements.size();
     }
 }
