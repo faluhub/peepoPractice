@@ -7,7 +7,6 @@ import com.redlimerl.speedrunigt.timer.TimerStatus;
 import me.falu.peepopractice.PeepoPractice;
 import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import me.falu.peepopractice.core.category.properties.event.GetAdvancementSplitEvent;
-import me.falu.peepopractice.core.category.utils.PracticeCategoryUtils;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementManager;
 import net.minecraft.advancement.AdvancementProgress;

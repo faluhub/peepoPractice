@@ -12,7 +12,7 @@ import java.util.List;
 public class DefaultFileWriter {
     public static final DefaultFileWriter INSTANCE = new DefaultFileWriter();
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressWarnings({ "ResultOfMethodCallIgnored", "BlockingMethodInNonBlockingContext" })
     public void writeDefaultFiles() {
         try {
             File folder = FabricLoader.getInstance().getConfigDir().resolve(PeepoPractice.MOD_NAME).toFile();
@@ -42,6 +42,7 @@ public class DefaultFileWriter {
         }
     }
 
+    @SuppressWarnings("BlockingMethodInNonBlockingContext")
     private List<String> getResourceFiles(String path, String prefix) throws IOException {
         List<String> filenames = new ArrayList<>();
 
