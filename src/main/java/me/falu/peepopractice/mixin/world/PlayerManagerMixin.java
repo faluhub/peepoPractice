@@ -84,7 +84,9 @@ public abstract class PlayerManagerMixin {
                                     player.getDisplayName(),
                                     this.getServer(),
                                     player
-                    ), command);
+                            ),
+                            command
+                    );
                 }
             }
         }
