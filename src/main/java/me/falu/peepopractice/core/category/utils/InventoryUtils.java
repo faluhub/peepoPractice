@@ -33,10 +33,10 @@ public class InventoryUtils {
                         }
                     }
                     inventory.setStack(Integer.parseInt(set.getKey()), stack);
-                } catch (CommandSyntaxException ignored) {
-                    PeepoPractice.LOGGER.error("Couldn't parse inventory contents for inventory '{}'.", category.getId());
-                } catch (NumberFormatException ignored) {
-                    PeepoPractice.LOGGER.error("Couldn't parse slot index: '{}' is not a valid number.", set.getKey());
+                } catch (CommandSyntaxException e) {
+                    PeepoPractice.LOGGER.error(String.format("Couldn't parse inventory contents for inventory '%s'.", category.getId()), e);
+                } catch (NumberFormatException e) {
+                    PeepoPractice.LOGGER.error(String.format("Couldn't parse slot index: '%s' is not a valid number.", set.getKey()), e);
                 }
             });
         }

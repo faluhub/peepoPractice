@@ -1,16 +1,19 @@
 package me.falu.peepopractice.core.writer;
 
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import me.falu.peepopractice.PeepoPractice;
 import net.fabricmc.loader.api.FabricLoader;
+import org.apache.commons.io.FileUtils;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class DefaultFileWriter {
     public static final DefaultFileWriter INSTANCE = new DefaultFileWriter();
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     @SuppressWarnings({ "ResultOfMethodCallIgnored", "BlockingMethodInNonBlockingContext" })
     public void writeDefaultFiles() {
@@ -22,17 +25,38 @@ public class DefaultFileWriter {
             List<String> resources = this.getResourceFiles("writer", "");
             for (String resource : resources) {
                 File destination = folder.toPath().resolve(resource).toFile();
-                if (!destination.exists()) {
-                    if (!destination.getParentFile().exists()) {
-                        destination.getParentFile().mkdirs();
-                    }
-                    destination.createNewFile();
-                    try (InputStream stream = this.getClass().getClassLoader().getResourceAsStream("writer/" + resource)) {
-                        if (stream != null) {
+                try (InputStream stream = this.getClass().getClassLoader().getResourceAsStream("writer/" + resource)) {
+                    if (stream != null) {
+                        JsonParser parser = new JsonParser();
+                        JsonElement defaultElement = parser.parse(new InputStreamReader(stream, StandardCharsets.UTF_8));
+                        if (!destination.exists()) {
+                            if (!destination.getParentFile().exists()) {
+                                destination.getParentFile().mkdirs();
+                            }
+                            destination.createNewFile();
                             FileWriter writer = new FileWriter(destination);
-                            writer.write(PracticeWriter.GSON.toJson(new JsonParser().parse(new InputStreamReader(stream, StandardCharsets.UTF_8))));
+                            writer.write(GSON.toJson(defaultElement));
                             writer.flush();
                             writer.close();
+                        } else if (defaultElement.isJsonObject()) {
+                            JsonElement element = parser.parse(FileUtils.readFileToString(destination, StandardCharsets.UTF_8));
+                            if (element.isJsonObject()) {
+                                JsonObject defaultObject = defaultElement.getAsJsonObject();
+                                JsonObject object = element.getAsJsonObject();
+                                boolean hasChanged = false;
+                                for (Map.Entry<String, JsonElement> entry : defaultObject.entrySet()) {
+                                    if (!object.has(entry.getKey())) {
+                                        object.add(entry.getKey(), entry.getValue());
+                                        hasChanged = true;
+                                    }
+                                }
+                                if (hasChanged) {
+                                    FileWriter writer = new FileWriter(destination);
+                                    writer.write(GSON.toJson(object));
+                                    writer.flush();
+                                    writer.close();
+                                }
+                            }
                         }
                     }
                 }
