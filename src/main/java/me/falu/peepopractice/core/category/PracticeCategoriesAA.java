@@ -4,6 +4,7 @@ import me.falu.peepopractice.core.CustomPortalForcer;
 import me.falu.peepopractice.core.category.properties.PlayerProperties;
 import me.falu.peepopractice.core.category.properties.WorldProperties;
 import me.falu.peepopractice.core.category.properties.event.GetAdvancementSplitEvent;
+import me.falu.peepopractice.core.category.properties.preset.CommandsPreset;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -39,8 +40,9 @@ public class PracticeCategoriesAA {
             .setId("end_game")
             .setPlayerProperties(new PlayerProperties()
                     .runCommands(new String[] {
-                            "execute at @a run summon minecraft:boat ~ ~7 ~ {Passengers:[{id:\"minecraft:shulker\",Color:16}]}"
+                            "execute at @a run summon minecraft:boat ~1 ~3 ~ {Passengers:[{id:\"minecraft:shulker\",Color:16}]}"
                     })
+                    .runCommands(CommandsPreset.ADVANCEMENT_GRANT_END_GAME)
             )
             .setWorldProperties(new WorldProperties()
                     .setWorldRegistryKey(World.OVERWORLD)
