@@ -8,7 +8,7 @@ import com.redlimerl.speedrunigt.option.SpeedRunOptions;
 import com.redlimerl.speedrunigt.timer.InGameTimer;
 import com.redlimerl.speedrunigt.timer.TimerStatus;
 import me.falu.peepopractice.PeepoPractice;
-import me.falu.peepopractice.core.PracticeWriter;
+import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.mixin.access.ServerWorldAccessor;
 import net.minecraft.client.MinecraftClient;

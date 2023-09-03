@@ -1,7 +1,7 @@
-package me.falu.peepopractice;
+package me.falu.peepopractice.core.writer;
 
 import com.google.gson.JsonParser;
-import me.falu.peepopractice.core.PracticeWriter;
+import me.falu.peepopractice.PeepoPractice;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.*;

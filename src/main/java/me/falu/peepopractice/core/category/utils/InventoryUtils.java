@@ -3,7 +3,7 @@ package me.falu.peepopractice.core.category.utils;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.falu.peepopractice.PeepoPractice;
-import me.falu.peepopractice.core.PracticeWriter;
+import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.core.item.RandomToolItem;
 import me.falu.peepopractice.core.playerless.PlayerlessInventory;

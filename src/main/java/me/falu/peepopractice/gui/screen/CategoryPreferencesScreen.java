@@ -1,7 +1,7 @@
 package me.falu.peepopractice.gui.screen;
 
 import me.falu.peepopractice.PeepoPractice;
-import me.falu.peepopractice.core.PracticeWriter;
+import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.core.category.CategoryPreference;
 import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.core.category.utils.PracticeCategoryUtils;

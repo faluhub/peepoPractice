@@ -1,7 +1,7 @@
 package me.falu.peepopractice.core.global;
 
 import com.google.gson.JsonPrimitive;
-import me.falu.peepopractice.core.PracticeWriter;
+import me.falu.peepopractice.core.writer.PracticeWriter;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.BooleanOption;
 import net.minecraft.client.options.DoubleOption;

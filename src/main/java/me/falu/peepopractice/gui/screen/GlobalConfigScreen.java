@@ -1,7 +1,7 @@
 package me.falu.peepopractice.gui.screen;
 
 import me.falu.peepopractice.PeepoPractice;
-import me.falu.peepopractice.core.PracticeWriter;
+import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.core.global.GlobalOptions;
 import me.falu.peepopractice.gui.widget.LimitlessButtonWidget;
 import me.falu.peepopractice.gui.widget.LimitlessDoubleOptionSliderWidget;

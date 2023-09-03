@@ -2,7 +2,7 @@ package me.falu.peepopractice.core.category.utils;
 
 import com.google.gson.JsonObject;
 import me.falu.peepopractice.PeepoPractice;
-import me.falu.peepopractice.core.PracticeWriter;
+import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.mixin.access.MinecraftClientAccessor;
 import net.minecraft.client.MinecraftClient;

@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.falu.peepopractice.PeepoPractice;
-import me.falu.peepopractice.core.PracticeWriter;
+import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.core.category.utils.PracticeCategoryUtils;
 import me.falu.peepopractice.gui.widget.CategoryListWidget;

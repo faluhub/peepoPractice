@@ -1,7 +1,6 @@
-package me.falu.peepopractice.core;
+package me.falu.peepopractice.core.writer;
 
 import com.google.gson.*;
-import me.falu.peepopractice.DefaultFileWriter;
 import me.falu.peepopractice.PeepoPractice;
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -9,6 +8,7 @@ import java.io.*;
 
 public class PracticeWriter {
     static { DefaultFileWriter.INSTANCE.writeDefaultFiles(); }
+
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     public static final PracticeWriter PREFERENCES_WRITER = new PracticeWriter("preferences.json");
     public static final PracticeWriter INVENTORY_WRITER = new PracticeWriter("inventory.json");

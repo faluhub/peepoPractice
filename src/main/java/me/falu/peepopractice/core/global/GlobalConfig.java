@@ -2,7 +2,7 @@ package me.falu.peepopractice.core.global;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import me.falu.peepopractice.core.PracticeWriter;
+import me.falu.peepopractice.core.writer.PracticeWriter;
 
 public class GlobalConfig {
     public static double getDoubleValue(String key, double def) {

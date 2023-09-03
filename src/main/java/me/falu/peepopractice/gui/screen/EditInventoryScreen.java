@@ -8,7 +8,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.datafixers.util.Pair;
 import me.falu.peepopractice.PeepoPractice;
 import me.falu.peepopractice.core.category.utils.InventoryUtils;
-import me.falu.peepopractice.core.PracticeWriter;
+import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.core.playerless.PlayerlessHandledScreen;
 import me.falu.peepopractice.core.playerless.PlayerlessInventory;
