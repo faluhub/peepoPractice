@@ -18,18 +18,26 @@ import java.util.Random;
 @Mixin(MoreOptionsDialog.class)
 public class MoreOptionsDialogMixin {
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    @ModifyArg(method = "getGeneratorOptions", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/gen/GeneratorOptions;withHardcore(ZLjava/util/OptionalLong;)Lnet/minecraft/world/gen/GeneratorOptions;", ordinal = 0), index = 1)
+    @ModifyArg(
+            method = "getGeneratorOptions",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/gen/GeneratorOptions;withHardcore(ZLjava/util/OptionalLong;)Lnet/minecraft/world/gen/GeneratorOptions;",
+                    ordinal = 0
+            ),
+            index = 1
+    )
     private OptionalLong peepoPractice$insertSeedList(OptionalLong original) {
         if (PeepoPractice.CATEGORY.hasWorldProperties()) {
             if (PeepoPractice.CATEGORY.getWorldProperties().hasSeedListPath()) {
                 String seedListPath = PeepoPractice.CATEGORY.getWorldProperties().getSeedListPath();
                 try {
-                    String content = FileUtils.readFileToString(FabricLoader.getInstance().getConfigDir().resolve(seedListPath).toFile(), Charset.defaultCharset());
+                    String content = FileUtils.readFileToString(FabricLoader.getInstance().getConfigDir().resolve(PeepoPractice.MOD_NAME + "/seed_lists/" + seedListPath + ".json").toFile(), Charset.defaultCharset());
                     JsonArray seeds = new JsonParser().parse(content).getAsJsonArray();
                     long seed = seeds.get(new Random().nextInt(seeds.size() - 1)).getAsLong();
                     return OptionalLong.of(seed);
                 } catch (IOException e) {
-                    PeepoPractice.LOGGER.error("Couldn't load seed list.");
+                    PeepoPractice.LOGGER.error("Couldn't load seed list", e);
                 }
             }
         }
