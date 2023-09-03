@@ -35,6 +35,7 @@
   "breaks": {
     "worldpreview": "*",
     "mcsrranked": "*",
-    "standardsettings": "<1.2.2"
+    "standardsettings": "<1.2.2",
+    "stronghold-trainer": "*"
   }
 }
