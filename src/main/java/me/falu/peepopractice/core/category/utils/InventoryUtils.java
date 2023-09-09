@@ -15,6 +15,7 @@ import net.minecraft.nbt.StringNbtReader;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class InventoryUtils {
     public static final List<ItemStack> PREVIOUS_INVENTORY = new ArrayList<>();
@@ -30,6 +31,13 @@ public class InventoryUtils {
                     if (!(inventory instanceof PlayerlessInventory)) {
                         if (stack.getItem() instanceof RandomToolItem) {
                             stack = ((RandomToolItem) stack.getItem()).convert();
+                        }
+                        if (stack.getTag() != null && stack.getTag().contains("MaxCount")) {
+                            int minCount = stack.getTag().getInt("MinCount");
+                            int maxCount = stack.getTag().getInt("MaxCount");
+                            int count = minCount == maxCount ? minCount : new Random().nextInt(maxCount - minCount) + minCount;
+                            stack.setCount(count);
+                            stack.setTag(null);
                         }
                     }
                     inventory.setStack(Integer.parseInt(set.getKey()), stack);

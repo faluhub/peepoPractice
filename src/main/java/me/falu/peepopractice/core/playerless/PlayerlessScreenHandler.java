@@ -3,6 +3,7 @@ package me.falu.peepopractice.core.playerless;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import me.falu.peepopractice.PeepoPractice;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;

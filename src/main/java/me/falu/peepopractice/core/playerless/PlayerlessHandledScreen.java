@@ -4,8 +4,10 @@ import com.google.common.collect.Sets;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.datafixers.util.Pair;
 import me.falu.peepopractice.PeepoPractice;
+import me.falu.peepopractice.gui.widget.LimitlessButtonWidget;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
@@ -15,6 +17,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
@@ -23,8 +26,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 public abstract class PlayerlessHandledScreen extends Screen {
     protected int backgroundWidth = 176;
@@ -55,6 +57,7 @@ public abstract class PlayerlessHandledScreen extends Screen {
     private int lastClickedButton;
     private boolean isDoubleClicking;
     private ItemStack quickMovingStack;
+    private final Map<Slot, List<ButtonWidget>> slotToButtonsMap;
 
     public PlayerlessHandledScreen(PlayerlessScreenHandler handler, PlayerlessInventory inventory, Text title) {
         super(title);
@@ -65,6 +68,7 @@ public abstract class PlayerlessHandledScreen extends Screen {
         this.handler = handler;
         this.playerInventory = inventory;
         this.cancelNextRelease = true;
+        this.slotToButtonsMap = new HashMap<>();
     }
 
     protected void init() {
@@ -82,7 +86,7 @@ public abstract class PlayerlessHandledScreen extends Screen {
         RenderSystem.disableDepthTest();
         super.render(matrices, mouseX, mouseY, delta);
         RenderSystem.pushMatrix();
-        RenderSystem.translatef((float)i, (float)j, 0.0F);
+        RenderSystem.translatef((float) i, (float) j, 0.0F);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.enableRescaleNormal();
         this.focusedSlot = null;
@@ -90,7 +94,7 @@ public abstract class PlayerlessHandledScreen extends Screen {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         int r;
-        for(int m = 0; m < this.handler.slots.size(); ++m) {
+        for (int m = 0; m < this.handler.slots.size(); ++m) {
             Slot slot = this.handler.slots.get(m);
             if (slot.doDrawHoveringEffect()) {
                 this.drawSlot(matrices, slot);
@@ -98,6 +102,89 @@ public abstract class PlayerlessHandledScreen extends Screen {
 
             if (this.isPointOverSlot(slot, mouseX, mouseY) && slot.doDrawHoveringEffect()) {
                 this.focusedSlot = slot;
+                if (!this.slotToButtonsMap.containsKey(this.focusedSlot) && !this.focusedSlot.getStack().isEmpty()) {
+                    List<ButtonWidget> buttons = new ArrayList<>();
+                    buttons.add(
+                            // min +
+                            new LimitlessButtonWidget(
+                                    this.x + this.focusedSlot.x,
+                                    this.y + this.focusedSlot.y,
+                                    4,
+                                    4,
+                                    new LiteralText("+"),
+                                    button -> {
+                                        ItemStack stack = this.focusedSlot.getStack();
+                                        CompoundTag tag = stack.getTag() != null ? stack.getTag() : new CompoundTag();
+                                        int min = tag.getInt("MinCount");
+                                        int max = Math.min(tag.getInt("MaxCount"), stack.getMaxCount());
+                                        if (min + 1 <= max) {
+                                            tag.putInt("MinCount", min + 1);
+                                            stack.setTag(tag);
+                                        }
+                                    }
+                            )
+                    );
+                    buttons.add(
+                            // min -
+                            new LimitlessButtonWidget(
+                                    this.x + this.focusedSlot.x,
+                                    this.y + this.focusedSlot.y + 6,
+                                    4,
+                                    4,
+                                    new LiteralText("-"),
+                                    button -> {
+                                        ItemStack stack = this.focusedSlot.getStack();
+                                        CompoundTag tag = stack.getTag() != null ? stack.getTag() : new CompoundTag();
+                                        int min = tag.getInt("MinCount");
+                                        if (min - 1 >= 0) {
+                                            tag.putInt("MinCount", min - 1);
+                                            stack.setTag(tag);
+                                        }
+                                    }
+                            )
+                    );
+                    buttons.add(
+                            // max +
+                            new LimitlessButtonWidget(
+                                    this.x + this.focusedSlot.x + 16 - 4,
+                                    this.y + this.focusedSlot.y,
+                                    4,
+                                    4,
+                                    new LiteralText("+"),
+                                    button -> {
+                                        ItemStack stack = this.focusedSlot.getStack();
+                                        CompoundTag tag = stack.getTag() != null ? stack.getTag() : new CompoundTag();
+                                        int max = tag.getInt("MaxCount");
+                                        if (max + 1 <= stack.getMaxCount()) {
+                                            tag.putInt("MaxCount", max + 1);
+                                            stack.setTag(tag);
+                                        }
+                                    }
+                            )
+                    );
+                    buttons.add(
+                            // max -
+                            new LimitlessButtonWidget(
+                                    this.x + this.focusedSlot.x + 16 - 4,
+                                    this.y + this.focusedSlot.y + 6,
+                                    4,
+                                    4,
+                                    new LiteralText("-"),
+                                    button -> {
+                                        ItemStack stack = this.focusedSlot.getStack();
+                                        CompoundTag tag = stack.getTag() != null ? stack.getTag() : new CompoundTag();
+                                        int min = tag.getInt("MinCount");
+                                        int max = tag.getInt("MaxCount");
+                                        if (max - 1 >= min) {
+                                            tag.putInt("MaxCount", max - 1);
+                                            stack.setTag(tag);
+                                        }
+                                    }
+                            )
+                    );
+                    this.slotToButtonsMap.put(this.focusedSlot, buttons);
+                    this.children.addAll(buttons);
+                }
                 RenderSystem.disableDepthTest();
                 int n = slot.x;
                 r = slot.y;
@@ -108,19 +195,38 @@ public abstract class PlayerlessHandledScreen extends Screen {
             }
         }
 
+        Iterator<Map.Entry<Slot, List<ButtonWidget>>> iterator = this.slotToButtonsMap.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Slot, List<ButtonWidget>> entry = iterator.next();
+            if (this.focusedSlot == null || entry.getKey().id != this.focusedSlot.id || !PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack().isEmpty()) {
+                for (ButtonWidget button : entry.getValue()) {
+                    this.buttons.remove(button);
+                    this.children.remove(button);
+                }
+                iterator.remove();
+            }
+        }
+
         PlayerlessInventory playerInventory = PeepoPractice.PLAYERLESS_INVENTORY;
         ItemStack itemStack = this.touchDragStack.isEmpty() ? playerInventory.getCursorStack() : this.touchDragStack;
         if (!itemStack.isEmpty()) {
-            r = this.touchDragStack.isEmpty() ? 8 : 16;
             String string = null;
-            if (!this.touchDragStack.isEmpty() && this.touchIsRightClickDrag) {
-                itemStack = itemStack.copy();
-                itemStack.setCount(MathHelper.ceil((float)itemStack.getCount() / 2.0F));
-            } else if (this.isCursorDragging && this.cursorDragSlots.size() > 1) {
-                itemStack = itemStack.copy();
-                itemStack.setCount(this.draggedStackRemainder);
-                if (itemStack.isEmpty()) {
-                    string = Formatting.YELLOW + "0";
+            r = this.touchDragStack.isEmpty() ? 8 : 16;
+            CompoundTag tag = itemStack.getTag();
+            if (tag != null && (tag.contains("MinCount") || tag.contains("MaxCount"))) {
+                int min = tag.getInt("MinCount");
+                int max = tag.getInt("MaxCount");
+                string = min + "/" + max;
+            } else {
+                if (!this.touchDragStack.isEmpty() && this.touchIsRightClickDrag) {
+                    itemStack = itemStack.copy();
+                    itemStack.setCount(MathHelper.ceil((float)itemStack.getCount() / 2.0F));
+                } else if (this.isCursorDragging && this.cursorDragSlots.size() > 1) {
+                    itemStack = itemStack.copy();
+                    itemStack.setCount(this.draggedStackRemainder);
+                    if (itemStack.isEmpty()) {
+                        string = Formatting.YELLOW + "0";
+                    }
                 }
             }
 
@@ -128,7 +234,15 @@ public abstract class PlayerlessHandledScreen extends Screen {
         }
 
         if (!this.touchDropReturningStack.isEmpty() && this.touchDropOriginSlot != null) {
-            float f = (float)(Util.getMeasuringTimeMs() - this.touchDropTime) / 100.0F;
+            String string = null;
+            CompoundTag tag = this.touchDropReturningStack.getTag();
+            if (tag != null && (tag.contains("MinCount") || tag.contains("MaxCount"))) {
+                int min = tag.getInt("MinCount");
+                int max = tag.getInt("MaxCount");
+                string = min + "/" + max;
+            }
+
+            float f = (float) (Util.getMeasuringTimeMs() - this.touchDropTime) / 100.0F;
             if (f >= 1.0F) {
                 f = 1.0F;
                 this.touchDropReturningStack = ItemStack.EMPTY;
@@ -136,13 +250,23 @@ public abstract class PlayerlessHandledScreen extends Screen {
 
             r = this.touchDropOriginSlot.x - this.touchDropX;
             int s = this.touchDropOriginSlot.y - this.touchDropY;
-            int t = this.touchDropX + (int)((float)r * f);
-            int u = this.touchDropY + (int)((float)s * f);
-            this.drawItem(this.touchDropReturningStack, t, u, null);
+            int t = this.touchDropX + (int) ((float) r * f);
+            int u = this.touchDropY + (int) ((float) s * f);
+            this.drawItem(this.touchDropReturningStack, t, u, string);
         }
 
         RenderSystem.popMatrix();
         RenderSystem.enableDepthTest();
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef(0.0F, 0.0F, 32.0F);
+        this.setZOffset(2000);
+        for (List<ButtonWidget> buttons : this.slotToButtonsMap.values()) {
+            for (ButtonWidget button : buttons) {
+                button.render(matrices, mouseX, mouseY, delta);
+            }
+        }
+        this.setZOffset(0);
+        RenderSystem.popMatrix();
     }
 
     @SuppressWarnings("deprecation")
@@ -216,13 +340,11 @@ public abstract class PlayerlessHandledScreen extends Screen {
 
             RenderSystem.enableDepthTest();
             this.itemRenderer.renderInGui(itemStack, i, j);
-            if (itemStack.getTag() != null && itemStack.getTag().contains("DisplayItem")) {
-                Item displayItem = Registry.ITEM.get(new Identifier(itemStack.getTag().getString("DisplayItem")));
-                CompoundTag tag = new CompoundTag();
-                tag.putBoolean("IsDisplayItem", true);
-                ItemStack displayItemStack = new ItemStack(displayItem);
-                displayItemStack.setTag(tag);
-                this.itemRenderer.renderInGui(displayItemStack, i - 4, j + 4);
+            CompoundTag tag = itemStack.getTag();
+            if (tag != null && (tag.contains("MinCount") || tag.contains("MaxCount"))) {
+                int min = tag.getInt("MinCount");
+                int max = tag.getInt("MaxCount");
+                string = min + "/" + max;
             }
             this.itemRenderer.renderGuiItemOverlay(this.textRenderer, itemStack, i, j, string);
         }
@@ -252,7 +374,6 @@ public abstract class PlayerlessHandledScreen extends Screen {
                         itemStack2.setCount(j);
                     }
                 }
-
             }
         }
     }
