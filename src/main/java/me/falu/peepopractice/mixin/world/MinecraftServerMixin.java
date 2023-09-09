@@ -182,9 +182,9 @@ public abstract class MinecraftServerMixin {
     @ModifyExpressionValue(method = "setupSpawn", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/biome/source/BiomeSource;getSpawnBiomes()Ljava/util/List;"))
     private static List<Biome> peepoPractice$addOceanSpawnBiome(List<Biome> spawnBiomes) {
         if (PeepoPractice.CATEGORY.hasWorldProperties()) {
-            PeepoPractice.CATEGORY.getWorldProperties().getProBiomeRangeMap().forEach((k, v) -> {
-                if (BiomeLayers.isOcean(Registry.BIOME.getRawId(k))) {
-                    spawnBiomes.add(k);
+            PeepoPractice.CATEGORY.getWorldProperties().getProBiomes().forEach(v -> {
+                if (BiomeLayers.isOcean(Registry.BIOME.getRawId(v.getBiome()))) {
+                    spawnBiomes.add(v.getBiome());
                 }
             });
         }

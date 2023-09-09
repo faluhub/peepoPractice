@@ -5,16 +5,16 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("UnusedDeclaration")
 public class WorldProperties extends BaseProperties {
     private RegistryKey<World> worldRegistryKey;
     private boolean spawnChunksDisabled = false;
     private String seedListPath = null;
-    private final Map<Biome, @Nullable Integer> antiBiomeRangeMap = new HashMap<>();
-    private final Map<Biome, Range> proBiomeRangeMap = new HashMap<>();
+    private final List<BiomeModification> proBiomes = new ArrayList<>();
+    private final List<BiomeModification> antiBiomes = new ArrayList<>();
     private boolean dragonKilled = false;
 
     public RegistryKey<World> getWorldRegistryKey() {
@@ -39,25 +39,21 @@ public class WorldProperties extends BaseProperties {
         return this;
     }
 
-    public Map<Biome, Integer> getAntiBiomeRangeMap() {
-        return this.antiBiomeRangeMap;
+    public List<BiomeModification> getAntiBiomes() {
+        return this.antiBiomes;
     }
 
-    public WorldProperties addAntiBiomeRange(Biome biome, @Nullable Integer range) {
-        this.antiBiomeRangeMap.put(biome, range);
+    public WorldProperties addAntiBiome(BiomeModification antiBiome) {
+        this.antiBiomes.add(antiBiome);
         return this;
     }
 
-    public Map<Biome, Range> getProBiomeRangeMap() {
-        return this.proBiomeRangeMap;
+    public List<BiomeModification> getProBiomes() {
+        return this.proBiomes;
     }
 
-    public WorldProperties addProBiomeRange(Biome biome, @Nullable Integer range) {
-        return this.addProBiomeRange(biome, range, () -> true);
-    }
-
-    public WorldProperties addProBiomeRange(Biome biome, @Nullable Integer range, ConditionTask condition) {
-        this.proBiomeRangeMap.put(biome, new Range(range, condition));
+    public WorldProperties addProBiome(BiomeModification proBiome) {
+        this.proBiomes.add(proBiome);
         return this;
     }
 
@@ -83,25 +79,90 @@ public class WorldProperties extends BaseProperties {
         return this;
     }
 
-    public static class Range {
-        private final @Nullable Integer range;
-        private final ConditionTask condition;
+    public interface ConditionTask {
+        boolean execute();
+    }
 
-        public Range(@Nullable Integer range, ConditionTask condition) {
-            this.range = range;
-            this.condition = condition;
+    public static class Range {
+        private Integer range;
+        private ConditionTask condition = () -> true;
+        private final List<RegistryKey<World>> validDimensions = new ArrayList<>();
+
+        public Integer getRange() {
+            return this.range;
         }
 
-        public @Nullable Integer getRange() {
-            return this.range;
+        public Range setRange(Integer range) {
+            this.range = range;
+            return this;
         }
 
         public boolean shouldPlace() {
             return this.condition.execute();
         }
+
+        public Range setCondition(ConditionTask condition) {
+            this.condition = condition;
+            return this;
+        }
+
+        public boolean isValidDimension(RegistryKey<World> dimension) {
+            return this.validDimensions.contains(dimension);
+        }
+
+        public Range addValidDimension(RegistryKey<World> dimension) {
+            this.validDimensions.add(dimension);
+            return this;
+        }
+
+        public Range addValidDimensions(List<RegistryKey<World>> dimensions) {
+            this.validDimensions.addAll(dimensions);
+            return this;
+        }
     }
 
-    public interface ConditionTask {
-        boolean execute();
+    public static class BiomeModification {
+        private Biome biome;
+        private Range range;
+        private Biome replacement;
+
+        public Biome getBiome() {
+            return this.biome;
+        }
+
+        public boolean hasBiome() {
+            return this.biome != null;
+        }
+
+        public BiomeModification setBiome(Biome biome) {
+            this.biome = biome;
+            return this;
+        }
+
+        public Range getRange() {
+            return this.range;
+        }
+
+        public BiomeModification setRange(@Nullable Range range) {
+            this.range = range == null ? new Range().setRange(null) : range;
+            return this;
+        }
+
+        public boolean isInfinite() {
+            return this.range.getRange() == null;
+        }
+
+        public Biome getReplacement() {
+            return this.replacement;
+        }
+
+        public boolean hasReplacement() {
+            return this.replacement != null;
+        }
+
+        public BiomeModification setReplacement(Biome replacement) {
+            this.replacement = replacement;
+            return this;
+        }
     }
 }

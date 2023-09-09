@@ -29,6 +29,8 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class CustomCategoryResourceManager {
@@ -132,49 +134,63 @@ public class CustomCategoryResourceManager {
                             JsonObject worldProperties = main.get("world_properties").getAsJsonObject();
                             WorldProperties properties = new WorldProperties();
                             if (worldProperties.has("world_registry_key")) {
-                                String registryKeyName = worldProperties.get("world_registry_key").getAsString().toUpperCase(Locale.ROOT);
-                                RegistryKey<World> registryKey;
-                                switch (registryKeyName) {
-                                    default:
-                                    case "OVERWORLD":
-                                        registryKey = World.OVERWORLD;
-                                        break;
-                                    case "NETHER":
-                                        registryKey = World.NETHER;
-                                        break;
-                                    case "END":
-                                        registryKey = World.END;
-                                        break;
-                                }
-                                properties = properties.setWorldRegistryKey(registryKey);
+                                properties = properties.setWorldRegistryKey(parseDimensionKey(worldProperties.get("world_registry_key")));
                             }
                             if (worldProperties.has("spawn_chunks_disabled")) {
                                 properties = properties.setSpawnChunksDisabled(worldProperties.get("spawn_chunks_disabled").getAsBoolean());
                             }
-                            if (worldProperties.has("anti_biome_map")) {
-                                JsonArray array = worldProperties.get("anti_biome_map").getAsJsonArray();
+                            if (worldProperties.has("anti_biomes")) {
+                                JsonArray array = worldProperties.get("anti_biomes").getAsJsonArray();
                                 for (JsonElement element : array) {
                                     if (element instanceof JsonObject) {
                                         JsonObject antiBiomeInfo = (JsonObject) element;
-                                        if (antiBiomeInfo.has("biome") && antiBiomeInfo.has("range")) {
+                                        if (antiBiomeInfo.has("biome") && antiBiomeInfo.has("range") && antiBiomeInfo.has("replacement")) {
                                             Biome biome = Registry.BIOME.get(new Identifier(antiBiomeInfo.get("biome").getAsString()));
+                                            Biome replacement = Registry.BIOME.get(new Identifier(antiBiomeInfo.get("replacement").getAsString()));
                                             Integer range = antiBiomeInfo.get("range").getAsInt();
                                             range = range > 0 ? range : null;
-                                            properties = properties.addAntiBiomeRange(biome, range);
+                                            List<RegistryKey<World>> validDimensions = new ArrayList<>();
+                                            if (antiBiomeInfo.has("valid_dimensions")) {
+                                                JsonArray validDimensionsArray = antiBiomeInfo.get("valid_dimensions").getAsJsonArray();
+                                                for (JsonElement element1 : validDimensionsArray) {
+                                                    validDimensions.add(parseDimensionKey(element1));
+                                                }
+                                            }
+                                            properties = properties.addAntiBiome(new WorldProperties.BiomeModification()
+                                                    .setBiome(biome)
+                                                    .setReplacement(replacement)
+                                                    .setRange(new WorldProperties.Range()
+                                                            .setRange(range)
+                                                            .addValidDimensions(validDimensions)
+                                                    )
+                                            );
                                         }
                                     }
                                 }
                             }
-                            if (worldProperties.has("pro_biome_map")) {
-                                JsonArray array = worldProperties.get("pro_biome_map").getAsJsonArray();
+                            if (worldProperties.has("pro_biomes")) {
+                                JsonArray array = worldProperties.get("pro_biomes").getAsJsonArray();
                                 for (JsonElement element : array) {
                                     if (element instanceof JsonObject) {
-                                        JsonObject antiBiomeInfo = (JsonObject) element;
-                                        if (antiBiomeInfo.has("biome") && antiBiomeInfo.has("range")) {
-                                            Biome biome = Registry.BIOME.get(new Identifier(antiBiomeInfo.get("biome").getAsString()));
-                                            Integer range = antiBiomeInfo.get("range").getAsInt();
+                                        JsonObject proBiomeInfo = (JsonObject) element;
+                                        if (proBiomeInfo.has("biome") && proBiomeInfo.has("range")) {
+                                            Biome biome = Registry.BIOME.get(new Identifier(proBiomeInfo.get("biome").getAsString()));
+                                            Integer range = proBiomeInfo.get("range").getAsInt();
                                             range = range > 0 ? range : null;
-                                            properties = properties.addAntiBiomeRange(biome, range);
+                                            List<RegistryKey<World>> validDimensions = new ArrayList<>();
+                                            if (proBiomeInfo.has("valid_dimensions")) {
+                                                JsonArray validDimensionsArray = proBiomeInfo.get("valid_dimensions").getAsJsonArray();
+                                                for (JsonElement element1 : validDimensionsArray) {
+                                                    validDimensions.add(parseDimensionKey(element1));
+                                                }
+                                            }
+                                            properties = properties.addProBiome(new WorldProperties.BiomeModification()
+                                                    .setBiome(biome)
+                                                    .setRange(new WorldProperties.Range()
+                                                            .setRange(range)
+                                                            .addValidDimensions(validDimensions)
+                                                    )
+                                            );
                                         }
                                     }
                                 }
@@ -186,23 +202,12 @@ public class CustomCategoryResourceManager {
                             String eventId = splitEvent.get("id").getAsString().toLowerCase(Locale.ROOT);
                             switch (eventId) {
                                 case "change_dimension":
-                                    if (splitEvent.has("dimension")) {
+                                    if (splitEvent.has("to_dimension")) {
                                         ChangeDimensionSplitEvent event = new ChangeDimensionSplitEvent();
-                                        String registryKeyName = splitEvent.get("dimension").getAsString().toUpperCase(Locale.ROOT);
-                                        RegistryKey<World> registryKey;
-                                        switch (registryKeyName) {
-                                            default:
-                                            case "OVERWORLD":
-                                                registryKey = World.OVERWORLD;
-                                                break;
-                                            case "NETHER":
-                                                registryKey = World.NETHER;
-                                                break;
-                                            case "END":
-                                                registryKey = World.END;
-                                                break;
+                                        event = event.setToDimension(parseDimensionKey(splitEvent.get("to_dimension")));
+                                        if (splitEvent.has("from_dimension")) {
+                                            event = event.setFromDimension(parseDimensionKey(splitEvent.get("from_dimension")));
                                         }
-                                        event = event.setDimension(registryKey);
                                         category = category.setSplitEvent(event);
                                     }
                                     break;
@@ -253,6 +258,15 @@ public class CustomCategoryResourceManager {
             }
         } catch (IOException e) {
             throw new InvalidCategorySyntaxException();
+        }
+    }
+
+    public static RegistryKey<World> parseDimensionKey(JsonElement string) {
+        switch (string.getAsString().toUpperCase()) {
+            default:
+            case "OVERWORLD": return World.OVERWORLD;
+            case "NETHER": return World.NETHER;
+            case "END": return World.END;
         }
     }
 }

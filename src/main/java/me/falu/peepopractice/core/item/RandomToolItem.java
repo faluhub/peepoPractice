@@ -9,14 +9,16 @@ import java.util.Random;
 
 public class RandomToolItem extends ToolItem {
     private final ToolType toolType;
+    private final String[] materials;
 
-    public RandomToolItem(ToolType toolType) {
+    public RandomToolItem(ToolType toolType, String ...materials) {
         super(ToolMaterials.DIAMOND, new Settings().group(ItemGroup.TOOLS));
         this.toolType = toolType;
+        this.materials = materials;
     }
 
     public ItemStack convert() {
-        String material = new Random().nextBoolean() ? "iron" : "diamond";
+        String material = this.materials[new Random().nextInt(this.materials.length)];
         Item item = Registry.ITEM.get(new Identifier(material + "_" + this.toolType.getRegistrySuffix()));
         return new ItemStack(item);
     }

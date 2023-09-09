@@ -4,7 +4,6 @@ import com.redlimerl.speedrunigt.timer.InGameTimer;
 import com.redlimerl.speedrunigt.timer.TimerStatus;
 import me.falu.peepopractice.PeepoPractice;
 import me.falu.peepopractice.core.category.PracticeCategoriesAny;
-import me.falu.peepopractice.core.category.properties.WorldProperties;
 import me.falu.peepopractice.core.category.properties.event.EnterVehicleSplitEvent;
 import me.falu.peepopractice.core.exception.NotInitializedException;
 import me.falu.peepopractice.core.category.CategoryPreference;
@@ -15,7 +14,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -25,6 +23,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
 import net.minecraft.world.level.LevelProperties;
@@ -47,6 +46,9 @@ public abstract class ServerPlayerEntityMixin extends LivingEntity {
     @Shadow public abstract void sendMessage(Text message, boolean actionBar);
     @Shadow public abstract boolean startRiding(Entity entity, boolean force);
     @Shadow private int joinInvulnerabilityTicks;
+
+    @Shadow public abstract ServerWorld getServerWorld();
+
     @Unique private Long comparingTime;
     @Unique private PracticeTypes.PaceTimerShowType showType;
 
@@ -171,6 +173,7 @@ public abstract class ServerPlayerEntityMixin extends LivingEntity {
 
     @Inject(method = "changeDimension", at = @At("HEAD"), cancellable = true)
     private void peepoPractice$triggerSplitEvent(ServerWorld destination, CallbackInfoReturnable<Entity> cir) {
+        RegistryKey<World> current = this.getServerWorld().getRegistryKey();
         if (PeepoPractice.CATEGORY.hasSplitEvent()) {
             if (PeepoPractice.CATEGORY.getSplitEvent() instanceof ChangeDimensionSplitEvent) {
                 if (InGameTimer.getInstance().isCompleted() && this.getScoreboardTags().contains("completed")) {
@@ -179,9 +182,11 @@ public abstract class ServerPlayerEntityMixin extends LivingEntity {
                 }
 
                 ChangeDimensionSplitEvent event = (ChangeDimensionSplitEvent) PeepoPractice.CATEGORY.getSplitEvent();
-                if (InGameTimer.getInstance().getStatus() != TimerStatus.NONE && event.hasDimension() && event.getDimension() == destination.getRegistryKey()) {
-                    event.complete(!this.isDead());
-                    cir.setReturnValue(this);
+                if (InGameTimer.getInstance().getStatus() != TimerStatus.NONE && event.hasToDimension() && event.getToDimension() == destination.getRegistryKey()) {
+                    if (!event.hasFromDimension() || event.getFromDimension().equals(current)) {
+                        event.complete(!this.isDead());
+                        cir.setReturnValue(this);
+                    }
                 }
             }
         }

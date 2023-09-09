@@ -49,15 +49,6 @@ public abstract class CreateWorldScreenMixin extends Screen {
 
     @Inject(method = "init", at = @At("TAIL"))
     private void peepoPractice$startCreateLevel(CallbackInfo ci) {
-        if (PeepoPractice.CATEGORY.hasWorldProperties()) {
-            for (Map.Entry<Biome, WorldProperties.Range> entry : PeepoPractice.CATEGORY.getWorldProperties().getProBiomeRangeMap().entrySet()) {
-                if (entry.getValue().getRange() == null && entry.getValue().shouldPlace()) {
-                    this.moreOptionsDialog.field_25049 = java.util.Optional.of(GeneratorType.SINGLE_BIOME_SURFACE);
-                    this.moreOptionsDialog.setGeneratorOptions(GeneratorType.method_29079(this.moreOptionsDialog.getGeneratorOptions(this.hardcore), GeneratorType.SINGLE_BIOME_SURFACE, entry.getKey()));
-                    break;
-                }
-            }
-        }
         if (!PeepoPractice.CATEGORY.equals(PracticeCategoriesAny.EMPTY)) {
             this.createLevel();
         }

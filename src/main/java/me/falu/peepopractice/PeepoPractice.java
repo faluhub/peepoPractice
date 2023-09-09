@@ -58,11 +58,75 @@ public class PeepoPractice implements ModInitializer {
     public void onInitialize() {
         log("Using " + MOD_NAME + " v" + MOD_VERSION);
 
-        Registry.register(Registry.ITEM, new Identifier(MOD_ID, "random_pickaxe"), new RandomToolItem(RandomToolItem.ToolType.PICKAXE));
-        Registry.register(Registry.ITEM, new Identifier(MOD_ID, "random_axe"), new RandomToolItem(RandomToolItem.ToolType.AXE));
-        Registry.register(Registry.ITEM, new Identifier(MOD_ID, "random_shovel"), new RandomToolItem(RandomToolItem.ToolType.SHOVEL));
-        Registry.register(Registry.ITEM, new Identifier(MOD_ID, "random_sword"), new RandomToolItem(RandomToolItem.ToolType.SWORD));
-        Registry.register(Registry.ITEM, new Identifier(MOD_ID, "random_hoe"), new RandomToolItem(RandomToolItem.ToolType.HOE));
+        Registry.register(
+                Registry.ITEM,
+                new Identifier(
+                        MOD_ID,
+                        "random_pickaxe"
+                ),
+                new RandomToolItem(
+                        RandomToolItem.ToolType.PICKAXE,
+                        "iron",
+                        "diamond"
+                )
+        );
+        Registry.register(
+                Registry.ITEM,
+                new Identifier(
+                        MOD_ID,
+                        "random_axe"
+                ),
+                new RandomToolItem(
+                        RandomToolItem.ToolType.AXE,
+                        "stone",
+                        "iron",
+                        "golden",
+                        "diamond"
+                )
+        );
+        Registry.register(
+                Registry.ITEM,
+                new Identifier(
+                        MOD_ID,
+                        "random_shovel"
+                ),
+                new RandomToolItem(
+                        RandomToolItem.ToolType.SHOVEL,
+                        "wooden",
+                        "stone",
+                        "iron",
+                        "golden",
+                        "diamond"
+                )
+        );
+        Registry.register(
+                Registry.ITEM,
+                new Identifier(
+                        MOD_ID,
+                        "random_sword"
+                ),
+                new RandomToolItem(
+                        RandomToolItem.ToolType.SWORD,
+                        "iron",
+                        "diamond"
+                )
+        );
+        Registry.register(
+                Registry.ITEM,
+                new Identifier(
+                        MOD_ID,
+                        "random_hoe"
+                ),
+                new RandomToolItem(
+                        RandomToolItem.ToolType.HOE,
+                        "wooden",
+                        "stone",
+                        "iron",
+                        "golden",
+                        "diamond",
+                        "netherite"
+                )
+        );
 
         REPLAY_SPLIT_KEY = KeyBindingUtils.registerKeyBinding(
                 new KeyBinding(
