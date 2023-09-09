@@ -256,14 +256,12 @@ public abstract class PlayerlessHandledScreen extends Screen {
         RenderSystem.popMatrix();
         RenderSystem.enableDepthTest();
         RenderSystem.pushMatrix();
-        RenderSystem.translatef(0.0F, 0.0F, 32.0F);
-        this.setZOffset(2000);
+        RenderSystem.translatef(0.0F, 0.0F, 400.0F);
         for (List<ButtonWidget> buttons : this.slotToButtonsMap.values()) {
             for (ButtonWidget button : buttons) {
                 button.render(matrices, mouseX, mouseY, delta);
             }
         }
-        this.setZOffset(0);
         RenderSystem.popMatrix();
     }
 

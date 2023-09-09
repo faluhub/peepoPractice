@@ -35,7 +35,7 @@ public class InventoryUtils {
                         if (stack.getTag() != null && stack.getTag().contains("MaxCount")) {
                             int minCount = stack.getTag().getInt("MinCount");
                             int maxCount = stack.getTag().getInt("MaxCount");
-                            int count = minCount == maxCount ? minCount : new Random().nextInt(maxCount - minCount) + minCount;
+                            int count = minCount == maxCount ? minCount : new Random().nextInt(maxCount - minCount + 1) + minCount;
                             stack.setCount(count);
                             stack.setTag(null);
                         }
