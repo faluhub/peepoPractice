@@ -4,12 +4,13 @@ import com.google.gson.*;
 import me.falu.peepopractice.PeepoPractice;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.commons.io.FileUtils;
+import org.reflections.Reflections;
+import org.reflections.scanners.ResourcesScanner;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Pattern;
 
 public class DefaultFileWriter {
     public static final DefaultFileWriter INSTANCE = new DefaultFileWriter();
@@ -22,10 +23,10 @@ public class DefaultFileWriter {
             if (!folder.exists()) {
                 folder.mkdirs();
             }
-            List<String> resources = this.getResourceFiles("writer", "");
+            List<String> resources = this.getResourceFiles();
             for (String resource : resources) {
-                File destination = folder.toPath().resolve(resource).toFile();
-                try (InputStream stream = this.getClass().getClassLoader().getResourceAsStream("writer/" + resource)) {
+                File destination = folder.toPath().resolve(resource.replace("writer/", "")).toFile();
+                try (InputStream stream = this.getClass().getClassLoader().getResourceAsStream(resource)) {
                     if (stream != null) {
                         JsonParser parser = new JsonParser();
                         JsonElement defaultElement = parser.parse(new InputStreamReader(stream, StandardCharsets.UTF_8));
@@ -66,40 +67,9 @@ public class DefaultFileWriter {
         }
     }
 
-    @SuppressWarnings("BlockingMethodInNonBlockingContext")
-    private List<String> getResourceFiles(String path, String prefix) throws IOException {
-        List<String> filenames = new ArrayList<>();
-
-        InputStream in = this.getResourceAsStream(path);
-        InputStreamReader sr = new InputStreamReader(in);
-        BufferedReader br = new BufferedReader(sr);
-        String resource;
-
-        while ((resource = br.readLine()) != null) {
-            if (!resource.contains(".")) {
-                String newPath = path + "/" + resource;
-                List<String> children = this.getResourceFiles(newPath, resource + "/");
-                for (String child : children) {
-                    filenames.add(prefix + child);
-                }
-            } else {
-                filenames.add(prefix + resource);
-            }
-        }
-
-        br.close();
-        sr.close();
-        in.close();
-
-        return filenames;
-    }
-
-    private InputStream getResourceAsStream(String resource) {
-        InputStream in = this.getContextClassLoader().getResourceAsStream(resource);
-        return in == null ? this.getClass().getResourceAsStream(resource) : in;
-    }
-
-    private ClassLoader getContextClassLoader() {
-        return Thread.currentThread().getContextClassLoader();
+    private List<String> getResourceFiles() throws IOException {
+        Reflections reflections = new Reflections("writer", new ResourcesScanner());
+        Set<String> resources = reflections.getResources(Pattern.compile(".*\\.json"));
+        return List.of(resources.toArray(new String[0]));
     }
 }

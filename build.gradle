@@ -36,6 +36,7 @@ dependencies {
 	modIncludeImplementation(fabricApi.module("fabric-item-api-v1", project.fabric_version))
 	modCompileOnlyApi files("lib/atum-1.1.3+1.16.1.jar", "lib/standardsettings-1.2.2+1.16.1.jar")
 	include annotationProcessor(implementation("com.github.LlamaLad7:MixinExtras:${project.mixinextras_version}"))
+	include implementation("org.reflections:reflections:0.9.10")
 }
 
 processResources {
