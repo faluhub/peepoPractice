@@ -12,8 +12,6 @@ import net.minecraft.world.biome.source.VanillaLayeredBiomeSource;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import java.util.Map;
-
 @Mixin(VanillaLayeredBiomeSource.class)
 public abstract class VanillaLayeredBiomeSourceMixin {
     @ModifyReturnValue(method = "getBiomeForNoiseGen", at = @At("RETURN"))

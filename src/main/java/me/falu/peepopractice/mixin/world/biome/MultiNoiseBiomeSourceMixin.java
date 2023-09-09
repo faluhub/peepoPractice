@@ -12,8 +12,6 @@ import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import java.util.Map;
-
 @Mixin(MultiNoiseBiomeSource.class)
 public abstract class MultiNoiseBiomeSourceMixin {
     @ModifyReturnValue(method = "getBiomeForNoiseGen", at = @At("RETURN"))
