@@ -2,14 +2,20 @@ package me.falu.peepopractice.mixin.gui.screen;
 
 import me.falu.peepopractice.PeepoPractice;
 import me.falu.peepopractice.core.category.PracticeCategoriesAny;
+import me.falu.peepopractice.core.category.properties.WorldProperties;
 import me.falu.peepopractice.core.category.utils.PracticeCategoryUtils;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.GameMenuScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
+import net.minecraft.client.gui.screen.world.MoreOptionsDialog;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.world.GeneratorType;
 import net.minecraft.text.Text;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.biome.layer.BiomeLayers;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,6 +30,8 @@ public abstract class CreateWorldScreenMixin extends Screen {
     @Shadow private boolean tweakedCheats;
     @Shadow protected abstract void createLevel();
     @Shadow private String levelName;
+    @Shadow @Final public MoreOptionsDialog moreOptionsDialog;
+    @Shadow public boolean hardcore;
 
     protected CreateWorldScreenMixin(Text title) {
         super(title);
@@ -40,6 +48,15 @@ public abstract class CreateWorldScreenMixin extends Screen {
 
     @Inject(method = "init", at = @At("TAIL"))
     private void peepoPractice$startCreateLevel(CallbackInfo ci) {
+        if (PeepoPractice.CATEGORY.hasWorldProperties()) {
+            for (WorldProperties.BiomeModification entry : PeepoPractice.CATEGORY.getWorldProperties().getProBiomes()) {
+                if (entry.isInfinite() && entry.getRange().shouldPlace() && BiomeLayers.isOcean(Registry.BIOME.getRawId(entry.getBiome()))) {
+                    this.moreOptionsDialog.field_25049 = java.util.Optional.of(GeneratorType.SINGLE_BIOME_SURFACE);
+                    this.moreOptionsDialog.setGeneratorOptions(GeneratorType.method_29079(this.moreOptionsDialog.getGeneratorOptions(this.hardcore), GeneratorType.SINGLE_BIOME_SURFACE, entry.getBiome()));
+                    break;
+                }
+            }
+        }
         if (!PeepoPractice.CATEGORY.equals(PracticeCategoriesAny.EMPTY)) {
             this.createLevel();
         }

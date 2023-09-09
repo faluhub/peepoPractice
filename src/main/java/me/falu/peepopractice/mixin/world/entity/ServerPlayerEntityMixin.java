@@ -46,9 +46,7 @@ public abstract class ServerPlayerEntityMixin extends LivingEntity {
     @Shadow public abstract void sendMessage(Text message, boolean actionBar);
     @Shadow public abstract boolean startRiding(Entity entity, boolean force);
     @Shadow private int joinInvulnerabilityTicks;
-
     @Shadow public abstract ServerWorld getServerWorld();
-
     @Unique private Long comparingTime;
     @Unique private PracticeTypes.PaceTimerShowType showType;
 

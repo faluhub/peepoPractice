@@ -144,17 +144,15 @@ public class CustomCategoryResourceManager {
                                 for (JsonElement element : array) {
                                     if (element instanceof JsonObject) {
                                         JsonObject antiBiomeInfo = (JsonObject) element;
-                                        if (antiBiomeInfo.has("biome") && antiBiomeInfo.has("range") && antiBiomeInfo.has("replacement")) {
+                                        if (antiBiomeInfo.has("biome") && antiBiomeInfo.has("range") && antiBiomeInfo.has("replacement") && antiBiomeInfo.has("valid_dimensions")) {
                                             Biome biome = Registry.BIOME.get(new Identifier(antiBiomeInfo.get("biome").getAsString()));
                                             Biome replacement = Registry.BIOME.get(new Identifier(antiBiomeInfo.get("replacement").getAsString()));
                                             Integer range = antiBiomeInfo.get("range").getAsInt();
                                             range = range > 0 ? range : null;
                                             List<RegistryKey<World>> validDimensions = new ArrayList<>();
-                                            if (antiBiomeInfo.has("valid_dimensions")) {
-                                                JsonArray validDimensionsArray = antiBiomeInfo.get("valid_dimensions").getAsJsonArray();
-                                                for (JsonElement element1 : validDimensionsArray) {
-                                                    validDimensions.add(parseDimensionKey(element1));
-                                                }
+                                            JsonArray validDimensionsArray = antiBiomeInfo.get("valid_dimensions").getAsJsonArray();
+                                            for (JsonElement element1 : validDimensionsArray) {
+                                                validDimensions.add(parseDimensionKey(element1));
                                             }
                                             properties = properties.addAntiBiome(new WorldProperties.BiomeModification()
                                                     .setBiome(biome)
@@ -173,16 +171,14 @@ public class CustomCategoryResourceManager {
                                 for (JsonElement element : array) {
                                     if (element instanceof JsonObject) {
                                         JsonObject proBiomeInfo = (JsonObject) element;
-                                        if (proBiomeInfo.has("biome") && proBiomeInfo.has("range")) {
+                                        if (proBiomeInfo.has("biome") && proBiomeInfo.has("range") && proBiomeInfo.has("valid_dimensions")) {
                                             Biome biome = Registry.BIOME.get(new Identifier(proBiomeInfo.get("biome").getAsString()));
                                             Integer range = proBiomeInfo.get("range").getAsInt();
                                             range = range > 0 ? range : null;
                                             List<RegistryKey<World>> validDimensions = new ArrayList<>();
-                                            if (proBiomeInfo.has("valid_dimensions")) {
-                                                JsonArray validDimensionsArray = proBiomeInfo.get("valid_dimensions").getAsJsonArray();
-                                                for (JsonElement element1 : validDimensionsArray) {
-                                                    validDimensions.add(parseDimensionKey(element1));
-                                                }
+                                            JsonArray validDimensionsArray = proBiomeInfo.get("valid_dimensions").getAsJsonArray();
+                                            for (JsonElement element1 : validDimensionsArray) {
+                                                validDimensions.add(parseDimensionKey(element1));
                                             }
                                             properties = properties.addProBiome(new WorldProperties.BiomeModification()
                                                     .setBiome(biome)
