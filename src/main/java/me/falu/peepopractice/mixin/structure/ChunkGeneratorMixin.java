@@ -27,7 +27,7 @@ import java.util.List;
 public abstract class ChunkGeneratorMixin {
     @Shadow @Final protected BiomeSource biomeSource;
     @Shadow protected abstract void method_28508(ConfiguredStructureFeature<?, ?> configuredStructureFeature, StructureAccessor structureAccessor, Chunk chunk, StructureManager structureManager, long l, ChunkPos chunkPos, Biome biome);
-    @Shadow @Final private List<ChunkPos> field_24749;
+    @Shadow @Final public List<ChunkPos> field_24749;
 
     @Unique
     private StructureProperties peepoPractice$getUniqueStronghold() {
