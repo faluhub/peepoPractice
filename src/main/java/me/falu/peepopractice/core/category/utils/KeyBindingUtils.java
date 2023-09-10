@@ -18,20 +18,15 @@ public class KeyBindingUtils {
         return (Language.getInstance().get(path).equals(path) ? new LiteralText(text) : new TranslatableText(path));
     }
 
-    private static Map<String, Integer> getCategoryOrderMap() {
-        return KeyBinding.categoryOrderMap;
-    }
-
     private static boolean noCategory(String key) {
-        return !getCategoryOrderMap().containsKey(key);
+        return !KeyBinding.categoryOrderMap.containsKey(key);
     }
 
     public static void addCategory(String key) {
-        Map<String, Integer> map = getCategoryOrderMap();
         if (noCategory(key)) {
-            Optional<Integer> largest = map.values().stream().max(Integer::compare);
+            Optional<Integer> largest = KeyBinding.categoryOrderMap.values().stream().max(Integer::compare);
             int largestInt = largest.orElse(0);
-            map.put(key, largestInt + 1);
+            KeyBinding.categoryOrderMap.put(key, largestInt + 1);
         }
     }
 

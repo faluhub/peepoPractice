@@ -67,7 +67,7 @@ public class DefaultFileWriter {
         }
     }
 
-    private List<String> getResourceFiles() throws IOException {
+    private List<String> getResourceFiles() {
         Reflections reflections = new Reflections("writer", new ResourcesScanner());
         Set<String> resources = reflections.getResources(Pattern.compile(".*\\.json"));
         return List.of(resources.toArray(new String[0]));
