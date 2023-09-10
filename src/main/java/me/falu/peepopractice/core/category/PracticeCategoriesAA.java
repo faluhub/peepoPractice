@@ -6,6 +6,7 @@ import me.falu.peepopractice.core.category.properties.StructureProperties;
 import me.falu.peepopractice.core.category.properties.WorldProperties;
 import me.falu.peepopractice.core.category.properties.event.GetAdvancementSplitEvent;
 import me.falu.peepopractice.core.category.properties.preset.CommandsPreset;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -62,6 +63,11 @@ public class PracticeCategoriesAA {
     public static final PracticeCategory RAID_SPLIT = new PracticeCategory(true)
             .setId("raid_split")
             .setFillerCategory(true)
+            .setPlayerProperties(new PlayerProperties()
+                    .addPotionEffect(new PlayerProperties.PotionEffect()
+                            .setEffect(StatusEffects.BAD_OMEN)
+                    )
+            )
             .setWorldProperties(new WorldProperties()
                     .setWorldRegistryKey(World.OVERWORLD)
                     .setSeedList("raid")

@@ -4,6 +4,7 @@ import me.falu.peepopractice.core.exception.NotInitializedException;
 import me.falu.peepopractice.core.category.PracticeCategory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec2f;
@@ -20,6 +21,7 @@ public class PlayerProperties extends BaseProperties {
     private PracticeCategory.ExecuteReturnTask<Vec2f> spawnAngleTask;
     private EntityType<? extends Entity> vehicle;
     private final List<String> commands = new ArrayList<>();
+    private final List<PotionEffect> potionEffects = new ArrayList<>();
 
     public BlockPos getSpawnPos() {
         return this.spawnPos != null ? this.spawnPos : new BlockPos(0, 62, 0);
@@ -79,6 +81,15 @@ public class PlayerProperties extends BaseProperties {
         return this;
     }
 
+    public List<PotionEffect> getPotionEffects() {
+        return this.potionEffects;
+    }
+
+    public PlayerProperties addPotionEffect(PotionEffect potionEffect) {
+        this.potionEffects.add(potionEffect);
+        return this;
+    }
+
     public void reset(Random random, ServerWorld world) throws NotInitializedException {
         if (this.spawnPosTask != null) {
             this.setSpawnPos(this.spawnPosTask.execute(this.getCategory(), random, world));
@@ -88,6 +99,57 @@ public class PlayerProperties extends BaseProperties {
             if (vec != null) {
                 this.setSpawnAngle(vec.x, vec.y);
             }
+        }
+    }
+
+    public static class PotionEffect {
+        private StatusEffect effect;
+        private int amplifier = 0;
+        private int duration = Integer.MAX_VALUE;
+        private PracticeCategory.ExecuteReturnTask<Boolean> condition;
+
+        public StatusEffect getEffect() {
+            return this.effect;
+        }
+
+        public boolean hasEffect() {
+            return this.effect != null;
+        }
+
+        public PotionEffect setEffect(StatusEffect effect) {
+            this.effect = effect;
+            return this;
+        }
+
+        public int getAmplifier() {
+            return this.amplifier;
+        }
+
+        public PotionEffect setAmplifier(int amplifier) {
+            this.amplifier = amplifier;
+            return this;
+        }
+
+        public int getDuration() {
+            return this.duration;
+        }
+
+        public PotionEffect setDuration(int duration) {
+            this.duration = duration;
+            return this;
+        }
+
+        public PracticeCategory.ExecuteReturnTask<Boolean> getCondition() {
+            return this.condition;
+        }
+
+        public boolean hasCondition() {
+            return this.condition != null;
+        }
+
+        public PotionEffect setCondition(PracticeCategory.ExecuteReturnTask<Boolean> condition) {
+            this.condition = condition;
+            return this;
         }
     }
 }

@@ -15,6 +15,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LeavesBlock;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootTables;
 import net.minecraft.server.network.SpawnLocating;
@@ -261,6 +262,7 @@ public class PracticeCategoriesAny {
             )
             .setPlayerProperties(new PlayerProperties()
                     .setSpawnPos((category, random, world) -> CustomPortalForcer.getPortalPosition(new BlockPos(random.nextInt(5, 15) * (random.nextBoolean() ? -1 : 1), 64, random.nextInt(5, 15) * (random.nextBoolean() ? -1 : 1)), world))
+                    .addPotionEffect(FortressPreset.FIRE_RESISTANCE_EFFECT)
             )
             .setWorldProperties(new WorldProperties()
                     .setWorldRegistryKey(World.NETHER)
@@ -278,7 +280,8 @@ public class PracticeCategoriesAny {
                     .setToDimension(World.OVERWORLD)
             )
             .addPreference(FortressPreset.GOOD_BLAZE_RATES_PREFERENCE)
-            .addPreference(FortressPreset.SOUL_SAND_VALLEY_PREFERENCE);
+            .addPreference(FortressPreset.SOUL_SAND_VALLEY_PREFERENCE)
+            .addPreference(FortressPreset.FIRE_RESISTANCE_PREFERENCE);
     public static final PracticeCategory NETHER_SPLIT = new PracticeCategory()
             .setId("nether_split")
             .addStructureProperties(new StructureProperties()
@@ -352,6 +355,7 @@ public class PracticeCategoriesAny {
                         blockPos = CustomPortalForcer.createPortal(blockPos, world).down(2);
                         return blockPos;
                     })
+                    .addPotionEffect(FortressPreset.FIRE_RESISTANCE_EFFECT)
             )
             .addStructureProperties(new StructureProperties()
                     .setStructure(DefaultBiomeFeatures.FORTRESS)
@@ -389,7 +393,8 @@ public class PracticeCategoriesAny {
                     .setIcon(new Identifier("textures/item/ender_eye.png"))
                     .setChoices(PracticeCategoryUtils.ALL_LIST)
                     .setDefaultChoice(PracticeCategoryUtils.RANDOM)
-            );
+            )
+            .addPreference(FortressPreset.FIRE_RESISTANCE_PREFERENCE);
     public static final PracticeCategory STRONGHOLD_SPLIT = new PracticeCategory()
             .setId("stronghold_split")
             .addStructureProperties(new StructureProperties()

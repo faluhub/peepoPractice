@@ -28,16 +28,19 @@ public class InventoryUtils {
                 try {
                     CompoundTag tag = StringNbtReader.parse(set.getValue().getAsString());
                     ItemStack stack = ItemStack.fromTag(tag);
+                    CompoundTag stackTag = stack.getTag();
                     if (!(inventory instanceof PlayerlessInventory)) {
                         if (stack.getItem() instanceof RandomToolItem) {
                             stack = ((RandomToolItem) stack.getItem()).convert();
                         }
-                        if (stack.getTag() != null && stack.getTag().contains("MaxCount")) {
-                            int minCount = stack.getTag().getInt("MinCount");
-                            int maxCount = stack.getTag().getInt("MaxCount");
+                        if (stackTag != null && stackTag.contains("MaxCount")) {
+                            int minCount = stackTag.getInt("MinCount");
+                            int maxCount = stackTag.getInt("MaxCount");
+                            stackTag.remove("MinCount");
+                            stackTag.remove("MaxCount");
                             int count = minCount == maxCount ? minCount : new Random().nextInt(maxCount - minCount + 1) + minCount;
                             stack.setCount(count);
-                            stack.setTag(null);
+                            stack.setTag(stackTag);
                         }
                     }
                     inventory.setStack(Integer.parseInt(set.getKey()), stack);

@@ -2,9 +2,12 @@ package me.falu.peepopractice.mixin.world;
 
 import me.falu.peepopractice.PeepoPractice;
 import me.falu.peepopractice.core.category.PracticeCategoriesAny;
+import me.falu.peepopractice.core.category.properties.PlayerProperties;
 import me.falu.peepopractice.core.category.utils.InventoryUtils;
+import me.falu.peepopractice.core.exception.NotInitializedException;
 import me.falu.peepopractice.core.global.GlobalOptions;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
@@ -21,6 +24,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Random;
 import java.util.UUID;
 
 @Mixin(PlayerManager.class)
@@ -36,7 +40,7 @@ public abstract class PlayerManagerMixin {
     }
 
     @Inject(method = "onPlayerConnect", at = @At("TAIL"))
-    private void peepoPractice$setInventory(ClientConnection connection, ServerPlayerEntity player, CallbackInfo ci) {
+    private void peepoPractice$setInventory(ClientConnection connection, ServerPlayerEntity player, CallbackInfo ci) throws NotInitializedException {
         if (!PeepoPractice.CATEGORY.equals(PracticeCategoriesAny.EMPTY)) {
             MinecraftClient client = MinecraftClient.getInstance();
             client.inGameHud.setTitles(null, null, -1, -1, -1);
@@ -87,6 +91,13 @@ public abstract class PlayerManagerMixin {
                             ),
                             command
                     );
+                }
+                for (PlayerProperties.PotionEffect potionEffect : PeepoPractice.CATEGORY.getPlayerProperties().getPotionEffects()) {
+                    if (potionEffect.hasEffect()) {
+                        if (!potionEffect.hasCondition() || Boolean.TRUE.equals(potionEffect.getCondition().execute(PeepoPractice.CATEGORY, new Random(player.getServerWorld().getSeed()), player.getServerWorld()))) {
+                            player.addStatusEffect(new StatusEffectInstance(potionEffect.getEffect(), potionEffect.getDuration(), potionEffect.getAmplifier()));
+                        }
+                    }
                 }
             }
         }
