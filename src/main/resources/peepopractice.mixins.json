@@ -4,13 +4,6 @@
   "package": "me.falu.peepopractice.mixin",
   "compatibilityLevel": "JAVA_10",
   "client": [
-    "access.ButtonWidgetAccessor",
-    "access.ChunkGeneratorAccessor",
-    "access.KeyBindingAccessor",
-    "access.MinecraftClientAccessor",
-    "access.ServerWorldAccessor",
-    "access.ThreadExecutorAccessor",
-
     "compat.timer.InGameTimerUtilsMixin",
     "compat.timer.PracticeTimerManagerMixin",
 
@@ -32,6 +25,9 @@
     "gui.widget.SliderWidgetMixin",
 
     "gui.MoreOptionsDialogMixin",
+
+    "storage.StorageIoWorkerMixin",
+    "storage.ThreadedAnvilChunkStorageMixin",
 
     "structure.category.BastionRemnantFeatureConfigMixin",
     "structure.category.DungeonFeatureMixin",

@@ -5,7 +5,6 @@ import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.core.global.GlobalOptions;
 import me.falu.peepopractice.gui.widget.LimitlessButtonWidget;
 import me.falu.peepopractice.gui.widget.LimitlessDoubleOptionSliderWidget;
-import me.falu.peepopractice.mixin.access.ButtonWidgetAccessor;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
@@ -64,7 +63,7 @@ public class GlobalConfigScreen extends Screen {
             int x = this.width / 2 - btnWidth / 2;
             int y = 8 + btnHeight + yOffset * index + btnHeight * index;
             AbstractButtonWidget button = option.createButton(this.client.options, x, y, btnWidth);
-            ButtonWidget.PressAction action = ((ButtonWidgetAccessor) button).getOnPress();
+            ButtonWidget.PressAction action = ((ButtonWidget) button).onPress;
             this.addButton(new LimitlessButtonWidget(x, y, btnWidth, btnHeight, button.getMessage(), action, option.getTooltip().isPresent() ? (button1, matrices, mouseX, mouseY) -> this.renderTooltip(matrices, option.getTooltip().get(), mouseX, mouseY) : null));
         }
 

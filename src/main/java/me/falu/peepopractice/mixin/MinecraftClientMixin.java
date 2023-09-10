@@ -2,6 +2,7 @@ package me.falu.peepopractice.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyReceiver;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.datafixers.DataFixer;
 import com.redlimerl.speedrunigt.timer.InGameTimer;
 import me.falu.peepopractice.PeepoPractice;
@@ -12,11 +13,13 @@ import me.falu.peepopractice.core.category.utils.StandardSettingsUtils;
 import me.falu.peepopractice.core.global.GlobalOptions;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.LevelLoadingScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.world.level.storage.LevelStorage;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -36,6 +39,7 @@ public abstract class MinecraftClientMixin {
     @Shadow public abstract boolean isIntegratedServerRunning();
     @Shadow public abstract void openScreen(@Nullable Screen screen);
     @Shadow @Final public GameOptions options;
+    @Shadow private @Nullable IntegratedServer server;
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void peepoPractice$getResources(CallbackInfo ci) {
@@ -109,5 +113,20 @@ public abstract class MinecraftClientMixin {
             return value + " (Practice)";
         }
         return value;
+    }
+
+    @Inject(
+            method = "startIntegratedServer(Ljava/lang/String;Lnet/minecraft/util/registry/RegistryTracker$Modifiable;Ljava/util/function/Function;Lcom/mojang/datafixers/util/Function4;ZLnet/minecraft/client/MinecraftClient$WorldLoadAction;)V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/server/integrated/IntegratedServer;isLoading()Z",
+                    shift = At.Shift.BEFORE
+            ),
+            cancellable = true
+    )
+    private void peepoPractice$stopLoadingTick(CallbackInfo ci, @Local LevelLoadingScreen levelLoadingScreen) {
+        if (this.server == null) {
+            ci.cancel();
+        }
     }
 }

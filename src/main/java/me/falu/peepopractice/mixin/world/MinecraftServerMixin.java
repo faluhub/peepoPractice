@@ -7,11 +7,13 @@ import me.falu.peepopractice.PeepoPractice;
 import me.falu.peepopractice.core.exception.NotInitializedException;
 import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import me.falu.peepopractice.core.category.properties.StructureProperties;
-import me.falu.peepopractice.mixin.access.ChunkGeneratorAccessor;
+import me.falu.peepopractice.owner.GenerationShutdownOwner;
 import net.minecraft.command.DataCommandStorage;
 import net.minecraft.entity.boss.BossBarManager;
+import net.minecraft.resource.ServerResourceManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
+import net.minecraft.server.ServerNetworkIo;
 import net.minecraft.server.WorldGenerationProgressListener;
 import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.server.world.ServerWorld;
@@ -24,6 +26,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.RegistryTracker;
 import net.minecraft.util.registry.SimpleRegistry;
+import net.minecraft.util.snooper.Snooper;
 import net.minecraft.village.ZombieSiegeManager;
 import net.minecraft.world.PersistentStateManager;
 import net.minecraft.world.SaveProperties;
@@ -41,6 +44,7 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.level.ServerWorldProperties;
 import net.minecraft.world.level.UnmodifiableLevelProperties;
 import net.minecraft.world.level.storage.LevelStorage;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -48,13 +52,14 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Executor;
 
 @Mixin(MinecraftServer.class)
-public abstract class MinecraftServerMixin {
+public abstract class MinecraftServerMixin implements GenerationShutdownOwner {
     @Shadow @Final protected SaveProperties saveProperties;
     @Shadow @Final protected RegistryTracker.Modifiable dimensionTracker;
     @Shadow @Final private Executor workerExecutor;
@@ -69,10 +74,14 @@ public abstract class MinecraftServerMixin {
     @Shadow public abstract ServerWorld getOverworld();
     @SuppressWarnings("UnusedReturnValue") @Shadow public abstract boolean save(boolean bl, boolean bl2, boolean bl3);
     @Shadow protected abstract void method_16208();
+    @Shadow @Final private static Logger LOGGER;
+    @Shadow @Nullable public abstract ServerNetworkIo getNetworkIo();
+    @Shadow public abstract Iterable<ServerWorld> getWorlds();
+    @Shadow @Final private Snooper snooper;
+    @Shadow private ServerResourceManager serverResourceManager;
 
-    // TODO: this needs reworking
     /**
-     * @author Quesia
+     * @author falu, contaria
      * @reason Custom start dimension
      */
     @Inject(method = "createWorlds", at = @At("HEAD"), cancellable = true)
@@ -98,14 +107,14 @@ public abstract class MinecraftServerMixin {
         PeepoPractice.CATEGORY.reset();
         if (PeepoPractice.CATEGORY.hasPlayerProperties()) {
             try {
-                PeepoPractice.CATEGORY.getPlayerProperties().reset(new Random(((ChunkGeneratorAccessor) chunkGenerator).peepoPractice$getField_24748()), serverWorld);
+                PeepoPractice.CATEGORY.getPlayerProperties().reset(new Random(chunkGenerator.field_24748), serverWorld);
             } catch (NotInitializedException ignored) {
                 try {
                     for (StructureProperties properties : PeepoPractice.CATEGORY.getStructureProperties()) {
-                        properties.reset(new Random(((ChunkGeneratorAccessor) chunkGenerator).peepoPractice$getField_24748()), serverWorld);
+                        properties.reset(new Random(chunkGenerator.field_24748), serverWorld);
                     }
                     initializedStructures = true;
-                    PeepoPractice.CATEGORY.getPlayerProperties().reset(new Random(((ChunkGeneratorAccessor) chunkGenerator).peepoPractice$getField_24748()), serverWorld);
+                    PeepoPractice.CATEGORY.getPlayerProperties().reset(new Random(chunkGenerator.field_24748), serverWorld);
                 } catch (NotInitializedException ignored1) {
                     PeepoPractice.log(PeepoPractice.CATEGORY.getId() + " in an infinite loop, retrying at spawn. (Occurrence 1)");
                     PeepoPractice.RETRY_PLAYER_INITIALIZATION = true;
@@ -114,7 +123,7 @@ public abstract class MinecraftServerMixin {
         }
         if (!initializedStructures) {
             for (StructureProperties properties : PeepoPractice.CATEGORY.getStructureProperties()) {
-                try { properties.reset(new Random(((ChunkGeneratorAccessor) chunkGenerator).peepoPractice$getField_24748()), serverWorld); }
+                try { properties.reset(new Random(chunkGenerator.field_24748), serverWorld); }
                 catch (NotInitializedException ignored) { PeepoPractice.log(PeepoPractice.CATEGORY.getId() + " in an infinite loop. (Occurrence 2)"); }
             }
         }
@@ -197,5 +206,19 @@ public abstract class MinecraftServerMixin {
             return 0;
         }
         return spawnRadius;
+    }
+
+    @Override
+    public void peepopractice$shutdown() {
+        LOGGER.info("Stopping server");
+        if (this.getNetworkIo() != null) { this.getNetworkIo().stop(); }
+        for (ServerWorld world : this.getWorlds()) {
+            world.savingDisabled = false;
+            ((GenerationShutdownOwner) world.getChunkManager().threadedAnvilChunkStorage).peepopractice$shutdown();
+        }
+        if (this.snooper.isActive()) { this.snooper.cancel(); }
+        this.serverResourceManager.close();
+        try { this.session.close(); }
+        catch (IOException e) { LOGGER.error("Failed to unlock level {}", this.session.getDirectoryName(), e); }
     }
 }

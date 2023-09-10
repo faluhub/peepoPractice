@@ -7,7 +7,6 @@ import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.core.category.utils.StandardSettingsUtils;
 import me.falu.peepopractice.gui.widget.LimitlessButtonWidget;
 import me.falu.peepopractice.gui.widget.LimitlessDoubleOptionSliderWidget;
-import me.falu.peepopractice.mixin.access.ButtonWidgetAccessor;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
@@ -55,7 +54,7 @@ public class StandardSettingsScreen extends Screen {
             int y = 30 + (btnHeight + yOffset) * btnIndex;
             AbstractButtonWidget button = option.createButton(this.client.options, x, y, btnWidth);
             if (button instanceof ButtonWidget) {
-                ButtonWidget.PressAction action = ((ButtonWidgetAccessor) button).getOnPress();
+                ButtonWidget.PressAction action = ((ButtonWidget) button).onPress;
                 button = new LimitlessButtonWidget(x, y, btnWidth, btnHeight, button.getMessage(), action);
             } else if (button instanceof DoubleOptionSliderWidget) {
                 button = new LimitlessDoubleOptionSliderWidget(this.client.options, x, y, btnWidth, btnHeight, (DoubleOption) option);

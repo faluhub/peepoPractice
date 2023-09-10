@@ -9,6 +9,8 @@ accessible method net/minecraft/client/world/GeneratorType method_29079 (Lnet/mi
 accessible method net/minecraft/entity/mob/PiglinBrain getBarteredItem (Lnet/minecraft/entity/mob/PiglinEntity;)Ljava/util/List;
 accessible method net/minecraft/client/gui/DrawableHelper fillGradient (Lnet/minecraft/client/util/math/MatrixStack;IIIIII)V
 accessible method net/minecraft/server/network/ServerPlayerEntity getPermissionLevel ()I
+accessible method net/minecraft/world/gen/chunk/ChunkGenerator method_28509 ()V
+accessible method net/minecraft/util/thread/ThreadExecutor runTasks ()V
 
 accessible field net/minecraft/state/property/EnumProperty values Lcom/google/common/collect/ImmutableSet;
 accessible field net/minecraft/client/gui/widget/EntryListWidget renderHeader Z
@@ -18,3 +20,11 @@ accessible field net/minecraft/client/world/GeneratorType SINGLE_BIOME_SURFACE L
 accessible field net/minecraft/client/gui/screen/world/MoreOptionsDialog field_25049 Ljava/util/Optional;
 accessible field net/minecraft/world/gen/chunk/FlatChunkGeneratorConfig STRUCTURE_TO_FEATURES Ljava/util/Map;
 accessible field net/minecraft/client/network/ClientAdvancementManager advancementProgresses Ljava/util/Map;
+accessible field net/minecraft/client/gui/widget/ButtonWidget onPress Lnet/minecraft/client/gui/widget/ButtonWidget$PressAction;
+accessible field net/minecraft/world/gen/chunk/ChunkGenerator field_24748 J
+accessible field net/minecraft/world/gen/chunk/ChunkGenerator field_24749 Ljava/util/List;
+accessible field net/minecraft/client/options/KeyBinding categoryOrderMap Ljava/util/Map;
+accessible field net/minecraft/client/MinecraftClient openProfilerSection Ljava/lang/String;
+accessible field net/minecraft/server/world/ServerWorld inEntityTick Z
+accessible field net/minecraft/world/storage/SerializingRegionBasedStorage worker Lnet/minecraft/world/storage/StorageIoWorker;
+accessible field net/minecraft/world/storage/VersionedChunkStorage worker Lnet/minecraft/world/storage/StorageIoWorker;

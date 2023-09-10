@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import me.falu.peepopractice.PeepoPractice;
 import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.core.category.PracticeCategory;
-import me.falu.peepopractice.mixin.access.MinecraftClientAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.BooleanOption;
 import net.minecraft.client.options.CyclingOption;
@@ -74,7 +73,7 @@ public class StandardSettingsUtils {
                 case "piechart":
                     String value = entry.getValue().getAsString();
                     if (value.split("\\.")[0].equals("root")) {
-                        ((MinecraftClientAccessor) MinecraftClient.getInstance()).peepoPractice$setOpenProfilerSection(value.replace('.', '\u001e'));
+                        MinecraftClient.getInstance().openProfilerSection = value.replace('.', '\u001e');
                     }
                     break;
                 case "perspective":

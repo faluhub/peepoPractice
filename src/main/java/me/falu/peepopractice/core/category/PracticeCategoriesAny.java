@@ -11,7 +11,6 @@ import me.falu.peepopractice.core.category.properties.PlayerProperties;
 import me.falu.peepopractice.core.category.properties.StructureProperties;
 import me.falu.peepopractice.core.category.properties.WorldProperties;
 import me.falu.peepopractice.core.category.properties.preset.BastionPreset;
-import me.falu.peepopractice.mixin.access.ChunkGeneratorAccessor;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LeavesBlock;
@@ -344,8 +343,8 @@ public class PracticeCategoriesAny {
                         int max = Objects.requireNonNullElse(distanceType, PracticeTypes.StrongholdDistanceType.AVERAGE).getMax();
                         int min = Objects.requireNonNullElse(distanceType, PracticeTypes.StrongholdDistanceType.AVERAGE).getMin();
                         ChunkGenerator chunkGenerator = world.getChunkManager().getChunkGenerator();
-                        ((ChunkGeneratorAccessor) chunkGenerator).peepoPractice$invokeMethod_28509();
-                        List<ChunkPos> strongholds = ((ChunkGeneratorAccessor) chunkGenerator).peepoPractice$getField_24749();
+                        chunkGenerator.method_28509();
+                        List<ChunkPos> strongholds = chunkGenerator.field_24749;
                         int maxStrongholds = 3;
                         BlockPos blockPos = strongholds.get(random.nextInt(maxStrongholds)).toBlockPos(4, 0, 4);
                         blockPos = PracticeCategoryUtils.getRandomBlockInRadius(max, min, blockPos, random);

@@ -10,7 +10,6 @@ import com.redlimerl.speedrunigt.timer.TimerStatus;
 import me.falu.peepopractice.PeepoPractice;
 import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.core.category.PracticeCategory;
-import me.falu.peepopractice.mixin.access.ServerWorldAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvents;
@@ -109,7 +108,7 @@ public abstract class SplitEvent {
                     }
                 }
 
-                while (((ServerWorldAccessor) serverPlayerEntity.getServerWorld()).peepoPractice$getInEntityTick()) {}
+                while (serverPlayerEntity.getServerWorld().inEntityTick) {}
                 PeepoPractice.log("Done waiting for entity tick");
                 serverPlayerEntity.teleport(client.getServer().getWorld(registryKey), pos.getX(), pos.getY(), pos.getZ(), yaw, pitch);
                 serverPlayerEntity.addScoreboardTag("completed");

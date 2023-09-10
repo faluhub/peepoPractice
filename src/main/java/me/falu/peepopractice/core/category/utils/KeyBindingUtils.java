@@ -1,7 +1,6 @@
 package me.falu.peepopractice.core.category.utils;
 
 import com.google.common.collect.Lists;
-import me.falu.peepopractice.mixin.access.KeyBindingAccessor;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
@@ -19,16 +18,16 @@ public class KeyBindingUtils {
         return (Language.getInstance().get(path).equals(path) ? new LiteralText(text) : new TranslatableText(path));
     }
 
-    private static Map<String, Integer> getCategoryMap() {
-        return KeyBindingAccessor.peepoPractice$getCategoryMap();
+    private static Map<String, Integer> getCategoryOrderMap() {
+        return KeyBinding.categoryOrderMap;
     }
 
     private static boolean noCategory(String key) {
-        return !getCategoryMap().containsKey(key);
+        return !getCategoryOrderMap().containsKey(key);
     }
 
     public static void addCategory(String key) {
-        Map<String, Integer> map = getCategoryMap();
+        Map<String, Integer> map = getCategoryOrderMap();
         if (noCategory(key)) {
             Optional<Integer> largest = map.values().stream().max(Integer::compare);
             int largestInt = largest.orElse(0);
