@@ -5,7 +5,6 @@ import me.falu.peepopractice.core.category.properties.PlayerProperties;
 import me.falu.peepopractice.core.category.properties.StructureProperties;
 import me.falu.peepopractice.core.category.properties.WorldProperties;
 import me.falu.peepopractice.core.category.properties.event.GetAdvancementSplitEvent;
-import me.falu.peepopractice.core.category.properties.preset.CommandsPreset;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;

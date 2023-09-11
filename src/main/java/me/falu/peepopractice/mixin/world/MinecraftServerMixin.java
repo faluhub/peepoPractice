@@ -10,8 +10,6 @@ import me.falu.peepopractice.core.category.properties.StructureProperties;
 import me.falu.peepopractice.owner.GenerationShutdownOwner;
 import net.minecraft.command.DataCommandStorage;
 import net.minecraft.entity.boss.BossBarManager;
-import net.minecraft.resource.ResourcePackManager;
-import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ServerResourceManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
@@ -54,9 +52,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -83,10 +79,6 @@ public abstract class MinecraftServerMixin implements GenerationShutdownOwner {
     @Shadow public abstract Iterable<ServerWorld> getWorlds();
     @Shadow @Final private Snooper snooper;
     @Shadow private ServerResourceManager serverResourceManager;
-
-    @Shadow @Final private ResourcePackManager<ResourcePackProfile> dataPackManager;
-
-    @Shadow public abstract boolean acceptsStatusQuery();
 
     /**
      * @author falu, contaria

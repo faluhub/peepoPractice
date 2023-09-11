@@ -8,7 +8,6 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Language;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class KeyBindingUtils {

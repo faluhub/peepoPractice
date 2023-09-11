@@ -126,6 +126,7 @@ public class PracticeCategoryUtils {
         return text.toString();
     }
 
+    @SuppressWarnings("BlockingMethodInNonBlockingContext")
     public static File getResourceAsFile(String resourcePath, String name) {
         try {
             File tempFile = new File(System.getProperty("java.io.tmpdir") + "/" + name);

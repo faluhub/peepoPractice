@@ -27,7 +27,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,7 +60,6 @@ public class PeepoPractice implements ModInitializer {
     public void onInitialize() {
         log("Using " + MOD_NAME + " v" + MOD_VERSION);
 
-        log(System.getProperty("java.io.tmpdir"));
         Registry.register(
                 Registry.ITEM,
                 new Identifier(
