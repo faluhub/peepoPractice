@@ -1,6 +1,5 @@
 package me.falu.peepopractice.core.category.utils;
 
-import me.falu.peepopractice.PeepoPractice;
 import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import me.falu.peepopractice.core.category.PracticeCategory;
 import net.minecraft.block.BlockState;
@@ -17,10 +16,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.WorldChunk;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 
 public class PracticeCategoryUtils {
@@ -124,27 +119,5 @@ public class PracticeCategoryUtils {
             }
         }
         return text.toString();
-    }
-
-    @SuppressWarnings("BlockingMethodInNonBlockingContext")
-    public static File getResourceAsFile(String resourcePath, String name) {
-        try {
-            File tempFile = new File(System.getProperty("java.io.tmpdir") + "/" + name);
-            if (tempFile.exists()) { return tempFile; }
-            else { boolean ignored = tempFile.createNewFile(); }
-            InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream(resourcePath);
-            if (in == null) { return null; }
-            try (FileOutputStream out = new FileOutputStream(tempFile)) {
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                while ((bytesRead = in.read(buffer)) != -1) {
-                    out.write(buffer, 0, bytesRead);
-                }
-            }
-            return tempFile;
-        } catch (IOException e) {
-            PeepoPractice.LOGGER.error("Couldn't get resource '{}' as file:", resourcePath, e);
-        }
-        return null;
     }
 }

@@ -2,7 +2,7 @@ package me.falu.peepopractice.mixin.storage;
 
 import me.falu.peepopractice.PeepoPractice;
 import me.falu.peepopractice.core.category.properties.WorldProperties;
-import me.falu.peepopractice.core.category.utils.PracticeCategoryUtils;
+import me.falu.peepopractice.core.writer.DefaultFileWriter;
 import net.minecraft.resource.FileResourcePackProvider;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
@@ -30,7 +30,7 @@ public abstract class FileResourcePackProviderMixin {
             for (String dataPack : props.getDataPacks()) {
                 String string = "peepoPractice/" + dataPack;
                 String suffix = ".zip";
-                File file = PracticeCategoryUtils.getResourceAsFile("datapacks/" + dataPack + suffix, dataPack + suffix);
+                File file = DefaultFileWriter.INSTANCE.getResourceAsFile("datapacks/" + dataPack + suffix, dataPack + suffix);
                 T profile = ResourcePackProfile.of(string, true, this.createResourcePack(file), factory, ResourcePackProfile.InsertionPosition.TOP, this.field_25345);
                 if (profile == null) { continue; }
                 consumer.accept(profile);
