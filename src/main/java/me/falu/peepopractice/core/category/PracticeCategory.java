@@ -30,6 +30,7 @@ public class PracticeCategory {
     private final boolean custom;
     private final boolean aa;
     private final Map<String, Object> customValues = new HashMap<>();
+    private final Map<String, Object> permaValues = new HashMap<>();
 
     public PracticeCategory() {
         this(false, false);
@@ -181,12 +182,24 @@ public class PracticeCategory {
         return this.customValues.get(key);
     }
 
+    public Object getPermaValue(String key) {
+        return this.permaValues.get(key);
+    }
+
     public boolean hasCustomValue(String key) {
         return this.customValues.containsKey(key);
     }
 
-    public PracticeCategory putCustomValue(String key, Object value) {
+    public boolean hasPermaValue(String key) {
+        return this.permaValues.containsKey(key);
+    }
+
+    public void putCustomValue(String key, Object value) {
         this.customValues.put(key, value);
+    }
+
+    public PracticeCategory putPermaValue(String key, Object value) {
+        this.permaValues.put(key, value);
         return this;
     }
 
@@ -227,7 +240,6 @@ public class PracticeCategory {
     }
 
     public boolean hasConfiguredInventory() {
-//        if (FabricLoader.getInstance().isDevelopmentEnvironment()) { return true; }
         if (this.canHaveEmptyInventory) { return true; }
         PracticeWriter writer = PracticeWriter.INVENTORY_WRITER;
         JsonObject config = writer.get();

@@ -1,6 +1,7 @@
 package me.falu.peepopractice.core.category.properties;
 
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import org.jetbrains.annotations.Nullable;
@@ -12,10 +13,11 @@ import java.util.List;
 public class WorldProperties extends BaseProperties {
     private RegistryKey<World> worldRegistryKey;
     private boolean spawnChunksDisabled = false;
-    private String seedListPath = null;
+    private String seedListPath;
     private final List<BiomeModification> proBiomes = new ArrayList<>();
     private final List<BiomeModification> antiBiomes = new ArrayList<>();
-    private boolean dragonKilled = false;
+    private final List<String> dataPacks = new ArrayList<>();
+    private Difficulty startDifficulty;
 
     public RegistryKey<World> getWorldRegistryKey() {
         return this.worldRegistryKey;
@@ -70,12 +72,21 @@ public class WorldProperties extends BaseProperties {
         return this;
     }
 
-    public boolean getDragonKilled() {
-        return this.dragonKilled;
+    public WorldProperties useDatapack(String dataPack) {
+        this.dataPacks.add(dataPack);
+        return this;
     }
 
-    public WorldProperties setDragonKilled(boolean dragonKilled) {
-        this.dragonKilled = dragonKilled;
+    public List<String> getDataPacks() {
+        return this.dataPacks;
+    }
+
+    public Difficulty getStartDifficulty() {
+        return this.startDifficulty == null ? Difficulty.EASY : this.startDifficulty;
+    }
+
+    public WorldProperties setStartDifficulty(Difficulty startDifficulty) {
+        this.startDifficulty = startDifficulty;
         return this;
     }
 

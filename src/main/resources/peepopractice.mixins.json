@@ -26,6 +26,7 @@
 
     "gui.MoreOptionsDialogMixin",
 
+    "storage.FileResourcePackProviderMixin",
     "storage.StorageIoWorkerMixin",
     "storage.ThreadedAnvilChunkStorageMixin",
 
@@ -48,8 +49,6 @@
 
     "world.entity.category.BlazeEntityMixin",
     "world.entity.category.MobEntityMixin",
-
-    "world.entity.dragon.EnderDragonFightMixin",
 
     "world.entity.ClientPlayerEntityMixin",
     "world.entity.EyeOfEnderEntityMixin",

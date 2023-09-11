@@ -9,6 +9,7 @@ import me.falu.peepopractice.core.global.GlobalOptions;
 import me.falu.peepopractice.core.item.RandomToolItem;
 import me.falu.peepopractice.core.playerless.PlayerlessInventory;
 import me.falu.peepopractice.core.playerless.PlayerlessPlayerScreenHandler;
+import me.falu.peepopractice.gui.screen.CategorySelectionScreen;
 import me.voidxwalker.autoreset.Atum;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
@@ -26,6 +27,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.glfw.GLFW;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +51,7 @@ public class PeepoPractice implements ModInitializer {
     private static final String KEYBINDING_CATEGORY = KeyBindingUtils.getTranslation("key.categories." + MOD_ID, MOD_NAME).getString();
     public static KeyBinding REPLAY_SPLIT_KEY;
     public static KeyBinding NEXT_SPLIT_KEY;
+    public static CategorySelectionScreen.SelectionType LAST_SELECTION_TYPE = CategorySelectionScreen.SelectionType.ANY;
 
     public static void log(Object message) {
         LOGGER.info(message);
@@ -58,6 +61,7 @@ public class PeepoPractice implements ModInitializer {
     public void onInitialize() {
         log("Using " + MOD_NAME + " v" + MOD_VERSION);
 
+        log(System.getProperty("java.io.tmpdir"));
         Registry.register(
                 Registry.ITEM,
                 new Identifier(

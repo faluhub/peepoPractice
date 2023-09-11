@@ -40,7 +40,7 @@ public class InventoryUtils {
                             stackTag.remove("MaxCount");
                             int count = minCount == maxCount ? minCount : new Random().nextInt(maxCount - minCount + 1) + minCount;
                             stack.setCount(count);
-                            stack.setTag(stackTag);
+                            stack.setTag(stackTag.isEmpty() ? null : stackTag);
                         }
                     }
                     inventory.setStack(Integer.parseInt(set.getKey()), stack);

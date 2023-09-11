@@ -20,7 +20,7 @@ import java.util.List;
 
 public class CategorySelectionScreen extends Screen {
     private final Screen parent;
-    private SelectionType selectionType = SelectionType.ANY;
+    private SelectionType selectionType = PeepoPractice.LAST_SELECTION_TYPE;
     public CategoryListWidget categoryListWidget;
     private ButtonWidget doneButton;
     private ButtonWidget configureButton;
@@ -121,6 +121,7 @@ public class CategorySelectionScreen extends Screen {
                         new LiteralText(this.selectionType.title),
                         b -> {
                             this.selectionType = SelectionType.opposite(this.selectionType);
+                            PeepoPractice.LAST_SELECTION_TYPE = this.selectionType;
                             this.init();
                         }
                 )

@@ -45,7 +45,7 @@ public abstract class LevelLoadingScreenMixin extends Screen {
                                 button.active = false;
                                 if (this.client != null) {
                                     if (this.client.getServer() != null) {
-                                        ((GenerationShutdownOwner) this.client.getServer()).peepopractice$shutdown();
+                                        ((GenerationShutdownOwner) this.client.getServer()).peepoPractice$shutdown();
                                         this.client.disconnect();
                                         this.client.openScreen(new CategorySelectionScreen(null));
                                     }

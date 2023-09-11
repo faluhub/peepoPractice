@@ -17,7 +17,7 @@ public class StorageIoWorkerMixin implements GenerationShutdownOwner {
     @Shadow @Final private static Logger LOGGER;
 
     @Override
-    public void peepopractice$shutdown() {
+    public void peepoPractice$shutdown() {
         this.field_24468.close();
         try { this.storage.close(); }
         catch (Exception e) { LOGGER.error("Failed to close storage:", e); }

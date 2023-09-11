@@ -10,8 +10,10 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 public class IglooGeneratorMixin {
     @ModifyConstant(method = "addPieces", constant = @Constant(doubleValue = 0.5D))
     private static double peepoPractice$guaranteeIglooBasement(double constant) {
-        if (PeepoPractice.CATEGORY.hasCustomValue("guaranteeIglooBasement")) {
-            return 1.0D;
+        if (PeepoPractice.CATEGORY.hasPermaValue("guaranteeIglooBasement")) {
+            if ((Boolean) PeepoPractice.CATEGORY.getPermaValue("guaranteeIglooBasement")) {
+                return 1.0D;
+            }
         }
         return constant;
     }

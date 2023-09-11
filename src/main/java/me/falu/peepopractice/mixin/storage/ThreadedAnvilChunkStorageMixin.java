@@ -22,12 +22,12 @@ public abstract class ThreadedAnvilChunkStorageMixin extends VersionedChunkStora
     }
 
     @Override
-    public void peepopractice$shutdown() {
+    public void peepoPractice$shutdown() {
         try {
             this.chunkTaskPrioritySystem.close();
-            ((GenerationShutdownOwner) this.getPointOfInterestStorage().worker).peepopractice$shutdown();
+            ((GenerationShutdownOwner) this.getPointOfInterestStorage().worker).peepoPractice$shutdown();
         } finally {
-            ((GenerationShutdownOwner) this.worker).peepopractice$shutdown();
+            ((GenerationShutdownOwner) this.worker).peepoPractice$shutdown();
         }
     }
 }
