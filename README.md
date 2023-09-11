@@ -81,6 +81,30 @@ CHILD VALUES ->
   TYPE -> Entity ID
   DESCRIPTION -> The entity type used for the vehicle of the player when they spawn in.
   EXAMPLE -> "minecraft:pig"
+  
+  "commands"
+  TYPE -> Array
+  DESCRIPTION -> A list of commands that get run when the player joins the world. (Server console permissions)
+  EXAMPLE -> ["kill @a"]
+  
+  "potion_effects"
+  CHILD VALUES ->
+    "effect"
+    TYPE -> Status Effect ID
+    DESCRIPTION -> The effect that gets applied to the player.
+    EXAMPLE -> "minecraft:fire_resistance"
+    
+    "amplifier"
+    TYPE -> Integer
+    DESCRIPTION -> The amplifier of the effect.
+    EXAMPLE -> 0
+    
+    "duration"
+    TYPE -> Integer
+    DESCRIPTION -> How long the effect lasts. (In ticks)
+    EXAMPLE -> 1000
+  DESCRIPTION -> An array of potion effects that get applied to the player whenever they spawn in.
+  EXAMPLE -> [{...}, {...}]
 DESCRIPTION -> These are values to control the player for this category.
 EXAMPLE -> {...}
 
@@ -132,7 +156,7 @@ CHILD VALUES ->
   DESCRIPTION -> This controls whether or not spawn chunks are disabled. Spawn chunks are a set of chunks around the world spawn that are always loaded.
   EXAMPLE -> true
   
-  "anti_biome_map"
+  "anti_biomes"
   TYPE -> Array
   CHILD VALUES ->
     "biome"
@@ -140,14 +164,24 @@ CHILD VALUES ->
     DESCRIPTION -> The biome to not generate within the specified range. If this biome tried to generate in the nether it replaces it with "nether_wastes". In the overworld it replaces it with "plains".
     EXAMPLE -> "minecraft:desert"
     
+    "replacement"
+    TYPE -> Biome ID
+    DESCRIPTION -> The biome the removed biome gets replaced with.
+    EXAMPLE -> "minecraft:plains"
+    
     "range"
     TYPE -> Integer
     DESCRIPTION -> The range of which the specified biome should not be generated in. This is calculated in a circle and is centered around the world origin (0, 0). These are BLOCKS and NOT CHUNKS.
     EXAMPLE -> 200
+    
+    "valid_dimensions"
+    TYPE -> Array of World Type ("overworld", "nether", "end")
+    DESCRIPTION -> The dimension that the biome manipulation gets limited to.
+    EXAMPLE -> ["overworld", "nether"]
   DESCRIPTION -> Replaces the specified biomes with another in their specified ranges.
   EXAMPLE -> [{...}, {...}]
   
-  "pro_biome_map"
+  "pro_biomes"
   TYPE -> Array
   CHILD VALUES ->
     "biome"
@@ -159,8 +193,18 @@ CHILD VALUES ->
     TYPE -> Integer
     DESCRIPTION -> The range of which the specified biome should be generated in. This is calculated in a circle and is centered around the world origin (0, 0). These are BLOCKS and NOT CHUNKS.
     EXAMPLE -> 200
+    
+    "valid_dimensions"
+    TYPE -> Array of World Type ("overworld", "nether", "end")
+    DESCRIPTION -> The dimension that the biome manipulation gets limited to.
+    EXAMPLE -> ["overworld", "nether"]
   DESCRIPTION -> Forcibly generates the specified biomes in their specified ranges.
   EXAMPLE -> [{...}, {...}]
+  
+  "start_difficulty"
+  TYPE -> Difficulty Type ("peaceful", "easy", "normal", "hard")
+  DESCRIPTION -> The difficulty that the world gets created with.
+  EXAMPLE -> "easy"
 
 "split_event"
 (This part will be a little bit different, as each split event has their own custom values.)

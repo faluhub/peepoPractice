@@ -81,6 +81,11 @@ public class PlayerProperties extends BaseProperties {
         return this;
     }
 
+    public PlayerProperties runCommand(String command) {
+        this.commands.add(command);
+        return this;
+    }
+
     public List<PotionEffect> getPotionEffects() {
         return this.potionEffects;
     }

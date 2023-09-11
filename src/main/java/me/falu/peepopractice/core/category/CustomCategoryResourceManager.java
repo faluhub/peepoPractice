@@ -17,6 +17,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.chunk.FlatChunkGeneratorConfig;
@@ -64,6 +65,7 @@ public class CustomCategoryResourceManager {
 
                     if (obj != null && !obj.equals(JsonNull.INSTANCE)) {
                         JsonObject main = (JsonObject) obj;
+
                         boolean aa = false;
                         if (main.has("aa")) {
                             aa = main.get("aa").getAsBoolean();
@@ -94,6 +96,29 @@ public class CustomCategoryResourceManager {
                             if (playerProperties.has("vehicle")) {
                                 String vehicleId = playerProperties.get("vehicle").getAsString();
                                 properties = properties.setVehicle(Registry.ENTITY_TYPE.get(new Identifier(vehicleId)));
+                            }
+                            if (playerProperties.has("commands")) {
+                                JsonArray commandsArray = playerProperties.get("commands").getAsJsonArray();
+                                for (JsonElement element : commandsArray) {
+                                    properties = properties.runCommand(element.getAsString());
+                                }
+                            }
+                            if (playerProperties.has("potion_effects")) {
+                                JsonArray potionEffectsArray = playerProperties.get("potion_effects").getAsJsonArray();
+                                for (JsonElement element : potionEffectsArray) {
+                                    JsonObject potionEffectObject = element.getAsJsonObject();
+                                    if (potionEffectObject.has("effect")) {
+                                        PlayerProperties.PotionEffect potionEffect = new PlayerProperties.PotionEffect();
+                                        potionEffect.setEffect(Registry.STATUS_EFFECT.get(new Identifier(potionEffectObject.get("effect").getAsString())));
+                                        if (potionEffectObject.has("amplifier")) {
+                                            potionEffect = potionEffect.setAmplifier(potionEffectObject.get("amplifier").getAsInt());
+                                        }
+                                        if (potionEffectObject.has("duration")) {
+                                            potionEffect = potionEffect.setDuration(potionEffectObject.get("duration").getAsInt());
+                                        }
+                                        properties = properties.addPotionEffect(potionEffect);
+                                    }
+                                }
                             }
                             category = category.setPlayerProperties(properties);
                         }
@@ -142,54 +167,53 @@ public class CustomCategoryResourceManager {
                             if (worldProperties.has("anti_biomes")) {
                                 JsonArray array = worldProperties.get("anti_biomes").getAsJsonArray();
                                 for (JsonElement element : array) {
-                                    if (element instanceof JsonObject) {
-                                        JsonObject antiBiomeInfo = (JsonObject) element;
-                                        if (antiBiomeInfo.has("biome") && antiBiomeInfo.has("range") && antiBiomeInfo.has("replacement") && antiBiomeInfo.has("valid_dimensions")) {
-                                            Biome biome = Registry.BIOME.get(new Identifier(antiBiomeInfo.get("biome").getAsString()));
-                                            Biome replacement = Registry.BIOME.get(new Identifier(antiBiomeInfo.get("replacement").getAsString()));
-                                            Integer range = antiBiomeInfo.get("range").getAsInt();
-                                            range = range > 0 ? range : null;
-                                            List<RegistryKey<World>> validDimensions = new ArrayList<>();
-                                            JsonArray validDimensionsArray = antiBiomeInfo.get("valid_dimensions").getAsJsonArray();
-                                            for (JsonElement element1 : validDimensionsArray) {
-                                                validDimensions.add(parseDimensionKey(element1));
-                                            }
-                                            properties = properties.addAntiBiome(new WorldProperties.BiomeModification()
-                                                    .setBiome(biome)
-                                                    .setReplacement(replacement)
-                                                    .setRange(new WorldProperties.Range()
-                                                            .setRange(range)
-                                                            .addValidDimensions(validDimensions)
-                                                    )
-                                            );
+                                    JsonObject antiBiomeInfo = element.getAsJsonObject();
+                                    if (antiBiomeInfo.has("biome") && antiBiomeInfo.has("range") && antiBiomeInfo.has("replacement") && antiBiomeInfo.has("valid_dimensions")) {
+                                        Biome biome = Registry.BIOME.get(new Identifier(antiBiomeInfo.get("biome").getAsString()));
+                                        Biome replacement = Registry.BIOME.get(new Identifier(antiBiomeInfo.get("replacement").getAsString()));
+                                        Integer range = antiBiomeInfo.get("range").getAsInt();
+                                        range = range > 0 ? range : null;
+                                        List<RegistryKey<World>> validDimensions = new ArrayList<>();
+                                        JsonArray validDimensionsArray = antiBiomeInfo.get("valid_dimensions").getAsJsonArray();
+                                        for (JsonElement element1 : validDimensionsArray) {
+                                            validDimensions.add(parseDimensionKey(element1));
                                         }
+                                        properties = properties.addAntiBiome(new WorldProperties.BiomeModification()
+                                                .setBiome(biome)
+                                                .setReplacement(replacement)
+                                                .setRange(new WorldProperties.Range()
+                                                        .setRange(range)
+                                                        .addValidDimensions(validDimensions)
+                                                )
+                                        );
                                     }
                                 }
                             }
                             if (worldProperties.has("pro_biomes")) {
                                 JsonArray array = worldProperties.get("pro_biomes").getAsJsonArray();
                                 for (JsonElement element : array) {
-                                    if (element instanceof JsonObject) {
-                                        JsonObject proBiomeInfo = (JsonObject) element;
-                                        if (proBiomeInfo.has("biome") && proBiomeInfo.has("range") && proBiomeInfo.has("valid_dimensions")) {
-                                            Biome biome = Registry.BIOME.get(new Identifier(proBiomeInfo.get("biome").getAsString()));
-                                            Integer range = proBiomeInfo.get("range").getAsInt();
-                                            range = range > 0 ? range : null;
-                                            List<RegistryKey<World>> validDimensions = new ArrayList<>();
-                                            JsonArray validDimensionsArray = proBiomeInfo.get("valid_dimensions").getAsJsonArray();
-                                            for (JsonElement element1 : validDimensionsArray) {
-                                                validDimensions.add(parseDimensionKey(element1));
-                                            }
-                                            properties = properties.addProBiome(new WorldProperties.BiomeModification()
-                                                    .setBiome(biome)
-                                                    .setRange(new WorldProperties.Range()
-                                                            .setRange(range)
-                                                            .addValidDimensions(validDimensions)
-                                                    )
-                                            );
+                                    JsonObject proBiomeInfo = element.getAsJsonObject();
+                                    if (proBiomeInfo.has("biome") && proBiomeInfo.has("range") && proBiomeInfo.has("valid_dimensions")) {
+                                        Biome biome = Registry.BIOME.get(new Identifier(proBiomeInfo.get("biome").getAsString()));
+                                        Integer range = proBiomeInfo.get("range").getAsInt();
+                                        range = range > 0 ? range : null;
+                                        List<RegistryKey<World>> validDimensions = new ArrayList<>();
+                                        JsonArray validDimensionsArray = proBiomeInfo.get("valid_dimensions").getAsJsonArray();
+                                        for (JsonElement element1 : validDimensionsArray) {
+                                            validDimensions.add(parseDimensionKey(element1));
                                         }
+                                        properties = properties.addProBiome(new WorldProperties.BiomeModification()
+                                                .setBiome(biome)
+                                                .setRange(new WorldProperties.Range()
+                                                        .setRange(range)
+                                                        .addValidDimensions(validDimensions)
+                                                )
+                                        );
                                     }
                                 }
+                            }
+                            if (worldProperties.has("start_difficulty")) {
+                                properties = properties.setStartDifficulty(Difficulty.byName(worldProperties.get("start_difficulty").getAsString().toLowerCase()));
                             }
                             category = category.setWorldProperties(properties);
                         }
