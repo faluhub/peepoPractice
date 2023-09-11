@@ -52,6 +52,7 @@ public class PracticeCategoriesAA {
                                     .addValidDimension(World.OVERWORLD)
                             )
                     )
+                    .setStartDifficulty(Difficulty.HARD)
             )
             .addStructureProperties(new StructureProperties()
                     .setStructure(DefaultBiomeFeatures.IGLOO)
