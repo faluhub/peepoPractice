@@ -32,12 +32,81 @@ You can also copy the inventory from another category that you've already made a
 **How do I add enchantments to items in my loadout?**
 
 ```
+- Select the category you want to Configure.
+- Click "Configure" on the bottom.
+- Click "Inventory".
 - Search for the enchantment you want (the book).
 - Click on the enchanted book so you pick it up.
 - Whilst holding the book click on the item you want to enchant.
 
 If the item can be enchanted by the selected enchantment book it will be added to the item's enchantments.
 ```
+
+**How do I get random item count for an item?**
+```
+- Select the category you want to configure.
+- Click "Configure" on the bottom.
+- Click "Inventory".
+- Hover over an item in your inventory and click the "+" and "-" buttons.
+
+The "+" and "-" buttons on the left side of the slot represent the minimum count of the item.
+The ones on the right represent the maximum count of the item.
+```
+
+**How do I edit a Shulker Box's contents?**
+```
+- Select the category you want to configure.
+- Click "Configure" on the bottom.
+- Click "Inventory".
+- Hold "Control" on your keyboard and click on the Shulker Box item.
+```
+
+**How do I use random tools?**
+```
+- Select the category you want to configure.
+- Click "Configure" on the bottom.
+- Click "Inventory".
+- Go to the "Tools" tab (this will be on the bottom of the creative inventory screen).
+
+The tools will be on the bottom row of this item group.
+You can also search for them in the "Search" tab.
+More info about random tools can be found below.
+```
+
+# Random Tools
+
+Random tools are items that you can use to randomize the materials of your tools.
+
+Below are the materials that the random tools can convert into.
+
+## Pickaxe:
+- Iron
+- Diamond
+
+## Axe:
+- Stone
+- Iron
+- Gold
+- Diamond
+
+## Shovel:
+- Wood
+- Stone
+- Iron
+- Gold
+- Diamond
+
+## Sword:
+- Iron
+- Diamond
+
+## Hoe:
+- Wood
+- Stone
+- Iron
+- Gold
+- Diamond
+- Netherite
 
 # Custom Categories
 
