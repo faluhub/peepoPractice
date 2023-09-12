@@ -73,6 +73,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
 
     public EditInventoryScreen(Screen parent, PracticeCategory category) {
         super(new PlayerlessCreativeScreenHandler(), PeepoPractice.PLAYERLESS_INVENTORY, new LiteralText("Edit Inventory (" + category.getName(false) + ")"));
+
         this.backgroundHeight = 136;
         this.backgroundWidth = 195;
         this.parent = parent;
@@ -87,11 +88,8 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         return new EditInventoryScreen(parent, category);
     }
 
-    @Override
-    protected boolean isClickOutsideBounds(double mouseX, double mouseY, int left, int top) {
-        boolean bl = mouseX < (double)left || mouseY < (double)top || mouseX >= (double)(left + this.backgroundWidth) || mouseY >= (double)(top + this.backgroundHeight);
-        this.lastClickOutsideBounds = bl && !this.isClickInTab(ItemGroup.GROUPS[SELECTED_TAB], mouseX, mouseY);
-        return this.lastClickOutsideBounds;
+    public static int getSelectedTab() {
+        return SELECTED_TAB;
     }
 
     private void saveInventory() {
@@ -110,11 +108,16 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
     }
 
     @Override
+    protected boolean isClickOutsideBounds(double mouseX, double mouseY, int left, int top) {
+        boolean bl = mouseX < (double)left || mouseY < (double)top || mouseX >= (double)(left + this.backgroundWidth) || mouseY >= (double)(top + this.backgroundHeight);
+        this.lastClickOutsideBounds = bl && !this.isClickInTab(ItemGroup.GROUPS[SELECTED_TAB], mouseX, mouseY);
+        return this.lastClickOutsideBounds;
+    }
+
+    @Override
     public void onClose() {
         if (this.client == null) { return; }
-
         this.saveInventory();
-
         this.client.openScreen(this.parent);
     }
 
@@ -141,7 +144,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
                 && (slot.inventory == this.playerInventory || SELECTED_TAB == ItemGroup.INVENTORY.getIndex())
                 && actionType == SlotActionType.PICKUP
                 && slot.getStack() != null
-                && slot.getStack() != ItemStack.EMPTY
+                && !slot.getStack().isEmpty()
                 && PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack() != null
                 && PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack().getItem().equals(Items.ENCHANTED_BOOK)
         ) {
@@ -178,6 +181,18 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
                 PeepoPractice.PLAYERLESS_INVENTORY.setCursorStack(ItemStack.EMPTY);
                 return;
             }
+        } else if (
+                this.client != null
+                && slot != null
+                && (slot.inventory == this.playerInventory || SELECTED_TAB == ItemGroup.INVENTORY.getIndex())
+                && actionType == SlotActionType.PICKUP
+                && slot.getStack() != null
+                && !slot.getStack().isEmpty()
+                && slot.getStack().getItem().equals(Items.SHULKER_BOX)
+                && Screen.hasControlDown()
+        ) {
+            this.client.openScreen(new EditShulkerBoxScreen(this, slot, this.playerInventory, slot.getStack().getName()));
+            return;
         }
 
         if (slot != null || SELECTED_TAB == ItemGroup.INVENTORY.getIndex() || actionType == SlotActionType.QUICK_CRAFT) {
@@ -708,9 +723,10 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
     }
 
     protected void renderTooltip(MatrixStack matrices, ItemStack stack, int x, int y) {
-        if (SELECTED_TAB == ItemGroup.SEARCH.getIndex() && this.client != null) {
-            List<Text> list = stack.getTooltip(null, this.client.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.NORMAL);
-            List<StringRenderable> list2 = Lists.newArrayList(list);
+        if (this.client == null) { return; }
+        List<Text> list = stack.getTooltip(null, this.client.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.NORMAL);
+        List<StringRenderable> list2 = Lists.newArrayList(list);
+        if (SELECTED_TAB == ItemGroup.SEARCH.getIndex()) {
             Item item = stack.getItem();
             ItemGroup itemGroup = item.getGroup();
             if (item == Items.ENCHANTED_BOOK) {
@@ -728,26 +744,28 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
                         }
                     }
                 }
-
-                list2.add(list2.size() - 2, new LiteralText(""));
-                list2.addAll(list2.size() - 2, this.textRenderer.wrapLines(new LiteralText("Click on an enchantable item while holding this book to enchant it!").formatted(Formatting.YELLOW), 140));
             }
 
+            List<StringRenderable> finalList = list2;
             this.searchResultTags.forEach((identifier, tag) -> {
                 if (tag.contains(item)) {
-                    list2.add(1, (new LiteralText("#" + identifier)).formatted(Formatting.DARK_PURPLE));
+                    finalList.add(1, (new LiteralText("#" + identifier)).formatted(Formatting.DARK_PURPLE));
                 }
-
             });
             if (itemGroup != null) {
                 list2.add(1, (new TranslatableText(itemGroup.getTranslationKey())).formatted(Formatting.BLUE));
             }
-
-            this.renderTooltip(matrices, list2, x, y);
         } else {
-            super.renderTooltip(matrices, stack, x, y);
+            list2 = Lists.newArrayList(this.getTooltipFromItem(stack));
         }
-
+        if (stack.getItem().equals(Items.ENCHANTED_BOOK)) {
+            list2.add(list2.size() - 2, new LiteralText(""));
+            list2.addAll(list2.size() - 2, this.textRenderer.wrapLines(new LiteralText("Click on an enchantable item while holding this book to enchant it!").formatted(Formatting.YELLOW), 140));
+        } else if (stack.getItem().getTranslationKey().contains("shulker_box")) {
+            list2.add(list2.size() - 2, new LiteralText(""));
+            list2.addAll(list2.size() - 2, this.textRenderer.wrapLines(new LiteralText("Hold Control and click on this item to edit its contents!").formatted(Formatting.YELLOW), 140));
+        }
+        this.renderTooltip(matrices, list2, x, y);
     }
 
     @SuppressWarnings("DuplicatedCode")

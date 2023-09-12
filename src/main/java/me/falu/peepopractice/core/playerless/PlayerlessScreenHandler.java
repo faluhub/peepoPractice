@@ -3,14 +3,17 @@ package me.falu.peepopractice.core.playerless;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import me.falu.peepopractice.PeepoPractice;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashReportSection;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Set;
@@ -113,9 +116,9 @@ public abstract class PlayerlessScreenHandler {
                 if (slot3 == null) {
                     return;
                 }
-                ItemStack itemStack3 = PeepoPractice.PLAYERLESS_PLAYER_SCREEN_HANDLER.transferSlot(i);
+                ItemStack itemStack3 = this.transferSlot(i);
                 while (!itemStack3.isEmpty() && ItemStack.areItemsEqualIgnoreDamage(slot3.getStack(), itemStack3)) {
-                    itemStack3 = PeepoPractice.PLAYERLESS_PLAYER_SCREEN_HANDLER.transferSlot(i);
+                    itemStack3 = this.transferSlot(i);
                 }
             } else {
                 if (i < 0) {
@@ -230,6 +233,14 @@ public abstract class PlayerlessScreenHandler {
                 }
             }
         }
+    }
+
+    public ItemStack transferSlot(int index) {
+        Slot slot = this.slots.get(index);
+        if (slot != null) {
+            return slot.getStack();
+        }
+        return ItemStack.EMPTY;
     }
 
     protected boolean insertItem(ItemStack stack, int startIndex, int endIndex, boolean fromLast) {
