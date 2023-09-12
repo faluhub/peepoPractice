@@ -8,10 +8,12 @@ import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.core.item.RandomToolItem;
 import me.falu.peepopractice.core.playerless.PlayerlessInventory;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringNbtReader;
+import net.minecraft.util.collection.DefaultedList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,20 +30,22 @@ public class InventoryUtils {
                 try {
                     CompoundTag tag = StringNbtReader.parse(set.getValue().getAsString());
                     ItemStack stack = ItemStack.fromTag(tag);
-                    CompoundTag stackTag = stack.getTag();
                     if (!(inventory instanceof PlayerlessInventory)) {
-                        if (stack.getItem() instanceof RandomToolItem) {
-                            stack = ((RandomToolItem) stack.getItem()).convert();
-                        }
-                        if (stackTag != null && stackTag.contains("MaxCount")) {
-                            int minCount = stackTag.getInt("MinCount");
-                            int maxCount = stackTag.getInt("MaxCount");
-                            stackTag.remove("MinCount");
-                            stackTag.remove("MaxCount");
-                            int count = minCount == maxCount ? minCount : new Random().nextInt(maxCount - minCount + 1) + minCount;
-                            stack.setCount(count);
-                            stack.setTag(stackTag.isEmpty() ? null : stackTag);
-                        }
+                        CompoundTag blockEntityTag = stack.getSubTag("BlockEntityTag");
+                        if (blockEntityTag != null && stack.getTag() != null) {
+                            if (blockEntityTag.contains("Items")) {
+                                DefaultedList<ItemStack> containerStacks = DefaultedList.ofSize(27, ItemStack.EMPTY);
+                                DefaultedList<ItemStack> newContainerStacks = DefaultedList.ofSize(27, ItemStack.EMPTY);
+                                Inventories.fromTag(blockEntityTag, containerStacks);
+                                for (int i = 0; i < containerStacks.size(); i++) {
+                                    newContainerStacks.set(i, addItemModifiers(containerStacks.get(i)));
+                                }
+                                Inventories.toTag(blockEntityTag, newContainerStacks);
+                                CompoundTag stackTag = stack.getTag();
+                                stackTag.put("BlockEntityTag", blockEntityTag);
+                                stack.setTag(stackTag);
+                            }
+                        } else { stack = addItemModifiers(stack); }
                     }
                     inventory.setStack(Integer.parseInt(set.getKey()), stack);
                 } catch (CommandSyntaxException e) {
@@ -51,6 +55,23 @@ public class InventoryUtils {
                 }
             });
         }
+    }
+
+    public static ItemStack addItemModifiers(ItemStack stack) {
+        CompoundTag stackTag = stack.getTag();
+        if (stack.getItem() instanceof RandomToolItem) {
+            stack = ((RandomToolItem) stack.getItem()).convert();
+        }
+        if (stackTag != null && stackTag.contains("MaxCount")) {
+            int minCount = stackTag.getInt("MinCount");
+            int maxCount = stackTag.getInt("MaxCount");
+            stackTag.remove("MinCount");
+            stackTag.remove("MaxCount");
+            int count = minCount == maxCount ? minCount : new Random().nextInt(maxCount - minCount + 1) + minCount;
+            stack.setCount(count);
+            stack.setTag(stackTag.isEmpty() ? null : stackTag);
+        }
+        return stack;
     }
 
     public static void saveCurrentPlayerInventory() {
