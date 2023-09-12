@@ -64,4 +64,10 @@ public class BastionPreset {
             .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
             .setDefaultChoice(PracticeCategoryUtils.ENABLED)
             .setIcon(new Identifier("textures/item/ender_pearl.png"));
+    public static final CategoryPreference ZOMBIE_PIGMEN = new CategoryPreference()
+            .setId("zombie_pigmen")
+            .setDescription("Whether or not Zombie Pigmen can spawn in bastions.")
+            .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
+            .setDefaultChoice(PracticeCategoryUtils.ENABLED)
+            .setIcon(new Identifier("textures/item/rotten_flesh.png"));
 }

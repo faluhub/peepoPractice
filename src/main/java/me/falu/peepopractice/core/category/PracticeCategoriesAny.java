@@ -246,7 +246,8 @@ public class PracticeCategoriesAny {
             )
             .addPreference(BastionPreset.BASTION_TYPE_PREFERENCE)
             .addPreference(BastionPreset.RANKED_LOOT_TABLE_PREFERENCE)
-            .addPreference(StructurePreset.SPAWN_LOCATION_PREFERENCE);
+            .addPreference(StructurePreset.SPAWN_LOCATION_PREFERENCE)
+            .addPreference(BastionPreset.ZOMBIE_PIGMEN);
     public static final PracticeCategory FORTRESS_SPLIT = new PracticeCategory()
             .setId("fortress_split")
             .setFillerCategory(true)
@@ -336,7 +337,8 @@ public class PracticeCategoriesAny {
             .addPreference(BastionPreset.RANKED_LOOT_TABLE_PREFERENCE)
             .addPreference(FortressPreset.GOOD_BLAZE_RATES_PREFERENCE)
             .addPreference(StructurePreset.SPAWN_LOCATION_PREFERENCE)
-            .addPreference(FortressPreset.SOUL_SAND_VALLEY_PREFERENCE);
+            .addPreference(FortressPreset.SOUL_SAND_VALLEY_PREFERENCE)
+            .addPreference(BastionPreset.ZOMBIE_PIGMEN);
     public static final PracticeCategory POST_BLIND_SPLIT = new PracticeCategory()
             .setId("post_blind_split")
             .setPlayerProperties(new PlayerProperties()

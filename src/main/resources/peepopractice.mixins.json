@@ -49,6 +49,7 @@
 
     "world.entity.category.BlazeEntityMixin",
     "world.entity.category.MobEntityMixin",
+    "world.entity.category.ZombifiedPiglinEntityMixin",
 
     "world.entity.ClientPlayerEntityMixin",
     "world.entity.EyeOfEnderEntityMixin",
