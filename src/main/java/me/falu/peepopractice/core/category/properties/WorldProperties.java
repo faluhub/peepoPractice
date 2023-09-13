@@ -11,13 +11,13 @@ import java.util.List;
 
 @SuppressWarnings("UnusedDeclaration")
 public class WorldProperties extends BaseProperties {
-    private RegistryKey<World> worldRegistryKey;
+    private RegistryKey<World> worldRegistryKey = World.OVERWORLD;
     private boolean spawnChunksDisabled = false;
     private String seedListPath;
     private final List<BiomeModification> proBiomes = new ArrayList<>();
     private final List<BiomeModification> antiBiomes = new ArrayList<>();
     private final List<String> dataPacks = new ArrayList<>();
-    private Difficulty startDifficulty;
+    private Difficulty startDifficulty = Difficulty.EASY;
 
     public RegistryKey<World> getWorldRegistryKey() {
         return this.worldRegistryKey;
@@ -82,7 +82,7 @@ public class WorldProperties extends BaseProperties {
     }
 
     public Difficulty getStartDifficulty() {
-        return this.startDifficulty == null ? Difficulty.EASY : this.startDifficulty;
+        return this.startDifficulty;
     }
 
     public WorldProperties setStartDifficulty(Difficulty startDifficulty) {
