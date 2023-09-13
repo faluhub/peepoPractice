@@ -11,10 +11,7 @@ import me.falu.peepopractice.owner.GenerationShutdownOwner;
 import net.minecraft.command.DataCommandStorage;
 import net.minecraft.entity.boss.BossBarManager;
 import net.minecraft.resource.ServerResourceManager;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.PlayerManager;
-import net.minecraft.server.ServerNetworkIo;
-import net.minecraft.server.WorldGenerationProgressListener;
+import net.minecraft.server.*;
 import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Unit;
@@ -79,6 +76,7 @@ public abstract class MinecraftServerMixin implements GenerationShutdownOwner {
     @Shadow public abstract Iterable<ServerWorld> getWorlds();
     @Shadow @Final private Snooper snooper;
     @Shadow private ServerResourceManager serverResourceManager;
+    @Shadow protected abstract void setFavicon(ServerMetadata metadata);
 
     /**
      * @author falu, contaria
@@ -220,5 +218,11 @@ public abstract class MinecraftServerMixin implements GenerationShutdownOwner {
         this.serverResourceManager.close();
         try { this.session.close(); }
         catch (IOException e) { LOGGER.error("Failed to unlock level {}", this.session.getDirectoryName(), e); }
+    }
+
+    @Redirect(method = "runServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;setFavicon(Lnet/minecraft/server/ServerMetadata;)V"))
+    private void peepoPractice$preventIconCrash(MinecraftServer instance, ServerMetadata metadata) {
+        try { this.setFavicon(metadata); }
+        catch (IllegalStateException ignored) { PeepoPractice.LOGGER.error("Failed to update metadata icon. Prevented crash."); }
     }
 }
