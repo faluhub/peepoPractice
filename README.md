@@ -87,7 +87,6 @@ Below are the materials that the random tools can convert into.
 - Stone
 - Iron
 - Gold
-- Diamond
 
 ## Shovel:
 - Wood

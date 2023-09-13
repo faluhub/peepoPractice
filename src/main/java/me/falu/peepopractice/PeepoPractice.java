@@ -82,8 +82,7 @@ public class PeepoPractice implements ModInitializer {
                         RandomToolItem.ToolType.AXE,
                         "stone",
                         "iron",
-                        "golden",
-                        "diamond"
+                        "golden"
                 )
         );
         Registry.register(
