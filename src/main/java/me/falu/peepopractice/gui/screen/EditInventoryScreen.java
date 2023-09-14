@@ -188,7 +188,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
                 && actionType == SlotActionType.PICKUP
                 && slot.getStack() != null
                 && !slot.getStack().isEmpty()
-                && slot.getStack().getItem().equals(Items.SHULKER_BOX)
+                && slot.getStack().getTranslationKey().contains("shulker_box")
                 && Screen.hasControlDown()
         ) {
             this.client.openScreen(new EditShulkerBoxScreen(this, slot, this.playerInventory, slot.getStack().getName()));
