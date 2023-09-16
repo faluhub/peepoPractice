@@ -48,7 +48,7 @@ public class PracticeCategoriesAA {
                     .addProBiome(new WorldProperties.BiomeModification()
                             .setBiome(Biomes.SNOWY_TUNDRA)
                             .setRange(new WorldProperties.Range()
-                                    .setRange(60)
+                                    .setRange(120)
                                     .addValidDimension(World.OVERWORLD)
                             )
                     )
