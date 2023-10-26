@@ -15,12 +15,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LocateCommand.class)
 public abstract class LocateCommandMixin {
-    @Unique private static final SimpleCommandExceptionType PEEPO_PRACTICE$AFFECTED_EXCEPTION = new SimpleCommandExceptionType(new TranslatableText("peepopractice.locate_error"));
+    @Unique private static final SimpleCommandExceptionType AFFECTED_EXCEPTION = new SimpleCommandExceptionType(new TranslatableText("peepopractice.locate_error"));
 
     @Inject(method = "execute", at = @At("HEAD"))
     private static void peepoPractice$cancelAffectedLocate(ServerCommandSource source, StructureFeature<?> structureFeature, CallbackInfoReturnable<Integer> cir) throws CommandSyntaxException {
         if (PeepoPractice.CATEGORY.hasStructureProperties() && PeepoPractice.CATEGORY.findStructureProperties(structureFeature) != null) {
-            throw PEEPO_PRACTICE$AFFECTED_EXCEPTION.create();
+            throw AFFECTED_EXCEPTION.create();
         }
     }
 }

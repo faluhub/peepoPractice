@@ -44,7 +44,7 @@ public abstract class ClientAdvancementManagerMixin {
                             if (event.allAdvancements()) {
                                 InGameTimer timer = InGameTimer.getInstance();
                                 int maxCount = timer.getMoreData(7441) == 0 ? 80 : timer.getMoreData(7441);
-                                if (this.peepoPractice$getCompleteAdvancementsCount() >= maxCount) {
+                                if (this.getCompleteAdvancementsCount() >= maxCount) {
                                     event.complete(this.client.player != null && !this.client.player.isDead());
                                 }
                             } else if (advancement.getId().getPath().equals(event.getAdvancement().getPath())) {
@@ -65,10 +65,12 @@ public abstract class ClientAdvancementManagerMixin {
     }
 
     @Unique
-    private int peepoPractice$getCompleteAdvancementsCount() {
+    private int getCompleteAdvancementsCount() {
         Set<String> completedAdvancements = Sets.newHashSet();
         for (Map.Entry<String, TimerAdvancementTracker.AdvancementTrack> track : InGameTimer.getInstance().getAdvancementsTracker().getAdvancements().entrySet()) {
-            if (track.getValue().isAdvancement() && track.getValue().isComplete()) completedAdvancements.add(track.getKey());
+            if (track.getValue().isAdvancement() && track.getValue().isComplete()) {
+                completedAdvancements.add(track.getKey());
+            }
         }
         for (Advancement advancement : this.getManager().getAdvancements()) {
             if (this.advancementProgresses.containsKey(advancement) && advancement.getDisplay() != null) {

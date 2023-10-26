@@ -27,7 +27,7 @@ public abstract class StructureFeatureMixin<C extends FeatureConfig> {
     @Shadow public abstract String getName();
 
     @Unique
-    private boolean peepoPractice$checkArtificialStructure(ChunkPos chunkPos) {
+    private boolean checkArtificialStructure(ChunkPos chunkPos) {
         for (StructureProperties properties : PeepoPractice.CATEGORY.getStructureProperties()) {
             if (properties.isSameStructure((StructureFeature<?>) (Object) this)) {
                 if (properties.hasChunkPos() && properties.getChunkPos().equals(chunkPos)) {
@@ -49,7 +49,7 @@ public abstract class StructureFeatureMixin<C extends FeatureConfig> {
     public StructureStart<?> method_28657(ChunkGenerator chunkGenerator, BiomeSource biomeSource, StructureManager structureManager, long l, ChunkPos chunkPos, Biome biome, int i, ChunkRandom chunkRandom, StructureConfig structureConfig, C featureConfig) {
         ChunkPos chunkPos2 = this.method_27218(structureConfig, l, chunkRandom, chunkPos.x, chunkPos.z);
         StructureProperties props = PeepoPractice.CATEGORY.findStructureProperties((StructureFeature<?>) (Object) this);
-        boolean bl1 = this.peepoPractice$checkArtificialStructure(chunkPos);
+        boolean bl1 = this.checkArtificialStructure(chunkPos);
         boolean bl2 = !bl1 && (props == null || props.isGeneratable()) && chunkPos.x == chunkPos2.x && chunkPos.z == chunkPos2.z && this.shouldStartAt(chunkGenerator, biomeSource, l, chunkRandom, chunkPos.x, chunkPos.z, biome, chunkPos2, featureConfig);
         if (bl1 || bl2) {
             final StructureStart<C> structureStart = this.method_28656(chunkPos.x, chunkPos.z, BlockBox.empty(), i, l);

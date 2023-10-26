@@ -15,15 +15,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ChestBlockEntity.class)
 public abstract class ChestBlockEntityMixin extends LootableContainerBlockEntityMixin {
-    @Unique private Identifier peepoPractice$localLootTableId = this.lootTableId;
-    @Unique private boolean peepoPractice$valid = false;
+    @Unique private Identifier localLootTableId = this.lootTableId;
+    @Unique private boolean valid = false;
 
     @Unique
     private InteractLootChestSplitEvent peepoPractice$getCorrespondingEvent(boolean close) {
         if (PeepoPractice.CATEGORY.hasSplitEvent()) {
             if (PeepoPractice.CATEGORY.getSplitEvent() instanceof InteractLootChestSplitEvent) {
                 InteractLootChestSplitEvent event = (InteractLootChestSplitEvent) PeepoPractice.CATEGORY.getSplitEvent();
-                if (event.hasLootTable() && event.getLootTable().equals(this.peepoPractice$localLootTableId)) {
+                if (event.hasLootTable() && event.getLootTable().equals(this.localLootTableId)) {
                     if ((event.isOnClose() && close) || (!event.isOnClose() && !close)) {
                         return event;
                     }
@@ -38,7 +38,7 @@ public abstract class ChestBlockEntityMixin extends LootableContainerBlockEntity
         InteractLootChestSplitEvent event = this.peepoPractice$getCorrespondingEvent(false);
         if (event != null) {
             event.complete(!player.isDead());
-            this.peepoPractice$valid = true;
+            this.valid = true;
         }
     }
 
@@ -47,13 +47,13 @@ public abstract class ChestBlockEntityMixin extends LootableContainerBlockEntity
         InteractLootChestSplitEvent event = this.peepoPractice$getCorrespondingEvent(true);
         if (event != null) {
             event.complete(!player.isDead());
-            this.peepoPractice$valid = true;
+            this.valid = true;
         }
     }
 
     @Override
     protected void peepoPractice$onCreateMenu(CallbackInfoReturnable<ScreenHandler> cir) {
-        if (this.peepoPractice$valid) {
+        if (this.valid) {
             cir.setReturnValue(null);
         }
     }
@@ -61,7 +61,7 @@ public abstract class ChestBlockEntityMixin extends LootableContainerBlockEntity
     @Override
     protected void peepoPractice$onCheckLootInteraction(CallbackInfo ci) {
         if (this.lootTableId != null) {
-            this.peepoPractice$localLootTableId = this.lootTableId;
+            this.localLootTableId = this.lootTableId;
         }
     }
 }

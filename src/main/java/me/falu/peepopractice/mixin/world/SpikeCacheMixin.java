@@ -18,8 +18,8 @@ public abstract class SpikeCacheMixin {
         PracticeTypes.StartNodeType configValue = PracticeTypes.StartNodeType.fromLabel(CategoryPreference.getValue("start_node"));
         if (configValue != null) {
             original.call(towers, random);
-            PracticeTypes.StartNodeType dragonType = configValue.equals(PracticeTypes.StartNodeType.RANDOM) ? this.peepoPractice$getDragonType(towers) : configValue;
-            if (dragonType != this.peepoPractice$getDragonType(towers)){
+            PracticeTypes.StartNodeType dragonType = configValue.equals(PracticeTypes.StartNodeType.RANDOM) ? this.getDragonType(towers) : configValue;
+            if (dragonType != this.getDragonType(towers)){
                 int temp = towers.get(0);
                 towers.set(0,towers.get(5));
                 towers.set(5,temp);
@@ -28,7 +28,7 @@ public abstract class SpikeCacheMixin {
     }
 
     @Unique
-    private PracticeTypes.StartNodeType peepoPractice$getDragonType(List<Integer> towers) {
+    private PracticeTypes.StartNodeType getDragonType(List<Integer> towers) {
         return towers.get(0) > towers.get(5) ? PracticeTypes.StartNodeType.FRONT : PracticeTypes.StartNodeType.BACK;
     }
 }

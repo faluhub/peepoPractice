@@ -30,7 +30,7 @@ public abstract class ChunkGeneratorMixin {
     @Shadow @Final public List<ChunkPos> field_24749;
 
     @Unique
-    private StructureProperties peepoPractice$getUniqueStronghold() {
+    private StructureProperties getUniqueStronghold() {
         for (StructureProperties properties : PeepoPractice.CATEGORY.getStructureProperties()) {
             if (properties.isSameStructure(StructureFeature.STRONGHOLD) && !properties.isGeneratable()) {
                 return properties;
@@ -55,7 +55,7 @@ public abstract class ChunkGeneratorMixin {
 
     @Inject(method = "method_28509", at = @At("HEAD"), cancellable = true)
     private void peepoPractice$cancelStrongholdLocations(CallbackInfo ci) {
-        StructureProperties properties = this.peepoPractice$getUniqueStronghold();
+        StructureProperties properties = this.getUniqueStronghold();
         if (properties != null) {
             if (properties.hasChunkPos()) {
                 this.field_24749.add(properties.getChunkPos());

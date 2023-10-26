@@ -21,7 +21,7 @@ public abstract class MobEntityMixin extends LivingEntity {
     }
 
     @Unique
-    private boolean peepoPractice$isInactive() {
+    private boolean isInactive() {
         if (SpeedRunOption.getOption(SpeedRunOptions.WAITING_FIRST_INPUT).isFirstInput(InGameTimer.getInstance())) {
             return !InGameTimer.getInstance().isStarted();
         }
@@ -30,14 +30,14 @@ public abstract class MobEntityMixin extends LivingEntity {
 
     @Inject(method = "canMoveVoluntarily", at = @At("RETURN"), cancellable = true)
     private void peepoPractice$cancelMovement(CallbackInfoReturnable<Boolean> cir) {
-        if (this.peepoPractice$isInactive()) {
+        if (this.isInactive()) {
             cir.setReturnValue(false);
         }
     }
 
     @Inject(method = "playAmbientSound", at = @At("HEAD"), cancellable = true)
     private void peepoPractice$cancelSounds(CallbackInfo ci) {
-        if (this.peepoPractice$isInactive()) {
+        if (this.isInactive()) {
             ci.cancel();
         }
     }
