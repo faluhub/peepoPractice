@@ -14,7 +14,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
 import java.util.Map;
@@ -27,7 +27,7 @@ public class CopyInventorySelectionScreen extends Screen {
     private boolean renderError;
 
     public CopyInventorySelectionScreen(PracticeCategory category) {
-        super(new LiteralText("Copy Inventory"));
+        super(new TranslatableText("peepopractice.title.copy_inventory_selection"));
         this.category = category;
         this.selectionType = this.category.isAA() ? CategorySelectionScreen.SelectionType.AA : CategorySelectionScreen.SelectionType.ANY;
     }
@@ -94,7 +94,7 @@ public class CopyInventorySelectionScreen extends Screen {
                         this.height - 50,
                         150,
                         40,
-                        new LiteralText("Copy"),
+                        new TranslatableText("peepopractice.button.copy"),
                         b -> {
                             if (this.categoryListWidget != null && this.categoryListWidget.getSelected() != null) {
                                 this.copyInventory(this.categoryListWidget.getSelected().category);
@@ -112,7 +112,7 @@ public class CopyInventorySelectionScreen extends Screen {
                         5,
                         40,
                         20,
-                        new LiteralText(this.selectionType.title),
+                        new TranslatableText(this.selectionType.title),
                         b -> {
                             this.selectionType = CategorySelectionScreen.SelectionType.opposite(this.selectionType);
                             this.init();
@@ -157,7 +157,7 @@ public class CopyInventorySelectionScreen extends Screen {
         super.render(matrices, mouseX, mouseY, delta);
 
         if (this.renderError) {
-            this.drawCenteredText(matrices, this.textRenderer, new LiteralText("You have no configured configured inventories!"), this.width / 2, this.height / 2 - this.textRenderer.fontHeight, 0xD22B2B);
+            this.drawCenteredText(matrices, this.textRenderer, new TranslatableText("peepopractice.no_configured_invs"), this.width / 2, this.height / 2 - this.textRenderer.fontHeight, 0xD22B2B);
             return;
         }
 
@@ -171,9 +171,9 @@ public class CopyInventorySelectionScreen extends Screen {
         if (this.copyButton.active) {
             RenderSystem.pushMatrix();
             RenderSystem.scalef(0.5F, 0.5F, 1.0F);
-            this.drawCenteredText(matrices, this.textRenderer, new LiteralText("Hold Shift to Merge").formatted(Formatting.YELLOW, Formatting.ITALIC), (this.copyButton.x + this.copyButton.getWidth() / 2) * 2, (this.copyButton.y + this.copyButton.getHeight() / 2 - (int) (this.textRenderer.fontHeight * 1.5)) * 2, BackgroundHelper.ColorMixer.getArgb(255 / 2, 255, 255, 255));
+            this.drawCenteredText(matrices, this.textRenderer, new TranslatableText("peepopractice.text.hold_to_merge").formatted(Formatting.YELLOW, Formatting.ITALIC), (this.copyButton.x + this.copyButton.getWidth() / 2) * 2, (this.copyButton.y + this.copyButton.getHeight() / 2 - (int) (this.textRenderer.fontHeight * 1.5)) * 2, BackgroundHelper.ColorMixer.getArgb(255 / 2, 255, 255, 255));
             RenderSystem.popMatrix();
-            this.copyButton.setMessage(!Screen.hasShiftDown() ? new LiteralText("Copy") : new LiteralText("Merge"));
+            this.copyButton.setMessage(!Screen.hasShiftDown() ? new TranslatableText("peepopractice.button.copy") : new TranslatableText("peepopractice.button.merge"));
         }
     }
 }

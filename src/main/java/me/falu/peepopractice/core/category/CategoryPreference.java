@@ -4,7 +4,9 @@ import com.google.gson.JsonObject;
 import me.falu.peepopractice.PeepoPractice;
 import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.core.category.utils.PracticeCategoryUtils;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +14,6 @@ import java.util.Objects;
 
 public class CategoryPreference {
     private String id;
-    private String label;
-    private String description;
     private List<String> choices = new ArrayList<>();
     private String defaultChoice;
     private Identifier icon;
@@ -28,24 +28,11 @@ public class CategoryPreference {
     }
 
     public String getLabel() {
-        if (this.label == null && this.id != null) {
-            return PracticeCategoryUtils.getNameFromId(this.id);
-        }
-        return this.label;
-    }
-
-    public CategoryPreference setLabel(String label) {
-        this.label = label;
-        return this;
+        return new TranslatableText("peepopractice.preferences." + this.id).getString();
     }
 
     public String getDescription() {
-        return this.description;
-    }
-
-    public CategoryPreference setDescription(String description) {
-        this.description = description;
-        return this;
+        return new TranslatableText("peepopractice.preferences." + this.id + ".info").getString();
     }
 
     public List<String> getChoices() {
@@ -57,6 +44,7 @@ public class CategoryPreference {
         return this;
     }
 
+    @SuppressWarnings("unused")
     public CategoryPreference setChoices(String[] choices) {
         this.choices.clear();
         this.choices.addAll(List.of(choices));
@@ -119,8 +107,8 @@ public class CategoryPreference {
         return getValue(PeepoPractice.CATEGORY, id);
     }
 
-    public static String getValue(PracticeCategory category, String id, String def) {
-        String value = getValue(category, id);
+    public static String getOrDefault(PracticeCategory category, String id, String def) {
+        String value = getValue(category, id, def);
         if (value == null) {
             setValue(category, id, def);
             return def;
@@ -129,6 +117,10 @@ public class CategoryPreference {
     }
 
     public static String getValue(PracticeCategory category, String id) {
+        return getValue(category, id, null);
+    }
+
+    public static String getValue(PracticeCategory category, String id, @Nullable String def) {
         PracticeWriter writer = PracticeWriter.PREFERENCES_WRITER;
         JsonObject config = writer.get();
 
@@ -145,8 +137,12 @@ public class CategoryPreference {
             }
         }
 
-        try { return categoryObject.get(id).getAsString(); }
-        catch (NullPointerException ignored) { return null; }
+        try {
+            String value = categoryObject.get(id).getAsString();
+            // This is for backwards compatibility. It's really scuffed but whatever.
+            if (def != null && !value.contains(".")) { return def; }
+            return value;
+        } catch (NullPointerException ignored) { return def; }
     }
 
     public static String getValue(PracticeCategory category, CategoryPreference categoryPreference) {

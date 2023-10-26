@@ -6,15 +6,15 @@ import me.falu.peepopractice.gui.widget.LimitlessButtonWidget;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 public class SettingsTypeSelectionScreen extends Screen {
     private final ButtonChoice[] buttons = new ButtonChoice[] {
-            new ButtonChoice(new LiteralText("Inventory"), new Identifier("textures/item/chest_minecart.png"), category -> EditInventoryScreen.create(this, category)),
-            new ButtonChoice(new LiteralText("Preferences"), new Identifier("textures/item/heart_of_the_sea.png"), category -> new CategoryPreferencesScreen(this, category), new ButtonDisabledInfo() {
+            new ButtonChoice("inventory", new Identifier("textures/item/chest_minecart.png"), category -> EditInventoryScreen.create(this, category)),
+            new ButtonChoice("preferences", new Identifier("textures/item/heart_of_the_sea.png"), category -> new CategoryPreferencesScreen(this, category), new ButtonDisabledInfo() {
                 @Override
                 public boolean isDisabled(PracticeCategory category) {
                     return !category.hasPreferences();
@@ -22,11 +22,11 @@ public class SettingsTypeSelectionScreen extends Screen {
 
                 @Override
                 public String getReason() {
-                    return "This category has no preferences to configure.";
+                    return "preferences";
                 }
             }),
-            new ButtonChoice(new LiteralText("Standard Settings"), new Identifier(PeepoPractice.MOD_ID, "textures/gear.png"), category -> new StandardSettingsScreen(this, category)),
-            new ButtonChoice(new LiteralText("Split"), new Identifier("textures/item/clock_00.png"), category -> new SplitSettingsScreen(this, category), new ButtonDisabledInfo() {
+            new ButtonChoice("standard_settings", new Identifier(PeepoPractice.MOD_ID, "textures/gear.png"), category -> new StandardSettingsScreen(this, category)),
+            new ButtonChoice("split", new Identifier("textures/item/clock_00.png"), category -> new SplitSettingsScreen(this, category), new ButtonDisabledInfo() {
                 @Override
                 public boolean isDisabled(PracticeCategory category) {
                     return !category.hasSplitEvent();
@@ -34,7 +34,7 @@ public class SettingsTypeSelectionScreen extends Screen {
 
                 @Override
                 public String getReason() {
-                    return "This category has no split options to configure.";
+                    return "split";
                 }
             })
     };
@@ -42,7 +42,7 @@ public class SettingsTypeSelectionScreen extends Screen {
     private final PracticeCategory category;
 
     public SettingsTypeSelectionScreen(Screen parent, PracticeCategory category) {
-        super(new LiteralText("Select Config Type (" + category.getName(false) + ")"));
+        super(new TranslatableText("peepopractice.title.settings_type_selection", category.getName(false)));
         this.parent = parent;
         this.category = category;
     }
@@ -67,7 +67,7 @@ public class SettingsTypeSelectionScreen extends Screen {
                 }
             }, (button, matrices, mouseX, mouseY) -> {
                 if (buttonChoice.disabledTask != null && buttonChoice.disabledTask.isDisabled(this.category)) {
-                    this.renderTooltip(matrices, new LiteralText(buttonChoice.disabledTask.getReason()).formatted(Formatting.YELLOW), mouseX, mouseY);
+                    this.renderTooltip(matrices, new TranslatableText("peepopractice.text.disabled." + buttonChoice.disabledTask.getReason()).formatted(Formatting.YELLOW), mouseX, mouseY);
                 }
             }));
             if (buttonChoice.disabledTask != null) {
@@ -90,13 +90,13 @@ public class SettingsTypeSelectionScreen extends Screen {
         public final ButtonScreenTask screenTask;
         public ButtonDisabledInfo disabledTask;
 
-        public ButtonChoice(Text text, Identifier icon, ButtonScreenTask screenTask) {
-            this.text = text;
+        public ButtonChoice(String text, Identifier icon, ButtonScreenTask screenTask) {
+            this.text = new TranslatableText("peepopractice.button.settings_type." + text);
             this.icon = icon;
             this.screenTask = screenTask;
         }
 
-        public ButtonChoice(Text text, Identifier icon, ButtonScreenTask screenTask, ButtonDisabledInfo disabledTask) {
+        public ButtonChoice(String text, Identifier icon, ButtonScreenTask screenTask, ButtonDisabledInfo disabledTask) {
             this(text, icon, screenTask);
             this.disabledTask = disabledTask;
         }

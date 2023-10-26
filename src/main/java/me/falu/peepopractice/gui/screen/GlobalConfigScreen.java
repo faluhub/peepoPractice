@@ -12,7 +12,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.options.BooleanOption;
 import net.minecraft.client.options.DoubleOption;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.TranslatableText;
 
 public class GlobalConfigScreen extends Screen {
     private static final DoubleOption[] BACKGROUND_OPTIONS = {
@@ -31,7 +31,7 @@ public class GlobalConfigScreen extends Screen {
     private final Screen parent;
 
     public GlobalConfigScreen(Screen parent) {
-        super(new LiteralText("Global Config"));
+        super(new TranslatableText("peepopractice.title.global_config"));
         this.parent = parent;
     }
 
@@ -39,9 +39,9 @@ public class GlobalConfigScreen extends Screen {
     protected void init() {
         if (this.client == null) { return; }
 
-        GlobalOptions.SAME_INVENTORY.setTooltip(this.client.textRenderer.wrapLines(new LiteralText("If enabled, whenever you press 'Next Split' you will continue with the inventory from the previous split."), 200));
-        GlobalOptions.CHANGE_WINDOW_TITLE.setTooltip(this.client.textRenderer.wrapLines(new LiteralText("If enabled, the text '(Practice)' will be appended to the game's window title."), 200));
-        GlobalOptions.GIVE_SATURATION.setTooltip(this.client.textRenderer.wrapLines(new LiteralText("If enabled, you'll get 10 saturation when you spawn in."), 200));
+        GlobalOptions.SAME_INVENTORY.setTooltip(this.client.textRenderer.wrapLines(new TranslatableText("peepopractice.global_options.same_inventory.info"), 200));
+        GlobalOptions.CHANGE_WINDOW_TITLE.setTooltip(this.client.textRenderer.wrapLines(new TranslatableText("peepopractice.global_options.change_window_title.info"), 200));
+        GlobalOptions.GIVE_SATURATION.setTooltip(this.client.textRenderer.wrapLines(new TranslatableText("peepopractice.global_options.give_saturation.info"), 200));
 
         int btnWidth = this.width / 2;
         int btnHeight = this.height / 8;

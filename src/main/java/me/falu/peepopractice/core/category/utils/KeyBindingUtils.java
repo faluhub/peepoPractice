@@ -2,7 +2,6 @@ package me.falu.peepopractice.core.category.utils;
 
 import com.google.common.collect.Lists;
 import net.minecraft.client.options.KeyBinding;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Language;
@@ -14,7 +13,7 @@ public class KeyBindingUtils {
     public static final List<KeyBinding> KEY_BINDINGS = Lists.newArrayList();
 
     public static Text getTranslation(String path, String text) {
-        return (Language.getInstance().get(path).equals(path) ? new LiteralText(text) : new TranslatableText(path));
+        return (Language.getInstance().get(path).equals(path) ? new TranslatableText(text) : new TranslatableText(path));
     }
 
     private static boolean noCategory(String key) {

@@ -44,7 +44,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
         if (!category.equals(PracticeCategoriesAny.EMPTY)) {
             this.field_24289 = this.field_24290 = category.hasWorldProperties() ? category.getWorldProperties().getStartDifficulty() : Difficulty.EASY;
             this.cheatsEnabled = this.tweakedCheats = true;
-            this.levelName = PracticeCategoryUtils.getNameFromId(category.getId());
+            this.levelName = category.getTranslatedName();
         }
     }
 

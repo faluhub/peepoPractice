@@ -14,6 +14,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec2f;
@@ -81,9 +82,10 @@ public abstract class SplitEvent {
             if (client.player != null) {
                 client.inGameHud.setTitles(
                         completed
-                                ? new LiteralText(Formatting.AQUA + "Completed"
-                                + (isPb ? Formatting.YELLOW + " (PB!)" : ""))
-                                : new LiteralText(Formatting.RED + "Failed"),
+                                ? new TranslatableText("peepopractice.finished.completed")
+                                        .formatted(Formatting.AQUA)
+                                        .append(new TranslatableText("peepopractice.finished.pb").formatted(Formatting.YELLOW))
+                                : new TranslatableText("peepopractice.finished.failed").formatted(Formatting.RED),
                         new LiteralText(Formatting.GRAY + time),
                         10,
                         100,
@@ -225,6 +227,7 @@ public abstract class SplitEvent {
         if (config.has(this.category.getId())) {
             writer.put(this.category.getId(), new JsonObject());
         }
+        writer.write();
     }
 
     private void incrementCount(String name) {

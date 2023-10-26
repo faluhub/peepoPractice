@@ -8,7 +8,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.BooleanOption;
 import net.minecraft.client.options.CyclingOption;
 import net.minecraft.client.options.DoubleOption;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
 
@@ -29,20 +28,24 @@ public class StandardSettingsUtils {
         double d = doubleOption.get(gameOptions);
         return doubleOption.getDisplayPrefix().append(new TranslatableText("options.entityDistancePercent", (int) (d * 100.0)));
     });
-    public static final BooleanOption CHUNK_BORDERS = new BooleanOption("Chunk Borders", gameOptions -> StandardSettingsUtils.getSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "chunk_borders", false), (gameOptions, aBoolean) -> StandardSettingsUtils.setSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "chunk_borders", aBoolean));
-    public static final BooleanOption HITBOXES = new BooleanOption("Hitboxes", gameOptions -> StandardSettingsUtils.getSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "hitboxes", false), (gameOptions, aBoolean) -> StandardSettingsUtils.setSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "hitboxes", aBoolean));
-    public static final CyclingOption PERSPECTIVE = new CyclingOption("Perspective", (gameOptions, integer) -> {
+    public static final BooleanOption CHUNK_BORDERS = new BooleanOption(getKey("chunk_borders"), gameOptions -> StandardSettingsUtils.getSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "chunk_borders", false), (gameOptions, aBoolean) -> StandardSettingsUtils.setSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "chunk_borders", aBoolean));
+    public static final BooleanOption HITBOXES = new BooleanOption(getKey("hitboxes"), gameOptions -> StandardSettingsUtils.getSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "hitboxes", false), (gameOptions, aBoolean) -> StandardSettingsUtils.setSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "hitboxes", aBoolean));
+    public static final CyclingOption PERSPECTIVE = new CyclingOption(getKey("perspective"), (gameOptions, integer) -> {
         int value = StandardSettingsUtils.getSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "perspective", 0) + 1;
         if (value > 2) { value = 0; }
         StandardSettingsUtils.setSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "perspective", value);
     }, (gameOptions, cyclingOption) -> {
         int value = StandardSettingsUtils.getSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "perspective", 0);
         MutableText text = cyclingOption.getDisplayPrefix();
-        if (value == 0) { return text.append(new LiteralText("First")); }
-        else if (value == 1) { return text.append(new LiteralText("Back")); }
-        else if (value == 2) { return text.append(new LiteralText("Front")); }
+        if (value == 0) { return text.append(new TranslatableText("peepopractice.perspective.first")); }
+        else if (value == 1) { return text.append(new TranslatableText("peepopractice.perspective.back")); }
+        else if (value == 2) { return text.append(new TranslatableText("peepopractice.perspective.front")); }
         return text;
     });
+
+    private static String getKey(String key) {
+        return "peepopractice.standard_setting." + key;
+    }
 
     public static void triggerStandardSettings(PracticeCategory category) {
         PracticeWriter writer = PracticeWriter.STANDARD_SETTINGS_WRITER;
@@ -60,9 +63,6 @@ public class StandardSettingsUtils {
                     break;
                 case "entity_distance":
                     MinecraftClient.getInstance().options.entityDistanceScaling = entry.getValue().getAsFloat();
-                    break;
-                case "sprinting":
-                    MinecraftClient.getInstance().options.keySprint.setPressed(true);
                     break;
                 case "chunk_borders":
                     MinecraftClient.getInstance().debugRenderer.showChunkBorder = entry.getValue().getAsBoolean();

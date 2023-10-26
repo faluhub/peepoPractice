@@ -131,7 +131,7 @@ public class PeepoPractice implements ModInitializer {
 
         REPLAY_SPLIT_KEY = KeyBindingUtils.registerKeyBinding(
                 new KeyBinding(
-                        KeyBindingUtils.getTranslation("key." + MOD_ID + ".replay_split", "Replay Split").getString(),
+                        KeyBindingUtils.getTranslation("key." + MOD_ID + ".replay_split", "peepopractice.key.replay_split").getString(),
                         InputUtil.Type.KEYSYM,
                         GLFW.GLFW_KEY_H,
                         KEYBINDING_CATEGORY
@@ -139,7 +139,7 @@ public class PeepoPractice implements ModInitializer {
         );
         NEXT_SPLIT_KEY = KeyBindingUtils.registerKeyBinding(
                 new KeyBinding(
-                        KeyBindingUtils.getTranslation("key." + MOD_ID + ".next_split", "Next Split").getString(),
+                        KeyBindingUtils.getTranslation("key." + MOD_ID + ".next_split", "peepopractice.key.next_split").getString(),
                         InputUtil.Type.KEYSYM,
                         GLFW.GLFW_KEY_J,
                         KEYBINDING_CATEGORY

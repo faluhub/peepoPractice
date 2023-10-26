@@ -1,14 +1,15 @@
 package me.falu.peepopractice.core.category;
 
 import com.google.gson.JsonObject;
-import me.falu.peepopractice.core.category.utils.PracticeCategoryUtils;
 import me.falu.peepopractice.core.exception.NotInitializedException;
 import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.core.category.properties.PlayerProperties;
 import me.falu.peepopractice.core.category.properties.StructureProperties;
 import me.falu.peepopractice.core.category.properties.WorldProperties;
 import me.falu.peepopractice.core.category.properties.event.SplitEvent;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
@@ -209,26 +210,21 @@ public class PracticeCategory {
         }
     }
 
+    public String getTranslatedName() {
+        return I18n.translate("peepopractice.categories." + this.id);
+    }
+
     public String getName(boolean showPb) {
-        StringBuilder text = new StringBuilder((this.isFillerCategory() ? Formatting.ITALIC : "") + PracticeCategoryUtils.getNameFromId(this.getId()) + (showPb || this.isFillerCategory() ? Formatting.RESET : ""));
+        StringBuilder text = new StringBuilder((this.isFillerCategory() ? Formatting.ITALIC : "") + this.getTranslatedName() + (showPb || this.isFillerCategory() ? Formatting.RESET : ""));
         if (showPb && this.hasSplitEvent()) {
-            PracticeTypes.CompareType compareType = PracticeTypes.CompareType.fromLabel(CategoryPreference.getValue(this, "compare_type", PracticeTypes.CompareType.PB.getLabel()));
+            PracticeTypes.CompareType compareType = PracticeTypes.CompareType.fromLabel(CategoryPreference.getOrDefault(this, "compare_type", PracticeTypes.CompareType.PB.getLabel()));
             if (compareType != null) {
-                switch (compareType) {
-                    case PB:
-                        if (this.getSplitEvent().hasPb()) {
-                            text.append(Formatting.GREEN).append(" (").append(this.getSplitEvent().getPbString()).append(")");
-                        } else {
-                            text.append(Formatting.GRAY).append(" (No ").append(compareType.getLabel()).append(")");
-                        }
-                        break;
-                    case AVERAGE:
-                        if (this.getSplitEvent().hasCompletedTimes()) {
-                            text.append(Formatting.AQUA).append(" (").append(this.getSplitEvent().getAverageString()).append(")");
-                        } else {
-                            text.append(Formatting.GRAY).append(" (No ").append(compareType.getLabel()).append(")");
-                        }
-                        break;
+                boolean hasTime = compareType.equals(PracticeTypes.CompareType.PB) ? this.getSplitEvent().hasPb() : this.getSplitEvent().hasCompletedTimes();
+                if (hasTime) {
+                    String timeString = compareType.equals(PracticeTypes.CompareType.PB) ? this.getSplitEvent().getPbString() : this.getSplitEvent().getAverageString();
+                    text.append(Formatting.GREEN).append(" (").append(timeString).append(")");
+                } else {
+                    text.append(Formatting.GRAY).append(" ").append(new TranslatableText("peepopractice.text.no_pb_or_avg", I18n.translate(compareType.getLabel())).getString());
                 }
             }
         }

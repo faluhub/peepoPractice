@@ -15,6 +15,7 @@ import net.minecraft.client.gui.screen.world.CreateWorldScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.TranslatableText;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class CategorySelectionScreen extends Screen {
     private ButtonWidget configureButton;
 
     public CategorySelectionScreen(Screen parent) {
-        super(new LiteralText("Select Practice Category"));
+        super(new TranslatableText("peepopractice.title.category_selection"));
         this.parent = parent;
     }
 
@@ -54,7 +55,7 @@ public class CategorySelectionScreen extends Screen {
         if (this.client != null && this.categoryListWidget != null && this.categoryListWidget.getSelected() != null) {
             PracticeCategory selected = this.categoryListWidget.getSelected().category;
             if (!selected.hasConfiguredInventory()) {
-                this.client.openScreen(new FatalErrorScreen(new LiteralText("You haven't configured your inventory for this category yet!"), new LiteralText("")));
+                this.client.openScreen(new FatalErrorScreen(new TranslatableText("peepopractice.no_configured_inv"), new LiteralText("")));
                 return;
             }
             PeepoPractice.CATEGORY = selected;
@@ -105,7 +106,7 @@ public class CategorySelectionScreen extends Screen {
                         this.height - 50,
                         150,
                         40,
-                        new LiteralText("Global Config"),
+                        new TranslatableText("peepopractice.button.global_config"),
                         b -> this.openConfig()
                 )
         );
@@ -118,7 +119,7 @@ public class CategorySelectionScreen extends Screen {
                         5,
                         40,
                         20,
-                        new LiteralText(this.selectionType.title),
+                        new TranslatableText(this.selectionType.title),
                         b -> {
                             this.selectionType = SelectionType.opposite(this.selectionType);
                             PeepoPractice.LAST_SELECTION_TYPE = this.selectionType;
@@ -143,8 +144,8 @@ public class CategorySelectionScreen extends Screen {
         this.textRenderer.drawWithShadow(matrices, text, this.width - this.textRenderer.getWidth(text), this.height - this.textRenderer.fontHeight, BackgroundHelper.ColorMixer.getArgb(255 / 2, 255, 255, 255));
 
         boolean selected = this.categoryListWidget != null && this.categoryListWidget.getSelected() != null;
-        this.configureButton.setMessage(new LiteralText(selected ? "Configure" : "Global Config"));
-        this.doneButton.setMessage(selected ? new LiteralText("Play!") : ScreenTexts.BACK);
+        this.configureButton.setMessage(new TranslatableText("peepopractice.button." + (selected ? "configure" : "global_config")));
+        this.doneButton.setMessage(selected ? new TranslatableText("peepopractice.button.play") : ScreenTexts.BACK);
 
         super.render(matrices, mouseX, mouseY, delta);
     }
@@ -152,6 +153,9 @@ public class CategorySelectionScreen extends Screen {
     @Override
     public void onClose() {
         PracticeWriter.COMPLETIONS_WRITER.update();
+        if (PracticeWriter.PREFERENCES_WRITER.hasChanged()) {
+            PracticeWriter.PREFERENCES_WRITER.write();
+        }
 
         if (this.categoryListWidget != null && this.categoryListWidget.getSelected() != null) {
             this.categoryListWidget.setSelected(null);
@@ -163,14 +167,14 @@ public class CategorySelectionScreen extends Screen {
     }
 
     public enum SelectionType {
-        ANY("Any%", PracticeCategoriesAny.ALL),
-        AA("AA", PracticeCategoriesAA.ALL);
+        ANY(PracticeCategoriesAny.ALL),
+        AA(PracticeCategoriesAA.ALL);
 
         public final String title;
         public final List<PracticeCategory> list;
 
-        SelectionType(String title, List<PracticeCategory> list) {
-            this.title = title;
+        SelectionType(List<PracticeCategory> list) {
+            this.title = "peepopractice.selection_type." + this.name().toLowerCase();
             this.list = list;
         }
 

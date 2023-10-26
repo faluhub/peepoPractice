@@ -54,19 +54,16 @@ public class BastionPreset {
     };
     public static final CategoryPreference BASTION_TYPE_PREFERENCE = new CategoryPreference()
             .setId("bastion_type")
-            .setDescription("The bastion type.")
             .setIcon(new Identifier("textures/item/golden_helmet.png"))
             .setChoices(PracticeTypes.BastionType.all())
             .setDefaultChoice(PracticeTypes.BastionType.RANDOM.getLabel());
     public static final CategoryPreference RANKED_LOOT_TABLE_PREFERENCE = new CategoryPreference()
             .setId("ranked_loot_table")
-            .setDescription("If enabled, the game will use the piglin barter loot table used in MCSR Ranked.")
             .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
             .setDefaultChoice(PracticeCategoryUtils.ENABLED)
             .setIcon(new Identifier("textures/item/ender_pearl.png"));
     public static final CategoryPreference ZOMBIE_PIGMEN = new CategoryPreference()
             .setId("zombie_pigmen")
-            .setDescription("Whether or not Zombie Pigmen can spawn in bastions.")
             .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
             .setDefaultChoice(PracticeCategoryUtils.ENABLED)
             .setIcon(new Identifier("textures/item/rotten_flesh.png"));

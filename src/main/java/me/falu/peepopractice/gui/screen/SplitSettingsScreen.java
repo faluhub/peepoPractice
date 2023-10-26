@@ -10,6 +10,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
 public class SplitSettingsScreen extends Screen {
@@ -18,22 +19,18 @@ public class SplitSettingsScreen extends Screen {
     private final CategoryPreference[] preferences = new CategoryPreference[] {
             new CategoryPreference()
                     .setId("compare_type")
-                    .setLabel("Split Comparison")
-                    .setDescription("Which type of time the split is compared against.")
                     .setChoices(PracticeTypes.CompareType.all())
                     .setDefaultChoice(PracticeTypes.CompareType.PB.getLabel())
                     .setIcon(new Identifier("textures/item/clock_00.png")),
             new CategoryPreference()
                     .setId("pace_timer_show_type")
-                    .setLabel("Show Pace Timer")
-                    .setDescription("When the pace timer should show.")
                     .setChoices(PracticeTypes.PaceTimerShowType.all())
                     .setDefaultChoice(PracticeTypes.PaceTimerShowType.ALWAYS.getLabel())
                     .setIcon(new Identifier("textures/mob_effect/blindness.png"))
     };
 
     public SplitSettingsScreen(Screen parent, PracticeCategory category) {
-        super(new LiteralText("Split Settings (" + category.getName(false) + ")"));
+        super(new TranslatableText("peepopractice.title.split_settings", category.getName(false)));
         this.parent = parent;
         this.category = category;
     }
@@ -46,7 +43,7 @@ public class SplitSettingsScreen extends Screen {
         int amount = this.preferences.length + 1;
         for (CategoryPreference preference : this.preferences) {
             String currentValue = CategoryPreference.getValue(this.category, preference);
-            this.addButton(new LimitlessButtonWidget(false, preference.getIcon(), null, this.width / 2 - width / 2, this.height * (index + 1) / (amount + 1) - height / 2, width, height, new LiteralText(preference.getLabel() + ": " + currentValue), b -> {
+            this.addButton(new LimitlessButtonWidget(false, preference.getIcon(), null, this.width / 2 - width / 2, this.height * (index + 1) / (amount + 1) - height / 2, width, height, new LiteralText(preference.getLabel() + ": ").append(new TranslatableText(currentValue)), b -> {
                 String value = CategoryPreference.getValue(this.category, preference);
                 if (value == null) { return; }
                 int currentIndex = CategoryPreference.getIndex(value, preference.getChoices());
@@ -60,7 +57,7 @@ public class SplitSettingsScreen extends Screen {
             }));
             index++;
         }
-        ButtonWidget bw = this.addButton(new LimitlessButtonWidget(false, new Identifier("textures/item/barrier.png"), null, this.width / 2 - width / 2, this.height * (index + 1) / (amount + 1) - height / 2, width, height, new LiteralText("Clear Saved Times"), b -> {
+        ButtonWidget bw = this.addButton(new LimitlessButtonWidget(false, new Identifier("textures/item/barrier.png"), null, this.width / 2 - width / 2, this.height * (index + 1) / (amount + 1) - height / 2, width, height, new TranslatableText("peepopractice.button.clear_saved_times"), b -> {
             this.category.getSplitEvent().clearTimes();
             b.active = false;
         }));

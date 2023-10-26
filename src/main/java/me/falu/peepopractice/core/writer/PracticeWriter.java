@@ -17,6 +17,7 @@ public class PracticeWriter {
     public static final PracticeWriter GLOBAL_CONFIG = new PracticeWriter("global_config.json");
     private final File file;
     private JsonObject local;
+    private boolean changed = false;
 
     public PracticeWriter(String fileName) {
         this.file = this.create(fileName);
@@ -84,5 +85,10 @@ public class PracticeWriter {
             this.local.remove(element);
         }
         this.local.add(element, obj);
+        this.changed = true;
+    }
+
+    public boolean hasChanged() {
+        return this.changed;
     }
 }

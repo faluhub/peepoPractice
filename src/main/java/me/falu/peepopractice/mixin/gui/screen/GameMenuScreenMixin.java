@@ -19,6 +19,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -31,8 +32,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class GameMenuScreenMixin extends ScreenMixin {
     @Unique private ButtonWidget quitButton;
     @Unique private boolean renderTitle = false;
-    @Unique private final Text replayText = new LiteralText("Replay Split");
-    @Unique private final Text configureText = new LiteralText("Configure Split");
+    @Unique private final Text replayText = new TranslatableText("peepopractice.button.replay_split");
+    @Unique private final Text configureText = new TranslatableText("peepopractice.button.configure_split");
     @Unique private AbstractButtonWidget replayButton;
     @Unique private AbstractButtonWidget nextButton;
     @Unique private boolean hasNextCategory;
@@ -66,7 +67,7 @@ public abstract class GameMenuScreenMixin extends ScreenMixin {
                 this.height / 4 + 120 + i,
                 98,
                 20,
-                new LiteralText("Save & Quit"),
+                new TranslatableText("peepopractice.button.short_save_quit"),
                 b -> {
                     b.active = false;
                     PracticeCategoryUtils.quit(true);
@@ -102,7 +103,7 @@ public abstract class GameMenuScreenMixin extends ScreenMixin {
                         this.height / 4 + 144 + i,
                         98,
                         20,
-                        new LiteralText("Next Split"),
+                        new TranslatableText("peepopractice.button.next_split"),
                         b -> {
                             b.active = false;
                             PracticeCategory nextCategory = PeepoPractice.getNextCategory();

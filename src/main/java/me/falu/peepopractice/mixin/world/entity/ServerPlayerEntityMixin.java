@@ -10,6 +10,7 @@ import me.falu.peepopractice.core.category.CategoryPreference;
 import me.falu.peepopractice.core.category.PracticeTypes;
 import me.falu.peepopractice.core.category.properties.event.ChangeDimensionSplitEvent;
 import me.falu.peepopractice.core.category.properties.event.SplitEvent;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -57,7 +58,7 @@ public abstract class ServerPlayerEntityMixin extends LivingEntity {
     @Inject(method = "moveToSpawn", at = @At("HEAD"), cancellable = true)
     private void peepoPractice$customSpawn(ServerWorld world, CallbackInfo ci) {
         if (PeepoPractice.CATEGORY.hasSplitEvent()) {
-            PracticeTypes.CompareType compareType = PracticeTypes.CompareType.fromLabel(CategoryPreference.getValue(PeepoPractice.CATEGORY, "compare_type", PracticeTypes.CompareType.PB.getLabel()));
+            PracticeTypes.CompareType compareType = PracticeTypes.CompareType.fromLabel(CategoryPreference.getOrDefault(PeepoPractice.CATEGORY, "compare_type", PracticeTypes.CompareType.PB.getLabel()));
             if (compareType != null) {
                 switch (compareType) {
                     case PB:
@@ -68,7 +69,7 @@ public abstract class ServerPlayerEntityMixin extends LivingEntity {
                         break;
                 }
             }
-            this.showType = PracticeTypes.PaceTimerShowType.fromLabel(CategoryPreference.getValue(PeepoPractice.CATEGORY, "pace_timer_show_type", PracticeTypes.PaceTimerShowType.ALWAYS.getLabel()));
+            this.showType = PracticeTypes.PaceTimerShowType.fromLabel(CategoryPreference.getOrDefault(PeepoPractice.CATEGORY, "pace_timer_show_type", PracticeTypes.PaceTimerShowType.ALWAYS.getLabel()));
         }
 
         if (PeepoPractice.CATEGORY.hasPlayerProperties()) {
@@ -165,7 +166,7 @@ public abstract class ServerPlayerEntityMixin extends LivingEntity {
             timeString += SplitEvent.getTimeString(difference);
             this.sendMessage(new LiteralText(timeString), true);
         } else {
-            this.sendMessage(new LiteralText(Formatting.GRAY + "Pace: " + Formatting.GREEN + "-" + SplitEvent.getTimeString(igt)), true);
+            this.sendMessage(new LiteralText(Formatting.GRAY + I18n.translate("peepopractice.text.pace") + ": " + Formatting.GREEN + "-" + SplitEvent.getTimeString(igt)), true);
         }
     }
 

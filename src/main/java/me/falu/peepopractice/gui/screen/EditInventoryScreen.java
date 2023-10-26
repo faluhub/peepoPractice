@@ -72,7 +72,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
     private boolean lastClickOutsideBounds;
 
     public EditInventoryScreen(Screen parent, PracticeCategory category) {
-        super(new PlayerlessCreativeScreenHandler(), PeepoPractice.PLAYERLESS_INVENTORY, new LiteralText("Edit Inventory (" + category.getName(false) + ")"));
+        super(new PlayerlessCreativeScreenHandler(), PeepoPractice.PLAYERLESS_INVENTORY, new TranslatableText("peepopractice.title.edit_inventory", category.getName(false)));
 
         this.backgroundHeight = 136;
         this.backgroundWidth = 195;
@@ -306,7 +306,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         this.setSelectedTab(ItemGroup.GROUPS[i]);
 
         this.addButton(new LimitlessButtonWidget(null, new Identifier("textures/item/barrier.png"), null, this.x - this.x / 2 - (this.width / 8) / 2, this.y, this.width / 8, this.backgroundHeight, ScreenTexts.DONE, b -> this.onClose()));
-        this.addButton(new LimitlessButtonWidget(null, new Identifier("textures/item/chest_minecart.png"), null, this.x + this.backgroundWidth + this.x / 2 - (this.width / 8) / 2, this.y, this.width / 8, this.backgroundHeight, new LiteralText("Copy\nFrom\nExisting"), b -> {
+        this.addButton(new LimitlessButtonWidget(null, new Identifier("textures/item/chest_minecart.png"), null, this.x + this.backgroundWidth + this.x / 2 - (this.width / 8) / 2, this.y, this.width / 8, this.backgroundHeight, new TranslatableText("peepopractice.button.copy_from_existing"), b -> {
             if (this.client != null) {
                 this.saveInventory();
                 this.client.openScreen(new CopyInventorySelectionScreen(this.category));
@@ -760,10 +760,10 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         }
         if (stack.getItem().equals(Items.ENCHANTED_BOOK)) {
             list2.add(list2.size() - 2, new LiteralText(""));
-            list2.addAll(list2.size() - 2, this.textRenderer.wrapLines(new LiteralText("Click on an enchantable item while holding this book to enchant it!").formatted(Formatting.YELLOW), 140));
+            list2.addAll(list2.size() - 2, this.textRenderer.wrapLines(new TranslatableText("peepopractice.text.enchant_info").formatted(Formatting.YELLOW), 140));
         } else if (stack.getItem().getTranslationKey().contains("shulker_box")) {
             list2.add(list2.size() - 2, new LiteralText(""));
-            list2.addAll(list2.size() - 2, this.textRenderer.wrapLines(new LiteralText("Hold Control and click on this item to edit its contents!").formatted(Formatting.YELLOW), 140));
+            list2.addAll(list2.size() - 2, this.textRenderer.wrapLines(new TranslatableText("peepopractice.text.shulker_info").formatted(Formatting.YELLOW), 140));
         }
         this.renderTooltip(matrices, list2, x, y);
     }

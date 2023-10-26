@@ -17,6 +17,7 @@ import net.minecraft.client.options.DoubleOption;
 import net.minecraft.client.options.Option;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.TranslatableText;
 
 public class StandardSettingsScreen extends Screen {
     private static final Option[] OPTIONS = new Option[] {
@@ -31,7 +32,7 @@ public class StandardSettingsScreen extends Screen {
     private TextFieldWidget pieChartDirectoryField;
 
     public StandardSettingsScreen(Screen parent, PracticeCategory category) {
-        super(new LiteralText("Standard Settings (" + category.getName(false) + ")"));
+        super(new TranslatableText("peepopractice.title.standard_settings", category.getName(false)));
         this.parent = parent;
         PeepoPractice.CONFIGURING_CATEGORY = category;
     }
@@ -77,7 +78,7 @@ public class StandardSettingsScreen extends Screen {
         PeepoPractice.drawBackground(matrices, this);
         if (this.pieChartDirectoryField != null) {
             this.pieChartDirectoryField.render(matrices, mouseX, mouseY, delta);
-            this.drawTextWithShadow(matrices, this.textRenderer, new LiteralText("PieChart Directory"), this.pieChartDirectoryField.x, this.pieChartDirectoryField.y - 10, 16777215);
+            this.drawTextWithShadow(matrices, this.textRenderer, new TranslatableText("peepopractice.text.pie_dir"), this.pieChartDirectoryField.x, this.pieChartDirectoryField.y - 10, 16777215);
         }
         this.drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 13, 16777215);
         super.render(matrices, mouseX, mouseY, delta);

@@ -7,8 +7,10 @@ import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.core.category.utils.PracticeCategoryUtils;
 import me.falu.peepopractice.gui.widget.LimitlessButtonWidget;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
 import java.util.List;
@@ -18,7 +20,7 @@ public class CategoryPreferencesScreen extends Screen {
     private final PracticeCategory category;
 
     public CategoryPreferencesScreen(Screen parent, PracticeCategory category) {
-        super(new LiteralText("Configure (" + category.getName(false) + ")"));
+        super(new TranslatableText("peepopractice.title.category_preferences", category.getName(false)));
         this.parent = parent;
         this.category = category;
     }
@@ -31,7 +33,7 @@ public class CategoryPreferencesScreen extends Screen {
         } else if (currentValue.equals(PracticeCategoryUtils.RANDOM)) {
             add += Formatting.YELLOW;
         }
-        return new LiteralText(Formatting.BOLD + preference.getLabel() + ":\n" + Formatting.RESET + add + currentValue);
+        return new LiteralText(Formatting.BOLD + preference.getLabel() + ":\n" + Formatting.RESET + add + I18n.translate(currentValue));
     }
 
     @Override

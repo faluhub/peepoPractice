@@ -1,12 +1,20 @@
 package me.falu.peepopractice.core.category;
 
-import me.falu.peepopractice.core.category.utils.PracticeCategoryUtils;
 import net.minecraft.util.math.Vec3i;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PracticeTypes {
+    private static String translate(String type, String key) {
+        return "peepopractice.types." + type + "." + key;
+    }
+
+    @SuppressWarnings("SameReturnValue")
+    private static String random() {
+        return "peepopractice.text.random";
+    }
+
     public enum BastionType {
         HOUSING(0, new Vec3i(-9, 83, 27), -90.0F),
         STABLES(1, new Vec3i(3, 54, 30), 90.0F),
@@ -34,7 +42,7 @@ public class PracticeTypes {
         }
 
         public String getLabel() {
-            return PracticeCategoryUtils.getNameFromId(this.name());
+            return this != RANDOM ? translate("bastion", this.name().toLowerCase()) : random();
         }
 
         public static List<String> all() {
@@ -56,17 +64,11 @@ public class PracticeTypes {
     }
 
     public enum CompareType {
-        PB("PB"),
-        AVERAGE("Average");
-
-        private final String label;
-
-        CompareType(String label) {
-            this.label = label;
-        }
+        PB,
+        AVERAGE;
 
         public String getLabel() {
-            return this.label;
+            return translate("compare", this.name().toLowerCase());
         }
 
         public static List<String> all() {
@@ -93,7 +95,7 @@ public class PracticeTypes {
         NEVER;
 
         public String getLabel() {
-            return PracticeCategoryUtils.getNameFromId(this.name());
+            return translate("pace_timer_show", this.name().toLowerCase());
         }
 
         public static List<String> all() {
@@ -120,7 +122,7 @@ public class PracticeTypes {
         NONE;
 
         public String getLabel() {
-            return PracticeCategoryUtils.getNameFromId(this.name());
+            return this != RANDOM ? translate("eye_count", this.name().toLowerCase()) : random();
         }
 
         public static List<String> all() {
@@ -164,7 +166,7 @@ public class PracticeTypes {
         }
 
         public String getLabel() {
-            return PracticeCategoryUtils.getNameFromId(this.name());
+            return this != RANDOM ? translate("stronghold_distance", this.name().toLowerCase()) : random();
         }
 
         public static List<String> all() {
@@ -191,7 +193,7 @@ public class PracticeTypes {
         BACK;
 
         public String getLabel() {
-            return PracticeCategoryUtils.getNameFromId(this.name());
+            return this != RANDOM ? translate("start_node", this.name().toLowerCase()) : random();
         }
 
         public static List<String> all() {
@@ -217,7 +219,7 @@ public class PracticeTypes {
         TERRAIN;
 
         public String getLabel() {
-            return PracticeCategoryUtils.getNameFromId(this.name());
+            return translate("spawn_location", this.name().toLowerCase());
         }
 
         public static List<String> all() {
