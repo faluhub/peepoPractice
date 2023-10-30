@@ -84,7 +84,7 @@ public abstract class SplitEvent {
                         completed
                                 ? new TranslatableText("peepopractice.finished.completed")
                                         .formatted(Formatting.AQUA)
-                                        .append(new TranslatableText("peepopractice.finished.pb").formatted(Formatting.YELLOW))
+                                        .append(isPb ? " " + new TranslatableText("peepopractice.finished.pb").formatted(Formatting.YELLOW).getString() : "")
                                 : new TranslatableText("peepopractice.finished.failed").formatted(Formatting.RED),
                         new LiteralText(Formatting.GRAY + time),
                         10,
