@@ -44,7 +44,7 @@ public abstract class PlayerManagerMixin {
         if (!PeepoPractice.CATEGORY.equals(PracticeCategoriesAny.EMPTY)) {
             MinecraftClient client = MinecraftClient.getInstance();
             client.inGameHud.setTitles(null, null, -1, -1, -1);
-            if (GlobalOptions.SAME_INVENTORY.get(client.options) && !InventoryUtils.PREVIOUS_INVENTORY.isEmpty()) {
+            if (!PeepoPractice.CATEGORY.isAA() && GlobalOptions.SAME_INVENTORY.get(client.options) && !InventoryUtils.PREVIOUS_INVENTORY.isEmpty()) {
                 PeepoPractice.log("Using inventory from previous split.");
                 player.inventory.clear();
                 for (int i = 0; i < InventoryUtils.PREVIOUS_INVENTORY.size(); i++) {
