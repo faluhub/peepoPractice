@@ -25,7 +25,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = LevelLoadingScreen.class, priority = 995)
 public abstract class LevelLoadingScreenMixin extends Screen {
-    @Unique private static final Identifier WIDE_PEEPO_HAPPY = new Identifier(PeepoPractice.MOD_ID, "textures/widepeepohappy.png");
+    @Unique
+    private static final Identifier WIDE_PEEPO_HAPPY = new Identifier(PeepoPractice.MOD_ID, "textures/widepeepohappy.png");
 
     protected LevelLoadingScreenMixin(Text title) {
         super(title);
@@ -62,7 +63,9 @@ public abstract class LevelLoadingScreenMixin extends Screen {
             original.call(matrices, worldGenerationProgressTracker, i, j, k, l);
             return;
         }
-        if (this.client == null) { return; }
+        if (this.client == null) {
+            return;
+        }
         this.client.getTextureManager().bindTexture(WIDE_PEEPO_HAPPY);
         int percentage = Math.min(worldGenerationProgressTracker.getProgressPercentage(), 100);
         int textureHeight = 75 / 2;

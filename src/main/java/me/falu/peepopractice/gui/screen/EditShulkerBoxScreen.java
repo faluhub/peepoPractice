@@ -35,7 +35,8 @@ public class EditShulkerBoxScreen extends PlayerlessHandledScreen {
     protected void init() {
         super.init();
         this.addButton(new LimitlessButtonWidget(null, new Identifier("textures/item/barrier.png"), null, this.x - this.x / 2 - (this.width / 8) / 2, this.y, this.width / 8, this.backgroundHeight, ScreenTexts.DONE, b -> this.onClose()));
-        ButtonWidget copyButton = this.addButton(new LimitlessButtonWidget(null, new Identifier("textures/item/chest_minecart.png"), null, this.x + this.backgroundWidth + this.x / 2 - (this.width / 8) / 2, this.y, this.width / 8, this.backgroundHeight, new TranslatableText("peepopractice.button.copy_from_existing"), b -> {}));
+        ButtonWidget copyButton = this.addButton(new LimitlessButtonWidget(null, new Identifier("textures/item/chest_minecart.png"), null, this.x + this.backgroundWidth + this.x / 2 - (this.width / 8) / 2, this.y, this.width / 8, this.backgroundHeight, new TranslatableText("peepopractice.button.copy_from_existing"), b -> {
+        }));
         copyButton.active = false;
     }
 
@@ -49,7 +50,9 @@ public class EditShulkerBoxScreen extends PlayerlessHandledScreen {
     @Override
     @SuppressWarnings("deprecation")
     protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
-        if (this.client == null) { return; }
+        if (this.client == null) {
+            return;
+        }
         RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
         this.client.getTextureManager().bindTexture(TEXTURE);
         int i = (this.width - this.backgroundWidth) / 2;
@@ -59,7 +62,9 @@ public class EditShulkerBoxScreen extends PlayerlessHandledScreen {
 
     @Override
     public void onClose() {
-        if (this.client == null) { return; }
+        if (this.client == null) {
+            return;
+        }
         ItemStack stack = this.slot.getStack();
         stack.getOrCreateSubTag("BlockEntityTag").put("Items", this.shulkerHandler.getItemsTag());
         this.slot.setStack(stack);

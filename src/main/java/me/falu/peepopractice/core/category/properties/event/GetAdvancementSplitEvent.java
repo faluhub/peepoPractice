@@ -9,12 +9,12 @@ public class GetAdvancementSplitEvent extends SplitEvent {
         return this.advancement;
     }
 
-    public boolean allAdvancements() {
-        return this.advancement == null;
-    }
-
     public GetAdvancementSplitEvent setAdvancement(Identifier advancement) {
         this.advancement = advancement;
         return this;
+    }
+
+    public boolean allAdvancements() {
+        return this.advancement == null;
     }
 }

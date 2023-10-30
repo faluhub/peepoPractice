@@ -15,7 +15,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LocateCommand.class)
 public abstract class LocateCommandMixin {
-    @Unique private static final SimpleCommandExceptionType AFFECTED_EXCEPTION = new SimpleCommandExceptionType(new TranslatableText("peepopractice.locate_error"));
+    @Unique
+    private static final SimpleCommandExceptionType AFFECTED_EXCEPTION = new SimpleCommandExceptionType(new TranslatableText("peepopractice.locate_error"));
 
     @Inject(method = "execute", at = @At("HEAD"))
     private static void peepoPractice$cancelAffectedLocate(ServerCommandSource source, StructureFeature<?> structureFeature, CallbackInfoReturnable<Integer> cir) throws CommandSyntaxException {

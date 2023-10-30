@@ -14,9 +14,12 @@ public abstract class PortalRoomMixin {
         PracticeTypes.EyeCountType eyeCountType = PracticeTypes.EyeCountType.fromLabel(CategoryPreference.getValue("eye_count"));
         if (eyeCountType != null) {
             switch (eyeCountType) {
-                case ALL: return 0.0F;
-                case RANDOM: return constant;
-                case NONE: return 1.1F;
+                case ALL:
+                    return 0.0F;
+                case RANDOM:
+                    return constant;
+                case NONE:
+                    return 1.1F;
             }
         }
         return constant;

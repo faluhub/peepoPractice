@@ -39,7 +39,9 @@ public abstract class CategoryListWidget extends AlwaysSelectedEntryListWidget<C
 
         for (PracticeCategory category : type.list) {
             if (!category.isHidden()) {
-                if (hideUnconfigured && !category.hasConfiguredInventory()) { continue; }
+                if (hideUnconfigured && !category.hasConfiguredInventory()) {
+                    continue;
+                }
                 this.addEntry(new CategoryEntry(category));
             }
         }
@@ -127,7 +129,7 @@ public abstract class CategoryListWidget extends AlwaysSelectedEntryListWidget<C
         this.fillGradient(matrices, this.left, this.top, this.right, this.bottom, PeepoPractice.BACKGROUND_COLOR[0], PeepoPractice.BACKGROUND_COLOR[1]);
         this.fillGradient(matrices, this.left, this.top, this.right, this.bottom, PeepoPractice.BACKGROUND_OVERLAY_COLOR, PeepoPractice.BACKGROUND_OVERLAY_COLOR);
         int k = this.getRowLeft();
-        int l = this.top + 4 - (int)this.getScrollAmount();
+        int l = this.top + 4 - (int) this.getScrollAmount();
         if (this.renderHeader) {
             this.renderHeader(matrices, k, l, tessellator);
         }
@@ -143,7 +145,7 @@ public abstract class CategoryListWidget extends AlwaysSelectedEntryListWidget<C
         RenderSystem.disableTexture();
         int o = this.getMaxScroll();
         if (o > 0) {
-            int p = (int)((float)((this.bottom - this.top) * (this.bottom - this.top)) / (float)this.getMaxPosition());
+            int p = (int) ((float) ((this.bottom - this.top) * (this.bottom - this.top)) / (float) this.getMaxPosition());
             p = MathHelper.clamp(p, 32, this.bottom - this.top - 8);
             int q = (int) this.getScrollAmount() * (this.bottom - this.top - p) / o + this.top;
             if (q < this.top) {
@@ -181,12 +183,12 @@ public abstract class CategoryListWidget extends AlwaysSelectedEntryListWidget<C
                 SplitEvent event = this.category.getSplitEvent();
                 label = label.copy().append(
                         Formatting.GRAY + " (" +
-                        Formatting.WHITE + event.getAttempts() +
-                        Formatting.GRAY + "/" +
-                        Formatting.GREEN + event.getCompletionCount() +
-                        Formatting.GRAY + "/" +
-                        Formatting.RED + event.getFailCount() +
-                        Formatting.GRAY + ")"
+                                Formatting.WHITE + event.getAttempts() +
+                                Formatting.GRAY + "/" +
+                                Formatting.GREEN + event.getCompletionCount() +
+                                Formatting.GRAY + "/" +
+                                Formatting.RED + event.getFailCount() +
+                                Formatting.GRAY + ")"
                 );
             }
 
@@ -204,12 +206,17 @@ public abstract class CategoryListWidget extends AlwaysSelectedEntryListWidget<C
             if (button == 0) {
                 this.onPressed();
                 return true;
-            } else { return false; }
+            } else {
+                return false;
+            }
         }
 
         public void onPressed() {
-            if (CategoryListWidget.this.getSelected() == this) { CategoryListWidget.this.onDoubleClick(this.category); }
-            else { CategoryListWidget.this.setSelected(this); }
+            if (CategoryListWidget.this.getSelected() == this) {
+                CategoryListWidget.this.onDoubleClick(this.category);
+            } else {
+                CategoryListWidget.this.setSelected(this);
+            }
         }
     }
 }

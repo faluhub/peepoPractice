@@ -11,7 +11,8 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 @Mixin(ItemRenderer.class)
 public abstract class ItemRendererMixin {
-    @Shadow public float zOffset;
+    @Shadow
+    public float zOffset;
 
     @Unique
     private static boolean shouldScale(ItemStack stack) {

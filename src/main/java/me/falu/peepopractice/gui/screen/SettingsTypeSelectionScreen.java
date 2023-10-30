@@ -12,7 +12,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 public class SettingsTypeSelectionScreen extends Screen {
-    private final ButtonChoice[] buttons = new ButtonChoice[] {
+    private final ButtonChoice[] buttons = new ButtonChoice[]{
             new ButtonChoice("inventory", new Identifier("textures/item/chest_minecart.png"), category -> EditInventoryScreen.create(this, category)),
             new ButtonChoice("preferences", new Identifier("textures/item/heart_of_the_sea.png"), category -> new CategoryPreferencesScreen(this, category), new ButtonDisabledInfo() {
                 @Override
@@ -84,6 +84,10 @@ public class SettingsTypeSelectionScreen extends Screen {
         this.drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 13, 16777215);
     }
 
+    public interface ButtonScreenTask {
+        Screen execute(PracticeCategory category);
+    }
+
     private static class ButtonChoice {
         public final Text text;
         public final Identifier icon;
@@ -102,12 +106,9 @@ public class SettingsTypeSelectionScreen extends Screen {
         }
     }
 
-    public interface ButtonScreenTask {
-        Screen execute(PracticeCategory category);
-    }
-
     public abstract static class ButtonDisabledInfo {
         public abstract boolean isDisabled(PracticeCategory category);
+
         public abstract String getReason();
     }
 }

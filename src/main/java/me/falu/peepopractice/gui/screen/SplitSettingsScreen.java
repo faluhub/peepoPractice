@@ -1,10 +1,10 @@
 package me.falu.peepopractice.gui.screen;
 
 import me.falu.peepopractice.PeepoPractice;
-import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.core.category.CategoryPreference;
 import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.core.category.PracticeTypes;
+import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.gui.widget.LimitlessButtonWidget;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -16,7 +16,7 @@ import net.minecraft.util.Identifier;
 public class SplitSettingsScreen extends Screen {
     private final Screen parent;
     private final PracticeCategory category;
-    private final CategoryPreference[] preferences = new CategoryPreference[] {
+    private final CategoryPreference[] preferences = new CategoryPreference[]{
             new CategoryPreference()
                     .setId("compare_type")
                     .setChoices(PracticeTypes.CompareType.all())
@@ -45,12 +45,17 @@ public class SplitSettingsScreen extends Screen {
             String currentValue = CategoryPreference.getValue(this.category, preference);
             this.addButton(new LimitlessButtonWidget(false, preference.getIcon(), null, this.width / 2 - width / 2, this.height * (index + 1) / (amount + 1) - height / 2, width, height, new LiteralText(preference.getLabel() + ": ").append(new TranslatableText(currentValue)), b -> {
                 String value = CategoryPreference.getValue(this.category, preference);
-                if (value == null) { return; }
+                if (value == null) {
+                    return;
+                }
                 int currentIndex = CategoryPreference.getIndex(value, preference.getChoices());
                 String next;
 
-                try { next = preference.getChoices().get(currentIndex + 1); }
-                catch (IndexOutOfBoundsException ignored) { next = preference.getChoices().get(0); }
+                try {
+                    next = preference.getChoices().get(currentIndex + 1);
+                } catch (IndexOutOfBoundsException ignored) {
+                    next = preference.getChoices().get(0);
+                }
 
                 b.setMessage(new LiteralText(b.getMessage().getString().replaceAll(value, next)));
                 CategoryPreference.setValue(this.category, preference.getId(), next);

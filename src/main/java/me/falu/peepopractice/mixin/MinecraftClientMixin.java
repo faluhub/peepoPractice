@@ -6,9 +6,9 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.datafixers.DataFixer;
 import com.redlimerl.speedrunigt.timer.InGameTimer;
 import me.falu.peepopractice.PeepoPractice;
-import me.falu.peepopractice.core.category.utils.InventoryUtils;
 import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import me.falu.peepopractice.core.category.PracticeCategory;
+import me.falu.peepopractice.core.category.utils.InventoryUtils;
 import me.falu.peepopractice.core.category.utils.StandardSettingsUtils;
 import me.falu.peepopractice.core.global.GlobalOptions;
 import net.fabricmc.loader.api.FabricLoader;
@@ -33,13 +33,26 @@ import java.io.File;
 
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin {
-    @Shadow @Final public File runDirectory;
-    @Shadow @Final private DataFixer dataFixer;
-    @Shadow @Nullable public ClientWorld world;
-    @Shadow public abstract boolean isIntegratedServerRunning();
-    @Shadow public abstract void openScreen(@Nullable Screen screen);
-    @Shadow @Final public GameOptions options;
-    @Shadow private @Nullable IntegratedServer server;
+    @Shadow
+    @Final
+    public File runDirectory;
+    @Shadow
+    @Nullable
+    public ClientWorld world;
+    @Shadow
+    @Final
+    public GameOptions options;
+    @Shadow
+    @Final
+    private DataFixer dataFixer;
+    @Shadow
+    private @Nullable IntegratedServer server;
+
+    @Shadow
+    public abstract boolean isIntegratedServerRunning();
+
+    @Shadow
+    public abstract void openScreen(@Nullable Screen screen);
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void peepoPractice$getResources(CallbackInfo ci) {

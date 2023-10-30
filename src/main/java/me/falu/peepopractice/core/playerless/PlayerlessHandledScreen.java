@@ -30,17 +30,25 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public abstract class PlayerlessHandledScreen extends Screen {
-    protected int backgroundWidth = 176;
-    protected int backgroundHeight = 166;
     protected final PlayerlessScreenHandler handler;
     protected final PlayerlessInventory playerInventory;
-    @Nullable protected Slot focusedSlot;
-    @Nullable private Slot touchDragSlotStart;
-    @Nullable private Slot touchDropOriginSlot;
-    @Nullable private Slot touchHoveredSlot;
-    @Nullable private Slot lastClickedSlot;
+    protected final Set<Slot> cursorDragSlots;
+    private final Map<Slot, List<ButtonWidget>> slotToButtonsMap;
+    protected int backgroundWidth = 176;
+    protected int backgroundHeight = 166;
+    @Nullable
+    protected Slot focusedSlot;
     protected int x;
     protected int y;
+    protected boolean isCursorDragging;
+    @Nullable
+    private Slot touchDragSlotStart;
+    @Nullable
+    private Slot touchDropOriginSlot;
+    @Nullable
+    private Slot touchHoveredSlot;
+    @Nullable
+    private Slot lastClickedSlot;
     private boolean touchIsRightClickDrag;
     private ItemStack touchDragStack;
     private int touchDropX;
@@ -48,8 +56,6 @@ public abstract class PlayerlessHandledScreen extends Screen {
     private long touchDropTime;
     private ItemStack touchDropReturningStack;
     private long touchDropTimer;
-    protected final Set<Slot> cursorDragSlots;
-    protected boolean isCursorDragging;
     private int heldButtonType;
     private int heldButtonCode;
     private boolean cancelNextRelease;
@@ -58,7 +64,6 @@ public abstract class PlayerlessHandledScreen extends Screen {
     private int lastClickedButton;
     private boolean isDoubleClicking;
     private ItemStack quickMovingStack;
-    private final Map<Slot, List<ButtonWidget>> slotToButtonsMap;
 
     public PlayerlessHandledScreen(PlayerlessScreenHandler handler, PlayerlessInventory inventory, Text title) {
         super(title);
@@ -109,10 +114,10 @@ public abstract class PlayerlessHandledScreen extends Screen {
                 this.focusedSlot = slot;
                 if (
                         this.focusedSlot.inventory instanceof PlayerlessInventory
-                        || this.client.currentScreen instanceof EditShulkerBoxScreen
-                        || (
+                                || this.client.currentScreen instanceof EditShulkerBoxScreen
+                                || (
                                 this.client.currentScreen instanceof EditInventoryScreen
-                                && EditInventoryScreen.getSelectedTab() == ItemGroup.INVENTORY.getIndex()
+                                        && EditInventoryScreen.getSelectedTab() == ItemGroup.INVENTORY.getIndex()
                         )
                 ) {
                     if (!this.slotToButtonsMap.containsKey(this.focusedSlot) && !this.focusedSlot.getStack().isEmpty()) {
@@ -230,7 +235,7 @@ public abstract class PlayerlessHandledScreen extends Screen {
             } else {
                 if (!this.touchDragStack.isEmpty() && this.touchIsRightClickDrag) {
                     itemStack = itemStack.copy();
-                    itemStack.setCount(MathHelper.ceil((float)itemStack.getCount() / 2.0F));
+                    itemStack.setCount(MathHelper.ceil((float) itemStack.getCount() / 2.0F));
                 } else if (this.isCursorDragging && this.cursorDragSlots.size() > 1) {
                     itemStack = itemStack.copy();
                     itemStack.setCount(this.draggedStackRemainder);
@@ -388,7 +393,7 @@ public abstract class PlayerlessHandledScreen extends Screen {
 
     @Nullable
     private Slot getSlotAt(double xPosition, double yPosition) {
-        for(int i = 0; i < this.handler.slots.size(); ++i) {
+        for (int i = 0; i < this.handler.slots.size(); ++i) {
             Slot slot = this.handler.slots.get(i);
             if (this.isPointOverSlot(slot, xPosition, yPosition) && slot.doDrawHoveringEffect()) {
                 return slot;
@@ -400,7 +405,9 @@ public abstract class PlayerlessHandledScreen extends Screen {
 
     @SuppressWarnings("DuplicatedCode")
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (this.client == null) { return false; }
+        if (this.client == null) {
+            return false;
+        }
         if (!super.mouseClicked(mouseX, mouseY, button)) {
             boolean bl = this.client.options.keyPickItem.matchesMouse(button);
             Slot slot = this.getSlotAt(mouseX, mouseY);
@@ -493,7 +500,7 @@ public abstract class PlayerlessHandledScreen extends Screen {
     }
 
     protected boolean isClickOutsideBounds(double mouseX, double mouseY, int left, int top) {
-        return mouseX < (double)left || mouseY < (double)top || mouseX >= (double)(left + this.backgroundWidth) || mouseY >= (double)(top + this.backgroundHeight);
+        return mouseX < (double) left || mouseY < (double) top || mouseX >= (double) (left + this.backgroundWidth) || mouseY >= (double) (top + this.backgroundHeight);
     }
 
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
@@ -550,7 +557,8 @@ public abstract class PlayerlessHandledScreen extends Screen {
             if (hasShiftDown()) {
                 if (!this.quickMovingStack.isEmpty()) {
                     for (Slot slot2 : this.handler.slots) {
-                        if (slot2 == null || !slot2.hasStack() || slot2.inventory != slot.inventory || !ScreenHandler.canInsertItemIntoSlot(slot2, this.quickMovingStack, true)) continue;
+                        if (slot2 == null || !slot2.hasStack() || slot2.inventory != slot.inventory || !ScreenHandler.canInsertItemIntoSlot(slot2, this.quickMovingStack, true))
+                            continue;
                         this.onMouseClick(slot2, slot2.id, button, SlotActionType.QUICK_MOVE);
                     }
                 }
@@ -588,15 +596,15 @@ public abstract class PlayerlessHandledScreen extends Screen {
                             this.touchDropReturningStack = ItemStack.EMPTY;
                         } else {
                             this.onMouseClick(this.touchDragSlotStart, this.touchDragSlotStart.id, button, SlotActionType.PICKUP);
-                            this.touchDropX = MathHelper.floor(mouseX - (double)i);
-                            this.touchDropY = MathHelper.floor(mouseY - (double)j);
+                            this.touchDropX = MathHelper.floor(mouseX - (double) i);
+                            this.touchDropY = MathHelper.floor(mouseY - (double) j);
                             this.touchDropOriginSlot = this.touchDragSlotStart;
                             this.touchDropReturningStack = this.touchDragStack;
                             this.touchDropTime = Util.getMeasuringTimeMs();
                         }
                     } else if (!this.touchDragStack.isEmpty()) {
-                        this.touchDropX = MathHelper.floor(mouseX - (double)i);
-                        this.touchDropY = MathHelper.floor(mouseY - (double)j);
+                        this.touchDropX = MathHelper.floor(mouseX - (double) i);
+                        this.touchDropY = MathHelper.floor(mouseY - (double) j);
                         this.touchDropOriginSlot = this.touchDragSlotStart;
                         this.touchDropReturningStack = this.touchDragStack;
                         this.touchDropTime = Util.getMeasuringTimeMs();
@@ -609,7 +617,7 @@ public abstract class PlayerlessHandledScreen extends Screen {
                 this.onMouseClick(null, -999, ScreenHandler.packQuickCraftData(0, this.heldButtonType), SlotActionType.QUICK_CRAFT);
                 var13 = this.cursorDragSlots.iterator();
 
-                while(var13.hasNext()) {
+                while (var13.hasNext()) {
                     slot3 = var13.next();
                     this.onMouseClick(slot3, slot3.id, ScreenHandler.packQuickCraftData(1, this.heldButtonType), SlotActionType.QUICK_CRAFT);
                 }
@@ -646,7 +654,7 @@ public abstract class PlayerlessHandledScreen extends Screen {
         int j = this.y;
         pointX -= i;
         pointY -= j;
-        return pointX >= (double)(xPosition - 1) && pointX < (double)(xPosition + width + 1) && pointY >= (double)(yPosition - 1) && pointY < (double)(yPosition + height + 1);
+        return pointX >= (double) (xPosition - 1) && pointX < (double) (xPosition + width + 1) && pointY >= (double) (yPosition - 1) && pointY < (double) (yPosition + height + 1);
     }
 
     protected void onMouseClick(Slot slot, int invSlot, int clickData, SlotActionType actionType) {
@@ -683,7 +691,7 @@ public abstract class PlayerlessHandledScreen extends Screen {
                 return true;
             }
 
-            for(int i = 0; i < 9; ++i) {
+            for (int i = 0; i < 9; ++i) {
                 if (this.client.options.keysHotbar[i].matchesKey(keyCode, scanCode)) {
                     this.onMouseClick(this.focusedSlot, this.focusedSlot.id, i, SlotActionType.SWAP);
                     return true;

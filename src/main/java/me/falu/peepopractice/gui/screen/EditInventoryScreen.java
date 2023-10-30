@@ -7,13 +7,13 @@ import com.google.gson.JsonObject;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.datafixers.util.Pair;
 import me.falu.peepopractice.PeepoPractice;
-import me.falu.peepopractice.core.category.utils.InventoryUtils;
-import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.core.category.PracticeCategory;
+import me.falu.peepopractice.core.category.utils.InventoryUtils;
 import me.falu.peepopractice.core.playerless.PlayerlessHandledScreen;
 import me.falu.peepopractice.core.playerless.PlayerlessInventory;
 import me.falu.peepopractice.core.playerless.PlayerlessPlayerScreenHandler;
 import me.falu.peepopractice.core.playerless.PlayerlessScreenHandler;
+import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.gui.widget.LimitlessButtonWidget;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -34,7 +34,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.*;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
@@ -52,7 +53,10 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
@@ -60,15 +64,16 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
     public static final Identifier TABS_TEXTURE = new Identifier("textures/gui/container/creative_inventory/tabs.png");
     public static final SimpleInventory displayInv = new SimpleInventory(45);
     private static int SELECTED_TAB = ItemGroup.BUILDING_BLOCKS.getIndex();
+    private final Map<Identifier, Tag<Item>> searchResultTags = Maps.newTreeMap();
+    private final Screen parent;
+    private final PracticeCategory category;
     private float scrollPosition;
     private boolean scrolling;
     private TextFieldWidget searchBox;
     private ImmutableList<Slot> slots;
-    @Nullable private Slot deleteItemSlot;
+    @Nullable
+    private Slot deleteItemSlot;
     private boolean ignoreTypedCharacter;
-    private final Map<Identifier, Tag<Item>> searchResultTags = Maps.newTreeMap();
-    private final Screen parent;
-    private final PracticeCategory category;
     private boolean lastClickOutsideBounds;
 
     public EditInventoryScreen(Screen parent, PracticeCategory category) {
@@ -90,302 +95,6 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
 
     public static int getSelectedTab() {
         return SELECTED_TAB;
-    }
-
-    private void saveInventory() {
-        JsonObject object = new JsonObject();
-
-        for (int i = 0; i < PeepoPractice.PLAYERLESS_INVENTORY.size(); i++) {
-            ItemStack stack = PeepoPractice.PLAYERLESS_INVENTORY.getStack(i);
-            if (stack != null && !stack.isEmpty()) {
-                CompoundTag tag = new CompoundTag();
-                object.addProperty(String.valueOf(i), stack.toTag(tag).toString());
-            }
-        }
-
-        PracticeWriter.INVENTORY_WRITER.put(this.category.getId(), object);
-        PracticeWriter.INVENTORY_WRITER.write();
-    }
-
-    @Override
-    protected boolean isClickOutsideBounds(double mouseX, double mouseY, int left, int top) {
-        boolean bl = mouseX < (double)left || mouseY < (double)top || mouseX >= (double)(left + this.backgroundWidth) || mouseY >= (double)(top + this.backgroundHeight);
-        this.lastClickOutsideBounds = bl && !this.isClickInTab(ItemGroup.GROUPS[SELECTED_TAB], mouseX, mouseY);
-        return this.lastClickOutsideBounds;
-    }
-
-    @Override
-    public void onClose() {
-        if (this.client == null) { return; }
-        this.saveInventory();
-        this.client.openScreen(this.parent);
-    }
-
-    @Override
-    public void tick() {
-        if (this.searchBox != null) {
-            this.searchBox.tick();
-        }
-        super.tick();
-    }
-
-    @Override
-    protected void onMouseClick(Slot slot, int invSlot, int clickData, SlotActionType actionType) {
-        if (this.isCreativeInventorySlot(slot)) {
-            this.searchBox.setCursorToEnd();
-            this.searchBox.setSelectionEnd(0);
-        }
-
-        boolean bl = actionType == SlotActionType.QUICK_MOVE;
-        actionType = invSlot == -999 && actionType == SlotActionType.PICKUP ? SlotActionType.THROW : actionType;
-
-        if (
-                slot != null
-                && (slot.inventory == this.playerInventory || SELECTED_TAB == ItemGroup.INVENTORY.getIndex())
-                && actionType == SlotActionType.PICKUP
-                && slot.getStack() != null
-                && !slot.getStack().isEmpty()
-                && PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack() != null
-                && PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack().getItem().equals(Items.ENCHANTED_BOOK)
-        ) {
-            ListTag enchantments = EnchantedBookItem.getEnchantmentTag(PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack());
-            AtomicBoolean shouldStop = new AtomicBoolean(false);
-            enchantments.forEach(rawTag -> {
-                if (shouldStop.get()) { return; }
-
-                ItemStack stack = slot.getStack();
-                CompoundTag tag = (CompoundTag) rawTag;
-                Enchantment enchantment = Registry.ENCHANTMENT.get(new Identifier(tag.getString("id")));
-                if (enchantment != null) {
-                    if (!enchantment.isAcceptableItem(stack)) {
-                        shouldStop.set(true);
-                        return;
-                    }
-
-                    if (!stack.getEnchantments().isEmpty()) {
-                        stack.getEnchantments().forEach(rawTag1 -> {
-                            CompoundTag tag1 = (CompoundTag) rawTag1;
-                            if (!enchantment.canCombine(Registry.ENCHANTMENT.get(new Identifier(tag1.getString("id"))))) {
-                                shouldStop.set(true);
-                            }
-                        });
-                    }
-
-                    if (shouldStop.get()) { return; }
-
-                    slot.getStack().addEnchantment(enchantment, tag.getInt("lvl"));
-                }
-            });
-
-            if (!shouldStop.get()) {
-                PeepoPractice.PLAYERLESS_INVENTORY.setCursorStack(ItemStack.EMPTY);
-                return;
-            }
-        } else if (
-                this.client != null
-                && slot != null
-                && (slot.inventory == this.playerInventory || SELECTED_TAB == ItemGroup.INVENTORY.getIndex())
-                && actionType == SlotActionType.PICKUP
-                && slot.getStack() != null
-                && !slot.getStack().isEmpty()
-                && slot.getStack().getTranslationKey().contains("shulker_box")
-                && Screen.hasControlDown()
-        ) {
-            this.client.openScreen(new EditShulkerBoxScreen(this, slot, this.playerInventory, slot.getStack().getName()));
-            return;
-        }
-
-        if (slot != null || SELECTED_TAB == ItemGroup.INVENTORY.getIndex() || actionType == SlotActionType.QUICK_CRAFT) {
-            if (slot == this.deleteItemSlot && bl) {
-                for (int i = 0; i < PeepoPractice.PLAYERLESS_PLAYER_SCREEN_HANDLER.slots.size(); i++) {
-                    PeepoPractice.PLAYERLESS_PLAYER_SCREEN_HANDLER.slots.get(i).setStack(ItemStack.EMPTY);
-                }
-            } else if (SELECTED_TAB == ItemGroup.INVENTORY.getIndex()) {
-                if (slot == this.deleteItemSlot) {
-                    PeepoPractice.PLAYERLESS_INVENTORY.setCursorStack(ItemStack.EMPTY);
-                } else if (actionType == SlotActionType.THROW && slot != null && slot.hasStack()) {
-                    slot.takeStack(clickData == 0 ? 1 : slot.getStack().getMaxCount());
-                } else if (actionType == SlotActionType.THROW && !PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack().isEmpty()) {
-                    PeepoPractice.PLAYERLESS_INVENTORY.setCursorStack(ItemStack.EMPTY);
-                } else {
-                    PeepoPractice.PLAYERLESS_PLAYER_SCREEN_HANDLER.onSlotClick(slot == null ? invSlot : ((EditInventoryScreen.CreativeSlot) slot).slot.id, clickData, actionType, PeepoPractice.PLAYERLESS_INVENTORY);
-                }
-            } else if (actionType != SlotActionType.QUICK_CRAFT && slot.inventory == displayInv) {
-                PlayerlessInventory playerInventory = PeepoPractice.PLAYERLESS_INVENTORY;
-                ItemStack itemStack2 = playerInventory.getCursorStack();
-                ItemStack itemStack3 = slot.getStack();
-                if (actionType == SlotActionType.SWAP) {
-                    if (!itemStack3.isEmpty()) {
-                        ItemStack itemStack4 = itemStack3.copy();
-                        itemStack4.setCount(itemStack4.getMaxCount());
-                        PeepoPractice.PLAYERLESS_INVENTORY.setStack(clickData, itemStack4);
-                    }
-                    return;
-                }
-                if (actionType == SlotActionType.CLONE) {
-                    if (playerInventory.getCursorStack().isEmpty() && slot.hasStack()) {
-                        ItemStack itemStack4 = slot.getStack().copy();
-                        itemStack4.setCount(itemStack4.getMaxCount());
-                        playerInventory.setCursorStack(itemStack4);
-                    }
-                    return;
-                }
-                if (actionType == SlotActionType.THROW) {
-                    if (!itemStack3.isEmpty()) {
-                        ItemStack itemStack4 = itemStack3.copy();
-                        itemStack4.setCount(clickData == 0 ? 1 : itemStack4.getMaxCount());
-                    }
-                    return;
-                }
-                if (!itemStack2.isEmpty() && !itemStack3.isEmpty() && itemStack2.isItemEqualIgnoreDamage(itemStack3) && ItemStack.areTagsEqual(itemStack2, itemStack3)) {
-                    if (clickData == 0) {
-                        if (bl) {
-                            itemStack2.setCount(itemStack2.getMaxCount());
-                        } else if (itemStack2.getCount() < itemStack2.getMaxCount()) {
-                            itemStack2.increment(1);
-                        }
-                    } else {
-                        itemStack2.decrement(1);
-                    }
-                } else if (itemStack3.isEmpty() || !itemStack2.isEmpty()) {
-                    if (clickData == 0) {
-                        playerInventory.setCursorStack(ItemStack.EMPTY);
-                    } else {
-                        playerInventory.getCursorStack().decrement(1);
-                    }
-                } else {
-                    playerInventory.setCursorStack(itemStack3.copy());
-                    itemStack2 = playerInventory.getCursorStack();
-                    if (bl) {
-                        itemStack2.setCount(itemStack2.getMaxCount());
-                    }
-                }
-            } else if (this.handler != null) {
-                ItemStack itemStack = slot == null ? ItemStack.EMPTY : this.handler.getSlot(slot.id).getStack();
-                this.handler.onSlotClick(slot == null ? invSlot : slot.id, clickData, actionType, PeepoPractice.PLAYERLESS_INVENTORY);
-                if (ScreenHandler.unpackQuickCraftStage(clickData) != 2 && slot != null) {
-                    if (actionType == SlotActionType.THROW && !itemStack.isEmpty()) {
-                        ItemStack itemStack4 = itemStack.copy();
-                        itemStack4.setCount(clickData == 0 ? 1 : itemStack4.getMaxCount());
-                    }
-                }
-            }
-        } else {
-            PlayerlessInventory playerInventory = PeepoPractice.PLAYERLESS_INVENTORY;
-            if (!playerInventory.getCursorStack().isEmpty() && this.lastClickOutsideBounds) {
-                if (clickData == 0) {
-                    playerInventory.setCursorStack(ItemStack.EMPTY);
-                }
-                if (clickData == 1) {
-                    playerInventory.getCursorStack().split(1);
-                }
-            }
-        }
-    }
-
-    private boolean isCreativeInventorySlot(@Nullable Slot slot) {
-        return slot != null && slot.inventory == displayInv;
-    }
-
-    @Override
-    protected void init() {
-        if (this.client == null) { return; }
-
-        super.init();
-        this.client.keyboard.enableRepeatEvents(true);
-        int vx = this.x + 82;
-        int vy = this.y + 6;
-        this.searchBox = new TextFieldWidget(this.textRenderer, vx, vy, 80, 9, new TranslatableText("itemGroup.search"));
-        this.searchBox.setMaxLength(50);
-        this.searchBox.setHasBorder(false);
-        this.searchBox.setVisible(false);
-        this.searchBox.setEditableColor(16777215);
-        this.children.add(this.searchBox);
-        int i = SELECTED_TAB;
-        SELECTED_TAB = -1;
-        this.setSelectedTab(ItemGroup.GROUPS[i]);
-
-        this.addButton(new LimitlessButtonWidget(null, new Identifier("textures/item/barrier.png"), null, this.x - this.x / 2 - (this.width / 8) / 2, this.y, this.width / 8, this.backgroundHeight, ScreenTexts.DONE, b -> this.onClose()));
-        this.addButton(new LimitlessButtonWidget(null, new Identifier("textures/item/chest_minecart.png"), null, this.x + this.backgroundWidth + this.x / 2 - (this.width / 8) / 2, this.y, this.width / 8, this.backgroundHeight, new TranslatableText("peepopractice.button.copy_from_existing"), b -> {
-            if (this.client != null) {
-                this.saveInventory();
-                this.client.openScreen(new CopyInventorySelectionScreen(this.category));
-            }
-        }));
-    }
-
-    @Override
-    public void resize(MinecraftClient client, int width, int height) {
-        String string = this.searchBox.getText();
-        this.init(client, width, height);
-        this.searchBox.setText(string);
-        if (!this.searchBox.getText().isEmpty()) {
-            this.search();
-        }
-    }
-
-    @Override
-    public void removed() {
-        super.removed();
-
-        if (this.client != null) {
-            this.client.keyboard.enableRepeatEvents(false);
-        }
-    }
-
-    public boolean charTyped(char chr, int keyCode) {
-        if (this.ignoreTypedCharacter) {
-            return false;
-        } else if (SELECTED_TAB != ItemGroup.SEARCH.getIndex()) {
-            return false;
-        } else {
-            String string = this.searchBox.getText();
-            if (this.searchBox.charTyped(chr, keyCode)) {
-                if (!Objects.equals(string, this.searchBox.getText())) {
-                    this.search();
-                }
-
-                return true;
-            } else {
-                return false;
-            }
-        }
-    }
-
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        this.ignoreTypedCharacter = false;
-        if (SELECTED_TAB != ItemGroup.SEARCH.getIndex()) {
-            if (this.client != null && this.client.options.keyChat.matchesKey(keyCode, scanCode)) {
-                this.ignoreTypedCharacter = true;
-                this.setSelectedTab(ItemGroup.SEARCH);
-                return true;
-            } else {
-                return super.keyPressed(keyCode, scanCode, modifiers);
-            }
-        } else {
-            boolean bl = !this.isCreativeInventorySlot(this.focusedSlot) || this.focusedSlot.hasStack();
-            boolean bl2 = InputUtil.fromKeyCode(keyCode, scanCode).method_30103().isPresent();
-            if (bl && bl2 && this.handleHotbarKeyPressed(keyCode, scanCode)) {
-                this.ignoreTypedCharacter = true;
-                return true;
-            } else {
-                String string = this.searchBox.getText();
-                if (this.searchBox.keyPressed(keyCode, scanCode, modifiers)) {
-                    if (!Objects.equals(string, this.searchBox.getText())) {
-                        this.search();
-                    }
-
-                    return true;
-                } else {
-                    return this.searchBox.isFocused() && this.searchBox.isVisible() && keyCode != 256 || super.keyPressed(keyCode, scanCode, modifiers);
-                }
-            }
-        }
-    }
-
-    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
-        this.ignoreTypedCharacter = false;
-        return super.keyReleased(keyCode, scanCode, modifiers);
     }
 
     private void setSelectedTab(ItemGroup group) {
@@ -488,11 +197,315 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         }
 
         this.scrollPosition = 0.0F;
-        ((PlayerlessCreativeScreenHandler)this.handler).scrollItems(0.0F);
+        ((PlayerlessCreativeScreenHandler) this.handler).scrollItems(0.0F);
+    }
+
+    private void saveInventory() {
+        JsonObject object = new JsonObject();
+
+        for (int i = 0; i < PeepoPractice.PLAYERLESS_INVENTORY.size(); i++) {
+            ItemStack stack = PeepoPractice.PLAYERLESS_INVENTORY.getStack(i);
+            if (stack != null && !stack.isEmpty()) {
+                CompoundTag tag = new CompoundTag();
+                object.addProperty(String.valueOf(i), stack.toTag(tag).toString());
+            }
+        }
+
+        PracticeWriter.INVENTORY_WRITER.put(this.category.getId(), object);
+        PracticeWriter.INVENTORY_WRITER.write();
+    }
+
+    @Override
+    protected boolean isClickOutsideBounds(double mouseX, double mouseY, int left, int top) {
+        boolean bl = mouseX < (double) left || mouseY < (double) top || mouseX >= (double) (left + this.backgroundWidth) || mouseY >= (double) (top + this.backgroundHeight);
+        this.lastClickOutsideBounds = bl && !this.isClickInTab(ItemGroup.GROUPS[SELECTED_TAB], mouseX, mouseY);
+        return this.lastClickOutsideBounds;
+    }
+
+    @Override
+    public void onClose() {
+        if (this.client == null) {
+            return;
+        }
+        this.saveInventory();
+        this.client.openScreen(this.parent);
+    }
+
+    @Override
+    public void tick() {
+        if (this.searchBox != null) {
+            this.searchBox.tick();
+        }
+        super.tick();
+    }
+
+    @Override
+    protected void onMouseClick(Slot slot, int invSlot, int clickData, SlotActionType actionType) {
+        if (this.isCreativeInventorySlot(slot)) {
+            this.searchBox.setCursorToEnd();
+            this.searchBox.setSelectionEnd(0);
+        }
+
+        boolean bl = actionType == SlotActionType.QUICK_MOVE;
+        actionType = invSlot == -999 && actionType == SlotActionType.PICKUP ? SlotActionType.THROW : actionType;
+
+        if (
+                slot != null
+                        && (slot.inventory == this.playerInventory || SELECTED_TAB == ItemGroup.INVENTORY.getIndex())
+                        && actionType == SlotActionType.PICKUP
+                        && slot.getStack() != null
+                        && !slot.getStack().isEmpty()
+                        && PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack() != null
+                        && PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack().getItem().equals(Items.ENCHANTED_BOOK)
+        ) {
+            ListTag enchantments = EnchantedBookItem.getEnchantmentTag(PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack());
+            AtomicBoolean shouldStop = new AtomicBoolean(false);
+            enchantments.forEach(rawTag -> {
+                if (shouldStop.get()) {
+                    return;
+                }
+
+                ItemStack stack = slot.getStack();
+                CompoundTag tag = (CompoundTag) rawTag;
+                Enchantment enchantment = Registry.ENCHANTMENT.get(new Identifier(tag.getString("id")));
+                if (enchantment != null) {
+                    if (!enchantment.isAcceptableItem(stack)) {
+                        shouldStop.set(true);
+                        return;
+                    }
+
+                    if (!stack.getEnchantments().isEmpty()) {
+                        stack.getEnchantments().forEach(rawTag1 -> {
+                            CompoundTag tag1 = (CompoundTag) rawTag1;
+                            if (!enchantment.canCombine(Registry.ENCHANTMENT.get(new Identifier(tag1.getString("id"))))) {
+                                shouldStop.set(true);
+                            }
+                        });
+                    }
+
+                    if (shouldStop.get()) {
+                        return;
+                    }
+
+                    slot.getStack().addEnchantment(enchantment, tag.getInt("lvl"));
+                }
+            });
+
+            if (!shouldStop.get()) {
+                PeepoPractice.PLAYERLESS_INVENTORY.setCursorStack(ItemStack.EMPTY);
+                return;
+            }
+        } else if (
+                this.client != null
+                        && slot != null
+                        && (slot.inventory == this.playerInventory || SELECTED_TAB == ItemGroup.INVENTORY.getIndex())
+                        && actionType == SlotActionType.PICKUP
+                        && slot.getStack() != null
+                        && !slot.getStack().isEmpty()
+                        && slot.getStack().getTranslationKey().contains("shulker_box")
+                        && Screen.hasControlDown()
+        ) {
+            this.client.openScreen(new EditShulkerBoxScreen(this, slot, this.playerInventory, slot.getStack().getName()));
+            return;
+        }
+
+        if (slot != null || SELECTED_TAB == ItemGroup.INVENTORY.getIndex() || actionType == SlotActionType.QUICK_CRAFT) {
+            if (slot == this.deleteItemSlot && bl) {
+                for (int i = 0; i < PeepoPractice.PLAYERLESS_PLAYER_SCREEN_HANDLER.slots.size(); i++) {
+                    PeepoPractice.PLAYERLESS_PLAYER_SCREEN_HANDLER.slots.get(i).setStack(ItemStack.EMPTY);
+                }
+            } else if (SELECTED_TAB == ItemGroup.INVENTORY.getIndex()) {
+                if (slot == this.deleteItemSlot) {
+                    PeepoPractice.PLAYERLESS_INVENTORY.setCursorStack(ItemStack.EMPTY);
+                } else if (actionType == SlotActionType.THROW && slot != null && slot.hasStack()) {
+                    slot.takeStack(clickData == 0 ? 1 : slot.getStack().getMaxCount());
+                } else if (actionType == SlotActionType.THROW && !PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack().isEmpty()) {
+                    PeepoPractice.PLAYERLESS_INVENTORY.setCursorStack(ItemStack.EMPTY);
+                } else {
+                    PeepoPractice.PLAYERLESS_PLAYER_SCREEN_HANDLER.onSlotClick(slot == null ? invSlot : ((EditInventoryScreen.CreativeSlot) slot).slot.id, clickData, actionType, PeepoPractice.PLAYERLESS_INVENTORY);
+                }
+            } else if (actionType != SlotActionType.QUICK_CRAFT && slot.inventory == displayInv) {
+                PlayerlessInventory playerInventory = PeepoPractice.PLAYERLESS_INVENTORY;
+                ItemStack itemStack2 = playerInventory.getCursorStack();
+                ItemStack itemStack3 = slot.getStack();
+                if (actionType == SlotActionType.SWAP) {
+                    if (!itemStack3.isEmpty()) {
+                        ItemStack itemStack4 = itemStack3.copy();
+                        itemStack4.setCount(itemStack4.getMaxCount());
+                        PeepoPractice.PLAYERLESS_INVENTORY.setStack(clickData, itemStack4);
+                    }
+                    return;
+                }
+                if (actionType == SlotActionType.CLONE) {
+                    if (playerInventory.getCursorStack().isEmpty() && slot.hasStack()) {
+                        ItemStack itemStack4 = slot.getStack().copy();
+                        itemStack4.setCount(itemStack4.getMaxCount());
+                        playerInventory.setCursorStack(itemStack4);
+                    }
+                    return;
+                }
+                if (actionType == SlotActionType.THROW) {
+                    if (!itemStack3.isEmpty()) {
+                        ItemStack itemStack4 = itemStack3.copy();
+                        itemStack4.setCount(clickData == 0 ? 1 : itemStack4.getMaxCount());
+                    }
+                    return;
+                }
+                if (!itemStack2.isEmpty() && !itemStack3.isEmpty() && itemStack2.isItemEqualIgnoreDamage(itemStack3) && ItemStack.areTagsEqual(itemStack2, itemStack3)) {
+                    if (clickData == 0) {
+                        if (bl) {
+                            itemStack2.setCount(itemStack2.getMaxCount());
+                        } else if (itemStack2.getCount() < itemStack2.getMaxCount()) {
+                            itemStack2.increment(1);
+                        }
+                    } else {
+                        itemStack2.decrement(1);
+                    }
+                } else if (itemStack3.isEmpty() || !itemStack2.isEmpty()) {
+                    if (clickData == 0) {
+                        playerInventory.setCursorStack(ItemStack.EMPTY);
+                    } else {
+                        playerInventory.getCursorStack().decrement(1);
+                    }
+                } else {
+                    playerInventory.setCursorStack(itemStack3.copy());
+                    itemStack2 = playerInventory.getCursorStack();
+                    if (bl) {
+                        itemStack2.setCount(itemStack2.getMaxCount());
+                    }
+                }
+            } else if (this.handler != null) {
+                ItemStack itemStack = slot == null ? ItemStack.EMPTY : this.handler.getSlot(slot.id).getStack();
+                this.handler.onSlotClick(slot == null ? invSlot : slot.id, clickData, actionType, PeepoPractice.PLAYERLESS_INVENTORY);
+                if (ScreenHandler.unpackQuickCraftStage(clickData) != 2 && slot != null) {
+                    if (actionType == SlotActionType.THROW && !itemStack.isEmpty()) {
+                        ItemStack itemStack4 = itemStack.copy();
+                        itemStack4.setCount(clickData == 0 ? 1 : itemStack4.getMaxCount());
+                    }
+                }
+            }
+        } else {
+            PlayerlessInventory playerInventory = PeepoPractice.PLAYERLESS_INVENTORY;
+            if (!playerInventory.getCursorStack().isEmpty() && this.lastClickOutsideBounds) {
+                if (clickData == 0) {
+                    playerInventory.setCursorStack(ItemStack.EMPTY);
+                }
+                if (clickData == 1) {
+                    playerInventory.getCursorStack().split(1);
+                }
+            }
+        }
+    }
+
+    private boolean isCreativeInventorySlot(@Nullable Slot slot) {
+        return slot != null && slot.inventory == displayInv;
+    }
+
+    @Override
+    protected void init() {
+        if (this.client == null) {
+            return;
+        }
+
+        super.init();
+        this.client.keyboard.enableRepeatEvents(true);
+        int vx = this.x + 82;
+        int vy = this.y + 6;
+        this.searchBox = new TextFieldWidget(this.textRenderer, vx, vy, 80, 9, new TranslatableText("itemGroup.search"));
+        this.searchBox.setMaxLength(50);
+        this.searchBox.setHasBorder(false);
+        this.searchBox.setVisible(false);
+        this.searchBox.setEditableColor(16777215);
+        this.children.add(this.searchBox);
+        int i = SELECTED_TAB;
+        SELECTED_TAB = -1;
+        this.setSelectedTab(ItemGroup.GROUPS[i]);
+
+        this.addButton(new LimitlessButtonWidget(null, new Identifier("textures/item/barrier.png"), null, this.x - this.x / 2 - (this.width / 8) / 2, this.y, this.width / 8, this.backgroundHeight, ScreenTexts.DONE, b -> this.onClose()));
+        this.addButton(new LimitlessButtonWidget(null, new Identifier("textures/item/chest_minecart.png"), null, this.x + this.backgroundWidth + this.x / 2 - (this.width / 8) / 2, this.y, this.width / 8, this.backgroundHeight, new TranslatableText("peepopractice.button.copy_from_existing"), b -> {
+            if (this.client != null) {
+                this.saveInventory();
+                this.client.openScreen(new CopyInventorySelectionScreen(this.category));
+            }
+        }));
+    }
+
+    @Override
+    public void resize(MinecraftClient client, int width, int height) {
+        String string = this.searchBox.getText();
+        this.init(client, width, height);
+        this.searchBox.setText(string);
+        if (!this.searchBox.getText().isEmpty()) {
+            this.search();
+        }
+    }
+
+    @Override
+    public void removed() {
+        super.removed();
+
+        if (this.client != null) {
+            this.client.keyboard.enableRepeatEvents(false);
+        }
+    }
+
+    public boolean charTyped(char chr, int keyCode) {
+        if (this.ignoreTypedCharacter) {
+            return false;
+        } else if (SELECTED_TAB != ItemGroup.SEARCH.getIndex()) {
+            return false;
+        } else {
+            String string = this.searchBox.getText();
+            if (this.searchBox.charTyped(chr, keyCode)) {
+                if (!Objects.equals(string, this.searchBox.getText())) {
+                    this.search();
+                }
+
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        this.ignoreTypedCharacter = false;
+        if (SELECTED_TAB != ItemGroup.SEARCH.getIndex()) {
+            if (this.client != null && this.client.options.keyChat.matchesKey(keyCode, scanCode)) {
+                this.ignoreTypedCharacter = true;
+                this.setSelectedTab(ItemGroup.SEARCH);
+                return true;
+            } else {
+                return super.keyPressed(keyCode, scanCode, modifiers);
+            }
+        } else {
+            boolean bl = !this.isCreativeInventorySlot(this.focusedSlot) || this.focusedSlot.hasStack();
+            boolean bl2 = InputUtil.fromKeyCode(keyCode, scanCode).method_30103().isPresent();
+            if (bl && bl2 && this.handleHotbarKeyPressed(keyCode, scanCode)) {
+                this.ignoreTypedCharacter = true;
+                return true;
+            } else {
+                String string = this.searchBox.getText();
+                if (this.searchBox.keyPressed(keyCode, scanCode, modifiers)) {
+                    if (!Objects.equals(string, this.searchBox.getText())) {
+                        this.search();
+                    }
+
+                    return true;
+                } else {
+                    return this.searchBox.isFocused() && this.searchBox.isVisible() && keyCode != 256 || super.keyPressed(keyCode, scanCode, modifiers);
+                }
+            }
+        }
+    }
+
+    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+        this.ignoreTypedCharacter = false;
+        return super.keyReleased(keyCode, scanCode, modifiers);
     }
 
     private void search() {
-        ((PlayerlessCreativeScreenHandler)this.handler).itemList.clear();
+        ((PlayerlessCreativeScreenHandler) this.handler).itemList.clear();
         this.searchResultTags.clear();
         String string = this.searchBox.getText();
         if (string.isEmpty()) {
@@ -509,11 +522,11 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
                 searchable2 = this.client.getSearchableContainer(SearchManager.ITEM_TOOLTIP);
             }
 
-            ((PlayerlessCreativeScreenHandler)this.handler).itemList.addAll(searchable2.findAll(string.toLowerCase(Locale.ROOT)));
+            ((PlayerlessCreativeScreenHandler) this.handler).itemList.addAll(searchable2.findAll(string.toLowerCase(Locale.ROOT)));
         }
 
         this.scrollPosition = 0.0F;
-        ((PlayerlessCreativeScreenHandler)this.handler).scrollItems(0.0F);
+        ((PlayerlessCreativeScreenHandler) this.handler).scrollItems(0.0F);
     }
 
     private void searchForTags(String string) {
@@ -533,8 +546,8 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0) {
-            double d = mouseX - (double)this.x;
-            double e = mouseY - (double)this.y;
+            double d = mouseX - (double) this.x;
+            double e = mouseY - (double) this.y;
             ItemGroup[] var10 = ItemGroup.GROUPS;
 
             for (ItemGroup itemGroup : var10) {
@@ -559,13 +572,13 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         int l = j + 18;
         int m = k + 14;
         int n = l + 112;
-        return mouseX >= (double)k && mouseY >= (double)l && mouseX < (double)m && mouseY < (double)n;
+        return mouseX >= (double) k && mouseY >= (double) l && mouseX < (double) m && mouseY < (double) n;
     }
 
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         if (button == 0) {
-            double d = mouseX - (double)this.x;
-            double e = mouseY - (double)this.y;
+            double d = mouseX - (double) this.x;
+            double e = mouseY - (double) this.y;
             this.scrolling = false;
             ItemGroup[] var10 = ItemGroup.GROUPS;
 
@@ -597,13 +610,15 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
             k = k + this.backgroundHeight;
         }
 
-        return mouseX >= (double)j && mouseX <= (double)(j + 28) && mouseY >= (double)k && mouseY <= (double)(k + 32);
+        return mouseX >= (double) j && mouseX <= (double) (j + 28) && mouseY >= (double) k && mouseY <= (double) (k + 32);
     }
 
     @Override
     @SuppressWarnings("deprecation")
     protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
-        if (this.client == null) { return; }
+        if (this.client == null) {
+            return;
+        }
 
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         ItemGroup itemGroup = ItemGroup.GROUPS[SELECTED_TAB];
@@ -628,7 +643,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         k = j + 112;
         this.client.getTextureManager().bindTexture(TABS_TEXTURE);
         if (itemGroup.hasScrollbar()) {
-            this.drawTexture(matrices, i, j + (int)((float)(k - j - 17) * this.scrollPosition), 232 + (this.hasScrollbar() ? 0 : 12), 0, 12, 15);
+            this.drawTexture(matrices, i, j + (int) ((float) (k - j - 17) * this.scrollPosition), 232 + (this.hasScrollbar() ? 0 : 12), 0, 12, 15);
         }
 
         this.renderTabIcon(matrices, itemGroup);
@@ -679,10 +694,10 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         if (!this.hasScrollbar()) {
             return false;
         } else {
-            int i = (((PlayerlessCreativeScreenHandler)this.handler).itemList.size() + 9 - 1) / 9 - 5;
-            this.scrollPosition = (float)((double)this.scrollPosition - amount / (double)i);
+            int i = (((PlayerlessCreativeScreenHandler) this.handler).itemList.size() + 9 - 1) / 9 - 5;
+            this.scrollPosition = (float) ((double) this.scrollPosition - amount / (double) i);
             this.scrollPosition = MathHelper.clamp(this.scrollPosition, 0.0F, 1.0F);
-            ((PlayerlessCreativeScreenHandler)this.handler).scrollItems(this.scrollPosition);
+            ((PlayerlessCreativeScreenHandler) this.handler).scrollItems(this.scrollPosition);
             return true;
         }
     }
@@ -691,9 +706,9 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         if (this.scrolling) {
             int i = this.y + 18;
             int j = i + 112;
-            this.scrollPosition = ((float)mouseY - (float)i - 7.5F) / ((float)(j - i) - 15.0F);
+            this.scrollPosition = ((float) mouseY - (float) i - 7.5F) / ((float) (j - i) - 15.0F);
             this.scrollPosition = MathHelper.clamp(this.scrollPosition, 0.0F, 1.0F);
-            ((PlayerlessCreativeScreenHandler)this.handler).scrollItems(this.scrollPosition);
+            ((PlayerlessCreativeScreenHandler) this.handler).scrollItems(this.scrollPosition);
             return true;
         } else {
             return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
@@ -723,7 +738,9 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
     }
 
     protected void renderTooltip(MatrixStack matrices, ItemStack stack, int x, int y) {
-        if (this.client == null) { return; }
+        if (this.client == null) {
+            return;
+        }
         List<Text> list = stack.getTooltip(null, this.client.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.NORMAL);
         List<StringRenderable> list2 = Lists.newArrayList(list);
         if (SELECTED_TAB == ItemGroup.SEARCH.getIndex()) {
@@ -847,12 +864,12 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
             return this.slot.getStack();
         }
 
-        public boolean hasStack() {
-            return this.slot.hasStack();
-        }
-
         public void setStack(ItemStack stack) {
             this.slot.setStack(stack);
+        }
+
+        public boolean hasStack() {
+            return this.slot.hasStack();
         }
 
         public void markDirty() {
@@ -906,13 +923,13 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
 
         public void scrollItems(float position) {
             int i = (this.itemList.size() + 9 - 1) / 9 - 5;
-            int j = (int)((double)(position * (float)i) + 0.5D);
+            int j = (int) ((double) (position * (float) i) + 0.5D);
             if (j < 0) {
                 j = 0;
             }
 
-            for(int k = 0; k < 5; ++k) {
-                for(int l = 0; l < 9; ++l) {
+            for (int k = 0; k < 5; ++k) {
+                for (int l = 0; l < 9; ++l) {
                     int m = l + (k + j) * 9;
                     if (m >= 0 && m < this.itemList.size()) {
                         EditInventoryScreen.displayInv.setStack(l + k * 9, this.itemList.get(m));

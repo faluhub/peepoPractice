@@ -2,8 +2,8 @@ package me.falu.peepopractice.core.category;
 
 import com.google.gson.JsonObject;
 import me.falu.peepopractice.PeepoPractice;
-import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.core.category.utils.PracticeCategoryUtils;
+import me.falu.peepopractice.core.writer.PracticeWriter;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
@@ -17,57 +17,6 @@ public class CategoryPreference {
     private List<String> choices = new ArrayList<>();
     private String defaultChoice;
     private Identifier icon;
-
-    public String getId() {
-        return this.id;
-    }
-
-    public CategoryPreference setId(String id) {
-        this.id = id;
-        return this;
-    }
-
-    public String getLabel() {
-        return new TranslatableText("peepopractice.preferences." + this.id).getString();
-    }
-
-    public String getDescription() {
-        return new TranslatableText("peepopractice.preferences." + this.id + ".info").getString();
-    }
-
-    public List<String> getChoices() {
-        return this.choices;
-    }
-
-    public CategoryPreference setChoices(List<String> choices) {
-        this.choices = choices;
-        return this;
-    }
-
-    @SuppressWarnings("unused")
-    public CategoryPreference setChoices(String[] choices) {
-        this.choices.clear();
-        this.choices.addAll(List.of(choices));
-        return this;
-    }
-
-    public String getDefaultChoice() {
-        return this.defaultChoice;
-    }
-
-    public CategoryPreference setDefaultChoice(String defaultChoice) {
-        this.defaultChoice = defaultChoice;
-        return this;
-    }
-
-    public Identifier getIcon() {
-        return this.icon;
-    }
-
-    public CategoryPreference setIcon(Identifier icon) {
-        this.icon = icon;
-        return this;
-    }
 
     public static int getIndex(String value, List<String> choices) {
         int index = 0;
@@ -140,9 +89,13 @@ public class CategoryPreference {
         try {
             String value = categoryObject.get(id).getAsString();
             // This is for backwards compatibility. It's really scuffed but whatever.
-            if (def != null && !value.contains(".")) { return def; }
+            if (def != null && !value.contains(".")) {
+                return def;
+            }
             return value;
-        } catch (NullPointerException ignored) { return def; }
+        } catch (NullPointerException ignored) {
+            return def;
+        }
     }
 
     public static String getValue(PracticeCategory category, CategoryPreference categoryPreference) {
@@ -160,10 +113,14 @@ public class CategoryPreference {
                 setValue(category, id, categoryPreference.getDefaultChoice());
                 return categoryPreference.getDefaultChoice();
             }
-        } catch (NullPointerException ignored) {}
+        } catch (NullPointerException ignored) {
+        }
 
-        try { return categoryObject.get(id).getAsString(); }
-        catch (NullPointerException ignored) { return null; }
+        try {
+            return categoryObject.get(id).getAsString();
+        } catch (NullPointerException ignored) {
+            return null;
+        }
     }
 
     public static void setValue(PracticeCategory category, String id, String value) {
@@ -174,5 +131,56 @@ public class CategoryPreference {
         }
         categoryPreference.addProperty(id, value);
         PracticeWriter.PREFERENCES_WRITER.put(category.getId(), categoryPreference);
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public CategoryPreference setId(String id) {
+        this.id = id;
+        return this;
+    }
+
+    public String getLabel() {
+        return new TranslatableText("peepopractice.preferences." + this.id).getString();
+    }
+
+    public String getDescription() {
+        return new TranslatableText("peepopractice.preferences." + this.id + ".info").getString();
+    }
+
+    public List<String> getChoices() {
+        return this.choices;
+    }
+
+    public CategoryPreference setChoices(List<String> choices) {
+        this.choices = choices;
+        return this;
+    }
+
+    @SuppressWarnings("unused")
+    public CategoryPreference setChoices(String[] choices) {
+        this.choices.clear();
+        this.choices.addAll(List.of(choices));
+        return this;
+    }
+
+    public String getDefaultChoice() {
+        return this.defaultChoice;
+    }
+
+    public CategoryPreference setDefaultChoice(String defaultChoice) {
+        this.defaultChoice = defaultChoice;
+        return this;
+    }
+
+    public Identifier getIcon() {
+        return this.icon;
+    }
+
+    public CategoryPreference setIcon(Identifier icon) {
+        this.icon = icon;
+        return this;
     }
 }

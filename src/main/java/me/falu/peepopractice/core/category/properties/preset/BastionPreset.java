@@ -2,11 +2,11 @@ package me.falu.peepopractice.core.category.properties.preset;
 
 import me.falu.peepopractice.core.CustomPortalForcer;
 import me.falu.peepopractice.core.category.CategoryPreference;
-import me.falu.peepopractice.core.category.utils.PracticeCategoryUtils;
-import me.falu.peepopractice.core.exception.NotInitializedException;
 import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.core.category.PracticeTypes;
 import me.falu.peepopractice.core.category.properties.StructureProperties;
+import me.falu.peepopractice.core.category.utils.PracticeCategoryUtils;
+import me.falu.peepopractice.core.exception.NotInitializedException;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -48,7 +48,9 @@ public class BastionPreset {
                 if (type != null) {
                     return new Vec2f(type.angle, 0.0F);
                 }
-            } else { return new Vec2f(random.nextFloat(360.0F) - 180.0F, 0.0F); }
+            } else {
+                return new Vec2f(random.nextFloat(360.0F) - 180.0F, 0.0F);
+            }
         }
         throw new NotInitializedException();
     };
