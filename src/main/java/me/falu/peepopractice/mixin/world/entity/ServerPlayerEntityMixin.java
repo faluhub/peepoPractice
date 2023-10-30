@@ -41,9 +41,12 @@ import java.util.Random;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends LivingEntity {
-    @Shadow private int joinInvulnerabilityTicks;
-    @Unique private Long comparingTime;
-    @Unique private PracticeTypes.PaceTimerShowType showType;
+    @Shadow
+    private int joinInvulnerabilityTicks;
+    @Unique
+    private Long comparingTime;
+    @Unique
+    private PracticeTypes.PaceTimerShowType showType;
 
     protected ServerPlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
         super(entityType, world);

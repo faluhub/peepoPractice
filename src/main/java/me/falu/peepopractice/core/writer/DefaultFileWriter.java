@@ -18,7 +18,7 @@ public class DefaultFileWriter {
     public static final DefaultFileWriter INSTANCE = new DefaultFileWriter();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-    @SuppressWarnings({ "ResultOfMethodCallIgnored", "BlockingMethodInNonBlockingContext" })
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "BlockingMethodInNonBlockingContext"})
     public void writeDefaultFiles() {
         try {
             File folder = FabricLoader.getInstance().getConfigDir().resolve(PeepoPractice.MOD_NAME).toFile();

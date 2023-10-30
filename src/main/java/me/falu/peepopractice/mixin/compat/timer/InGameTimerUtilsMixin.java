@@ -12,7 +12,20 @@ import java.nio.file.Path;
 
 @Mixin(value = InGameTimerUtils.class, remap = false)
 public abstract class InGameTimerUtilsMixin {
-    @ModifyExpressionValue(method = "getTimerLogDir", at = @At(value = "INVOKE", target = "Ljava/nio/file/Path;resolve(Ljava/lang/String;)Ljava/nio/file/Path;", ordinal = 0), slice = @Slice(from = @At(value = "CONSTANT", args = "stringValue=saves")))
+    @ModifyExpressionValue(
+            method = "getTimerLogDir",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Ljava/nio/file/Path;resolve(Ljava/lang/String;)Ljava/nio/file/Path;",
+                    ordinal = 0
+            ),
+            slice = @Slice(
+                    from = @At(
+                            value = "CONSTANT",
+                            args = "stringValue=saves"
+                    )
+            )
+    )
     private static Path peepoPractice$customSavesDirectory(Path path) {
         if (!PeepoPractice.CATEGORY.equals(PracticeCategoriesAny.EMPTY) && PeepoPractice.PRACTICE_LEVEL_STORAGE != null) {
             return PeepoPractice.PRACTICE_LEVEL_STORAGE.getSavesDirectory();

@@ -15,8 +15,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ChestBlockEntity.class)
 public abstract class ChestBlockEntityMixin extends LootableContainerBlockEntityMixin {
-    @Unique private Identifier localLootTableId = this.lootTableId;
-    @Unique private boolean valid = false;
+    @Unique
+    private Identifier localLootTableId = this.lootTableId;
+    @Unique
+    private boolean valid = false;
 
     @Unique
     private InteractLootChestSplitEvent peepoPractice$getCorrespondingEvent(boolean close) {

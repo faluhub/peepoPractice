@@ -76,21 +76,57 @@ public class CategorySelectionScreen extends Screen {
         };
         this.children.add(this.categoryListWidget);
 
-        this.doneButton = this.addButton(new LimitlessButtonWidget(null, null, null, this.width / 2 - 155, this.height - 50, 150, 40, ScreenTexts.BACK, b -> {
-            if (this.client != null) {
-                if (this.doneButton.getMessage().getString().equals(ScreenTexts.BACK.getString())) {
-                    this.client.openScreen(this.parent);
-                } else {
-                    this.play();
-                }
-            }
-        }));
-        this.configureButton = this.addButton(new LimitlessButtonWidget(null, null, null, this.width / 2 - 155 + 160, this.height - 50, 150, 40, new TranslatableText("peepopractice.button.global_config"), b -> this.openConfig()));
-        this.addButton(new LimitlessButtonWidget(null, null, null, 5, 5, 40, 20, new TranslatableText(this.selectionType.title), b -> {
-            this.selectionType = SelectionType.opposite(this.selectionType);
-            PeepoPractice.LAST_SELECTION_TYPE = this.selectionType;
-            this.init();
-        }));
+        this.doneButton = this.addButton(
+                new LimitlessButtonWidget(
+                        null,
+                        null,
+                        null,
+                        this.width / 2 - 155,
+                        this.height - 50,
+                        150,
+                        40,
+                        ScreenTexts.BACK,
+                        b -> {
+                            if (this.client != null) {
+                                if (this.doneButton.getMessage().getString().equals(ScreenTexts.BACK.getString())) {
+                                    this.client.openScreen(this.parent);
+                                } else {
+                                    this.play();
+                                }
+                            }
+                        }
+                )
+        );
+        this.configureButton = this.addButton(
+                new LimitlessButtonWidget(
+                        null,
+                        null,
+                        null,
+                        this.width / 2 - 155 + 160,
+                        this.height - 50,
+                        150,
+                        40,
+                        new TranslatableText("peepopractice.button.global_config"),
+                        b -> this.openConfig()
+                )
+        );
+        this.addButton(
+                new LimitlessButtonWidget(
+                        null,
+                        null,
+                        null,
+                        5,
+                        5,
+                        40,
+                        20,
+                        new TranslatableText(this.selectionType.title),
+                        b -> {
+                            this.selectionType = SelectionType.opposite(this.selectionType);
+                            PeepoPractice.LAST_SELECTION_TYPE = this.selectionType;
+                            this.init();
+                        }
+                )
+        );
     }
 
     @Override

@@ -30,7 +30,7 @@ public class PracticeWriter {
         this.update();
     }
 
-    @SuppressWarnings({ "ResultOfMethodCallIgnored", "BlockingMethodInNonBlockingContext" })
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "BlockingMethodInNonBlockingContext"})
     private File create(String fileName) {
         File folder = FabricLoader.getInstance().getConfigDir().resolve(PeepoPractice.MOD_NAME).toFile();
         if (!folder.exists()) {

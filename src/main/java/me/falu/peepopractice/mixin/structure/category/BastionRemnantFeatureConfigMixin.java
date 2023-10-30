@@ -16,7 +16,9 @@ import java.util.List;
 
 @Mixin(BastionRemnantFeatureConfig.class)
 public abstract class BastionRemnantFeatureConfigMixin {
-    @Shadow @Final private List<StructurePoolFeatureConfig> possibleConfigs;
+    @Shadow
+    @Final
+    private List<StructurePoolFeatureConfig> possibleConfigs;
 
     @ModifyReturnValue(method = "getRandom", at = @At("RETURN"))
     private StructurePoolFeatureConfig peepoPractice$bastionType(StructurePoolFeatureConfig config) {

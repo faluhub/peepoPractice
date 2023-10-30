@@ -12,27 +12,32 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 public class SettingsTypeSelectionScreen extends Screen {
-    private final ButtonChoice[] buttons = new ButtonChoice[] { new ButtonChoice("inventory", new Identifier("textures/item/chest_minecart.png"), category -> EditInventoryScreen.create(this, category)), new ButtonChoice("preferences", new Identifier("textures/item/heart_of_the_sea.png"), category -> new CategoryPreferencesScreen(this, category), new ButtonDisabledInfo() {
-        @Override
-        public boolean isDisabled(PracticeCategory category) {
-            return !category.hasPreferences();
-        }
+    private final ButtonChoice[] buttons = new ButtonChoice[]{
+            new ButtonChoice("inventory", new Identifier("textures/item/chest_minecart.png"), category -> EditInventoryScreen.create(this, category)),
+            new ButtonChoice("preferences", new Identifier("textures/item/heart_of_the_sea.png"), category -> new CategoryPreferencesScreen(this, category), new ButtonDisabledInfo() {
+                @Override
+                public boolean isDisabled(PracticeCategory category) {
+                    return !category.hasPreferences();
+                }
 
-        @Override
-        public String getReason() {
-            return "preferences";
-        }
-    }), new ButtonChoice("standard_settings", new Identifier(PeepoPractice.MOD_ID, "textures/gear.png"), category -> new StandardSettingsScreen(this, category)), new ButtonChoice("split", new Identifier("textures/item/clock_00.png"), category -> new SplitSettingsScreen(this, category), new ButtonDisabledInfo() {
-        @Override
-        public boolean isDisabled(PracticeCategory category) {
-            return !category.hasSplitEvent();
-        }
+                @Override
+                public String getReason() {
+                    return "preferences";
+                }
+            }),
+            new ButtonChoice("standard_settings", new Identifier(PeepoPractice.MOD_ID, "textures/gear.png"), category -> new StandardSettingsScreen(this, category)),
+            new ButtonChoice("split", new Identifier("textures/item/clock_00.png"), category -> new SplitSettingsScreen(this, category), new ButtonDisabledInfo() {
+                @Override
+                public boolean isDisabled(PracticeCategory category) {
+                    return !category.hasSplitEvent();
+                }
 
-        @Override
-        public String getReason() {
-            return "split";
-        }
-    }) };
+                @Override
+                public String getReason() {
+                    return "split";
+                }
+            })
+    };
     private final Screen parent;
     private final PracticeCategory category;
 

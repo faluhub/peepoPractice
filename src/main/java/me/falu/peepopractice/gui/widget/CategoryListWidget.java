@@ -26,7 +26,14 @@ public abstract class CategoryListWidget extends AlwaysSelectedEntryListWidget<C
     private final boolean hideDecorations;
 
     public CategoryListWidget(Screen screen, MinecraftClient client, boolean hideDecorations, boolean hideUnconfigured, CategorySelectionScreen.SelectionType type) {
-        super(client, screen.width, screen.height, 32, screen.height - 64 + 4, 18);
+        super(
+                client,
+                screen.width,
+                screen.height,
+                32,
+                screen.height - 64 + 4,
+                18
+        );
         this.screen = screen;
         this.hideDecorations = hideDecorations;
 
@@ -84,7 +91,7 @@ public abstract class CategoryListWidget extends AlwaysSelectedEntryListWidget<C
             int p;
             int k = this.getRowTop(j);
             int l = this.getRowBottom(j);
-            if (l < this.top || k > this.bottom) { continue; }
+            if (l < this.top || k > this.bottom) continue;
             int m = y + j * this.itemHeight + this.headerHeight;
             int n = this.itemHeight - 4;
             EntryListWidget.Entry<?> entry = this.getEntry(j);
@@ -174,10 +181,25 @@ public abstract class CategoryListWidget extends AlwaysSelectedEntryListWidget<C
             Text label = new LiteralText(this.category.getName(!showStats && !CategoryListWidget.this.hideDecorations));
             if (showStats && !CategoryListWidget.this.hideDecorations) {
                 SplitEvent event = this.category.getSplitEvent();
-                label = label.copy().append(Formatting.GRAY + " (" + Formatting.WHITE + event.getAttempts() + Formatting.GRAY + "/" + Formatting.GREEN + event.getCompletionCount() + Formatting.GRAY + "/" + Formatting.RED + event.getFailCount() + Formatting.GRAY + ")");
+                label = label.copy().append(
+                        Formatting.GRAY + " (" +
+                                Formatting.WHITE + event.getAttempts() +
+                                Formatting.GRAY + "/" +
+                                Formatting.GREEN + event.getCompletionCount() +
+                                Formatting.GRAY + "/" +
+                                Formatting.RED + event.getFailCount() +
+                                Formatting.GRAY + ")"
+                );
             }
 
-            CategoryListWidget.this.client.textRenderer.drawWithShadow(matrices, label.getString(), (float) (CategoryListWidget.this.screen.width / 2 - CategoryListWidget.this.client.textRenderer.getWidth(label.getString()) / 2), y + 1, 16777215, true);
+            CategoryListWidget.this.client.textRenderer.drawWithShadow(
+                    matrices,
+                    label.getString(),
+                    (float) (CategoryListWidget.this.screen.width / 2 - CategoryListWidget.this.client.textRenderer.getWidth(label.getString()) / 2),
+                    y + 1,
+                    16777215,
+                    true
+            );
         }
 
         public boolean mouseClicked(double mouseX, double mouseY, int button) {

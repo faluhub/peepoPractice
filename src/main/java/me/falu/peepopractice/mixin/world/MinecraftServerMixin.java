@@ -59,15 +59,31 @@ import java.util.concurrent.Executor;
 
 @Mixin(MinecraftServer.class)
 public abstract class MinecraftServerMixin implements GenerationShutdownOwner {
-    @Shadow @Final private static Logger LOGGER;
-    @Shadow @Final protected SaveProperties saveProperties;
-    @Shadow @Final protected RegistryTracker.Modifiable dimensionTracker;
-    @Shadow @Final protected LevelStorage.Session session;
-    @Shadow @Final private Executor workerExecutor;
-    @Shadow @Final private Map<RegistryKey<World>, ServerWorld> worlds;
-    @Shadow private @Nullable DataCommandStorage dataCommandStorage;
-    @Shadow @Final private Snooper snooper;
-    @Shadow private ServerResourceManager serverResourceManager;
+    @Shadow
+    @Final
+    private static Logger LOGGER;
+    @Shadow
+    @Final
+    protected SaveProperties saveProperties;
+    @Shadow
+    @Final
+    protected RegistryTracker.Modifiable dimensionTracker;
+    @Shadow
+    @Final
+    protected LevelStorage.Session session;
+    @Shadow
+    @Final
+    private Executor workerExecutor;
+    @Shadow
+    @Final
+    private Map<RegistryKey<World>, ServerWorld> worlds;
+    @Shadow
+    private @Nullable DataCommandStorage dataCommandStorage;
+    @Shadow
+    @Final
+    private Snooper snooper;
+    @Shadow
+    private ServerResourceManager serverResourceManager;
 
     @SuppressWarnings("SameParameterValue")
     @Shadow
@@ -203,9 +219,8 @@ public abstract class MinecraftServerMixin implements GenerationShutdownOwner {
         }
         for (Map.Entry<RegistryKey<DimensionOptions>, DimensionOptions> entry : simpleRegistry.getEntries()) {
             RegistryKey<DimensionOptions> registryKey2 = entry.getKey();
-            if (registryKey2.getValue() == PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey().getValue()) {
+            if (registryKey2.getValue() == PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey().getValue())
                 continue;
-            }
             RegistryKey<World> registryKey3 = RegistryKey.of(Registry.DIMENSION, registryKey2.getValue());
             DimensionType dimensionType2 = entry.getValue().getDimensionType();
             RegistryKey<DimensionType> registryKey4 = this.dimensionTracker.getDimensionTypeRegistry().getKey(dimensionType2).orElseThrow(() -> new IllegalStateException("Unregistered dimension type: " + dimensionType2));

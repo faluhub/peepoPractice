@@ -30,15 +30,35 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(GameMenuScreen.class)
 public abstract class GameMenuScreenMixin extends ScreenMixin {
-    @Unique private final Text replayText = new TranslatableText("peepopractice.button.replay_split");
-    @Unique private final Text configureText = new TranslatableText("peepopractice.button.configure_split");
-    @Unique private ButtonWidget quitButton;
-    @Unique private boolean renderTitle = false;
-    @Unique private AbstractButtonWidget replayButton;
-    @Unique private AbstractButtonWidget nextButton;
-    @Unique private boolean hasNextCategory;
+    @Unique
+    private final Text replayText = new TranslatableText("peepopractice.button.replay_split");
+    @Unique
+    private final Text configureText = new TranslatableText("peepopractice.button.configure_split");
+    @Unique
+    private ButtonWidget quitButton;
+    @Unique
+    private boolean renderTitle = false;
+    @Unique
+    private AbstractButtonWidget replayButton;
+    @Unique
+    private AbstractButtonWidget nextButton;
+    @Unique
+    private boolean hasNextCategory;
 
-    @WrapOperation(method = "initWidgets", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/GameMenuScreen;addButton(Lnet/minecraft/client/gui/widget/AbstractButtonWidget;)Lnet/minecraft/client/gui/widget/AbstractButtonWidget;", ordinal = 0), slice = @Slice(from = @At(value = "CONSTANT", args = "stringValue=menu.returnToMenu")))
+    @WrapOperation(
+            method = "initWidgets",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/screen/GameMenuScreen;addButton(Lnet/minecraft/client/gui/widget/AbstractButtonWidget;)Lnet/minecraft/client/gui/widget/AbstractButtonWidget;",
+                    ordinal = 0
+            ),
+            slice = @Slice(
+                    from = @At(
+                            value = "CONSTANT",
+                            args = "stringValue=menu.returnToMenu"
+                    )
+            )
+    )
     private AbstractButtonWidget peepoPractice$customButtons(GameMenuScreen screen, AbstractButtonWidget abstractButtonWidget, Operation<AbstractButtonWidget> original) {
         assert this.client != null;
         this.renderTitle = !PeepoPractice.CATEGORY.equals(PracticeCategoriesAny.EMPTY);
@@ -49,32 +69,59 @@ public abstract class GameMenuScreenMixin extends ScreenMixin {
 
         int i = -16;
 
-        this.quitButton = new ButtonWidget(this.width / 2 - 102, this.height / 4 + 120 + i, 98, 20, new TranslatableText("peepopractice.button.short_save_quit"), b -> {
-            b.active = false;
-            PracticeCategoryUtils.quit(true);
-        });
+        this.quitButton = new ButtonWidget(
+                this.width / 2 - 102,
+                this.height / 4 + 120 + i,
+                98,
+                20,
+                new TranslatableText("peepopractice.button.short_save_quit"),
+                b -> {
+                    b.active = false;
+                    PracticeCategoryUtils.quit(true);
+                }
+        );
 
         if (!PeepoPractice.HAS_FAST_RESET) {
             original.call(screen, this.quitButton);
         }
 
-        this.replayButton = original.call(screen, new ButtonWidget(this.width / 2 + 4, this.height / 4 + 120 + i, 98, 20, this.replayText, b -> {
-            b.active = false;
-            if (b.getMessage().equals(this.replayText)) {
-                this.client.openScreen(new CreateWorldScreen(null));
-            } else {
-                this.client.openScreen(new SettingsTypeSelectionScreen((Screen) (Object) this, PeepoPractice.CATEGORY));
-            }
-        }));
-        this.nextButton = original.call(screen, new ButtonWidget(this.width / 2 + 4, this.height / 4 + 144 + i, 98, 20, new TranslatableText("peepopractice.button.next_split"), b -> {
-            b.active = false;
-            PracticeCategory nextCategory = PeepoPractice.getNextCategory();
-            if (nextCategory != null && (FabricLoader.getInstance().isDevelopmentEnvironment() || InGameTimer.getInstance().isCompleted())) {
-                InventoryUtils.saveCurrentPlayerInventory();
-                PeepoPractice.CATEGORY = nextCategory;
-                this.client.openScreen(new CreateWorldScreen(null));
-            }
-        }));
+        this.replayButton = original.call(
+                screen,
+                new ButtonWidget(
+                        this.width / 2 + 4,
+                        this.height / 4 + 120 + i,
+                        98,
+                        20,
+                        this.replayText,
+                        b -> {
+                            b.active = false;
+                            if (b.getMessage().equals(this.replayText)) {
+                                this.client.openScreen(new CreateWorldScreen(null));
+                            } else {
+                                this.client.openScreen(new SettingsTypeSelectionScreen((Screen) (Object) this, PeepoPractice.CATEGORY));
+                            }
+                        }
+                )
+        );
+        this.nextButton = original.call(
+                screen,
+                new ButtonWidget(
+                        this.width / 2 + 4,
+                        this.height / 4 + 144 + i,
+                        98,
+                        20,
+                        new TranslatableText("peepopractice.button.next_split"),
+                        b -> {
+                            b.active = false;
+                            PracticeCategory nextCategory = PeepoPractice.getNextCategory();
+                            if (nextCategory != null && (FabricLoader.getInstance().isDevelopmentEnvironment() || InGameTimer.getInstance().isCompleted())) {
+                                InventoryUtils.saveCurrentPlayerInventory();
+                                PeepoPractice.CATEGORY = nextCategory;
+                                this.client.openScreen(new CreateWorldScreen(null));
+                            }
+                        }
+                )
+        );
         this.nextButton.visible = FabricLoader.getInstance().isDevelopmentEnvironment() || PeepoPractice.CATEGORY.hasCustomValue("isCompletion") && (Boolean) PeepoPractice.CATEGORY.getCustomValue("isCompletion");
         this.hasNextCategory = PeepoPractice.hasNextCategory();
         this.nextButton.active = this.hasNextCategory;

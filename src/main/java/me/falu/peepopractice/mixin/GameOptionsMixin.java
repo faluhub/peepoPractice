@@ -15,7 +15,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GameOptions.class)
 public abstract class GameOptionsMixin {
-    @Mutable @Shadow @Final public KeyBinding[] keysAll;
+    @Mutable
+    @Shadow
+    @Final
+    public KeyBinding[] keysAll;
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void peepoPractice$setRenderDistanceMax(CallbackInfo ci) {

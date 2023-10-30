@@ -1,3 +1,4 @@
 package me.falu.peepopractice.core.exception;
 
-public class NotInitializedException extends Exception { }
+public class NotInitializedException extends Exception {
+}

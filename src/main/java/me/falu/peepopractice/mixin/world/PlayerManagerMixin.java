@@ -60,26 +60,39 @@ public abstract class PlayerManagerMixin {
             }
             if (PeepoPractice.CATEGORY.hasPlayerProperties()) {
                 for (String command : PeepoPractice.CATEGORY.getPlayerProperties().getCommands()) {
-                    this.getServer().getCommandManager().execute(new ServerCommandSource(new CommandOutput() {
-                        @Override
-                        public void sendSystemMessage(Text message, UUID senderUuid) {
-                        }
+                    this.getServer().getCommandManager().execute(
+                            new ServerCommandSource(
+                                    new CommandOutput() {
+                                        @Override
+                                        public void sendSystemMessage(Text message, UUID senderUuid) {
+                                        }
 
-                        @Override
-                        public boolean shouldReceiveFeedback() {
-                            return false;
-                        }
+                                        @Override
+                                        public boolean shouldReceiveFeedback() {
+                                            return false;
+                                        }
 
-                        @Override
-                        public boolean shouldTrackOutput() {
-                            return false;
-                        }
+                                        @Override
+                                        public boolean shouldTrackOutput() {
+                                            return false;
+                                        }
 
-                        @Override
-                        public boolean shouldBroadcastConsoleToOps() {
-                            return false;
-                        }
-                    }, player.getPos(), player.getRotationClient(), player.getServerWorld(), player.getPermissionLevel(), player.getName().getString(), player.getDisplayName(), this.getServer(), player), command);
+                                        @Override
+                                        public boolean shouldBroadcastConsoleToOps() {
+                                            return false;
+                                        }
+                                    },
+                                    player.getPos(),
+                                    player.getRotationClient(),
+                                    player.getServerWorld(),
+                                    player.getPermissionLevel(),
+                                    player.getName().getString(),
+                                    player.getDisplayName(),
+                                    this.getServer(),
+                                    player
+                            ),
+                            command
+                    );
                 }
                 for (PlayerProperties.PotionEffect potionEffect : PeepoPractice.CATEGORY.getPlayerProperties().getPotionEffects()) {
                     if (potionEffect.hasEffect()) {
