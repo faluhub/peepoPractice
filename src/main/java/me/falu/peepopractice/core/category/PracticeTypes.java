@@ -239,8 +239,4 @@ public class PracticeTypes {
             return null;
         }
     }
-
-    public enum TowerHeightType {
-
-    }
 }
