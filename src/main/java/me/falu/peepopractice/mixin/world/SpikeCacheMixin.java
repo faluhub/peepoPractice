@@ -15,14 +15,15 @@ import java.util.Random;
 public abstract class SpikeCacheMixin {
     @WrapOperation(method = "load(Ljava/lang/Long;)Ljava/util/List;", at = @At(value = "INVOKE", target = "Ljava/util/Collections;shuffle(Ljava/util/List;Ljava/util/Random;)V"))
     private void peepoPractice$modifyTowerOrder(List<Integer> towers, Random random, Operation<Void> original) {
-        PracticeTypes.StartNodeType configValue = PracticeTypes.StartNodeType.fromLabel(CategoryPreference.getValue("start_node"));
-        if (configValue != null) {
+        // TODO: add heights
+        PracticeTypes.StartNodeType nodeValue = PracticeTypes.StartNodeType.fromLabel(CategoryPreference.getValue("start_node"));
+        if (nodeValue != null) {
             original.call(towers, random);
-            PracticeTypes.StartNodeType dragonType = configValue.equals(PracticeTypes.StartNodeType.RANDOM) ? this.getDragonType(towers) : configValue;
-            if (dragonType != this.getDragonType(towers)){
+            PracticeTypes.StartNodeType dragonType = nodeValue.equals(PracticeTypes.StartNodeType.RANDOM) ? this.getDragonType(towers) : nodeValue;
+            if (dragonType != this.getDragonType(towers)) {
                 int temp = towers.get(0);
-                towers.set(0,towers.get(5));
-                towers.set(5,temp);
+                towers.set(0, towers.get(5));
+                towers.set(5, temp);
             }
         }
     }
