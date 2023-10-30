@@ -71,8 +71,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
     private boolean scrolling;
     private TextFieldWidget searchBox;
     private ImmutableList<Slot> slots;
-    @Nullable
-    private Slot deleteItemSlot;
+    @Nullable private Slot deleteItemSlot;
     private boolean ignoreTypedCharacter;
     private boolean lastClickOutsideBounds;
 
@@ -249,15 +248,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         boolean bl = actionType == SlotActionType.QUICK_MOVE;
         actionType = invSlot == -999 && actionType == SlotActionType.PICKUP ? SlotActionType.THROW : actionType;
 
-        if (
-                slot != null
-                        && (slot.inventory == this.playerInventory || SELECTED_TAB == ItemGroup.INVENTORY.getIndex())
-                        && actionType == SlotActionType.PICKUP
-                        && slot.getStack() != null
-                        && !slot.getStack().isEmpty()
-                        && PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack() != null
-                        && PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack().getItem().equals(Items.ENCHANTED_BOOK)
-        ) {
+        if (slot != null && (slot.inventory == this.playerInventory || SELECTED_TAB == ItemGroup.INVENTORY.getIndex()) && actionType == SlotActionType.PICKUP && slot.getStack() != null && !slot.getStack().isEmpty() && PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack() != null && PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack().getItem().equals(Items.ENCHANTED_BOOK)) {
             ListTag enchantments = EnchantedBookItem.getEnchantmentTag(PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack());
             AtomicBoolean shouldStop = new AtomicBoolean(false);
             enchantments.forEach(rawTag -> {
@@ -295,16 +286,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
                 PeepoPractice.PLAYERLESS_INVENTORY.setCursorStack(ItemStack.EMPTY);
                 return;
             }
-        } else if (
-                this.client != null
-                        && slot != null
-                        && (slot.inventory == this.playerInventory || SELECTED_TAB == ItemGroup.INVENTORY.getIndex())
-                        && actionType == SlotActionType.PICKUP
-                        && slot.getStack() != null
-                        && !slot.getStack().isEmpty()
-                        && slot.getStack().getTranslationKey().contains("shulker_box")
-                        && Screen.hasControlDown()
-        ) {
+        } else if (this.client != null && slot != null && (slot.inventory == this.playerInventory || SELECTED_TAB == ItemGroup.INVENTORY.getIndex()) && actionType == SlotActionType.PICKUP && slot.getStack() != null && !slot.getStack().isEmpty() && slot.getStack().getTranslationKey().contains("shulker_box") && Screen.hasControlDown()) {
             this.client.openScreen(new EditShulkerBoxScreen(this, slot, this.playerInventory, slot.getStack().getName()));
             return;
         }

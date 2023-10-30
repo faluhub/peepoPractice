@@ -24,8 +24,8 @@ public class PracticeCategoryUtils {
     public static final String ENABLED = "peepopractice.text.enabled";
     public static final String DISABLED = "peepopractice.text.disabled";
     public static final String RANDOM = "peepopractice.text.random";
-    public static final String[] BOOLEAN_LIST = new String[]{ENABLED, DISABLED};
-    public static final String[] ALL_LIST = new String[]{ENABLED, DISABLED, RANDOM};
+    public static final String[] BOOLEAN_LIST = new String[] { ENABLED, DISABLED };
+    public static final String[] ALL_LIST = new String[] { ENABLED, DISABLED, RANDOM };
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean isRandom(String string) {
@@ -80,8 +80,8 @@ public class PracticeCategoryUtils {
             for (int k = i + 1; k >= 0; --k) {
                 mutable.set(x, k, z);
                 BlockState blockState2 = world.getBlockState(mutable);
-                if (!blockState2.getFluidState().isEmpty()) break;
-                if (!blockState2.equals(blockState)) continue;
+                if (!blockState2.getFluidState().isEmpty()) { break; }
+                if (!blockState2.equals(blockState)) { continue; }
                 return mutable.up().toImmutable().getY();
             }
         } else {

@@ -36,19 +36,14 @@ public abstract class PlayerlessHandledScreen extends Screen {
     private final Map<Slot, List<ButtonWidget>> slotToButtonsMap;
     protected int backgroundWidth = 176;
     protected int backgroundHeight = 166;
-    @Nullable
-    protected Slot focusedSlot;
+    @Nullable protected Slot focusedSlot;
     protected int x;
     protected int y;
     protected boolean isCursorDragging;
-    @Nullable
-    private Slot touchDragSlotStart;
-    @Nullable
-    private Slot touchDropOriginSlot;
-    @Nullable
-    private Slot touchHoveredSlot;
-    @Nullable
-    private Slot lastClickedSlot;
+    @Nullable private Slot touchDragSlotStart;
+    @Nullable private Slot touchDropOriginSlot;
+    @Nullable private Slot touchHoveredSlot;
+    @Nullable private Slot lastClickedSlot;
     private boolean touchIsRightClickDrag;
     private ItemStack touchDragStack;
     private int touchDropX;
@@ -112,90 +107,47 @@ public abstract class PlayerlessHandledScreen extends Screen {
 
             if (this.isPointOverSlot(slot, mouseX, mouseY) && slot.doDrawHoveringEffect() && this.client != null) {
                 this.focusedSlot = slot;
-                if (
-                        this.focusedSlot.inventory instanceof PlayerlessInventory
-                                || this.client.currentScreen instanceof EditShulkerBoxScreen
-                                || (
-                                this.client.currentScreen instanceof EditInventoryScreen
-                                        && EditInventoryScreen.getSelectedTab() == ItemGroup.INVENTORY.getIndex()
-                        )
-                ) {
+                if (this.focusedSlot.inventory instanceof PlayerlessInventory || this.client.currentScreen instanceof EditShulkerBoxScreen || (this.client.currentScreen instanceof EditInventoryScreen && EditInventoryScreen.getSelectedTab() == ItemGroup.INVENTORY.getIndex())) {
                     if (!this.slotToButtonsMap.containsKey(this.focusedSlot) && !this.focusedSlot.getStack().isEmpty()) {
                         List<ButtonWidget> buttons = new ArrayList<>();
-                        buttons.add(
-                                new LimitlessButtonWidget(
-                                        this.x + this.focusedSlot.x,
-                                        this.y + this.focusedSlot.y,
-                                        4,
-                                        4,
-                                        new LiteralText("+"),
-                                        button -> {
-                                            ItemStack stack = this.focusedSlot.getStack();
-                                            CompoundTag tag = stack.getTag() != null ? stack.getTag() : new CompoundTag();
-                                            int min = tag.getInt("MinCount");
-                                            int max = Math.min(tag.getInt("MaxCount"), stack.getMaxCount());
-                                            if (min + 1 <= max) {
-                                                tag.putInt("MinCount", min + 1);
-                                                stack.setTag(tag);
-                                            }
-                                        }
-                                )
-                        );
-                        buttons.add(
-                                new LimitlessButtonWidget(
-                                        this.x + this.focusedSlot.x,
-                                        this.y + this.focusedSlot.y + 6,
-                                        4,
-                                        4,
-                                        new LiteralText("-"),
-                                        button -> {
-                                            ItemStack stack = this.focusedSlot.getStack();
-                                            CompoundTag tag = stack.getTag() != null ? stack.getTag() : new CompoundTag();
-                                            int min = tag.getInt("MinCount");
-                                            if (min - 1 >= 0) {
-                                                tag.putInt("MinCount", min - 1);
-                                                stack.setTag(tag);
-                                            }
-                                        }
-                                )
-                        );
-                        buttons.add(
-                                new LimitlessButtonWidget(
-                                        this.x + this.focusedSlot.x + 16 - 4,
-                                        this.y + this.focusedSlot.y,
-                                        4,
-                                        4,
-                                        new LiteralText("+"),
-                                        button -> {
-                                            ItemStack stack = this.focusedSlot.getStack();
-                                            CompoundTag tag = stack.getTag() != null ? stack.getTag() : new CompoundTag();
-                                            int max = tag.getInt("MaxCount");
-                                            if (max + 1 <= stack.getMaxCount()) {
-                                                tag.putInt("MaxCount", max + 1);
-                                                stack.setTag(tag);
-                                            }
-                                        }
-                                )
-                        );
-                        buttons.add(
-                                new LimitlessButtonWidget(
-                                        this.x + this.focusedSlot.x + 16 - 4,
-                                        this.y + this.focusedSlot.y + 6,
-                                        4,
-                                        4,
-                                        new LiteralText("-"),
-                                        button -> {
-                                            ItemStack stack = this.focusedSlot.getStack();
-                                            CompoundTag tag = stack.getTag() != null ? stack.getTag() : new CompoundTag();
-                                            int min = tag.getInt("MinCount");
-                                            int max = tag.getInt("MaxCount");
-                                            if (max - 1 >= min) {
-                                                tag.putInt("MaxCount", max - 1);
-                                                stack.setTag(tag);
-                                            }
-                                        }
-                                )
-                        );
+                        buttons.add(new LimitlessButtonWidget(this.x + this.focusedSlot.x, this.y + this.focusedSlot.y, 4, 4, new LiteralText("+"), button -> {
+                            ItemStack stack = this.focusedSlot.getStack();
+                            CompoundTag tag = stack.getTag() != null ? stack.getTag() : new CompoundTag();
+                            int min = tag.getInt("MinCount");
+                            int max = Math.min(tag.getInt("MaxCount"), stack.getMaxCount());
+                            if (min + 1 <= max) {
+                                tag.putInt("MinCount", min + 1);
+                                stack.setTag(tag);
+                            }
+                        }));
+                        buttons.add(new LimitlessButtonWidget(this.x + this.focusedSlot.x, this.y + this.focusedSlot.y + 6, 4, 4, new LiteralText("-"), button -> {
+                            ItemStack stack = this.focusedSlot.getStack();
+                            CompoundTag tag = stack.getTag() != null ? stack.getTag() : new CompoundTag();
+                            int min = tag.getInt("MinCount");
+                            if (min - 1 >= 0) {
+                                tag.putInt("MinCount", min - 1);
+                                stack.setTag(tag);
+                            }
+                        }));
+                        buttons.add(new LimitlessButtonWidget(this.x + this.focusedSlot.x + 16 - 4, this.y + this.focusedSlot.y, 4, 4, new LiteralText("+"), button -> {
+                            ItemStack stack = this.focusedSlot.getStack();
+                            CompoundTag tag = stack.getTag() != null ? stack.getTag() : new CompoundTag();
+                            int max = tag.getInt("MaxCount");
+                            if (max + 1 <= stack.getMaxCount()) {
+                                tag.putInt("MaxCount", max + 1);
+                                stack.setTag(tag);
+                            }
+                        }));
+                        buttons.add(new LimitlessButtonWidget(this.x + this.focusedSlot.x + 16 - 4, this.y + this.focusedSlot.y + 6, 4, 4, new LiteralText("-"), button -> {
+                            ItemStack stack = this.focusedSlot.getStack();
+                            CompoundTag tag = stack.getTag() != null ? stack.getTag() : new CompoundTag();
+                            int min = tag.getInt("MinCount");
+                            int max = tag.getInt("MaxCount");
+                            if (max - 1 >= min) {
+                                tag.putInt("MaxCount", max - 1);
+                                stack.setTag(tag);
+                            }
+                        }));
                         this.slotToButtonsMap.put(this.focusedSlot, buttons);
                         this.children.addAll(buttons);
                     }
@@ -557,8 +509,9 @@ public abstract class PlayerlessHandledScreen extends Screen {
             if (hasShiftDown()) {
                 if (!this.quickMovingStack.isEmpty()) {
                     for (Slot slot2 : this.handler.slots) {
-                        if (slot2 == null || !slot2.hasStack() || slot2.inventory != slot.inventory || !ScreenHandler.canInsertItemIntoSlot(slot2, this.quickMovingStack, true))
+                        if (slot2 == null || !slot2.hasStack() || slot2.inventory != slot.inventory || !ScreenHandler.canInsertItemIntoSlot(slot2, this.quickMovingStack, true)) {
                             continue;
+                        }
                         this.onMouseClick(slot2, slot2.id, button, SlotActionType.QUICK_MOVE);
                     }
                 }

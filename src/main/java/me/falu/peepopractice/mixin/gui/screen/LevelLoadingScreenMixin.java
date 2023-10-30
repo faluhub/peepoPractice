@@ -35,25 +35,16 @@ public abstract class LevelLoadingScreenMixin extends Screen {
     @Override
     protected void init() {
         if (!PeepoPractice.CATEGORY.equals(PracticeCategoriesAny.EMPTY)) {
-            this.addButton(
-                    new ButtonWidget(
-                            this.width / 2 - 60,
-                            this.height / 2 - 80,
-                            120,
-                            20,
-                            ScreenTexts.CANCEL,
-                            button -> {
-                                button.active = false;
-                                if (this.client != null) {
-                                    if (this.client.getServer() != null) {
-                                        ((GenerationShutdownOwner) this.client.getServer()).peepoPractice$shutdown();
-                                        this.client.disconnect();
-                                        this.client.openScreen(new CategorySelectionScreen(null));
-                                    }
-                                }
-                            }
-                    )
-            );
+            this.addButton(new ButtonWidget(this.width / 2 - 60, this.height / 2 - 80, 120, 20, ScreenTexts.CANCEL, button -> {
+                button.active = false;
+                if (this.client != null) {
+                    if (this.client.getServer() != null) {
+                        ((GenerationShutdownOwner) this.client.getServer()).peepoPractice$shutdown();
+                        this.client.disconnect();
+                        this.client.openScreen(new CategorySelectionScreen(null));
+                    }
+                }
+            }));
         }
     }
 

@@ -16,18 +16,7 @@ import net.minecraft.util.Identifier;
 public class SplitSettingsScreen extends Screen {
     private final Screen parent;
     private final PracticeCategory category;
-    private final CategoryPreference[] preferences = new CategoryPreference[]{
-            new CategoryPreference()
-                    .setId("compare_type")
-                    .setChoices(PracticeTypes.CompareType.all())
-                    .setDefaultChoice(PracticeTypes.CompareType.PB.getLabel())
-                    .setIcon(new Identifier("textures/item/clock_00.png")),
-            new CategoryPreference()
-                    .setId("pace_timer_show_type")
-                    .setChoices(PracticeTypes.PaceTimerShowType.all())
-                    .setDefaultChoice(PracticeTypes.PaceTimerShowType.ALWAYS.getLabel())
-                    .setIcon(new Identifier("textures/mob_effect/blindness.png"))
-    };
+    private final CategoryPreference[] preferences = new CategoryPreference[] { new CategoryPreference().setId("compare_type").setChoices(PracticeTypes.CompareType.all()).setDefaultChoice(PracticeTypes.CompareType.PB.getLabel()).setIcon(new Identifier("textures/item/clock_00.png")), new CategoryPreference().setId("pace_timer_show_type").setChoices(PracticeTypes.PaceTimerShowType.all()).setDefaultChoice(PracticeTypes.PaceTimerShowType.ALWAYS.getLabel()).setIcon(new Identifier("textures/mob_effect/blindness.png")) };
 
     public SplitSettingsScreen(Screen parent, PracticeCategory category) {
         super(new TranslatableText("peepopractice.title.split_settings", category.getName(false)));

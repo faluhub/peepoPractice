@@ -14,9 +14,7 @@ import java.io.File;
 
 @Mixin(ThreadedAnvilChunkStorage.class)
 public abstract class ThreadedAnvilChunkStorageMixin extends VersionedChunkStorage implements GenerationShutdownOwner {
-    @Shadow
-    @Final
-    private ChunkTaskPrioritySystem chunkTaskPrioritySystem;
+    @Shadow @Final private ChunkTaskPrioritySystem chunkTaskPrioritySystem;
 
     public ThreadedAnvilChunkStorageMixin(File file, DataFixer dataFixer, boolean bl) {
         super(file, dataFixer, bl);

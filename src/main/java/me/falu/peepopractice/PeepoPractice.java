@@ -57,10 +57,7 @@ public class PeepoPractice implements ModInitializer {
     }
 
     public static int[] updateBackgroundColor() {
-        return new int[]{
-                BackgroundHelper.ColorMixer.getArgb(255, (int) GlobalOptions.BACKGROUND_RED.get(null), (int) GlobalOptions.BACKGROUND_GREEN.get(null), (int) GlobalOptions.BACKGROUND_BLUE.get(null)),
-                BackgroundHelper.ColorMixer.getArgb(255, (int) GlobalOptions.BACKGROUND_RED_2.get(null), (int) GlobalOptions.BACKGROUND_GREEN_2.get(null), (int) GlobalOptions.BACKGROUND_BLUE_2.get(null))
-        };
+        return new int[] { BackgroundHelper.ColorMixer.getArgb(255, (int) GlobalOptions.BACKGROUND_RED.get(null), (int) GlobalOptions.BACKGROUND_GREEN.get(null), (int) GlobalOptions.BACKGROUND_BLUE.get(null)), BackgroundHelper.ColorMixer.getArgb(255, (int) GlobalOptions.BACKGROUND_RED_2.get(null), (int) GlobalOptions.BACKGROUND_GREEN_2.get(null), (int) GlobalOptions.BACKGROUND_BLUE_2.get(null)) };
     }
 
     public static void drawBackground(MatrixStack matrices, Screen screen) {
@@ -108,91 +105,14 @@ public class PeepoPractice implements ModInitializer {
     public void onInitialize() {
         log("Using " + MOD_NAME + " v" + MOD_VERSION);
 
-        Registry.register(
-                Registry.ITEM,
-                new Identifier(
-                        MOD_ID,
-                        "random_pickaxe"
-                ),
-                new RandomToolItem(
-                        RandomToolItem.ToolType.PICKAXE,
-                        "iron",
-                        "diamond"
-                )
-        );
-        Registry.register(
-                Registry.ITEM,
-                new Identifier(
-                        MOD_ID,
-                        "random_axe"
-                ),
-                new RandomToolItem(
-                        RandomToolItem.ToolType.AXE,
-                        "stone",
-                        "iron",
-                        "golden"
-                )
-        );
-        Registry.register(
-                Registry.ITEM,
-                new Identifier(
-                        MOD_ID,
-                        "random_shovel"
-                ),
-                new RandomToolItem(
-                        RandomToolItem.ToolType.SHOVEL,
-                        "wooden",
-                        "stone",
-                        "iron",
-                        "golden",
-                        "diamond"
-                )
-        );
-        Registry.register(
-                Registry.ITEM,
-                new Identifier(
-                        MOD_ID,
-                        "random_sword"
-                ),
-                new RandomToolItem(
-                        RandomToolItem.ToolType.SWORD,
-                        "iron",
-                        "diamond"
-                )
-        );
-        Registry.register(
-                Registry.ITEM,
-                new Identifier(
-                        MOD_ID,
-                        "random_hoe"
-                ),
-                new RandomToolItem(
-                        RandomToolItem.ToolType.HOE,
-                        "wooden",
-                        "stone",
-                        "iron",
-                        "golden",
-                        "diamond",
-                        "netherite"
-                )
-        );
+        Registry.register(Registry.ITEM, new Identifier(MOD_ID, "random_pickaxe"), new RandomToolItem(RandomToolItem.ToolType.PICKAXE, "iron", "diamond"));
+        Registry.register(Registry.ITEM, new Identifier(MOD_ID, "random_axe"), new RandomToolItem(RandomToolItem.ToolType.AXE, "stone", "iron", "golden"));
+        Registry.register(Registry.ITEM, new Identifier(MOD_ID, "random_shovel"), new RandomToolItem(RandomToolItem.ToolType.SHOVEL, "wooden", "stone", "iron", "golden", "diamond"));
+        Registry.register(Registry.ITEM, new Identifier(MOD_ID, "random_sword"), new RandomToolItem(RandomToolItem.ToolType.SWORD, "iron", "diamond"));
+        Registry.register(Registry.ITEM, new Identifier(MOD_ID, "random_hoe"), new RandomToolItem(RandomToolItem.ToolType.HOE, "wooden", "stone", "iron", "golden", "diamond", "netherite"));
 
-        REPLAY_SPLIT_KEY = KeyBindingUtils.registerKeyBinding(
-                new KeyBinding(
-                        KeyBindingUtils.getTranslation("key." + MOD_ID + ".replay_split", "peepopractice.key.replay_split").getString(),
-                        InputUtil.Type.KEYSYM,
-                        GLFW.GLFW_KEY_H,
-                        KEYBINDING_CATEGORY
-                )
-        );
-        NEXT_SPLIT_KEY = KeyBindingUtils.registerKeyBinding(
-                new KeyBinding(
-                        KeyBindingUtils.getTranslation("key." + MOD_ID + ".next_split", "peepopractice.key.next_split").getString(),
-                        InputUtil.Type.KEYSYM,
-                        GLFW.GLFW_KEY_J,
-                        KEYBINDING_CATEGORY
-                )
-        );
+        REPLAY_SPLIT_KEY = KeyBindingUtils.registerKeyBinding(new KeyBinding(KeyBindingUtils.getTranslation("key." + MOD_ID + ".replay_split", "peepopractice.key.replay_split").getString(), InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_H, KEYBINDING_CATEGORY));
+        NEXT_SPLIT_KEY = KeyBindingUtils.registerKeyBinding(new KeyBinding(KeyBindingUtils.getTranslation("key." + MOD_ID + ".next_split", "peepopractice.key.next_split").getString(), InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_J, KEYBINDING_CATEGORY));
 
         try {
             CustomCategoryResourceManager.register();

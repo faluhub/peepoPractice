@@ -25,21 +25,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(CreateWorldScreen.class)
 public abstract class CreateWorldScreenMixin extends Screen {
-    @Shadow
-    @Final
-    public MoreOptionsDialog moreOptionsDialog;
-    @Shadow
-    public boolean hardcore;
-    @Shadow
-    private Difficulty field_24289;
-    @Shadow
-    private Difficulty field_24290;
-    @Shadow
-    private boolean cheatsEnabled;
-    @Shadow
-    private boolean tweakedCheats;
-    @Shadow
-    private String levelName;
+    @Shadow @Final public MoreOptionsDialog moreOptionsDialog;
+    @Shadow public boolean hardcore;
+    @Shadow private Difficulty field_24289;
+    @Shadow private Difficulty field_24290;
+    @Shadow private boolean cheatsEnabled;
+    @Shadow private boolean tweakedCheats;
+    @Shadow private String levelName;
+
     protected CreateWorldScreenMixin(Text title) {
         super(title);
     }

@@ -19,9 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerWorld.class)
 public abstract class ServerWorldMixin {
-    @Shadow
-    @Final
-    public static BlockPos END_SPAWN_POS;
+    @Shadow @Final public static BlockPos END_SPAWN_POS;
 
     @Inject(method = "createEndSpawnPlatform", at = @At("TAIL"))
     private static void peepoPractice$noCage(ServerWorld world, CallbackInfo ci) {

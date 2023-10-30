@@ -49,19 +49,7 @@ public class CopyInventorySelectionScreen extends Screen {
 
         if (!PracticeCategoryUtils.hasAnyConfiguredInventories(this.category)) {
             this.renderError = true;
-            this.addButton(
-                    new LimitlessButtonWidget(
-                            null,
-                            null,
-                            null,
-                            this.width / 2 - 200 / 2,
-                            this.height - 50,
-                            200,
-                            40,
-                            ScreenTexts.BACK,
-                            b -> this.onClose()
-                    )
-            );
+            this.addButton(new LimitlessButtonWidget(null, null, null, this.width / 2 - 200 / 2, this.height - 50, 200, 40, ScreenTexts.BACK, b -> this.onClose()));
             return;
         }
         this.categoryListWidget = new CategoryListWidget(this, this.client, true, true, this.selectionType) {
@@ -72,53 +60,17 @@ public class CopyInventorySelectionScreen extends Screen {
         };
         this.children.add(this.categoryListWidget);
 
-        this.addButton(
-                new LimitlessButtonWidget(
-                        null,
-                        null,
-                        null,
-                        this.width / 2 - 155,
-                        this.height - 50,
-                        150,
-                        40,
-                        ScreenTexts.CANCEL,
-                        b -> this.onClose()
-                )
-        );
-        this.copyButton = this.addButton(
-                new LimitlessButtonWidget(
-                        null,
-                        null,
-                        null,
-                        this.width / 2 - 155 + 160,
-                        this.height - 50,
-                        150,
-                        40,
-                        new TranslatableText("peepopractice.button.copy"),
-                        b -> {
-                            if (this.categoryListWidget != null && this.categoryListWidget.getSelected() != null) {
-                                this.copyInventory(this.categoryListWidget.getSelected().category);
-                                this.onClose();
-                            }
-                        }
-                )
-        );
-        this.addButton(
-                new LimitlessButtonWidget(
-                        null,
-                        null,
-                        null,
-                        5,
-                        5,
-                        40,
-                        20,
-                        new TranslatableText(this.selectionType.title),
-                        b -> {
-                            this.selectionType = CategorySelectionScreen.SelectionType.opposite(this.selectionType);
-                            this.init();
-                        }
-                )
-        );
+        this.addButton(new LimitlessButtonWidget(null, null, null, this.width / 2 - 155, this.height - 50, 150, 40, ScreenTexts.CANCEL, b -> this.onClose()));
+        this.copyButton = this.addButton(new LimitlessButtonWidget(null, null, null, this.width / 2 - 155 + 160, this.height - 50, 150, 40, new TranslatableText("peepopractice.button.copy"), b -> {
+            if (this.categoryListWidget != null && this.categoryListWidget.getSelected() != null) {
+                this.copyInventory(this.categoryListWidget.getSelected().category);
+                this.onClose();
+            }
+        }));
+        this.addButton(new LimitlessButtonWidget(null, null, null, 5, 5, 40, 20, new TranslatableText(this.selectionType.title), b -> {
+            this.selectionType = CategorySelectionScreen.SelectionType.opposite(this.selectionType);
+            this.init();
+        }));
     }
 
     public void copyInventory(PracticeCategory other) {

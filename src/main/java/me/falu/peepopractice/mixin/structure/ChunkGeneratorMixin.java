@@ -25,12 +25,8 @@ import java.util.List;
 
 @Mixin(ChunkGenerator.class)
 public abstract class ChunkGeneratorMixin {
-    @Shadow
-    @Final
-    public List<ChunkPos> field_24749;
-    @Shadow
-    @Final
-    protected BiomeSource biomeSource;
+    @Shadow @Final public List<ChunkPos> field_24749;
+    @Shadow @Final protected BiomeSource biomeSource;
 
     @Shadow
     protected abstract void method_28508(ConfiguredStructureFeature<?, ?> configuredStructureFeature, StructureAccessor structureAccessor, Chunk chunk, StructureManager structureManager, long l, ChunkPos chunkPos, Biome biome);

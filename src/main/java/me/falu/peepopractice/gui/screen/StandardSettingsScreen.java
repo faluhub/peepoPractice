@@ -20,14 +20,7 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
 
 public class StandardSettingsScreen extends Screen {
-    private static final Option[] OPTIONS = new Option[]{
-            StandardSettingsUtils.FOV,
-            StandardSettingsUtils.RENDER_DISTANCE,
-            StandardSettingsUtils.ENTITY_DISTANCE_SCALING,
-            StandardSettingsUtils.CHUNK_BORDERS,
-            StandardSettingsUtils.HITBOXES,
-            StandardSettingsUtils.PERSPECTIVE
-    };
+    private static final Option[] OPTIONS = new Option[] { StandardSettingsUtils.FOV, StandardSettingsUtils.RENDER_DISTANCE, StandardSettingsUtils.ENTITY_DISTANCE_SCALING, StandardSettingsUtils.CHUNK_BORDERS, StandardSettingsUtils.HITBOXES, StandardSettingsUtils.PERSPECTIVE };
     private final Screen parent;
     private TextFieldWidget pieChartDirectoryField;
 

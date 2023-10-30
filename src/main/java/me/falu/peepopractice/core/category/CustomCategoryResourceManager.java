@@ -37,7 +37,7 @@ import java.util.Locale;
 public class CustomCategoryResourceManager {
     private static final File CATEGORIES_FOLDER = FabricLoader.getInstance().getConfigDir().resolve(PeepoPractice.MOD_NAME).resolve("categories").toFile();
 
-    @SuppressWarnings({"BlockingMethodInNonBlockingContext", "DuplicatedCode"})
+    @SuppressWarnings({ "BlockingMethodInNonBlockingContext", "DuplicatedCode" })
     public static void register() throws InvalidCategorySyntaxException {
         try {
             if (CATEGORIES_FOLDER.exists()) {
@@ -178,14 +178,7 @@ public class CustomCategoryResourceManager {
                                         for (JsonElement element1 : validDimensionsArray) {
                                             validDimensions.add(parseDimensionKey(element1));
                                         }
-                                        properties = properties.addAntiBiome(new WorldProperties.BiomeModification()
-                                                .setBiome(biome)
-                                                .setReplacement(replacement)
-                                                .setRange(new WorldProperties.Range()
-                                                        .setRange(range)
-                                                        .addValidDimensions(validDimensions)
-                                                )
-                                        );
+                                        properties = properties.addAntiBiome(new WorldProperties.BiomeModification().setBiome(biome).setReplacement(replacement).setRange(new WorldProperties.Range().setRange(range).addValidDimensions(validDimensions)));
                                     }
                                 }
                             }
@@ -202,13 +195,7 @@ public class CustomCategoryResourceManager {
                                         for (JsonElement element1 : validDimensionsArray) {
                                             validDimensions.add(parseDimensionKey(element1));
                                         }
-                                        properties = properties.addProBiome(new WorldProperties.BiomeModification()
-                                                .setBiome(biome)
-                                                .setRange(new WorldProperties.Range()
-                                                        .setRange(range)
-                                                        .addValidDimensions(validDimensions)
-                                                )
-                                        );
+                                        properties = properties.addProBiome(new WorldProperties.BiomeModification().setBiome(biome).setRange(new WorldProperties.Range().setRange(range).addValidDimensions(validDimensions)));
                                     }
                                 }
                             }

@@ -19,19 +19,10 @@ public abstract class TitleScreenMixin extends Screen {
 
     @Inject(method = "initWidgetsNormal", at = @At("TAIL"))
     private void peepoPractice$addPracticeButton(int y, int spacingY, CallbackInfo ci) {
-        this.addButton(
-                new ButtonWidget(
-                        this.width / 2 - 100,
-                        y - spacingY,
-                        200,
-                        20,
-                        new LiteralText("PeepoPractice"),
-                        b -> {
-                            if (this.client != null) {
-                                this.client.openScreen(new CategorySelectionScreen(this));
-                            }
-                        }
-                )
-        );
+        this.addButton(new ButtonWidget(this.width / 2 - 100, y - spacingY, 200, 20, new LiteralText("PeepoPractice"), b -> {
+            if (this.client != null) {
+                this.client.openScreen(new CategorySelectionScreen(this));
+            }
+        }));
     }
 }

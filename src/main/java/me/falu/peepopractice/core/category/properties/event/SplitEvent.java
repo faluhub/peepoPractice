@@ -52,7 +52,7 @@ public abstract class SplitEvent {
         return time;
     }
 
-    @SuppressWarnings({"StatementWithEmptyBody", "BlockingMethodInNonBlockingContext"})
+    @SuppressWarnings({ "StatementWithEmptyBody", "BlockingMethodInNonBlockingContext" })
     public void complete(boolean completed) {
         if (this.category == null || this.isRunningThread) {
             return;
@@ -112,17 +112,7 @@ public abstract class SplitEvent {
             String time = getTimeString(igt);
 
             if (client.player != null) {
-                client.inGameHud.setTitles(
-                        completed
-                                ? new TranslatableText("peepopractice.finished.completed")
-                                .formatted(Formatting.AQUA)
-                                .append(isPb ? " " + new TranslatableText("peepopractice.finished.pb").formatted(Formatting.YELLOW).getString() : "")
-                                : new TranslatableText("peepopractice.finished.failed").formatted(Formatting.RED),
-                        new LiteralText(Formatting.GRAY + time),
-                        10,
-                        100,
-                        10
-                );
+                client.inGameHud.setTitles(completed ? new TranslatableText("peepopractice.finished.completed").formatted(Formatting.AQUA).append(isPb ? " " + new TranslatableText("peepopractice.finished.pb").formatted(Formatting.YELLOW).getString() : "") : new TranslatableText("peepopractice.finished.failed").formatted(Formatting.RED), new LiteralText(Formatting.GRAY + time), 10, 100, 10);
                 serverPlayerEntity.setGameMode(GameMode.SPECTATOR);
                 float yaw = 0.0F;
                 float pitch = 0.0F;

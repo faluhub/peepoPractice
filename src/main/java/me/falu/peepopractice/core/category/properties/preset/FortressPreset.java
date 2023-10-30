@@ -7,23 +7,8 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.util.Identifier;
 
 public class FortressPreset {
-    public static final CategoryPreference GOOD_BLAZE_RATES_PREFERENCE = new CategoryPreference()
-            .setId("good_blaze_rates")
-            .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
-            .setDefaultChoice(PracticeCategoryUtils.ENABLED)
-            .setIcon(new Identifier("textures/item/blaze_rod.png"));
-    public static final CategoryPreference SOUL_SAND_VALLEY_PREFERENCE = new CategoryPreference()
-            .setId("ssv")
-            .setIcon(new Identifier("textures/item/stone_sword.png"))
-            .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
-            .setDefaultChoice(PracticeCategoryUtils.DISABLED);
-    public static final CategoryPreference FIRE_RESISTANCE_PREFERENCE = new CategoryPreference()
-            .setId("fire_resistance")
-            .setIcon(new Identifier("textures/mob_effect/fire_resistance.png"))
-            .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
-            .setDefaultChoice(PracticeCategoryUtils.ENABLED);
-    public static final PlayerProperties.PotionEffect FIRE_RESISTANCE_EFFECT = new PlayerProperties.PotionEffect()
-            .setEffect(StatusEffects.FIRE_RESISTANCE)
-            .setDuration(3600)
-            .setCondition((category, random, world) -> CategoryPreference.getBoolValue("fire_resistance"));
+    public static final CategoryPreference GOOD_BLAZE_RATES_PREFERENCE = new CategoryPreference().setId("good_blaze_rates").setChoices(PracticeCategoryUtils.BOOLEAN_LIST).setDefaultChoice(PracticeCategoryUtils.ENABLED).setIcon(new Identifier("textures/item/blaze_rod.png"));
+    public static final CategoryPreference SOUL_SAND_VALLEY_PREFERENCE = new CategoryPreference().setId("ssv").setIcon(new Identifier("textures/item/stone_sword.png")).setChoices(PracticeCategoryUtils.BOOLEAN_LIST).setDefaultChoice(PracticeCategoryUtils.DISABLED);
+    public static final CategoryPreference FIRE_RESISTANCE_PREFERENCE = new CategoryPreference().setId("fire_resistance").setIcon(new Identifier("textures/mob_effect/fire_resistance.png")).setChoices(PracticeCategoryUtils.BOOLEAN_LIST).setDefaultChoice(PracticeCategoryUtils.ENABLED);
+    public static final PlayerProperties.PotionEffect FIRE_RESISTANCE_EFFECT = new PlayerProperties.PotionEffect().setEffect(StatusEffects.FIRE_RESISTANCE).setDuration(3600).setCondition((category, random, world) -> CategoryPreference.getBoolValue("fire_resistance"));
 }

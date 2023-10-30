@@ -20,9 +20,7 @@ import java.util.function.Supplier;
 
 @Mixin(FileResourcePackProvider.class)
 public abstract class FileResourcePackProviderMixin {
-    @Shadow
-    @Final
-    private ResourcePackSource field_25345;
+    @Shadow @Final private ResourcePackSource field_25345;
 
     @Shadow
     protected abstract Supplier<ResourcePack> createResourcePack(File file);

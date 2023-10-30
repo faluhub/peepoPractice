@@ -51,35 +51,22 @@ public class CategoryPreferencesScreen extends Screen {
 
         for (CategoryPreference preference : this.category.getPreferences()) {
             String currentValue = CategoryPreference.getValue(this.category, preference.getId());
-            this.addButton(
-                    new LimitlessButtonWidget(
-                            null,
-                            preference.getIcon(),
-                            (int) (32 * ((size - offset) / 110.0F)),
-                            this.width * (column + 1) / (Math.max(maxColumns, 3) + 1) - size / 2,
-                            32 + size * row,
-                            size,
-                            size - offset,
-                            this.getFormattedText(preference, currentValue),
-                            b -> {
-                                String value = CategoryPreference.getValue(this.category, preference.getId());
-                                if (value != null) {
-                                    int currentIndex = CategoryPreference.getIndex(value, preference.getChoices());
-                                    String next;
+            this.addButton(new LimitlessButtonWidget(null, preference.getIcon(), (int) (32 * ((size - offset) / 110.0F)), this.width * (column + 1) / (Math.max(maxColumns, 3) + 1) - size / 2, 32 + size * row, size, size - offset, this.getFormattedText(preference, currentValue), b -> {
+                String value = CategoryPreference.getValue(this.category, preference.getId());
+                if (value != null) {
+                    int currentIndex = CategoryPreference.getIndex(value, preference.getChoices());
+                    String next;
 
-                                    try {
-                                        next = preference.getChoices().get(currentIndex + 1);
-                                    } catch (IndexOutOfBoundsException ignored) {
-                                        next = preference.getChoices().get(0);
-                                    }
+                    try {
+                        next = preference.getChoices().get(currentIndex + 1);
+                    } catch (IndexOutOfBoundsException ignored) {
+                        next = preference.getChoices().get(0);
+                    }
 
-                                    b.setMessage(this.getFormattedText(preference, next));
-                                    CategoryPreference.setValue(this.category, preference.getId(), next);
-                                }
-                            },
-                            (button, matrices, mouseX, mouseY) -> this.renderTooltip(matrices, new LiteralText(preference.getDescription()), mouseX, mouseY)
-                    )
-            );
+                    b.setMessage(this.getFormattedText(preference, next));
+                    CategoryPreference.setValue(this.category, preference.getId(), next);
+                }
+            }, (button, matrices, mouseX, mouseY) -> this.renderTooltip(matrices, new LiteralText(preference.getDescription()), mouseX, mouseY)));
 
             column++;
             if (column >= maxColumns) {

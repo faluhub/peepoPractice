@@ -78,8 +78,9 @@ public abstract class PlayerlessScreenHandler {
                     int l = playerInventory.getCursorStack().getCount();
                     for (Slot slot2 : this.quickCraftSlots) {
                         ItemStack itemStack4 = playerInventory.getCursorStack();
-                        if (slot2 == null || !ScreenHandler.canInsertItemIntoSlot(slot2, itemStack4, true) || !slot2.canInsert(itemStack4) || this.quickCraftStage != 2 && itemStack4.getCount() < this.quickCraftSlots.size())
+                        if (slot2 == null || !ScreenHandler.canInsertItemIntoSlot(slot2, itemStack4, true) || !slot2.canInsert(itemStack4) || this.quickCraftStage != 2 && itemStack4.getCount() < this.quickCraftSlots.size()) {
                             continue;
+                        }
                         ItemStack itemStack5 = itemStack3.copy();
                         int m = slot2.hasStack() ? slot2.getStack().getCount() : 0;
                         ScreenHandler.calculateStackSize(this.quickCraftSlots, this.quickCraftStage, itemStack5, m);
@@ -221,10 +222,11 @@ public abstract class PlayerlessScreenHandler {
                 for (int p = 0; p < 2; ++p) {
                     for (int q = l; q >= 0 && q < this.slots.size() && itemStack3.getCount() < itemStack3.getMaxCount(); q += o) {
                         Slot slot4 = this.slots.get(q);
-                        if (!slot4.hasStack() || !ScreenHandler.canInsertItemIntoSlot(slot4, itemStack3, true))
+                        if (!slot4.hasStack() || !ScreenHandler.canInsertItemIntoSlot(slot4, itemStack3, true)) {
                             continue;
+                        }
                         ItemStack itemStack6 = slot4.getStack();
-                        if (p == 0 && itemStack6.getCount() == itemStack6.getMaxCount()) continue;
+                        if (p == 0 && itemStack6.getCount() == itemStack6.getMaxCount()) { continue; }
                         int n = Math.min(itemStack3.getMaxCount() - itemStack3.getCount(), itemStack6.getCount());
                         ItemStack itemStack7 = slot4.takeStack(n);
                         itemStack3.increment(n);

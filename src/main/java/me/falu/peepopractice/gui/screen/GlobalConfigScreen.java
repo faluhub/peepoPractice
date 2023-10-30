@@ -15,19 +15,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
 
 public class GlobalConfigScreen extends Screen {
-    private static final DoubleOption[] BACKGROUND_OPTIONS = {
-            GlobalOptions.BACKGROUND_RED,
-            GlobalOptions.BACKGROUND_GREEN,
-            GlobalOptions.BACKGROUND_BLUE,
-            GlobalOptions.BACKGROUND_RED_2,
-            GlobalOptions.BACKGROUND_GREEN_2,
-            GlobalOptions.BACKGROUND_BLUE_2
-    };
-    private static final BooleanOption[] OPTIONS = {
-            GlobalOptions.SAME_INVENTORY,
-            GlobalOptions.CHANGE_WINDOW_TITLE,
-            GlobalOptions.GIVE_SATURATION
-    };
+    private static final DoubleOption[] BACKGROUND_OPTIONS = { GlobalOptions.BACKGROUND_RED, GlobalOptions.BACKGROUND_GREEN, GlobalOptions.BACKGROUND_BLUE, GlobalOptions.BACKGROUND_RED_2, GlobalOptions.BACKGROUND_GREEN_2, GlobalOptions.BACKGROUND_BLUE_2 };
+    private static final BooleanOption[] OPTIONS = { GlobalOptions.SAME_INVENTORY, GlobalOptions.CHANGE_WINDOW_TITLE, GlobalOptions.GIVE_SATURATION };
     private final Screen parent;
 
     public GlobalConfigScreen(Screen parent) {

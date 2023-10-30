@@ -26,20 +26,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Map;
 import java.util.Set;
 
-@Mixin(
-        value = ClientAdvancementManager.class,
-        priority = 1005 // A higher priority than SRIGT's mixin. Higher = later. My theory is SRIGT is applying something?
+@Mixin(value = ClientAdvancementManager.class, priority = 1005 // A higher priority than SRIGT's mixin. Higher = later. My theory is SRIGT is applying something?
 )
 public abstract class ClientAdvancementManagerMixin {
-    @Shadow
-    @Final
-    public Map<Advancement, AdvancementProgress> advancementProgresses;
-    @Shadow
-    @Final
-    private AdvancementManager manager;
-    @Shadow
-    @Final
-    private MinecraftClient client;
+    @Shadow @Final public Map<Advancement, AdvancementProgress> advancementProgresses;
+    @Shadow @Final private AdvancementManager manager;
+    @Shadow @Final private MinecraftClient client;
 
     @Shadow
     public abstract AdvancementManager getManager();

@@ -33,20 +33,11 @@ import java.io.File;
 
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin {
-    @Shadow
-    @Final
-    public File runDirectory;
-    @Shadow
-    @Nullable
-    public ClientWorld world;
-    @Shadow
-    @Final
-    public GameOptions options;
-    @Shadow
-    @Final
-    private DataFixer dataFixer;
-    @Shadow
-    private @Nullable IntegratedServer server;
+    @Shadow @Final public File runDirectory;
+    @Shadow @Nullable public ClientWorld world;
+    @Shadow @Final public GameOptions options;
+    @Shadow @Final private DataFixer dataFixer;
+    @Shadow private @Nullable IntegratedServer server;
 
     @Shadow
     public abstract boolean isIntegratedServerRunning();
@@ -128,15 +119,7 @@ public abstract class MinecraftClientMixin {
         return value;
     }
 
-    @Inject(
-            method = "startIntegratedServer(Ljava/lang/String;Lnet/minecraft/util/registry/RegistryTracker$Modifiable;Ljava/util/function/Function;Lcom/mojang/datafixers/util/Function4;ZLnet/minecraft/client/MinecraftClient$WorldLoadAction;)V",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/server/integrated/IntegratedServer;isLoading()Z",
-                    shift = At.Shift.BEFORE
-            ),
-            cancellable = true
-    )
+    @Inject(method = "startIntegratedServer(Ljava/lang/String;Lnet/minecraft/util/registry/RegistryTracker$Modifiable;Ljava/util/function/Function;Lcom/mojang/datafixers/util/Function4;ZLnet/minecraft/client/MinecraftClient$WorldLoadAction;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/integrated/IntegratedServer;isLoading()Z", shift = At.Shift.BEFORE), cancellable = true)
     private void peepoPractice$stopLoadingTick(CallbackInfo ci, @Local LevelLoadingScreen levelLoadingScreen) {
         if (this.server == null) {
             ci.cancel();

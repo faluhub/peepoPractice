@@ -18,15 +18,7 @@ import java.util.Random;
 @Mixin(MoreOptionsDialog.class)
 public class MoreOptionsDialogMixin {
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    @ModifyArg(
-            method = "getGeneratorOptions",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/world/gen/GeneratorOptions;withHardcore(ZLjava/util/OptionalLong;)Lnet/minecraft/world/gen/GeneratorOptions;",
-                    ordinal = 0
-            ),
-            index = 1
-    )
+    @ModifyArg(method = "getGeneratorOptions", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/gen/GeneratorOptions;withHardcore(ZLjava/util/OptionalLong;)Lnet/minecraft/world/gen/GeneratorOptions;", ordinal = 0), index = 1)
     private OptionalLong peepoPractice$insertSeedList(OptionalLong original) {
         if (PeepoPractice.CATEGORY.hasWorldProperties()) {
             if (PeepoPractice.CATEGORY.getWorldProperties().hasSeedListPath()) {

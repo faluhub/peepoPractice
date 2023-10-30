@@ -12,8 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EyeOfEnderEntity.class)
 public class EyeOfEnderEntityMixin {
-    @Shadow
-    private boolean dropsItem;
+    @Shadow private boolean dropsItem;
 
     @Inject(method = "moveTowards", at = @At("TAIL"))
     private void peepoPractice$eyeBreakPreference(BlockPos pos, CallbackInfo ci) {
