@@ -104,7 +104,7 @@
     "peepopractice.types.start_node.front": "Передний",
     "peepopractice.types.start_node.back": "Задний",
     "peepopractice.types.spawn_location.structure": "Структура",
-    "peepopractice.types.spawn_location.terrain": Местность",
+    "peepopractice.types.spawn_location.terrain": "Местность",
     "peepopractice.standard_setting.chunk_borders": "Границы Чанков",
     "peepopractice.standard_setting.hitboxes": "Хитбоксы",
     "peepopractice.standard_setting.perspective": "Перспектива",
