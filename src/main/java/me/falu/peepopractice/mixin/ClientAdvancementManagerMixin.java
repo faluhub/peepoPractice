@@ -31,18 +31,10 @@ import java.util.Set;
         priority = 1005 // A higher priority than SRIGT's mixin. Higher = later. My theory is SRIGT is applying something?
 )
 public abstract class ClientAdvancementManagerMixin {
-    @Shadow
-    @Final
-    public Map<Advancement, AdvancementProgress> advancementProgresses;
-    @Shadow
-    @Final
-    private AdvancementManager manager;
-    @Shadow
-    @Final
-    private MinecraftClient client;
-
-    @Shadow
-    public abstract AdvancementManager getManager();
+    @Shadow @Final private AdvancementManager manager;
+    @Shadow @Final private MinecraftClient client;
+    @Shadow public abstract AdvancementManager getManager();
+    @Shadow @Final public Map<Advancement, AdvancementProgress> advancementProgresses;
 
     @ModifyVariable(method = "onAdvancements", at = @At(value = "INVOKE", target = "Ljava/util/Map$Entry;getValue()Ljava/lang/Object;"))
     private Map.Entry<Identifier, AdvancementProgress> peepoPractice$advancement(Map.Entry<Identifier, AdvancementProgress> value) {

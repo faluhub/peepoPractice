@@ -37,7 +37,7 @@ import java.util.Locale;
 public class CustomCategoryResourceManager {
     private static final File CATEGORIES_FOLDER = FabricLoader.getInstance().getConfigDir().resolve(PeepoPractice.MOD_NAME).resolve("categories").toFile();
 
-    @SuppressWarnings({"BlockingMethodInNonBlockingContext", "DuplicatedCode"})
+    @SuppressWarnings({ "BlockingMethodInNonBlockingContext", "DuplicatedCode" })
     public static void register() throws InvalidCategorySyntaxException {
         try {
             if (CATEGORIES_FOLDER.exists()) {
@@ -284,12 +284,9 @@ public class CustomCategoryResourceManager {
     public static RegistryKey<World> parseDimensionKey(JsonElement string) {
         switch (string.getAsString().toUpperCase()) {
             default:
-            case "OVERWORLD":
-                return World.OVERWORLD;
-            case "NETHER":
-                return World.NETHER;
-            case "END":
-                return World.END;
+            case "OVERWORLD": return World.OVERWORLD;
+            case "NETHER": return World.NETHER;
+            case "END": return World.END;
         }
     }
 }

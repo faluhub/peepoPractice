@@ -24,23 +24,18 @@ public class PlayerlessPlayerScreenHandler extends PlayerlessScreenHandler {
     private static final Identifier[] EMPTY_ARMOR_SLOT_TEXTURES;
     private static final EquipmentSlot[] EQUIPMENT_SLOT_ORDER;
 
-    static {
-        EMPTY_ARMOR_SLOT_TEXTURES = new Identifier[]{EMPTY_BOOTS_SLOT_TEXTURE, EMPTY_LEGGINGS_SLOT_TEXTURE, EMPTY_CHESTPLATE_SLOT_TEXTURE, EMPTY_HELMET_SLOT_TEXTURE};
-        EQUIPMENT_SLOT_ORDER = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
-    }
-
     public PlayerlessPlayerScreenHandler() {
         this.addSlot(new EditInventoryScreen.LockedSlot(PeepoPractice.PLAYERLESS_INVENTORY, 0, 154, 28));
 
         int n;
         int m;
-        for (n = 0; n < 2; ++n) {
-            for (m = 0; m < 2; ++m) {
+        for(n = 0; n < 2; ++n) {
+            for(m = 0; m < 2; ++m) {
                 this.addSlot(new EditInventoryScreen.LockedSlot(PeepoPractice.PLAYERLESS_INVENTORY, m + n * 2, 98 + m * 18, 18 + n * 18));
             }
         }
 
-        for (n = 0; n < 4; ++n) {
+        for(n = 0; n < 4; ++n) {
             final EquipmentSlot equipmentSlot = EQUIPMENT_SLOT_ORDER[n];
             this.addSlot(new Slot(PeepoPractice.PLAYERLESS_INVENTORY, 39 - n, 8, 8 + n * 18) {
                 public int getMaxStackAmount() {
@@ -85,11 +80,8 @@ public class PlayerlessPlayerScreenHandler extends PlayerlessScreenHandler {
     public ItemStack transferSlot(int index) {
         ItemStack itemStack = ItemStack.EMPTY;
         Slot slot;
-        try {
-            slot = this.slots.get(index);
-        } catch (IndexOutOfBoundsException ignored) {
-            return itemStack;
-        }
+        try { slot = this.slots.get(index); }
+        catch (IndexOutOfBoundsException ignored) { return itemStack; }
         if (slot != null && slot.hasStack()) {
             int i;
             ItemStack itemStack2 = slot.getStack();
@@ -113,5 +105,10 @@ public class PlayerlessPlayerScreenHandler extends PlayerlessScreenHandler {
             }
         }
         return itemStack;
+    }
+
+    static {
+        EMPTY_ARMOR_SLOT_TEXTURES = new Identifier[] { EMPTY_BOOTS_SLOT_TEXTURE, EMPTY_LEGGINGS_SLOT_TEXTURE, EMPTY_CHESTPLATE_SLOT_TEXTURE, EMPTY_HELMET_SLOT_TEXTURE };
+        EQUIPMENT_SLOT_ORDER = new EquipmentSlot[] { EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET };
     }
 }

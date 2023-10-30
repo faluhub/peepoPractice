@@ -19,8 +19,7 @@ import java.util.Random;
 
 @Mixin(ZombifiedPiglinEntity.class)
 public class ZombifiedPiglinEntityMixin {
-    @Unique
-    private static final LocationPredicate BASTION_PREDICATE = LocationPredicate.feature(StructureFeature.BASTION_REMNANT);
+    @Unique private static final LocationPredicate BASTION_PREDICATE = LocationPredicate.feature(StructureFeature.BASTION_REMNANT);
 
     @Inject(method = "canSpawn(Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/WorldAccess;Lnet/minecraft/entity/SpawnReason;Lnet/minecraft/util/math/BlockPos;Ljava/util/Random;)Z", at = @At("RETURN"), cancellable = true)
     private static void noBastionPigmen(EntityType<ZombifiedPiglinEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random, CallbackInfoReturnable<Boolean> cir) {

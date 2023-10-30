@@ -11,25 +11,25 @@ import java.util.List;
 
 @SuppressWarnings("UnusedDeclaration")
 public class WorldProperties extends BaseProperties {
-    private final List<BiomeModification> proBiomes = new ArrayList<>();
-    private final List<BiomeModification> antiBiomes = new ArrayList<>();
-    private final List<String> dataPacks = new ArrayList<>();
     private RegistryKey<World> worldRegistryKey = World.OVERWORLD;
     private boolean spawnChunksDisabled = false;
     private String seedListPath;
+    private final List<BiomeModification> proBiomes = new ArrayList<>();
+    private final List<BiomeModification> antiBiomes = new ArrayList<>();
+    private final List<String> dataPacks = new ArrayList<>();
     private Difficulty startDifficulty = Difficulty.EASY;
 
     public RegistryKey<World> getWorldRegistryKey() {
         return this.worldRegistryKey;
     }
 
+    public boolean hasWorldRegistryKey() {
+        return this.worldRegistryKey != null;
+    }
+
     public WorldProperties setWorldRegistryKey(RegistryKey<World> worldRegistryKey) {
         this.worldRegistryKey = worldRegistryKey;
         return this;
-    }
-
-    public boolean hasWorldRegistryKey() {
-        return this.worldRegistryKey != null;
     }
 
     public boolean isSpawnChunksDisabled() {
@@ -95,9 +95,9 @@ public class WorldProperties extends BaseProperties {
     }
 
     public static class Range {
-        private final List<RegistryKey<World>> validDimensions = new ArrayList<>();
         private Integer range;
         private ConditionTask condition = () -> true;
+        private final List<RegistryKey<World>> validDimensions = new ArrayList<>();
 
         public Integer getRange() {
             return this.range;
@@ -141,13 +141,13 @@ public class WorldProperties extends BaseProperties {
             return this.biome;
         }
 
+        public boolean hasBiome() {
+            return this.biome != null;
+        }
+
         public BiomeModification setBiome(Biome biome) {
             this.biome = biome;
             return this;
-        }
-
-        public boolean hasBiome() {
-            return this.biome != null;
         }
 
         public Range getRange() {
@@ -167,13 +167,13 @@ public class WorldProperties extends BaseProperties {
             return this.replacement;
         }
 
+        public boolean hasReplacement() {
+            return this.replacement != null;
+        }
+
         public BiomeModification setReplacement(Biome replacement) {
             this.replacement = replacement;
             return this;
-        }
-
-        public boolean hasReplacement() {
-            return this.replacement != null;
         }
     }
 }

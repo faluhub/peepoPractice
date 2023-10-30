@@ -3,13 +3,13 @@ package me.falu.peepopractice.mixin.world.entity;
 import com.redlimerl.speedrunigt.timer.InGameTimer;
 import com.redlimerl.speedrunigt.timer.TimerStatus;
 import me.falu.peepopractice.PeepoPractice;
-import me.falu.peepopractice.core.category.CategoryPreference;
 import me.falu.peepopractice.core.category.PracticeCategoriesAny;
+import me.falu.peepopractice.core.category.properties.event.EnterVehicleSplitEvent;
+import me.falu.peepopractice.core.exception.NotInitializedException;
+import me.falu.peepopractice.core.category.CategoryPreference;
 import me.falu.peepopractice.core.category.PracticeTypes;
 import me.falu.peepopractice.core.category.properties.event.ChangeDimensionSplitEvent;
-import me.falu.peepopractice.core.category.properties.event.EnterVehicleSplitEvent;
 import me.falu.peepopractice.core.category.properties.event.SplitEvent;
-import me.falu.peepopractice.core.exception.NotInitializedException;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -41,35 +41,19 @@ import java.util.Random;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends LivingEntity {
-    @Shadow
-    private int joinInvulnerabilityTicks;
-    @Unique
-    private Long comparingTime;
-    @Unique
-    private PracticeTypes.PaceTimerShowType showType;
+    @Shadow public abstract void refreshPositionAfterTeleport(double x, double y, double z);
+    @Shadow @Nullable public abstract BlockPos getSpawnPointPosition();
+    @Shadow public abstract void setGameMode(GameMode gameMode);
+    @Shadow public abstract void sendMessage(Text message, boolean actionBar);
+    @Shadow public abstract boolean startRiding(Entity entity, boolean force);
+    @Shadow private int joinInvulnerabilityTicks;
+    @Shadow public abstract ServerWorld getServerWorld();
+    @Unique private Long comparingTime;
+    @Unique private PracticeTypes.PaceTimerShowType showType;
 
     protected ServerPlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
         super(entityType, world);
     }
-
-    @Shadow
-    public abstract void refreshPositionAfterTeleport(double x, double y, double z);
-
-    @Shadow
-    @Nullable
-    public abstract BlockPos getSpawnPointPosition();
-
-    @Shadow
-    public abstract void setGameMode(GameMode gameMode);
-
-    @Shadow
-    public abstract void sendMessage(Text message, boolean actionBar);
-
-    @Shadow
-    public abstract boolean startRiding(Entity entity, boolean force);
-
-    @Shadow
-    public abstract ServerWorld getServerWorld();
 
     @Inject(method = "moveToSpawn", at = @At("HEAD"), cancellable = true)
     private void peepoPractice$customSpawn(ServerWorld world, CallbackInfo ci) {
@@ -89,9 +73,7 @@ public abstract class ServerPlayerEntityMixin extends LivingEntity {
         }
 
         if (PeepoPractice.CATEGORY.hasPlayerProperties()) {
-            if (!(world.getLevelProperties() instanceof LevelProperties)) {
-                return;
-            }
+            if (!(world.getLevelProperties() instanceof LevelProperties)) { return; }
 
             if (PeepoPractice.CATEGORY.hasWorldProperties() && PeepoPractice.CATEGORY.getWorldProperties().hasWorldRegistryKey() && PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey().equals(World.END)) {
                 ServerWorld.createEndSpawnPlatform(world);
@@ -170,9 +152,7 @@ public abstract class ServerPlayerEntityMixin extends LivingEntity {
 
     @Inject(method = "tick", at = @At("TAIL"))
     private void peepoPractice$setPaceMessage(CallbackInfo ci) {
-        if (this.showType == null || this.showType.equals(PracticeTypes.PaceTimerShowType.NEVER) || (this.showType.equals(PracticeTypes.PaceTimerShowType.END) && !InGameTimer.getInstance().isCompleted())) {
-            return;
-        }
+        if (this.showType == null || this.showType.equals(PracticeTypes.PaceTimerShowType.NEVER) || (this.showType.equals(PracticeTypes.PaceTimerShowType.END) && !InGameTimer.getInstance().isCompleted())) { return; }
         long igt = InGameTimer.getInstance().getInGameTime();
         if (this.comparingTime != null) {
             long difference = this.comparingTime - igt;

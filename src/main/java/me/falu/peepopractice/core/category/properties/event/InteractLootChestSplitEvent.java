@@ -10,13 +10,13 @@ public class InteractLootChestSplitEvent extends SplitEvent {
         return this.lootTable;
     }
 
+    public boolean hasLootTable() {
+        return this.lootTable != null;
+    }
+
     public InteractLootChestSplitEvent setLootTable(Identifier lootTable) {
         this.lootTable = lootTable;
         return this;
-    }
-
-    public boolean hasLootTable() {
-        return this.lootTable != null;
     }
 
     public boolean isOnClose() {

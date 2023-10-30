@@ -16,23 +16,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InGameHud.class)
 public abstract class InGameHudMixin {
-    @Shadow
-    private @Nullable Text title;
-    @Shadow
-    private @Nullable Text subtitle;
-    @Shadow
-    private int titleTotalTicks;
-    @Shadow
-    private int titleFadeInTicks;
-    @Shadow
-    private int titleRemainTicks;
-    @Shadow
-    private int titleFadeOutTicks;
-    @Shadow
-    @Final
-    private MinecraftClient client;
-    @Unique
-    private PeepoPauseManHud peepoPauseManHud;
+    @Shadow private @Nullable Text title;
+    @Shadow private @Nullable Text subtitle;
+    @Shadow private int titleTotalTicks;
+    @Shadow private int titleFadeInTicks;
+    @Shadow private int titleRemainTicks;
+    @Shadow private int titleFadeOutTicks;
+    @Shadow @Final private MinecraftClient client;
+    @Unique private PeepoPauseManHud peepoPauseManHud;
 
     // TODO: this is extremely concerning
     @Inject(method = "setTitles", at = @At("HEAD"), cancellable = true)

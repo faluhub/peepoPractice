@@ -9,12 +9,12 @@ public class ThrowEntitySplitEvent extends SplitEvent {
         return this.item;
     }
 
+    public boolean hasItem() {
+        return this.item != null;
+    }
+
     public ThrowEntitySplitEvent setItem(Item item) {
         this.item = item;
         return this;
-    }
-
-    public boolean hasItem() {
-        return this.item != null;
     }
 }

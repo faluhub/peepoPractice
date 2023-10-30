@@ -36,14 +36,6 @@ public class PlayerlessShulkerBoxScreenHandler extends PlayerlessScreenHandler {
         }
     }
 
-    @SuppressWarnings("SameParameterValue")
-    protected static void checkSize(Inventory inventory, int expectedSize) {
-        int i = inventory.size();
-        if (i < expectedSize) {
-            throw new IllegalArgumentException("Container size " + i + " is smaller than expected " + expectedSize);
-        }
-    }
-
     @Override
     public ItemStack transferSlot(int index) {
         ItemStack itemStack = ItemStack.EMPTY;
@@ -79,6 +71,14 @@ public class PlayerlessShulkerBoxScreenHandler extends PlayerlessScreenHandler {
         Inventories.fromTag(tag, list);
         for (int i = 0; i < list.size(); i++) {
             this.inventory.setStack(i, list.get(i));
+        }
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    protected static void checkSize(Inventory inventory, int expectedSize) {
+        int i = inventory.size();
+        if (i < expectedSize) {
+            throw new IllegalArgumentException("Container size " + i + " is smaller than expected " + expectedSize);
         }
     }
 

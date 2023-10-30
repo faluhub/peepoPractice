@@ -5,9 +5,9 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.redlimerl.speedrunigt.timer.InGameTimer;
 import me.falu.peepopractice.PeepoPractice;
+import me.falu.peepopractice.core.category.utils.InventoryUtils;
 import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import me.falu.peepopractice.core.category.PracticeCategory;
-import me.falu.peepopractice.core.category.utils.InventoryUtils;
 import me.falu.peepopractice.core.category.utils.PracticeCategoryUtils;
 import me.falu.peepopractice.gui.screen.SettingsTypeSelectionScreen;
 import net.fabricmc.loader.api.FabricLoader;
@@ -30,20 +30,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(GameMenuScreen.class)
 public abstract class GameMenuScreenMixin extends ScreenMixin {
-    @Unique
-    private final Text replayText = new TranslatableText("peepopractice.button.replay_split");
-    @Unique
-    private final Text configureText = new TranslatableText("peepopractice.button.configure_split");
-    @Unique
-    private ButtonWidget quitButton;
-    @Unique
-    private boolean renderTitle = false;
-    @Unique
-    private AbstractButtonWidget replayButton;
-    @Unique
-    private AbstractButtonWidget nextButton;
-    @Unique
-    private boolean hasNextCategory;
+    @Unique private ButtonWidget quitButton;
+    @Unique private boolean renderTitle = false;
+    @Unique private final Text replayText = new TranslatableText("peepopractice.button.replay_split");
+    @Unique private final Text configureText = new TranslatableText("peepopractice.button.configure_split");
+    @Unique private AbstractButtonWidget replayButton;
+    @Unique private AbstractButtonWidget nextButton;
+    @Unique private boolean hasNextCategory;
 
     @WrapOperation(
             method = "initWidgets",
@@ -143,11 +136,8 @@ public abstract class GameMenuScreenMixin extends ScreenMixin {
     @Inject(method = "render", at = @At("TAIL"))
     private void peepoPractice$renderTitle(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         if (this.replayButton != null && this.replayButton.active) {
-            if (Screen.hasShiftDown()) {
-                this.replayButton.setMessage(this.configureText);
-            } else {
-                this.replayButton.setMessage(this.replayText);
-            }
+            if (Screen.hasShiftDown()) { this.replayButton.setMessage(this.configureText); }
+            else { this.replayButton.setMessage(this.replayText); }
         }
         if (this.nextButton != null) {
             this.nextButton.visible = FabricLoader.getInstance().isDevelopmentEnvironment() || PeepoPractice.CATEGORY.hasCustomValue("isCompletion") && (Boolean) PeepoPractice.CATEGORY.getCustomValue("isCompletion");

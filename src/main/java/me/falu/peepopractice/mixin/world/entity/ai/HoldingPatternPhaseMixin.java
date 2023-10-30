@@ -35,9 +35,7 @@ public abstract class HoldingPatternPhaseMixin {
 
     @ModifyExpressionValue(method = "method_6842", at = @At(value = "INVOKE", target = "Ljava/util/Random;nextFloat()F"))
     private float peepoPractice$changeTargetHeight(float randomFloat) {
-        if (CategoryPreference.getBoolValue("no_early_flyaway")) {
-            return 0.0F;
-        }
+        if (CategoryPreference.getBoolValue("no_early_flyaway")) { return 0.0F; }
         return randomFloat;
     }
 }

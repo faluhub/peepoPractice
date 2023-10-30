@@ -19,10 +19,7 @@ import java.util.List;
 
 @Mixin(StructureStart.class)
 public abstract class StructureStartMixin {
-    @Mutable
-    @Shadow
-    @Final
-    protected List<StructurePiece> children;
+    @Mutable @Shadow @Final protected List<StructurePiece> children;
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void peepoPractice$customChildrenListType(StructureFeature<?> feature, int chunkX, int chunkZ, BlockBox box, int references, long seed, CallbackInfo ci) {

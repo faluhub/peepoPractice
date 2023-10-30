@@ -1,10 +1,10 @@
 package me.falu.peepopractice.gui.screen;
 
 import me.falu.peepopractice.PeepoPractice;
+import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.core.category.CategoryPreference;
 import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.core.category.utils.PracticeCategoryUtils;
-import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.gui.widget.LimitlessButtonWidget;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resource.language.I18n;
@@ -38,9 +38,7 @@ public class CategoryPreferencesScreen extends Screen {
 
     @Override
     protected void init() {
-        if (this.client == null) {
-            return;
-        }
+        if (this.client == null) { return; }
 
         int offset = this.width / 16;
         int size = this.width / 6 + offset;
@@ -67,11 +65,8 @@ public class CategoryPreferencesScreen extends Screen {
                                     int currentIndex = CategoryPreference.getIndex(value, preference.getChoices());
                                     String next;
 
-                                    try {
-                                        next = preference.getChoices().get(currentIndex + 1);
-                                    } catch (IndexOutOfBoundsException ignored) {
-                                        next = preference.getChoices().get(0);
-                                    }
+                                    try { next = preference.getChoices().get(currentIndex + 1); }
+                                    catch (IndexOutOfBoundsException ignored) { next = preference.getChoices().get(0); }
 
                                     b.setMessage(this.getFormattedText(preference, next));
                                     CategoryPreference.setValue(this.category, preference.getId(), next);

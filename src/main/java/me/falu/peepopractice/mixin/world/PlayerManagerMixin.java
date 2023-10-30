@@ -29,8 +29,7 @@ import java.util.UUID;
 
 @Mixin(PlayerManager.class)
 public abstract class PlayerManagerMixin {
-    @Shadow
-    public abstract MinecraftServer getServer();
+    @Shadow public abstract MinecraftServer getServer();
 
     @ModifyVariable(method = "onPlayerConnect", at = @At("STORE"))
     private RegistryKey<World> peepoPractice$otherDimension(RegistryKey<World> value) {
@@ -64,8 +63,7 @@ public abstract class PlayerManagerMixin {
                             new ServerCommandSource(
                                     new CommandOutput() {
                                         @Override
-                                        public void sendSystemMessage(Text message, UUID senderUuid) {
-                                        }
+                                        public void sendSystemMessage(Text message, UUID senderUuid) {}
 
                                         @Override
                                         public boolean shouldReceiveFeedback() {

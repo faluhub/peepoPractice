@@ -13,16 +13,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LootableContainerBlockEntity.class)
 public abstract class LootableContainerBlockEntityMixin {
-    @Shadow
-    @Nullable
-    protected Identifier lootTableId;
+    @Shadow @Nullable protected Identifier lootTableId;
 
     @SuppressWarnings("CancellableInjectionUsage")
     @Inject(method = "createMenu", at = @At("HEAD"), cancellable = true)
-    protected void peepoPractice$onCreateMenu(CallbackInfoReturnable<ScreenHandler> cir) {
-    }
+    protected void peepoPractice$onCreateMenu(CallbackInfoReturnable<ScreenHandler> cir) {}
 
     @Inject(method = "checkLootInteraction", at = @At("HEAD"))
-    protected void peepoPractice$onCheckLootInteraction(CallbackInfo ci) {
-    }
+    protected void peepoPractice$onCheckLootInteraction(CallbackInfo ci) {}
 }

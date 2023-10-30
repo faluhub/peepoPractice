@@ -38,11 +38,10 @@ public class CustomPortalForcer {
         int q = 0;
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         for (r = j - 16; r <= j + 16; ++r) {
-            e = (double) r + 0.5 - blockPos.getX();
+            e = (double)r + 0.5 - blockPos.getX();
             for (s = l - 16; s <= l + 16; ++s) {
-                f = (double) s + 0.5 - blockPos.getZ();
-                block2:
-                for (t = world.getDimensionHeight() - 1; t >= 0; --t) {
+                f = (double)s + 0.5 - blockPos.getZ();
+                block2: for (t = world.getDimensionHeight() - 1; t >= 0; --t) {
                     if (!world.isAir(mutable.set(r, t, s))) continue;
                     while (t > 0 && world.isAir(mutable.set(r, t - 1, s))) {
                         --t;
@@ -61,12 +60,11 @@ public class CustomPortalForcer {
                                     ab = t + z;
                                     int ac = s + (y - 1) * w - aev * v;
                                     mutable.set(aa, ab, ac);
-                                    if (z < 0 && !world.getBlockState(mutable).getMaterial().isSolid() || z >= 0 && !world.isAir(mutable))
-                                        continue block2;
+                                    if (z < 0 && !world.getBlockState(mutable).getMaterial().isSolid() || z >= 0 && !world.isAir(mutable)) continue block2;
                                 }
                             }
                         }
-                        double g = (double) t + 0.5 - blockPos.getY();
+                        double g = (double)t + 0.5 - blockPos.getY();
                         double h = e * e + g * g + f * f;
                         if (!(d < 0.0) && !(h < d)) continue;
                         d = h;
@@ -80,11 +78,10 @@ public class CustomPortalForcer {
         }
         if (d < 0.0) {
             for (r = j - 16; r <= j + 16; ++r) {
-                e = (double) r + 0.5 - blockPos.getX();
+                e = (double)r + 0.5 - blockPos.getX();
                 for (s = l - 16; s <= l + 16; ++s) {
-                    f = (double) s + 0.5 - blockPos.getZ();
-                    block10:
-                    for (t = world.getDimensionHeight() - 1; t >= 0; --t) {
+                    f = (double)s + 0.5 - blockPos.getZ();
+                    block10: for (t = world.getDimensionHeight() - 1; t >= 0; --t) {
                         if (!world.isAir(mutable.set(r, t, s))) continue;
                         while (t > 0 && world.isAir(mutable.set(r, t - 1, s))) {
                             --t;
@@ -98,11 +95,10 @@ public class CustomPortalForcer {
                                     aa = t + y;
                                     ab = s + (x2 - 1) * w;
                                     mutable.set(z, aa, ab);
-                                    if (y < 0 && !world.getBlockState(mutable).getMaterial().isSolid() || y >= 0 && !world.isAir(mutable))
-                                        continue block10;
+                                    if (y < 0 && !world.getBlockState(mutable).getMaterial().isSolid() || y >= 0 && !world.isAir(mutable)) continue block10;
                                 }
                             }
-                            double g = (double) t + 0.5 - blockPos.getY();
+                            double g = (double)t + 0.5 - blockPos.getY();
                             double h = e * e + g * g + f * f;
                             if (!(d < 0.0) && !(h < d)) continue;
                             d = h;
@@ -176,11 +172,10 @@ public class CustomPortalForcer {
         int q = 0;
         BlockPos.Mutable mutable = new BlockPos.Mutable();
         for (r = j - 16; r <= j + 16; ++r) {
-            e = (double) r + 0.5 - blockPos.getX();
+            e = (double)r + 0.5 - blockPos.getX();
             for (s = l - 16; s <= l + 16; ++s) {
-                f = (double) s + 0.5 - blockPos.getZ();
-                block2:
-                for (t = world.getDimensionHeight() - 1; t >= 0; --t) {
+                f = (double)s + 0.5 - blockPos.getZ();
+                block2: for (t = world.getDimensionHeight() - 1; t >= 0; --t) {
                     if (!world.isAir(mutable.set(r, t, s))) continue;
                     while (t > 0 && world.isAir(mutable.set(r, t - 1, s))) {
                         --t;
@@ -199,12 +194,11 @@ public class CustomPortalForcer {
                                     ab = t + z;
                                     int ac = s + (y - 1) * w - aev * v;
                                     mutable.set(aa, ab, ac);
-                                    if (z < 0 && !world.getBlockState(mutable).getMaterial().isSolid() || z >= 0 && !world.isAir(mutable))
-                                        continue block2;
+                                    if (z < 0 && !world.getBlockState(mutable).getMaterial().isSolid() || z >= 0 && !world.isAir(mutable)) continue block2;
                                 }
                             }
                         }
-                        double g = (double) t + 0.5 - blockPos.getY();
+                        double g = (double)t + 0.5 - blockPos.getY();
                         double h = e * e + g * g + f * f;
                         if (!(d < 0.0) && !(h < d)) continue;
                         d = h;
@@ -218,11 +212,10 @@ public class CustomPortalForcer {
         }
         if (d < 0.0) {
             for (r = j - 16; r <= j + 16; ++r) {
-                e = (double) r + 0.5 - blockPos.getX();
+                e = (double)r + 0.5 - blockPos.getX();
                 for (s = l - 16; s <= l + 16; ++s) {
-                    f = (double) s + 0.5 - blockPos.getZ();
-                    block10:
-                    for (t = world.getDimensionHeight() - 1; t >= 0; --t) {
+                    f = (double)s + 0.5 - blockPos.getZ();
+                    block10: for (t = world.getDimensionHeight() - 1; t >= 0; --t) {
                         if (!world.isAir(mutable.set(r, t, s))) continue;
                         while (t > 0 && world.isAir(mutable.set(r, t - 1, s))) {
                             --t;
@@ -236,11 +229,10 @@ public class CustomPortalForcer {
                                     aa = t + y;
                                     ab = s + (x2 - 1) * w;
                                     mutable.set(z, aa, ab);
-                                    if (y < 0 && !world.getBlockState(mutable).getMaterial().isSolid() || y >= 0 && !world.isAir(mutable))
-                                        continue block10;
+                                    if (y < 0 && !world.getBlockState(mutable).getMaterial().isSolid() || y >= 0 && !world.isAir(mutable)) continue block10;
                                 }
                             }
-                            double g = (double) t + 0.5 - blockPos.getY();
+                            double g = (double)t + 0.5 - blockPos.getY();
                             double h = e * e + g * g + f * f;
                             if (!(d < 0.0) && !(h < d)) continue;
                             d = h;

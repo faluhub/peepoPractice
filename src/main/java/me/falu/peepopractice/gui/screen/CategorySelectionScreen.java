@@ -1,10 +1,10 @@
 package me.falu.peepopractice.gui.screen;
 
 import me.falu.peepopractice.PeepoPractice;
+import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.core.category.PracticeCategoriesAA;
 import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import me.falu.peepopractice.core.category.PracticeCategory;
-import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.gui.widget.CategoryListWidget;
 import me.falu.peepopractice.gui.widget.LimitlessButtonWidget;
 import net.minecraft.client.gui.hud.BackgroundHelper;
@@ -21,8 +21,8 @@ import java.util.List;
 
 public class CategorySelectionScreen extends Screen {
     private final Screen parent;
-    public CategoryListWidget categoryListWidget;
     private SelectionType selectionType = PeepoPractice.LAST_SELECTION_TYPE;
+    public CategoryListWidget categoryListWidget;
     private ButtonWidget doneButton;
     private ButtonWidget configureButton;
 
@@ -179,11 +179,8 @@ public class CategorySelectionScreen extends Screen {
         }
 
         public static SelectionType opposite(SelectionType type) {
-            if (type.equals(ANY)) {
-                return AA;
-            } else {
-                return ANY;
-            }
+            if (type.equals(ANY)) { return AA; }
+            else { return ANY; }
         }
     }
 }

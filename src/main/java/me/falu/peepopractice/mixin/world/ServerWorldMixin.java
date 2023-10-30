@@ -19,22 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerWorld.class)
 public abstract class ServerWorldMixin {
-    @Shadow
-    @Final
-    public static BlockPos END_SPAWN_POS;
-
-    @Inject(method = "createEndSpawnPlatform", at = @At("TAIL"))
-    private static void peepoPractice$noCage(ServerWorld world, CallbackInfo ci) {
-        if (CategoryPreference.getBoolValue("no_cage_spawn")) {
-            BlockPos blockPos = END_SPAWN_POS;
-            int i = blockPos.getX();
-            int j = blockPos.getY() - 2;
-            int k = blockPos.getZ();
-            int xOffset = 6;
-            int yOffset = 15;
-            BlockPos.iterate(i - xOffset, j + 1, k - xOffset, i + xOffset, j + yOffset, k + xOffset).forEach(x -> world.setBlockState(x, Blocks.AIR.getDefaultState()));
-        }
-    }
+    @Shadow @Final public static BlockPos END_SPAWN_POS;
 
     @WrapWithCondition(method = "setSpawnPos", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerChunkManager;addTicket(Lnet/minecraft/server/world/ChunkTicketType;Lnet/minecraft/util/math/ChunkPos;ILjava/lang/Object;)V"))
     private boolean peepoPractice$removeTicket(ServerChunkManager chunkManager, ChunkTicketType<?> ticketType, ChunkPos pos, int radius, Object argument) {
@@ -47,5 +32,18 @@ public abstract class ServerWorldMixin {
             return PeepoPractice.CATEGORY.getPlayerProperties().getSpawnPos();
         }
         return pos;
+    }
+
+    @Inject(method = "createEndSpawnPlatform", at = @At("TAIL"))
+    private static void peepoPractice$noCage(ServerWorld world, CallbackInfo ci) {
+        if (CategoryPreference.getBoolValue("no_cage_spawn")) {
+            BlockPos blockPos = END_SPAWN_POS;
+            int i = blockPos.getX();
+            int j = blockPos.getY() - 2;
+            int k = blockPos.getZ();
+            int xOffset = 6;
+            int yOffset = 15;
+            BlockPos.iterate(i - xOffset, j + 1, k - xOffset, i + xOffset, j + yOffset, k + xOffset).forEach(x -> world.setBlockState(x, Blocks.AIR.getDefaultState()));
+        }
     }
 }

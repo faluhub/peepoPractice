@@ -11,7 +11,7 @@ public class RandomToolItem extends ToolItem {
     private final ToolType toolType;
     private final String[] materials;
 
-    public RandomToolItem(ToolType toolType, String... materials) {
+    public RandomToolItem(ToolType toolType, String ...materials) {
         super(ToolMaterials.DIAMOND, new Settings().group(ItemGroup.TOOLS));
         this.toolType = toolType;
         this.materials = materials;

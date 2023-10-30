@@ -10,13 +10,13 @@ public class EnterVehicleSplitEvent extends SplitEvent {
         return this.vehicle;
     }
 
+    public boolean hasVehicle() {
+        return this.vehicle != null;
+    }
+
     public EnterVehicleSplitEvent setVehicle(EntityType<?> vehicle) {
         this.vehicle = vehicle;
         return this;
-    }
-
-    public boolean hasVehicle() {
-        return this.vehicle != null;
     }
 
     public boolean shouldKeepItem() {

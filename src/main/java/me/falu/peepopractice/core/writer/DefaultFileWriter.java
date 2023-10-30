@@ -9,16 +9,14 @@ import org.reflections.scanners.ResourcesScanner;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class DefaultFileWriter {
     public static final DefaultFileWriter INSTANCE = new DefaultFileWriter();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-    @SuppressWarnings({"ResultOfMethodCallIgnored", "BlockingMethodInNonBlockingContext"})
+    @SuppressWarnings({ "ResultOfMethodCallIgnored", "BlockingMethodInNonBlockingContext" })
     public void writeDefaultFiles() {
         try {
             File folder = FabricLoader.getInstance().getConfigDir().resolve(PeepoPractice.MOD_NAME).toFile();
@@ -79,11 +77,8 @@ public class DefaultFileWriter {
     public File getResourceAsFile(String resourcePath, String name) {
         try {
             File tempFile = new File(System.getProperty("java.io.tmpdir") + "/" + name);
-            if (tempFile.exists()) {
-                return tempFile;
-            } else {
-                boolean ignored = tempFile.createNewFile();
-            }
+            if (tempFile.exists()) { return tempFile; }
+            else { boolean ignored = tempFile.createNewFile(); }
             InputStream in = this.getClass().getClassLoader().getResourceAsStream(resourcePath);
             if (in == null) {
                 PeepoPractice.LOGGER.error("Couldn't open input stream for datapack '{}'.", name);

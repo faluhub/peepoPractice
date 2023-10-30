@@ -21,17 +21,10 @@ import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(StructureFeature.class)
 public abstract class StructureFeatureMixin<C extends FeatureConfig> {
-    @Shadow
-    protected abstract boolean shouldStartAt(ChunkGenerator chunkGenerator, BiomeSource biomeSource, long l, ChunkRandom chunkRandom, int i, int j, Biome biome, ChunkPos chunkPos, C featureConfig);
-
-    @Shadow
-    public abstract ChunkPos method_27218(StructureConfig structureConfig, long l, ChunkRandom chunkRandom, int i, int j);
-
-    @Shadow
-    protected abstract StructureStart<C> method_28656(int i, int j, BlockBox blockBox, int k, long l);
-
-    @Shadow
-    public abstract String getName();
+    @Shadow protected abstract boolean shouldStartAt(ChunkGenerator chunkGenerator, BiomeSource biomeSource, long l, ChunkRandom chunkRandom, int i, int j, Biome biome, ChunkPos chunkPos, C featureConfig);
+    @Shadow public abstract ChunkPos method_27218(StructureConfig structureConfig, long l, ChunkRandom chunkRandom, int i, int j);
+    @Shadow protected abstract StructureStart<C> method_28656(int i, int j, BlockBox blockBox, int k, long l);
+    @Shadow public abstract String getName();
 
     @Unique
     private boolean checkArtificialStructure(ChunkPos chunkPos) {

@@ -29,11 +29,8 @@ import java.util.Random;
 
 @Mixin(StructurePoolBasedGenerator.class)
 public abstract class StructurePoolBasedGeneratorMixin {
-    @Shadow
-    @Final
-    public static StructurePoolRegistry REGISTRY;
-    @Unique
-    private static StructurePieceType TYPE;
+    @Shadow @Final public static StructurePoolRegistry REGISTRY;
+    @Unique private static StructurePieceType TYPE;
 
     @Inject(method = "addPieces", at = @At("HEAD"))
     private static void peepoPractice$capturePieceType(Identifier startPoolId, int size, StructurePoolBasedGenerator.PieceFactory pieceFactory, ChunkGenerator chunkGenerator, StructureManager structureManager, BlockPos blockPos, List<? super PoolStructurePiece> list, Random random, boolean bl, boolean bl2, CallbackInfo ci) {

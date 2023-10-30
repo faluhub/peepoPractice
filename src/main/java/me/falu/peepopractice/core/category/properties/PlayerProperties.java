@@ -1,7 +1,7 @@
 package me.falu.peepopractice.core.category.properties;
 
-import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.core.exception.NotInitializedException;
+import me.falu.peepopractice.core.category.PracticeCategory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.effect.StatusEffect;
@@ -15,16 +15,20 @@ import java.util.Random;
 
 @SuppressWarnings("UnusedDeclaration")
 public class PlayerProperties extends BaseProperties {
-    private final List<String> commands = new ArrayList<>();
-    private final List<PotionEffect> potionEffects = new ArrayList<>();
     private BlockPos spawnPos;
     private PracticeCategory.ExecuteReturnTask<BlockPos> spawnPosTask;
     private Vec2f spawnAngle;
     private PracticeCategory.ExecuteReturnTask<Vec2f> spawnAngleTask;
     private EntityType<? extends Entity> vehicle;
+    private final List<String> commands = new ArrayList<>();
+    private final List<PotionEffect> potionEffects = new ArrayList<>();
 
     public BlockPos getSpawnPos() {
         return this.spawnPos != null ? this.spawnPos : new BlockPos(0, 62, 0);
+    }
+
+    public boolean hasSpawnPos() {
+        return this.spawnPos != null;
     }
 
     public PlayerProperties setSpawnPos(BlockPos spawnPos) {
@@ -37,17 +41,8 @@ public class PlayerProperties extends BaseProperties {
         return this;
     }
 
-    public boolean hasSpawnPos() {
-        return this.spawnPos != null;
-    }
-
     public Vec2f getSpawnAngle() {
         return this.spawnAngle != null ? this.spawnAngle : new Vec2f(0.0F, 0.0F);
-    }
-
-    public PlayerProperties setSpawnAngle(PracticeCategory.ExecuteReturnTask<Vec2f> spawnAngleTask) {
-        this.spawnAngleTask = spawnAngleTask;
-        return this;
     }
 
     public boolean hasSpawnAngle() {
@@ -59,17 +54,22 @@ public class PlayerProperties extends BaseProperties {
         return this;
     }
 
+    public PlayerProperties setSpawnAngle(PracticeCategory.ExecuteReturnTask<Vec2f> spawnAngleTask) {
+        this.spawnAngleTask = spawnAngleTask;
+        return this;
+    }
+
     public EntityType<? extends Entity> getVehicle() {
         return this.vehicle;
+    }
+
+    public boolean hasVehicle() {
+        return this.vehicle != null;
     }
 
     public PlayerProperties setVehicle(EntityType<? extends Entity> vehicle) {
         this.vehicle = vehicle;
         return this;
-    }
-
-    public boolean hasVehicle() {
-        return this.vehicle != null;
     }
 
     public List<String> getCommands() {
@@ -117,13 +117,13 @@ public class PlayerProperties extends BaseProperties {
             return this.effect;
         }
 
+        public boolean hasEffect() {
+            return this.effect != null;
+        }
+
         public PotionEffect setEffect(StatusEffect effect) {
             this.effect = effect;
             return this;
-        }
-
-        public boolean hasEffect() {
-            return this.effect != null;
         }
 
         public int getAmplifier() {
@@ -148,13 +148,13 @@ public class PlayerProperties extends BaseProperties {
             return this.condition;
         }
 
+        public boolean hasCondition() {
+            return this.condition != null;
+        }
+
         public PotionEffect setCondition(PracticeCategory.ExecuteReturnTask<Boolean> condition) {
             this.condition = condition;
             return this;
-        }
-
-        public boolean hasCondition() {
-            return this.condition != null;
         }
     }
 }

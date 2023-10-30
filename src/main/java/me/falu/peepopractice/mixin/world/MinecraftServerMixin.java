@@ -4,9 +4,9 @@ import com.google.common.collect.ImmutableList;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import me.falu.peepopractice.PeepoPractice;
+import me.falu.peepopractice.core.exception.NotInitializedException;
 import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import me.falu.peepopractice.core.category.properties.StructureProperties;
-import me.falu.peepopractice.core.exception.NotInitializedException;
 import me.falu.peepopractice.owner.GenerationShutdownOwner;
 import net.minecraft.command.DataCommandStorage;
 import net.minecraft.entity.boss.BossBarManager;
@@ -46,9 +46,7 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.io.IOException;
@@ -59,81 +57,26 @@ import java.util.concurrent.Executor;
 
 @Mixin(MinecraftServer.class)
 public abstract class MinecraftServerMixin implements GenerationShutdownOwner {
-    @Shadow
-    @Final
-    private static Logger LOGGER;
-    @Shadow
-    @Final
-    protected SaveProperties saveProperties;
-    @Shadow
-    @Final
-    protected RegistryTracker.Modifiable dimensionTracker;
-    @Shadow
-    @Final
-    protected LevelStorage.Session session;
-    @Shadow
-    @Final
-    private Executor workerExecutor;
-    @Shadow
-    @Final
-    private Map<RegistryKey<World>, ServerWorld> worlds;
-    @Shadow
-    private @Nullable DataCommandStorage dataCommandStorage;
-    @Shadow
-    @Final
-    private Snooper snooper;
-    @Shadow
-    private ServerResourceManager serverResourceManager;
-
-    @SuppressWarnings("SameParameterValue")
-    @Shadow
-    private static void setupSpawn(ServerWorld serverWorld, ServerWorldProperties serverWorldProperties, boolean bl, boolean bl2, boolean bl3) {
-        throw new UnsupportedOperationException();
-    }
-
-    @ModifyExpressionValue(method = "setupSpawn", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/biome/source/BiomeSource;getSpawnBiomes()Ljava/util/List;"))
-    private static List<Biome> peepoPractice$addOceanSpawnBiome(List<Biome> spawnBiomes) {
-        if (PeepoPractice.CATEGORY.hasWorldProperties()) {
-            PeepoPractice.CATEGORY.getWorldProperties().getProBiomes().forEach(v -> {
-                if (BiomeLayers.isOcean(Registry.BIOME.getRawId(v.getBiome()))) {
-                    spawnBiomes.add(v.getBiome());
-                }
-            });
-        }
-        return spawnBiomes;
-    }
-
-    @Shadow
-    protected abstract void initScoreboard(PersistentStateManager persistentStateManager);
-
-    @Shadow
-    protected abstract void setToDebugWorldProperties(SaveProperties properties);
-
-    @Shadow
-    public abstract PlayerManager getPlayerManager();
-
-    @Shadow
-    public abstract BossBarManager getBossBarManager();
-
-    @Shadow
-    public abstract ServerWorld getOverworld();
-
-    @SuppressWarnings("UnusedReturnValue")
-    @Shadow
-    public abstract boolean save(boolean bl, boolean bl2, boolean bl3);
-
-    @Shadow
-    protected abstract void method_16208();
-
-    @Shadow
-    @Nullable
-    public abstract ServerNetworkIo getNetworkIo();
-
-    @Shadow
-    public abstract Iterable<ServerWorld> getWorlds();
-
-    @Shadow
-    protected abstract void setFavicon(ServerMetadata metadata);
+    @Shadow @Final protected SaveProperties saveProperties;
+    @Shadow @Final protected RegistryTracker.Modifiable dimensionTracker;
+    @Shadow @Final private Executor workerExecutor;
+    @Shadow @Final protected LevelStorage.Session session;
+    @Shadow @Final private Map<RegistryKey<World>, ServerWorld> worlds;
+    @Shadow protected abstract void initScoreboard(PersistentStateManager persistentStateManager);
+    @Shadow private @Nullable DataCommandStorage dataCommandStorage;
+    @SuppressWarnings("SameParameterValue") @Shadow private static void setupSpawn(ServerWorld serverWorld, ServerWorldProperties serverWorldProperties, boolean bl, boolean bl2, boolean bl3) { throw new UnsupportedOperationException(); }
+    @Shadow protected abstract void setToDebugWorldProperties(SaveProperties properties);
+    @Shadow public abstract PlayerManager getPlayerManager();
+    @Shadow public abstract BossBarManager getBossBarManager();
+    @Shadow public abstract ServerWorld getOverworld();
+    @SuppressWarnings("UnusedReturnValue") @Shadow public abstract boolean save(boolean bl, boolean bl2, boolean bl3);
+    @Shadow protected abstract void method_16208();
+    @Shadow @Final private static Logger LOGGER;
+    @Shadow @Nullable public abstract ServerNetworkIo getNetworkIo();
+    @Shadow public abstract Iterable<ServerWorld> getWorlds();
+    @Shadow @Final private Snooper snooper;
+    @Shadow private ServerResourceManager serverResourceManager;
+    @Shadow protected abstract void setFavicon(ServerMetadata metadata);
 
     /**
      * @author falu, contaria
@@ -141,9 +84,7 @@ public abstract class MinecraftServerMixin implements GenerationShutdownOwner {
      */
     @Inject(method = "createWorlds", at = @At("HEAD"), cancellable = true)
     private void peepoPractice$createWorlds(WorldGenerationProgressListener worldGenerationProgressListener, CallbackInfo ci) {
-        if (!PeepoPractice.CATEGORY.hasWorldProperties() || !PeepoPractice.CATEGORY.getWorldProperties().hasWorldRegistryKey()) {
-            return;
-        }
+        if (!PeepoPractice.CATEGORY.hasWorldProperties() || !PeepoPractice.CATEGORY.getWorldProperties().hasWorldRegistryKey()) { return; }
         ci.cancel();
 
         ServerWorldProperties serverWorldProperties = this.saveProperties.getMainWorldProperties();
@@ -154,9 +95,7 @@ public abstract class MinecraftServerMixin implements GenerationShutdownOwner {
         ImmutableList<Spawner> list = ImmutableList.of(new PhantomSpawner(), new PillagerSpawner(), new CatSpawner(), new ZombieSiegeManager(), new WanderingTraderManager(serverWorldProperties));
         SimpleRegistry<DimensionOptions> simpleRegistry = generatorOptions.getDimensionMap();
         DimensionOptions dimensionOptions = simpleRegistry.get(RegistryKey.of(Registry.DIMENSION_OPTIONS, PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey().getValue()));
-        if (dimensionOptions == null) {
-            return;
-        }
+        if (dimensionOptions == null) { return; }
         DimensionType dimensionType = dimensionOptions.getDimensionType();
         ChunkGenerator chunkGenerator = dimensionOptions.getChunkGenerator();
         RegistryKey<DimensionType> registryKey = this.dimensionTracker.getDimensionTypeRegistry().getKey(dimensionType).orElseThrow(() -> new IllegalStateException("Unregistered dimension type: " + dimensionType));
@@ -182,11 +121,8 @@ public abstract class MinecraftServerMixin implements GenerationShutdownOwner {
         }
         if (!initializedStructures) {
             for (StructureProperties properties : PeepoPractice.CATEGORY.getStructureProperties()) {
-                try {
-                    properties.reset(new Random(chunkGenerator.field_24748), serverWorld);
-                } catch (NotInitializedException ignored) {
-                    PeepoPractice.log(PeepoPractice.CATEGORY.getId() + " in an infinite loop. (Occurrence 2)");
-                }
+                try { properties.reset(new Random(chunkGenerator.field_24748), serverWorld); }
+                catch (NotInitializedException ignored) { PeepoPractice.log(PeepoPractice.CATEGORY.getId() + " in an infinite loop. (Occurrence 2)"); }
             }
         }
 
@@ -205,10 +141,8 @@ public abstract class MinecraftServerMixin implements GenerationShutdownOwner {
                 }
             } catch (Throwable throwable) {
                 CrashReport crashReport = CrashReport.create(throwable, "Exception initializing level");
-                try {
-                    serverWorld.addDetailsToCrashReport(crashReport);
-                } catch (Throwable ignored) {
-                }
+                try { serverWorld.addDetailsToCrashReport(crashReport); }
+                catch (Throwable ignored) {}
                 throw new CrashException(crashReport);
             }
             serverWorldProperties.setInitialized(true);
@@ -219,8 +153,7 @@ public abstract class MinecraftServerMixin implements GenerationShutdownOwner {
         }
         for (Map.Entry<RegistryKey<DimensionOptions>, DimensionOptions> entry : simpleRegistry.getEntries()) {
             RegistryKey<DimensionOptions> registryKey2 = entry.getKey();
-            if (registryKey2.getValue() == PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey().getValue())
-                continue;
+            if (registryKey2.getValue() == PeepoPractice.CATEGORY.getWorldProperties().getWorldRegistryKey().getValue()) continue;
             RegistryKey<World> registryKey3 = RegistryKey.of(Registry.DIMENSION, registryKey2.getValue());
             DimensionType dimensionType2 = entry.getValue().getDimensionType();
             RegistryKey<DimensionType> registryKey4 = this.dimensionTracker.getDimensionTypeRegistry().getKey(dimensionType2).orElseThrow(() -> new IllegalStateException("Unregistered dimension type: " + dimensionType2));
@@ -253,6 +186,18 @@ public abstract class MinecraftServerMixin implements GenerationShutdownOwner {
         }
     }
 
+    @ModifyExpressionValue(method = "setupSpawn", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/biome/source/BiomeSource;getSpawnBiomes()Ljava/util/List;"))
+    private static List<Biome> peepoPractice$addOceanSpawnBiome(List<Biome> spawnBiomes) {
+        if (PeepoPractice.CATEGORY.hasWorldProperties()) {
+            PeepoPractice.CATEGORY.getWorldProperties().getProBiomes().forEach(v -> {
+                if (BiomeLayers.isOcean(Registry.BIOME.getRawId(v.getBiome()))) {
+                    spawnBiomes.add(v.getBiome());
+                }
+            });
+        }
+        return spawnBiomes;
+    }
+
     @ModifyReturnValue(method = "getSpawnRadius", at = @At("RETURN"))
     private int peepoPractice$removeSpawnRadius(int spawnRadius) {
         if (!PeepoPractice.CATEGORY.equals(PracticeCategoriesAny.EMPTY)) {
@@ -264,30 +209,20 @@ public abstract class MinecraftServerMixin implements GenerationShutdownOwner {
     @Override
     public void peepoPractice$shutdown() {
         LOGGER.info("Stopping server");
-        if (this.getNetworkIo() != null) {
-            this.getNetworkIo().stop();
-        }
+        if (this.getNetworkIo() != null) { this.getNetworkIo().stop(); }
         for (ServerWorld world : this.getWorlds()) {
             world.savingDisabled = false;
             ((GenerationShutdownOwner) world.getChunkManager().threadedAnvilChunkStorage).peepoPractice$shutdown();
         }
-        if (this.snooper.isActive()) {
-            this.snooper.cancel();
-        }
+        if (this.snooper.isActive()) { this.snooper.cancel(); }
         this.serverResourceManager.close();
-        try {
-            this.session.close();
-        } catch (IOException e) {
-            LOGGER.error("Failed to unlock level {}", this.session.getDirectoryName(), e);
-        }
+        try { this.session.close(); }
+        catch (IOException e) { LOGGER.error("Failed to unlock level {}", this.session.getDirectoryName(), e); }
     }
 
     @Redirect(method = "runServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;setFavicon(Lnet/minecraft/server/ServerMetadata;)V"))
     private void peepoPractice$preventIconCrash(MinecraftServer instance, ServerMetadata metadata) {
-        try {
-            this.setFavicon(metadata);
-        } catch (IllegalStateException ignored) {
-            PeepoPractice.LOGGER.error("Failed to update metadata icon. Prevented crash.");
-        }
+        try { this.setFavicon(metadata); }
+        catch (IllegalStateException ignored) { PeepoPractice.LOGGER.error("Failed to update metadata icon. Prevented crash."); }
     }
 }

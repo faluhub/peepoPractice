@@ -11,25 +11,25 @@ public class ChangeDimensionSplitEvent extends SplitEvent {
         return this.toDimension;
     }
 
+    public boolean hasToDimension() {
+        return this.toDimension != null;
+    }
+
     public ChangeDimensionSplitEvent setToDimension(RegistryKey<World> toDimension) {
         this.toDimension = toDimension;
         return this;
-    }
-
-    public boolean hasToDimension() {
-        return this.toDimension != null;
     }
 
     public RegistryKey<World> getFromDimension() {
         return this.fromDimension;
     }
 
+    public boolean hasFromDimension() {
+        return this.fromDimension != null;
+    }
+
     public ChangeDimensionSplitEvent setFromDimension(RegistryKey<World> fromDimension) {
         this.fromDimension = fromDimension;
         return this;
-    }
-
-    public boolean hasFromDimension() {
-        return this.fromDimension != null;
     }
 }

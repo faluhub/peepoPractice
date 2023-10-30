@@ -4,23 +4,17 @@ import com.google.gson.*;
 import me.falu.peepopractice.PeepoPractice;
 import net.fabricmc.loader.api.FabricLoader;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 public class PracticeWriter {
+    static { DefaultFileWriter.INSTANCE.writeDefaultFiles(); }
+
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     public static final PracticeWriter PREFERENCES_WRITER = new PracticeWriter("preferences.json");
     public static final PracticeWriter INVENTORY_WRITER = new PracticeWriter("inventory.json");
     public static final PracticeWriter COMPLETIONS_WRITER = new PracticeWriter("completions.json");
     public static final PracticeWriter STANDARD_SETTINGS_WRITER = new PracticeWriter("standard_settings.json");
     public static final PracticeWriter GLOBAL_CONFIG = new PracticeWriter("global_config.json");
-
-    static {
-        DefaultFileWriter.INSTANCE.writeDefaultFiles();
-    }
-
     private final File file;
     private JsonObject local;
     private boolean changed = false;
@@ -30,7 +24,7 @@ public class PracticeWriter {
         this.update();
     }
 
-    @SuppressWarnings({"ResultOfMethodCallIgnored", "BlockingMethodInNonBlockingContext"})
+    @SuppressWarnings({ "ResultOfMethodCallIgnored", "BlockingMethodInNonBlockingContext" })
     private File create(String fileName) {
         File folder = FabricLoader.getInstance().getConfigDir().resolve(PeepoPractice.MOD_NAME).toFile();
         if (!folder.exists()) {
@@ -38,11 +32,8 @@ public class PracticeWriter {
         }
         File file = folder.toPath().resolve(fileName).toFile();
         if (!file.exists()) {
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            try { file.createNewFile(); }
+            catch (IOException e) { throw new RuntimeException(e); }
         }
         return file;
     }
@@ -58,8 +49,7 @@ public class PracticeWriter {
             writer.close();
 
             PeepoPractice.log("Wrote to '" + this.file.getName() + "'.");
-        } catch (IOException ignored) {
-        }
+        } catch (IOException ignored) {}
         this.update();
     }
 
@@ -70,9 +60,7 @@ public class PracticeWriter {
 
     @SuppressWarnings("BlockingMethodInNonBlockingContext")
     public JsonObject get() {
-        if (this.local != null) {
-            return this.local;
-        }
+        if (this.local != null) { return this.local; }
 
         this.create(this.file.getName());
 
@@ -84,8 +72,7 @@ public class PracticeWriter {
             reader.close();
 
             return obj == null || obj.equals(JsonNull.INSTANCE) ? new JsonObject() : (JsonObject) obj;
-        } catch (IOException ignored) {
-        }
+        } catch (IOException ignored) {}
 
         return null;
     }

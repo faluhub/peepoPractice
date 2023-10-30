@@ -15,12 +15,8 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(Carver.class)
 public abstract class CarverMixin {
-    @Shadow
-    @Final
-    public static Carver<ProbabilityConfig> UNDERWATER_CANYON;
-
-    @Shadow
-    public abstract Codec<ConfiguredCarver<ProbabilityConfig>> getCodec();
+    @Shadow public abstract Codec<ConfiguredCarver<ProbabilityConfig>> getCodec();
+    @Shadow @Final public static Carver<ProbabilityConfig> UNDERWATER_CANYON;
 
     @WrapOperation(method = "carveRegion", at = @At(value = "INVOKE", target = "Ljava/lang/Math;min(II)I", ordinal = 1))
     private int peepoPractice$alwaysExposed(int a, int b, Operation<Integer> original) {

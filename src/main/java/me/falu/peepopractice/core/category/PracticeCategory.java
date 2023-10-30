@@ -1,12 +1,12 @@
 package me.falu.peepopractice.core.category;
 
 import com.google.gson.JsonObject;
+import me.falu.peepopractice.core.exception.NotInitializedException;
+import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.core.category.properties.PlayerProperties;
 import me.falu.peepopractice.core.category.properties.StructureProperties;
 import me.falu.peepopractice.core.category.properties.WorldProperties;
 import me.falu.peepopractice.core.category.properties.event.SplitEvent;
-import me.falu.peepopractice.core.exception.NotInitializedException;
-import me.falu.peepopractice.core.writer.PracticeWriter;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
@@ -19,19 +19,19 @@ import java.util.*;
 
 @SuppressWarnings("UnusedDeclaration")
 public class PracticeCategory {
+    private String id;
+    private PlayerProperties playerProperties;
     private final List<StructureProperties> structureProperties = new ArrayList<>();
+    private WorldProperties worldProperties;
+    private SplitEvent splitEvent;
     private final List<CategoryPreference> preferences;
+    private boolean hidden;
+    private boolean canHaveEmptyInventory;
+    private boolean fillerCategory;
     private final boolean custom;
     private final boolean aa;
     private final Map<String, Object> customValues = new HashMap<>();
     private final Map<String, Object> permaValues = new HashMap<>();
-    private String id;
-    private PlayerProperties playerProperties;
-    private WorldProperties worldProperties;
-    private SplitEvent splitEvent;
-    private boolean hidden;
-    private boolean canHaveEmptyInventory;
-    private boolean fillerCategory;
 
     public PracticeCategory() {
         this(false, false);
@@ -46,11 +46,8 @@ public class PracticeCategory {
         this.aa = aa;
         this.custom = custom;
         if (!this.custom) {
-            if (aa) {
-                PracticeCategoriesAA.ALL.add(this);
-            } else {
-                PracticeCategoriesAny.ALL.add(this);
-            }
+            if (aa) { PracticeCategoriesAA.ALL.add(this); }
+            else { PracticeCategoriesAny.ALL.add(this); }
         }
     }
 
@@ -73,14 +70,14 @@ public class PracticeCategory {
         return this.playerProperties;
     }
 
+    public boolean hasPlayerProperties() {
+        return this.playerProperties != null;
+    }
+
     public PracticeCategory setPlayerProperties(PlayerProperties playerProperties) {
         this.playerProperties = playerProperties;
         this.playerProperties.setCategory(this);
         return this;
-    }
-
-    public boolean hasPlayerProperties() {
-        return this.playerProperties != null;
     }
 
     public List<StructureProperties> getStructureProperties() {
@@ -118,28 +115,28 @@ public class PracticeCategory {
         return this.worldProperties;
     }
 
+    public boolean hasWorldProperties() {
+        return this.worldProperties != null;
+    }
+
     public PracticeCategory setWorldProperties(WorldProperties worldProperties) {
         this.worldProperties = worldProperties;
         this.worldProperties.setCategory(this);
         return this;
     }
 
-    public boolean hasWorldProperties() {
-        return this.worldProperties != null;
-    }
-
     public SplitEvent getSplitEvent() {
         return this.splitEvent;
+    }
+
+    public boolean hasSplitEvent() {
+        return this.splitEvent != null;
     }
 
     public PracticeCategory setSplitEvent(SplitEvent splitEvent) {
         this.splitEvent = splitEvent;
         this.splitEvent.setCategory(this);
         return this;
-    }
-
-    public boolean hasSplitEvent() {
-        return this.splitEvent != null;
     }
 
     public boolean isHidden() {
@@ -239,14 +236,10 @@ public class PracticeCategory {
     }
 
     public boolean hasConfiguredInventory() {
-        if (this.canHaveEmptyInventory) {
-            return true;
-        }
+        if (this.canHaveEmptyInventory) { return true; }
         PracticeWriter writer = PracticeWriter.INVENTORY_WRITER;
         JsonObject config = writer.get();
-        if (!config.has(this.getId())) {
-            return false;
-        }
+        if (!config.has(this.getId())) { return false; }
         JsonObject inventory = config.get(this.getId()).getAsJsonObject();
         return inventory.size() > 0;
     }

@@ -14,16 +14,12 @@ import java.io.File;
 
 @Mixin(ThreadedAnvilChunkStorage.class)
 public abstract class ThreadedAnvilChunkStorageMixin extends VersionedChunkStorage implements GenerationShutdownOwner {
-    @Shadow
-    @Final
-    private ChunkTaskPrioritySystem chunkTaskPrioritySystem;
+    @Shadow @Final private ChunkTaskPrioritySystem chunkTaskPrioritySystem;
+    @Shadow protected abstract PointOfInterestStorage getPointOfInterestStorage();
 
     public ThreadedAnvilChunkStorageMixin(File file, DataFixer dataFixer, boolean bl) {
         super(file, dataFixer, bl);
     }
-
-    @Shadow
-    protected abstract PointOfInterestStorage getPointOfInterestStorage();
 
     @Override
     public void peepoPractice$shutdown() {
