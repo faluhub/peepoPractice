@@ -62,7 +62,9 @@ public abstract class LevelLoadingScreenMixin extends Screen {
             original.call(matrices, worldGenerationProgressTracker, i, j, k, l);
             return;
         }
-        if (this.client == null) { return; }
+        if (this.client == null) {
+            return;
+        }
         this.client.getTextureManager().bindTexture(WIDE_PEEPO_HAPPY);
         int percentage = Math.min(worldGenerationProgressTracker.getProgressPercentage(), 100);
         int textureHeight = 75 / 2;

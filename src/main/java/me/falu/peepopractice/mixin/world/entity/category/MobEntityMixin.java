@@ -17,5 +17,5 @@ public abstract class MobEntityMixin extends LivingEntity {
 
     @SuppressWarnings("CancellableInjectionUsage")
     @Inject(method = "dropLoot", at = @At("HEAD"), cancellable = true)
-    protected void peepoPractice$onDropLoot(CallbackInfo ci) {}
+    protected void peepoPractice$onDropLoot(CallbackInfo ci) { }
 }

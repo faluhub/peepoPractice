@@ -16,7 +16,9 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.WorldChunk;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 public class PracticeCategoryUtils {
     public static final String ENABLED = "peepopractice.text.enabled";
@@ -32,7 +34,9 @@ public class PracticeCategoryUtils {
 
     public static boolean parseBoolean(String value) {
         List<String> list = Arrays.asList(BOOLEAN_LIST);
-        if (!list.contains(value)) { return true; }
+        if (!list.contains(value)) {
+            return true;
+        }
         return value.equals(ENABLED);
     }
 
@@ -42,17 +46,24 @@ public class PracticeCategoryUtils {
         boolean bl = client.isInSingleplayer();
         boolean bl2 = client.isConnectedToRealms();
 
-        if (client.world != null) { client.world.disconnect(); }
+        if (client.world != null) {
+            client.world.disconnect();
+        }
 
-        if (bl) { client.disconnect(new SaveLevelScreen(new TranslatableText("menu.savingLevel"))); }
-        else { client.disconnect(); }
+        if (bl) {
+            client.disconnect(new SaveLevelScreen(new TranslatableText("menu.savingLevel")));
+        } else {
+            client.disconnect();
+        }
 
-        if (bl && close) { client.openScreen(new TitleScreen()); }
-        else if (bl2) {
+        if (bl && close) {
+            client.openScreen(new TitleScreen());
+        } else if (bl2) {
             RealmsBridge realmsBridge = new RealmsBridge();
             realmsBridge.switchToRealms(new TitleScreen());
+        } else {
+            client.openScreen(new MultiplayerScreen(new TitleScreen()));
         }
-        else { client.openScreen(new MultiplayerScreen(new TitleScreen())); }
     }
 
     public static int findTopPos(ServerWorld world, BlockPos blockPos) {
@@ -69,8 +80,12 @@ public class PracticeCategoryUtils {
             for (int k = i + 1; k >= 0; --k) {
                 mutable.set(x, k, z);
                 BlockState blockState2 = world.getBlockState(mutable);
-                if (!blockState2.getFluidState().isEmpty()) break;
-                if (!blockState2.equals(blockState)) continue;
+                if (!blockState2.getFluidState().isEmpty()) {
+                    break;
+                }
+                if (!blockState2.equals(blockState)) {
+                    continue;
+                }
                 return mutable.up().toImmutable().getY();
             }
         } else {

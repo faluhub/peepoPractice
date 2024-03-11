@@ -7,13 +7,13 @@ import com.google.gson.JsonObject;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.datafixers.util.Pair;
 import me.falu.peepopractice.PeepoPractice;
-import me.falu.peepopractice.core.category.utils.InventoryUtils;
-import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.core.category.PracticeCategory;
+import me.falu.peepopractice.core.category.utils.InventoryUtils;
 import me.falu.peepopractice.core.playerless.PlayerlessHandledScreen;
 import me.falu.peepopractice.core.playerless.PlayerlessInventory;
 import me.falu.peepopractice.core.playerless.PlayerlessPlayerScreenHandler;
 import me.falu.peepopractice.core.playerless.PlayerlessScreenHandler;
+import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.gui.widget.LimitlessButtonWidget;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -34,7 +34,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.*;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
@@ -52,7 +53,10 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
@@ -60,15 +64,15 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
     public static final Identifier TABS_TEXTURE = new Identifier("textures/gui/container/creative_inventory/tabs.png");
     public static final SimpleInventory displayInv = new SimpleInventory(45);
     private static int SELECTED_TAB = ItemGroup.BUILDING_BLOCKS.getIndex();
+    private final Map<Identifier, Tag<Item>> searchResultTags = Maps.newTreeMap();
+    private final Screen parent;
+    private final PracticeCategory category;
     private float scrollPosition;
     private boolean scrolling;
     private TextFieldWidget searchBox;
     private ImmutableList<Slot> slots;
     @Nullable private Slot deleteItemSlot;
     private boolean ignoreTypedCharacter;
-    private final Map<Identifier, Tag<Item>> searchResultTags = Maps.newTreeMap();
-    private final Screen parent;
-    private final PracticeCategory category;
     private boolean lastClickOutsideBounds;
 
     public EditInventoryScreen(Screen parent, PracticeCategory category) {
@@ -92,6 +96,109 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         return SELECTED_TAB;
     }
 
+    private void setSelectedTab(ItemGroup group) {
+        int i = SELECTED_TAB;
+        SELECTED_TAB = group.getIndex();
+        this.cursorDragSlots.clear();
+        ((PlayerlessCreativeScreenHandler) this.handler).itemList.clear();
+        if (group == ItemGroup.HOTBAR && this.client != null) {
+            HotbarStorage hotbarStorage = this.client.getCreativeHotbarStorage();
+            for (int j = 0; j < 9; ++j) {
+                HotbarStorageEntry hotbarStorageEntry = hotbarStorage.getSavedHotbar(j);
+                if (hotbarStorageEntry.isEmpty()) {
+                    for (int k = 0; k < 9; ++k) {
+                        if (k == j) {
+                            ItemStack itemStack = new ItemStack(Items.PAPER);
+                            itemStack.getOrCreateSubTag("CustomCreativeLock");
+                            Text text = this.client.options.keysHotbar[j].getBoundKeyLocalizedText();
+                            Text text2 = this.client.options.keySaveToolbarActivator.getBoundKeyLocalizedText();
+                            itemStack.setCustomName(new TranslatableText("inventory.hotbarInfo", text2, text));
+                            ((PlayerlessCreativeScreenHandler) this.handler).itemList.add(itemStack);
+                            continue;
+                        }
+                        ((PlayerlessCreativeScreenHandler) this.handler).itemList.add(ItemStack.EMPTY);
+                    }
+                    continue;
+                }
+                ((PlayerlessCreativeScreenHandler) this.handler).itemList.addAll(hotbarStorageEntry);
+            }
+        } else if (group != ItemGroup.SEARCH) {
+            group.appendStacks(((PlayerlessCreativeScreenHandler) this.handler).itemList);
+        }
+
+        if (group == ItemGroup.INVENTORY) {
+            PlayerlessPlayerScreenHandler screenHandler = PeepoPractice.PLAYERLESS_PLAYER_SCREEN_HANDLER;
+            if (this.slots == null) {
+                this.slots = ImmutableList.copyOf(this.handler.slots);
+            }
+
+            this.handler.slots.clear();
+
+            int aa;
+
+            for (int l = 0; l < screenHandler.slots.size(); ++l) {
+                int t;
+                int v;
+                int w;
+                int x;
+                if (l >= 5 && l < 9) {
+                    v = l - 5;
+                    w = v / 2;
+                    x = v % 2;
+                    t = 54 + w * 54;
+                    aa = 6 + x * 27;
+                } else if (l < 5) {
+                    t = -2000;
+                    aa = -2000;
+                } else if (l == 45) {
+                    t = 35;
+                    aa = 20;
+                } else {
+                    v = l - 9;
+                    w = v % 9;
+                    x = v / 9;
+                    t = 9 + w * 18;
+                    if (l >= 36) {
+                        aa = 112;
+                    } else {
+                        aa = 54 + x * 18;
+                    }
+                }
+
+                Slot slot = new EditInventoryScreen.CreativeSlot(screenHandler.slots.get(l), l, t, aa);
+                this.handler.slots.add(slot);
+            }
+
+            this.deleteItemSlot = new Slot(displayInv, 0, 173, 112);
+            this.handler.slots.add(this.deleteItemSlot);
+        } else if (i == ItemGroup.INVENTORY.getIndex() && this.slots != null) {
+            this.handler.slots.clear();
+            this.handler.slots.addAll(this.slots);
+            this.slots = null;
+        }
+
+        if (this.searchBox != null) {
+            if (group == ItemGroup.SEARCH) {
+                this.searchBox.setVisible(true);
+                this.searchBox.setFocusUnlocked(false);
+                this.searchBox.setSelected(true);
+                if (i != group.getIndex()) {
+                    this.searchBox.setText("");
+                }
+
+                this.search();
+            } else {
+                this.searchBox.setVisible(false);
+                this.searchBox.setFocusUnlocked(true);
+                this.searchBox.setSelected(false);
+                this.searchBox.setText("");
+            }
+        }
+
+        this.scrollPosition = 0.0F;
+        ((PlayerlessCreativeScreenHandler) this.handler).scrollItems(0.0F);
+    }
+
     private void saveInventory() {
         JsonObject object = new JsonObject();
 
@@ -109,14 +216,16 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
 
     @Override
     protected boolean isClickOutsideBounds(double mouseX, double mouseY, int left, int top) {
-        boolean bl = mouseX < (double)left || mouseY < (double)top || mouseX >= (double)(left + this.backgroundWidth) || mouseY >= (double)(top + this.backgroundHeight);
+        boolean bl = mouseX < (double) left || mouseY < (double) top || mouseX >= (double) (left + this.backgroundWidth) || mouseY >= (double) (top + this.backgroundHeight);
         this.lastClickOutsideBounds = bl && !this.isClickInTab(ItemGroup.GROUPS[SELECTED_TAB], mouseX, mouseY);
         return this.lastClickOutsideBounds;
     }
 
     @Override
     public void onClose() {
-        if (this.client == null) { return; }
+        if (this.client == null) {
+            return;
+        }
         this.saveInventory();
         this.client.openScreen(this.parent);
     }
@@ -151,7 +260,9 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
             ListTag enchantments = EnchantedBookItem.getEnchantmentTag(PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack());
             AtomicBoolean shouldStop = new AtomicBoolean(false);
             enchantments.forEach(rawTag -> {
-                if (shouldStop.get()) { return; }
+                if (shouldStop.get()) {
+                    return;
+                }
 
                 ItemStack stack = slot.getStack();
                 CompoundTag tag = (CompoundTag) rawTag;
@@ -171,7 +282,9 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
                         });
                     }
 
-                    if (shouldStop.get()) { return; }
+                    if (shouldStop.get()) {
+                        return;
+                    }
 
                     slot.getStack().addEnchantment(enchantment, tag.getInt("lvl"));
                 }
@@ -289,7 +402,9 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
 
     @Override
     protected void init() {
-        if (this.client == null) { return; }
+        if (this.client == null) {
+            return;
+        }
 
         super.init();
         this.client.keyboard.enableRepeatEvents(true);
@@ -388,111 +503,8 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         return super.keyReleased(keyCode, scanCode, modifiers);
     }
 
-    private void setSelectedTab(ItemGroup group) {
-        int i = SELECTED_TAB;
-        SELECTED_TAB = group.getIndex();
-        this.cursorDragSlots.clear();
-        ((PlayerlessCreativeScreenHandler) this.handler).itemList.clear();
-        if (group == ItemGroup.HOTBAR && this.client != null) {
-            HotbarStorage hotbarStorage = this.client.getCreativeHotbarStorage();
-            for (int j = 0; j < 9; ++j) {
-                HotbarStorageEntry hotbarStorageEntry = hotbarStorage.getSavedHotbar(j);
-                if (hotbarStorageEntry.isEmpty()) {
-                    for (int k = 0; k < 9; ++k) {
-                        if (k == j) {
-                            ItemStack itemStack = new ItemStack(Items.PAPER);
-                            itemStack.getOrCreateSubTag("CustomCreativeLock");
-                            Text text = this.client.options.keysHotbar[j].getBoundKeyLocalizedText();
-                            Text text2 = this.client.options.keySaveToolbarActivator.getBoundKeyLocalizedText();
-                            itemStack.setCustomName(new TranslatableText("inventory.hotbarInfo", text2, text));
-                            ((PlayerlessCreativeScreenHandler) this.handler).itemList.add(itemStack);
-                            continue;
-                        }
-                        ((PlayerlessCreativeScreenHandler) this.handler).itemList.add(ItemStack.EMPTY);
-                    }
-                    continue;
-                }
-                ((PlayerlessCreativeScreenHandler) this.handler).itemList.addAll(hotbarStorageEntry);
-            }
-        } else if (group != ItemGroup.SEARCH) {
-            group.appendStacks(((PlayerlessCreativeScreenHandler) this.handler).itemList);
-        }
-
-        if (group == ItemGroup.INVENTORY) {
-            PlayerlessPlayerScreenHandler screenHandler = PeepoPractice.PLAYERLESS_PLAYER_SCREEN_HANDLER;
-            if (this.slots == null) {
-                this.slots = ImmutableList.copyOf(this.handler.slots);
-            }
-
-            this.handler.slots.clear();
-
-            int aa;
-
-            for (int l = 0; l < screenHandler.slots.size(); ++l) {
-                int t;
-                int v;
-                int w;
-                int x;
-                if (l >= 5 && l < 9) {
-                    v = l - 5;
-                    w = v / 2;
-                    x = v % 2;
-                    t = 54 + w * 54;
-                    aa = 6 + x * 27;
-                } else if (l < 5) {
-                    t = -2000;
-                    aa = -2000;
-                } else if (l == 45) {
-                    t = 35;
-                    aa = 20;
-                } else {
-                    v = l - 9;
-                    w = v % 9;
-                    x = v / 9;
-                    t = 9 + w * 18;
-                    if (l >= 36) {
-                        aa = 112;
-                    } else {
-                        aa = 54 + x * 18;
-                    }
-                }
-
-                Slot slot = new EditInventoryScreen.CreativeSlot(screenHandler.slots.get(l), l, t, aa);
-                this.handler.slots.add(slot);
-            }
-
-            this.deleteItemSlot = new Slot(displayInv, 0, 173, 112);
-            this.handler.slots.add(this.deleteItemSlot);
-        } else if (i == ItemGroup.INVENTORY.getIndex() && this.slots != null) {
-            this.handler.slots.clear();
-            this.handler.slots.addAll(this.slots);
-            this.slots = null;
-        }
-
-        if (this.searchBox != null) {
-            if (group == ItemGroup.SEARCH) {
-                this.searchBox.setVisible(true);
-                this.searchBox.setFocusUnlocked(false);
-                this.searchBox.setSelected(true);
-                if (i != group.getIndex()) {
-                    this.searchBox.setText("");
-                }
-
-                this.search();
-            } else {
-                this.searchBox.setVisible(false);
-                this.searchBox.setFocusUnlocked(true);
-                this.searchBox.setSelected(false);
-                this.searchBox.setText("");
-            }
-        }
-
-        this.scrollPosition = 0.0F;
-        ((PlayerlessCreativeScreenHandler)this.handler).scrollItems(0.0F);
-    }
-
     private void search() {
-        ((PlayerlessCreativeScreenHandler)this.handler).itemList.clear();
+        ((PlayerlessCreativeScreenHandler) this.handler).itemList.clear();
         this.searchResultTags.clear();
         String string = this.searchBox.getText();
         if (string.isEmpty()) {
@@ -509,11 +521,11 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
                 searchable2 = this.client.getSearchableContainer(SearchManager.ITEM_TOOLTIP);
             }
 
-            ((PlayerlessCreativeScreenHandler)this.handler).itemList.addAll(searchable2.findAll(string.toLowerCase(Locale.ROOT)));
+            ((PlayerlessCreativeScreenHandler) this.handler).itemList.addAll(searchable2.findAll(string.toLowerCase(Locale.ROOT)));
         }
 
         this.scrollPosition = 0.0F;
-        ((PlayerlessCreativeScreenHandler)this.handler).scrollItems(0.0F);
+        ((PlayerlessCreativeScreenHandler) this.handler).scrollItems(0.0F);
     }
 
     private void searchForTags(String string) {
@@ -533,8 +545,8 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0) {
-            double d = mouseX - (double)this.x;
-            double e = mouseY - (double)this.y;
+            double d = mouseX - (double) this.x;
+            double e = mouseY - (double) this.y;
             ItemGroup[] var10 = ItemGroup.GROUPS;
 
             for (ItemGroup itemGroup : var10) {
@@ -559,13 +571,13 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         int l = j + 18;
         int m = k + 14;
         int n = l + 112;
-        return mouseX >= (double)k && mouseY >= (double)l && mouseX < (double)m && mouseY < (double)n;
+        return mouseX >= (double) k && mouseY >= (double) l && mouseX < (double) m && mouseY < (double) n;
     }
 
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         if (button == 0) {
-            double d = mouseX - (double)this.x;
-            double e = mouseY - (double)this.y;
+            double d = mouseX - (double) this.x;
+            double e = mouseY - (double) this.y;
             this.scrolling = false;
             ItemGroup[] var10 = ItemGroup.GROUPS;
 
@@ -597,13 +609,15 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
             k = k + this.backgroundHeight;
         }
 
-        return mouseX >= (double)j && mouseX <= (double)(j + 28) && mouseY >= (double)k && mouseY <= (double)(k + 32);
+        return mouseX >= (double) j && mouseX <= (double) (j + 28) && mouseY >= (double) k && mouseY <= (double) (k + 32);
     }
 
     @Override
     @SuppressWarnings("deprecation")
     protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
-        if (this.client == null) { return; }
+        if (this.client == null) {
+            return;
+        }
 
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         ItemGroup itemGroup = ItemGroup.GROUPS[SELECTED_TAB];
@@ -628,7 +642,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         k = j + 112;
         this.client.getTextureManager().bindTexture(TABS_TEXTURE);
         if (itemGroup.hasScrollbar()) {
-            this.drawTexture(matrices, i, j + (int)((float)(k - j - 17) * this.scrollPosition), 232 + (this.hasScrollbar() ? 0 : 12), 0, 12, 15);
+            this.drawTexture(matrices, i, j + (int) ((float) (k - j - 17) * this.scrollPosition), 232 + (this.hasScrollbar() ? 0 : 12), 0, 12, 15);
         }
 
         this.renderTabIcon(matrices, itemGroup);
@@ -679,10 +693,10 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         if (!this.hasScrollbar()) {
             return false;
         } else {
-            int i = (((PlayerlessCreativeScreenHandler)this.handler).itemList.size() + 9 - 1) / 9 - 5;
-            this.scrollPosition = (float)((double)this.scrollPosition - amount / (double)i);
+            int i = (((PlayerlessCreativeScreenHandler) this.handler).itemList.size() + 9 - 1) / 9 - 5;
+            this.scrollPosition = (float) ((double) this.scrollPosition - amount / (double) i);
             this.scrollPosition = MathHelper.clamp(this.scrollPosition, 0.0F, 1.0F);
-            ((PlayerlessCreativeScreenHandler)this.handler).scrollItems(this.scrollPosition);
+            ((PlayerlessCreativeScreenHandler) this.handler).scrollItems(this.scrollPosition);
             return true;
         }
     }
@@ -691,9 +705,9 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         if (this.scrolling) {
             int i = this.y + 18;
             int j = i + 112;
-            this.scrollPosition = ((float)mouseY - (float)i - 7.5F) / ((float)(j - i) - 15.0F);
+            this.scrollPosition = ((float) mouseY - (float) i - 7.5F) / ((float) (j - i) - 15.0F);
             this.scrollPosition = MathHelper.clamp(this.scrollPosition, 0.0F, 1.0F);
-            ((PlayerlessCreativeScreenHandler)this.handler).scrollItems(this.scrollPosition);
+            ((PlayerlessCreativeScreenHandler) this.handler).scrollItems(this.scrollPosition);
             return true;
         } else {
             return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
@@ -723,7 +737,9 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
     }
 
     protected void renderTooltip(MatrixStack matrices, ItemStack stack, int x, int y) {
-        if (this.client == null) { return; }
+        if (this.client == null) {
+            return;
+        }
         List<Text> list = stack.getTooltip(null, this.client.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.NORMAL);
         List<StringRenderable> list2 = Lists.newArrayList(list);
         if (SELECTED_TAB == ItemGroup.SEARCH.getIndex()) {
@@ -847,12 +863,12 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
             return this.slot.getStack();
         }
 
-        public boolean hasStack() {
-            return this.slot.hasStack();
-        }
-
         public void setStack(ItemStack stack) {
             this.slot.setStack(stack);
+        }
+
+        public boolean hasStack() {
+            return this.slot.hasStack();
         }
 
         public void markDirty() {
@@ -906,13 +922,13 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
 
         public void scrollItems(float position) {
             int i = (this.itemList.size() + 9 - 1) / 9 - 5;
-            int j = (int)((double)(position * (float)i) + 0.5D);
+            int j = (int) ((double) (position * (float) i) + 0.5D);
             if (j < 0) {
                 j = 0;
             }
 
-            for(int k = 0; k < 5; ++k) {
-                for(int l = 0; l < 9; ++l) {
+            for (int k = 0; k < 5; ++k) {
+                for (int l = 0; l < 9; ++l) {
                     int m = l + (k + j) * 9;
                     if (m >= 0 && m < this.itemList.size()) {
                         EditInventoryScreen.displayInv.setStack(l + k * 9, this.itemList.get(m));
@@ -926,6 +942,5 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         public boolean shouldShowScrollbar() {
             return this.itemList.size() > 45;
         }
-
     }
 }

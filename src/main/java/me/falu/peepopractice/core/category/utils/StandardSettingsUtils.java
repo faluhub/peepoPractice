@@ -2,8 +2,8 @@ package me.falu.peepopractice.core.category.utils;
 
 import com.google.gson.JsonObject;
 import me.falu.peepopractice.PeepoPractice;
-import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.core.category.PracticeCategory;
+import me.falu.peepopractice.core.writer.PracticeWriter;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.BooleanOption;
 import net.minecraft.client.options.CyclingOption;
@@ -16,8 +16,11 @@ public class StandardSettingsUtils {
     public static final DoubleOption FOV = new DoubleOption("options.fov", 30.0D, 110.0D, 1.0F, gameOptions -> StandardSettingsUtils.getSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "fov", 70.0D), (gameOptions, aDouble) -> StandardSettingsUtils.setSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "fov", aDouble), (gameOptions, doubleOption) -> {
         double d = doubleOption.get(gameOptions);
         MutableText mutableText = doubleOption.getDisplayPrefix();
-        if (d == 70.0D) { return mutableText.append(new TranslatableText("options.fov.min")); }
-        else if (d == doubleOption.getMax()) { return mutableText.append(new TranslatableText("options.fov.max")); }
+        if (d == 70.0D) {
+            return mutableText.append(new TranslatableText("options.fov.min"));
+        } else if (d == doubleOption.getMax()) {
+            return mutableText.append(new TranslatableText("options.fov.max"));
+        }
         return mutableText.append(Integer.toString((int) d));
     });
     public static final DoubleOption RENDER_DISTANCE = new DoubleOption("options.renderDistance", 2.0D, 16.0D, 1.0F, gameOptions -> StandardSettingsUtils.getSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "render_distance", 16.0D), (gameOptions, aDouble) -> StandardSettingsUtils.setSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "render_distance", aDouble), (gameOptions, doubleOption) -> {
@@ -32,14 +35,20 @@ public class StandardSettingsUtils {
     public static final BooleanOption HITBOXES = new BooleanOption(getKey("hitboxes"), gameOptions -> StandardSettingsUtils.getSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "hitboxes", false), (gameOptions, aBoolean) -> StandardSettingsUtils.setSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "hitboxes", aBoolean));
     public static final CyclingOption PERSPECTIVE = new CyclingOption(getKey("perspective"), (gameOptions, integer) -> {
         int value = StandardSettingsUtils.getSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "perspective", 0) + 1;
-        if (value > 2) { value = 0; }
+        if (value > 2) {
+            value = 0;
+        }
         StandardSettingsUtils.setSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "perspective", value);
     }, (gameOptions, cyclingOption) -> {
         int value = StandardSettingsUtils.getSettingForCategory(PeepoPractice.CONFIGURING_CATEGORY, "perspective", 0);
         MutableText text = cyclingOption.getDisplayPrefix();
-        if (value == 0) { return text.append(new TranslatableText("peepopractice.perspective.first")); }
-        else if (value == 1) { return text.append(new TranslatableText("peepopractice.perspective.back")); }
-        else if (value == 2) { return text.append(new TranslatableText("peepopractice.perspective.front")); }
+        if (value == 0) {
+            return text.append(new TranslatableText("peepopractice.perspective.first"));
+        } else if (value == 1) {
+            return text.append(new TranslatableText("peepopractice.perspective.back"));
+        } else if (value == 2) {
+            return text.append(new TranslatableText("peepopractice.perspective.front"));
+        }
         return text;
     });
 
@@ -50,7 +59,9 @@ public class StandardSettingsUtils {
     public static void triggerStandardSettings(PracticeCategory category) {
         PracticeWriter writer = PracticeWriter.STANDARD_SETTINGS_WRITER;
         JsonObject config = writer.get();
-        if (!config.has(category.getId())) { return; }
+        if (!config.has(category.getId())) {
+            return;
+        }
         JsonObject settings = config.get(category.getId()).getAsJsonObject();
         settings.entrySet().forEach(entry -> {
             String k = entry.getKey();

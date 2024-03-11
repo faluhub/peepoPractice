@@ -3,10 +3,10 @@ package me.falu.peepopractice.core.category.utils;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.falu.peepopractice.PeepoPractice;
-import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.core.item.RandomToolItem;
 import me.falu.peepopractice.core.playerless.PlayerlessInventory;
+import me.falu.peepopractice.core.writer.PracticeWriter;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
@@ -45,7 +45,9 @@ public class InventoryUtils {
                                 stackTag.put("BlockEntityTag", blockEntityTag);
                                 stack.setTag(stackTag);
                             }
-                        } else { stack = addItemModifiers(stack); }
+                        } else {
+                            stack = addItemModifiers(stack);
+                        }
                     }
                     inventory.setStack(Integer.parseInt(set.getKey()), stack);
                 } catch (CommandSyntaxException e) {

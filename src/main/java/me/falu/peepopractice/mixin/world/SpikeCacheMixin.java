@@ -19,10 +19,10 @@ public abstract class SpikeCacheMixin {
         if (configValue != null) {
             original.call(towers, random);
             PracticeTypes.StartNodeType dragonType = configValue.equals(PracticeTypes.StartNodeType.RANDOM) ? this.getDragonType(towers) : configValue;
-            if (dragonType != this.getDragonType(towers)){
+            if (dragonType != this.getDragonType(towers)) {
                 int temp = towers.get(0);
-                towers.set(0,towers.get(5));
-                towers.set(5,temp);
+                towers.set(0, towers.get(5));
+                towers.set(5, temp);
             }
         }
     }

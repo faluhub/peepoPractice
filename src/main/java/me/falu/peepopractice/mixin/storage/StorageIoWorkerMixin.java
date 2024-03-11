@@ -12,14 +12,17 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(StorageIoWorker.class)
 public class StorageIoWorkerMixin implements GenerationShutdownOwner {
+    @Shadow @Final private static Logger LOGGER;
     @Shadow @Final private TaskExecutor<TaskQueue.PrioritizedTask> field_24468;
     @Shadow @Final private RegionBasedStorage storage;
-    @Shadow @Final private static Logger LOGGER;
 
     @Override
     public void peepoPractice$shutdown() {
         this.field_24468.close();
-        try { this.storage.close(); }
-        catch (Exception e) { LOGGER.error("Failed to close storage:", e); }
+        try {
+            this.storage.close();
+        } catch (Exception e) {
+            LOGGER.error("Failed to close storage:", e);
+        }
     }
 }

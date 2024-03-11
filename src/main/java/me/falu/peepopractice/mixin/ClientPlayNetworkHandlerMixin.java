@@ -1,6 +1,6 @@
 package me.falu.peepopractice.mixin;
 
-import com.llamalad7.mixinextras.injector.WrapWithCondition;
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import me.falu.peepopractice.PeepoPractice;
 import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import net.minecraft.client.network.ClientPlayNetworkHandler;

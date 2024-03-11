@@ -1,10 +1,10 @@
 package me.falu.peepopractice.gui.screen;
 
 import me.falu.peepopractice.PeepoPractice;
-import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.core.category.utils.StandardSettingsUtils;
+import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.gui.widget.LimitlessButtonWidget;
 import me.falu.peepopractice.gui.widget.LimitlessDoubleOptionSliderWidget;
 import net.minecraft.client.gui.screen.Screen;
@@ -39,7 +39,9 @@ public class StandardSettingsScreen extends Screen {
 
     @Override
     protected void init() {
-        if (this.client == null) { return; }
+        if (this.client == null) {
+            return;
+        }
         this.client.keyboard.enableRepeatEvents(true);
 
         int index = 0;
@@ -50,7 +52,9 @@ public class StandardSettingsScreen extends Screen {
         boolean otherSide;
         for (Option option : OPTIONS) {
             otherSide = index + 1 > OPTIONS.length / 2;
-            if (otherSide && index == OPTIONS.length / 2) { btnIndex = 0; }
+            if (otherSide && index == OPTIONS.length / 2) {
+                btnIndex = 0;
+            }
             int x = this.width / 2 - btnWidth / 2 + (otherSide ? btnWidth / 2 : -btnWidth / 2);
             int y = 30 + (btnHeight + yOffset) * btnIndex;
             AbstractButtonWidget button = option.createButton(this.client.options, x, y, btnWidth);
@@ -86,7 +90,9 @@ public class StandardSettingsScreen extends Screen {
 
     @Override
     public void removed() {
-        if (this.client == null) { return; }
+        if (this.client == null) {
+            return;
+        }
         this.client.keyboard.enableRepeatEvents(false);
     }
 

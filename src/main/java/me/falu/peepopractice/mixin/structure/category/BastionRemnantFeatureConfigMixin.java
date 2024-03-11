@@ -24,8 +24,11 @@ public abstract class BastionRemnantFeatureConfigMixin {
             PracticeTypes.BastionType bastionType = PracticeTypes.BastionType.fromLabel(CategoryPreference.getValue("bastion_type"));
             if (bastionType != null) {
                 int index;
-                if (bastionType == PracticeTypes.BastionType.RANDOM) { index = this.possibleConfigs.indexOf(config); }
-                else { index = bastionType.id; }
+                if (bastionType == PracticeTypes.BastionType.RANDOM) {
+                    index = this.possibleConfigs.indexOf(config);
+                } else {
+                    index = bastionType.id;
+                }
                 PeepoPractice.CATEGORY.putCustomValue("bastionType", index);
                 return this.possibleConfigs.get(index);
             }

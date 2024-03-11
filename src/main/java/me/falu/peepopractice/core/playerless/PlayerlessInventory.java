@@ -41,7 +41,7 @@ public class PlayerlessInventory implements Inventory, Nameable {
     }
 
     public int getEmptySlot() {
-        for(int i = 0; i < this.main.size(); ++i) {
+        for (int i = 0; i < this.main.size(); ++i) {
             if (this.main.get(i).isEmpty()) {
                 return i;
             }
@@ -90,7 +90,7 @@ public class PlayerlessInventory implements Inventory, Nameable {
         if (this.canStackAddMore(this.getStack(40), stack)) {
             return 40;
         } else {
-            for(int i = 0; i < this.main.size(); ++i) {
+            for (int i = 0; i < this.main.size(); ++i) {
                 if (this.canStackAddMore(this.main.get(i), stack)) {
                     return i;
                 }
@@ -166,7 +166,7 @@ public class PlayerlessInventory implements Inventory, Nameable {
         DefaultedList<ItemStack> defaultedList = null;
 
         DefaultedList<ItemStack> defaultedList2;
-        for(Iterator<DefaultedList<ItemStack>> var3 = this.combinedInventory.iterator(); var3.hasNext(); slot -= defaultedList2.size()) {
+        for (Iterator<DefaultedList<ItemStack>> var3 = this.combinedInventory.iterator(); var3.hasNext(); slot -= defaultedList2.size()) {
             defaultedList2 = var3.next();
             if (slot < defaultedList2.size()) {
                 defaultedList = defaultedList2;
@@ -188,7 +188,7 @@ public class PlayerlessInventory implements Inventory, Nameable {
         DefaultedList<ItemStack> defaultedList = null;
 
         DefaultedList<ItemStack> defaultedList2;
-        for(Iterator<DefaultedList<ItemStack>> var4 = this.combinedInventory.iterator(); var4.hasNext(); slot -= defaultedList2.size()) {
+        for (Iterator<DefaultedList<ItemStack>> var4 = this.combinedInventory.iterator(); var4.hasNext(); slot -= defaultedList2.size()) {
             defaultedList2 = var4.next();
             if (slot < defaultedList2.size()) {
                 defaultedList = defaultedList2;
@@ -199,7 +199,6 @@ public class PlayerlessInventory implements Inventory, Nameable {
         if (defaultedList != null) {
             defaultedList.set(slot, stack);
         }
-
     }
 
     public int size() {
@@ -224,19 +223,19 @@ public class PlayerlessInventory implements Inventory, Nameable {
                             }
 
                             itemStack3 = var1.next();
-                        } while(itemStack3.isEmpty());
+                        } while (itemStack3.isEmpty());
 
                         return false;
                     }
 
                     itemStack3 = var1.next();
-                } while(itemStack3.isEmpty());
+                } while (itemStack3.isEmpty());
 
                 return false;
             }
 
             itemStack3 = var1.next();
-        } while(itemStack3.isEmpty());
+        } while (itemStack3.isEmpty());
 
         return false;
     }
@@ -246,7 +245,7 @@ public class PlayerlessInventory implements Inventory, Nameable {
         List<ItemStack> list = null;
 
         DefaultedList<ItemStack> defaultedList;
-        for(Iterator<DefaultedList<ItemStack>> var3 = this.combinedInventory.iterator(); var3.hasNext(); slot -= defaultedList.size()) {
+        for (Iterator<DefaultedList<ItemStack>> var3 = this.combinedInventory.iterator(); var3.hasNext(); slot -= defaultedList.size()) {
             defaultedList = var3.next();
             if (slot < defaultedList.size()) {
                 list = defaultedList;
@@ -261,14 +260,14 @@ public class PlayerlessInventory implements Inventory, Nameable {
         return new TranslatableText("container.inventory");
     }
 
-    public void markDirty() {}
-
-    public void setCursorStack(ItemStack stack) {
-        this.cursorStack = stack;
-    }
+    public void markDirty() { }
 
     public ItemStack getCursorStack() {
         return this.cursorStack;
+    }
+
+    public void setCursorStack(ItemStack stack) {
+        this.cursorStack = stack;
     }
 
     public boolean canPlayerUse(PlayerEntity player) {

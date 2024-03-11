@@ -28,7 +28,7 @@ public abstract class PiglinBrainMixin {
     private static List<ItemStack> peepoPractice$guaranteeTrades(List<ItemStack> barteredItems, PiglinEntity piglin) {
         if (CategoryPreference.getBoolValue("ranked_loot_table")) {
             MinecraftServer server = piglin.getServer();
-            if (server == null || barteredItems.size() == 0) {
+            if (server == null || barteredItems.isEmpty()) {
                 return barteredItems;
             }
             ServerWorld overworld = server.getOverworld();

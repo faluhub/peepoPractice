@@ -1,10 +1,11 @@
 package me.falu.peepopractice.gui.screen;
 
+import com.google.common.collect.Lists;
 import me.falu.peepopractice.PeepoPractice;
-import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.core.category.CategoryPreference;
 import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.core.category.utils.PracticeCategoryUtils;
+import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.gui.widget.LimitlessButtonWidget;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resource.language.I18n;
@@ -12,8 +13,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
-
-import java.util.List;
 
 public class CategoryPreferencesScreen extends Screen {
     private final Screen parent;
@@ -27,7 +26,7 @@ public class CategoryPreferencesScreen extends Screen {
 
     private LiteralText getFormattedText(CategoryPreference preference, String currentValue) {
         String add = "";
-        boolean isBoolValue = List.of(PracticeCategoryUtils.BOOLEAN_LIST).contains(currentValue);
+        boolean isBoolValue = Lists.newArrayList(PracticeCategoryUtils.BOOLEAN_LIST).contains(currentValue);
         if (isBoolValue) {
             add += PracticeCategoryUtils.parseBoolean(currentValue) ? Formatting.GREEN : Formatting.RED;
         } else if (currentValue.equals(PracticeCategoryUtils.RANDOM)) {
@@ -38,7 +37,9 @@ public class CategoryPreferencesScreen extends Screen {
 
     @Override
     protected void init() {
-        if (this.client == null) { return; }
+        if (this.client == null) {
+            return;
+        }
 
         int offset = this.width / 16;
         int size = this.width / 6 + offset;
@@ -65,8 +66,11 @@ public class CategoryPreferencesScreen extends Screen {
                                     int currentIndex = CategoryPreference.getIndex(value, preference.getChoices());
                                     String next;
 
-                                    try { next = preference.getChoices().get(currentIndex + 1); }
-                                    catch (IndexOutOfBoundsException ignored) { next = preference.getChoices().get(0); }
+                                    try {
+                                        next = preference.getChoices().get(currentIndex + 1);
+                                    } catch (IndexOutOfBoundsException ignored) {
+                                        next = preference.getChoices().get(0);
+                                    }
 
                                     b.setMessage(this.getFormattedText(preference, next));
                                     CategoryPreference.setValue(this.category, preference.getId(), next);

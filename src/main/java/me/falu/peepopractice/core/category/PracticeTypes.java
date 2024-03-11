@@ -21,7 +21,6 @@ public class PracticeTypes {
         TREASURE(2, new Vec3i(16, 75, -1), 180.0F),
         BRIDGE(3, new Vec3i(-26, 67, 10), -90.0F),
         RANDOM(4, new Vec3i(0, 0, 0), 0.0F);
-
         public final int id;
         public final Vec3i pos;
         public final float angle;
@@ -41,10 +40,6 @@ public class PracticeTypes {
             return null;
         }
 
-        public String getLabel() {
-            return this != RANDOM ? translate("bastion", this.name().toLowerCase()) : random();
-        }
-
         public static List<String> all() {
             List<String> labels = new ArrayList<>();
             for (BastionType type : BastionType.values()) {
@@ -61,15 +56,15 @@ public class PracticeTypes {
             }
             return null;
         }
+
+        public String getLabel() {
+            return this != RANDOM ? translate("bastion", this.name().toLowerCase()) : random();
+        }
     }
 
     public enum CompareType {
         PB,
         AVERAGE;
-
-        public String getLabel() {
-            return translate("compare", this.name().toLowerCase());
-        }
 
         public static List<String> all() {
             List<String> labels = new ArrayList<>();
@@ -87,16 +82,16 @@ public class PracticeTypes {
             }
             return null;
         }
+
+        public String getLabel() {
+            return translate("compare", this.name().toLowerCase());
+        }
     }
 
     public enum PaceTimerShowType {
         ALWAYS,
         END,
         NEVER;
-
-        public String getLabel() {
-            return translate("pace_timer_show", this.name().toLowerCase());
-        }
 
         public static List<String> all() {
             List<String> labels = new ArrayList<>();
@@ -114,16 +109,16 @@ public class PracticeTypes {
             }
             return null;
         }
+
+        public String getLabel() {
+            return translate("pace_timer_show", this.name().toLowerCase());
+        }
     }
 
     public enum EyeCountType {
         ALL,
         RANDOM,
         NONE;
-
-        public String getLabel() {
-            return this != RANDOM ? translate("eye_count", this.name().toLowerCase()) : random();
-        }
 
         public static List<String> all() {
             List<String> labels = new ArrayList<>();
@@ -141,6 +136,10 @@ public class PracticeTypes {
             }
             return null;
         }
+
+        public String getLabel() {
+            return this != RANDOM ? translate("eye_count", this.name().toLowerCase()) : random();
+        }
     }
 
     public enum StrongholdDistanceType {
@@ -148,25 +147,12 @@ public class PracticeTypes {
         AVERAGE(700, 1000),
         FAR(1200, 1600),
         RANDOM(0, 2300);
-
         private final int min;
         private final int max;
 
         StrongholdDistanceType(int min, int max) {
             this.min = min;
             this.max = max;
-        }
-
-        public int getMin() {
-            return this.min;
-        }
-
-        public int getMax() {
-            return this.max;
-        }
-
-        public String getLabel() {
-            return this != RANDOM ? translate("stronghold_distance", this.name().toLowerCase()) : random();
         }
 
         public static List<String> all() {
@@ -185,16 +171,24 @@ public class PracticeTypes {
             }
             return null;
         }
+
+        public int getMin() {
+            return this.min;
+        }
+
+        public int getMax() {
+            return this.max;
+        }
+
+        public String getLabel() {
+            return this != RANDOM ? translate("stronghold_distance", this.name().toLowerCase()) : random();
+        }
     }
 
     public enum StartNodeType {
         RANDOM,
         FRONT,
         BACK;
-
-        public String getLabel() {
-            return this != RANDOM ? translate("start_node", this.name().toLowerCase()) : random();
-        }
 
         public static List<String> all() {
             List<String> labels = new ArrayList<>();
@@ -212,15 +206,15 @@ public class PracticeTypes {
             }
             return null;
         }
+
+        public String getLabel() {
+            return this != RANDOM ? translate("start_node", this.name().toLowerCase()) : random();
+        }
     }
 
     public enum SpawnLocationType {
         STRUCTURE,
         TERRAIN;
-
-        public String getLabel() {
-            return translate("spawn_location", this.name().toLowerCase());
-        }
 
         public static List<String> all() {
             List<String> labels = new ArrayList<>();
@@ -237,6 +231,10 @@ public class PracticeTypes {
                 }
             }
             return null;
+        }
+
+        public String getLabel() {
+            return translate("spawn_location", this.name().toLowerCase());
         }
     }
 }

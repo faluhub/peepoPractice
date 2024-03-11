@@ -20,8 +20,10 @@ import java.util.function.Supplier;
 
 @Mixin(FileResourcePackProvider.class)
 public abstract class FileResourcePackProviderMixin {
-    @Shadow protected abstract Supplier<ResourcePack> createResourcePack(File file);
     @Shadow @Final private ResourcePackSource field_25345;
+
+    @Shadow
+    protected abstract Supplier<ResourcePack> createResourcePack(File file);
 
     @Inject(method = "register", at = @At("TAIL"))
     private <T extends ResourcePackProfile> void peepoPractice$addCustomDataPacks(Consumer<T> consumer, ResourcePackProfile.Factory<T> factory, CallbackInfo ci) {
@@ -32,7 +34,9 @@ public abstract class FileResourcePackProviderMixin {
                 String suffix = ".zip";
                 File file = DefaultFileWriter.INSTANCE.getResourceAsFile("datapacks/" + dataPack + suffix, dataPack + suffix);
                 T profile = ResourcePackProfile.of(string, true, this.createResourcePack(file), factory, ResourcePackProfile.InsertionPosition.TOP, this.field_25345);
-                if (profile == null) { continue; }
+                if (profile == null) {
+                    continue;
+                }
                 consumer.accept(profile);
             }
         }

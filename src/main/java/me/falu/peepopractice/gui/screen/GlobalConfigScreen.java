@@ -1,8 +1,8 @@
 package me.falu.peepopractice.gui.screen;
 
 import me.falu.peepopractice.PeepoPractice;
-import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.core.global.GlobalOptions;
+import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.gui.widget.LimitlessButtonWidget;
 import me.falu.peepopractice.gui.widget.LimitlessDoubleOptionSliderWidget;
 import net.minecraft.client.gui.screen.Screen;
@@ -37,7 +37,9 @@ public class GlobalConfigScreen extends Screen {
 
     @Override
     protected void init() {
-        if (this.client == null) { return; }
+        if (this.client == null) {
+            return;
+        }
 
         GlobalOptions.SAME_INVENTORY.setTooltip(this.client.textRenderer.wrapLines(new TranslatableText("peepopractice.global_options.same_inventory.info"), 200));
         GlobalOptions.CHANGE_WINDOW_TITLE.setTooltip(this.client.textRenderer.wrapLines(new TranslatableText("peepopractice.global_options.change_window_title.info"), 200));

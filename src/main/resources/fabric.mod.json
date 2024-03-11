@@ -4,7 +4,9 @@
   "version": "${version}",
   "name": "PeepoPractice",
   "description": "The best and most advanced MCSR Practice mod!",
-  "authors": ["falu"],
+  "authors": [
+    "falu"
+  ],
   "contributors": [
     "RedLime",
     "KingContaria"
@@ -16,14 +18,13 @@
   "icon": "assets/peepopractice/icon.png",
   "environment": "client",
   "entrypoints": {
-    "preLaunch": [
-      "com.llamalad7.mixinextras.MixinExtrasBootstrap::init"
-    ],
     "main": [
       "me.falu.peepopractice.PeepoPractice"
     ]
   },
-  "mixins": ["peepopractice.mixins.json"],
+  "mixins": [
+    "peepopractice.mixins.json"
+  ],
   "accessWidener": "peepopractice.accesswidener",
   "depends": {
     "minecraft": "1.16.1",
@@ -37,6 +38,7 @@
     "mcsrranked": "*",
     "standardsettings": "<1.2.2",
     "stronghold-trainer": "*",
-    "areessgee": "*"
+    "areessgee": "*",
+    "atum": "*"
   }
 }

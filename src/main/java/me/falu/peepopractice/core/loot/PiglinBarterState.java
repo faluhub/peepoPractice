@@ -40,7 +40,7 @@ public class PiglinBarterState extends PersistentState {
             this.pearlCount = 3;
             this.obsidianCount = 6;
         }
-        if (this.pearl == 0 && this.pearlCount > 0){
+        if (this.pearl == 0 && this.pearlCount > 0) {
             this.rollPearlIndex(random);
         }
         if (this.obsidian == 0 && this.obsidianCount > 0) {

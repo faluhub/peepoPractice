@@ -1,10 +1,10 @@
 package me.falu.peepopractice.gui.screen;
 
 import me.falu.peepopractice.PeepoPractice;
-import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.core.category.PracticeCategoriesAA;
 import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import me.falu.peepopractice.core.category.PracticeCategory;
+import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.gui.widget.CategoryListWidget;
 import me.falu.peepopractice.gui.widget.LimitlessButtonWidget;
 import net.minecraft.client.gui.hud.BackgroundHelper;
@@ -21,8 +21,8 @@ import java.util.List;
 
 public class CategorySelectionScreen extends Screen {
     private final Screen parent;
-    private SelectionType selectionType = PeepoPractice.LAST_SELECTION_TYPE;
     public CategoryListWidget categoryListWidget;
+    private SelectionType selectionType = PeepoPractice.LAST_SELECTION_TYPE;
     private ButtonWidget doneButton;
     private ButtonWidget configureButton;
 
@@ -131,8 +131,6 @@ public class CategorySelectionScreen extends Screen {
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        PeepoPractice.drawBackground(matrices, this);
-
         if (this.categoryListWidget != null) {
             this.categoryListWidget.render(matrices, mouseX, mouseY, delta);
             this.fillGradient(matrices, 0, 0, this.width, this.categoryListWidget.getTop(), PeepoPractice.BACKGROUND_COLOR[0], PeepoPractice.BACKGROUND_COLOR[0]);
@@ -169,7 +167,6 @@ public class CategorySelectionScreen extends Screen {
     public enum SelectionType {
         ANY(PracticeCategoriesAny.ALL),
         AA(PracticeCategoriesAA.ALL);
-
         public final String title;
         public final List<PracticeCategory> list;
 
@@ -179,8 +176,11 @@ public class CategorySelectionScreen extends Screen {
         }
 
         public static SelectionType opposite(SelectionType type) {
-            if (type.equals(ANY)) { return AA; }
-            else { return ANY; }
+            if (type.equals(ANY)) {
+                return AA;
+            } else {
+                return ANY;
+            }
         }
     }
 }
