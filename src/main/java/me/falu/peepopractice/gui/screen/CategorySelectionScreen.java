@@ -22,7 +22,7 @@ import java.util.List;
 public class CategorySelectionScreen extends Screen {
     private final Screen parent;
     public CategoryListWidget categoryListWidget;
-    private SelectionType selectionType = PeepoPractice.LAST_SELECTION_TYPE;
+    private SelectionType selectionType = PeepoPractice.SELECTION_TYPE;
     private ButtonWidget doneButton;
     private ButtonWidget configureButton;
 
@@ -122,7 +122,7 @@ public class CategorySelectionScreen extends Screen {
                         new TranslatableText(this.selectionType.title),
                         b -> {
                             this.selectionType = SelectionType.opposite(this.selectionType);
-                            PeepoPractice.LAST_SELECTION_TYPE = this.selectionType;
+                            PeepoPractice.SELECTION_TYPE = this.selectionType;
                             this.init();
                         }
                 )
@@ -181,6 +181,10 @@ public class CategorySelectionScreen extends Screen {
             } else {
                 return ANY;
             }
+        }
+
+        public SelectionType opposite() {
+            return opposite(this);
         }
     }
 }

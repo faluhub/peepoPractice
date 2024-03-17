@@ -53,9 +53,9 @@ public class LimitlessButtonWidget extends ButtonWidget {
     @Override
     @SuppressWarnings({ "deprecation", "DuplicatedCode" })
     public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        MinecraftClient minecraftClient = MinecraftClient.getInstance();
-        TextRenderer textRenderer = minecraftClient.textRenderer;
-        minecraftClient.getTextureManager().bindTexture(WIDGETS_LOCATION);
+        MinecraftClient client = MinecraftClient.getInstance();
+        TextRenderer textRenderer = client.textRenderer;
+        client.getTextureManager().bindTexture(WIDGETS_LOCATION);
         RenderSystem.color4f(1.0f, 1.0f, 1.0f, this.alpha);
         int i = this.getYImage(this.isHovered());
         RenderSystem.enableBlend();

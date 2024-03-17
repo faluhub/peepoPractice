@@ -219,19 +219,26 @@ public class PracticeCategory {
 
     public String getName(boolean showPb) {
         StringBuilder text = new StringBuilder((this.isFillerCategory() ? Formatting.ITALIC : "") + this.getTranslatedName() + (showPb || this.isFillerCategory() ? Formatting.RESET : ""));
-        if (showPb && this.hasSplitEvent()) {
+        if (showPb) {
+            text.append(this.getPbText());
+        }
+        return text.toString();
+    }
+
+    public String getPbText() {
+        if (this.hasSplitEvent()) {
             PracticeTypes.CompareType compareType = PracticeTypes.CompareType.fromLabel(CategoryPreference.getOrDefault(this, "compare_type", PracticeTypes.CompareType.PB.getLabel()));
             if (compareType != null) {
                 boolean hasTime = compareType.equals(PracticeTypes.CompareType.PB) ? this.getSplitEvent().hasPb() : this.getSplitEvent().hasCompletedTimes();
                 if (hasTime) {
                     String timeString = compareType.equals(PracticeTypes.CompareType.PB) ? this.getSplitEvent().getPbString() : this.getSplitEvent().getAverageString();
-                    text.append(Formatting.GREEN).append(" (").append(timeString).append(")");
+                    return Formatting.GREEN + " (" + timeString + ")";
                 } else {
-                    text.append(Formatting.GRAY).append(" ").append(new TranslatableText("peepopractice.text.no_pb_or_avg", I18n.translate(compareType.getLabel())).getString());
+                    return Formatting.GRAY + " " + new TranslatableText("peepopractice.text.no_pb_or_avg", I18n.translate(compareType.getLabel())).getString();
                 }
             }
         }
-        return text.toString();
+        return "";
     }
 
     public boolean isAA() {

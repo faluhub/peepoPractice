@@ -50,7 +50,7 @@ public class PeepoPractice implements ModInitializer {
     public static boolean RETRY_PLAYER_INITIALIZATION;
     public static KeyBinding REPLAY_SPLIT_KEY;
     public static KeyBinding NEXT_SPLIT_KEY;
-    public static CategorySelectionScreen.SelectionType LAST_SELECTION_TYPE = CategorySelectionScreen.SelectionType.ANY;
+    public static CategorySelectionScreen.SelectionType SELECTION_TYPE = CategorySelectionScreen.SelectionType.ANY;
 
     public static void log(Object message) {
         LOGGER.info(message);
