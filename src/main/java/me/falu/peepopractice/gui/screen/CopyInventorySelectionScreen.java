@@ -51,9 +51,6 @@ public class CopyInventorySelectionScreen extends Screen {
             this.renderError = true;
             this.addButton(
                     new LimitlessButtonWidget(
-                            null,
-                            null,
-                            null,
                             this.width / 2 - 200 / 2,
                             this.height - 50,
                             200,
@@ -74,9 +71,6 @@ public class CopyInventorySelectionScreen extends Screen {
 
         this.addButton(
                 new LimitlessButtonWidget(
-                        null,
-                        null,
-                        null,
                         this.width / 2 - 155,
                         this.height - 50,
                         150,
@@ -87,9 +81,6 @@ public class CopyInventorySelectionScreen extends Screen {
         );
         this.copyButton = this.addButton(
                 new LimitlessButtonWidget(
-                        null,
-                        null,
-                        null,
                         this.width / 2 - 155 + 160,
                         this.height - 50,
                         150,
@@ -105,9 +96,6 @@ public class CopyInventorySelectionScreen extends Screen {
         );
         this.addButton(
                 new LimitlessButtonWidget(
-                        null,
-                        null,
-                        null,
                         5,
                         5,
                         40,

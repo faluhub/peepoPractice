@@ -14,8 +14,8 @@ public class ThumbnailButtonWidget extends ButtonWidget {
     private final PracticeCategory category;
     private final ButtonWidget configButton;
 
-    public ThumbnailButtonWidget(int x, int y, int width, int height, PracticeCategory category, ButtonWidget configButton) {
-        super(x, y, width, height, new LiteralText(""), b -> {});
+    public ThumbnailButtonWidget(int x, int y, int width, int height, PracticeCategory category, ButtonWidget configButton, PressAction pressAction) {
+        super(x, y, width, height, new LiteralText(""), pressAction);
         this.category = category;
         this.configButton = configButton;
     }
@@ -77,10 +77,5 @@ public class ThumbnailButtonWidget extends ButtonWidget {
                 this.y + this.height - this.height / 4 + 4,
                 0xFFFFFF
         );
-    }
-
-    @Override
-    public void onClick(double mouseX, double mouseY) {
-        super.onClick(mouseX, mouseY);
     }
 }

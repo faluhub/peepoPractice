@@ -29,7 +29,9 @@ public abstract class VanillaLayeredBiomeSourceMixin {
             for (WorldProperties.BiomeModification entry : PeepoPractice.CATEGORY.getWorldProperties().getAntiBiomes()) {
                 if (entry.getRange().isValidDimension(World.OVERWORLD)) {
                     if (entry.isInfinite() || new BlockPos(biomeX, biomeY, biomeZ).isWithinDistance(new Vec3i(0, 62, 0), entry.getRange().getRange())) {
-                        return entry.hasReplacement() ? entry.getReplacement() : Biomes.PLAINS;
+                        if (biome.equals(entry.getBiome())) {
+                            return entry.hasReplacement() ? entry.getReplacement() : Biomes.PLAINS;
+                        }
                     }
                 }
             }

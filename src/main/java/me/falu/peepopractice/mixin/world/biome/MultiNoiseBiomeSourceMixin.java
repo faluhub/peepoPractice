@@ -29,7 +29,9 @@ public abstract class MultiNoiseBiomeSourceMixin {
             for (WorldProperties.BiomeModification entry : PeepoPractice.CATEGORY.getWorldProperties().getAntiBiomes()) {
                 if (entry.getRange().isValidDimension(World.NETHER)) {
                     if (entry.isInfinite() || new BlockPos(biomeX, biomeY, biomeZ).isWithinDistance(new Vec3i(0, 62, 0), entry.getRange().getRange())) {
-                        return entry.hasReplacement() ? entry.getReplacement() : Biomes.NETHER_WASTES;
+                        if (biome.equals(entry.getBiome())) {
+                            return entry.hasReplacement() ? entry.getReplacement() : Biomes.NETHER_WASTES;
+                        }
                     }
                 }
             }

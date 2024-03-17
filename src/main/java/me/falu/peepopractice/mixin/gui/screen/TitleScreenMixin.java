@@ -1,6 +1,6 @@
 package me.falu.peepopractice.mixin.gui.screen;
 
-import me.falu.peepopractice.gui.screen.NewCategorySelectionScreen;
+import me.falu.peepopractice.gui.screen.CategorySelectionScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -28,7 +28,7 @@ public abstract class TitleScreenMixin extends Screen {
                         new LiteralText("PeepoPractice"),
                         b -> {
                             if (this.client != null) {
-                                this.client.openScreen(new NewCategorySelectionScreen(this));
+                                this.client.openScreen(new CategorySelectionScreen(this));
                             }
                         }
                 )

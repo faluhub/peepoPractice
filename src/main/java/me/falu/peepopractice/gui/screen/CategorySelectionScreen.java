@@ -1,30 +1,30 @@
 package me.falu.peepopractice.gui.screen;
 
+import com.google.common.collect.Maps;
+import com.mojang.realmsclient.gui.screens.RealmsGenericErrorScreen;
 import me.falu.peepopractice.PeepoPractice;
 import me.falu.peepopractice.core.category.PracticeCategoriesAA;
 import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import me.falu.peepopractice.core.category.PracticeCategory;
-import me.falu.peepopractice.core.writer.PracticeWriter;
-import me.falu.peepopractice.gui.widget.CategoryListWidget;
 import me.falu.peepopractice.gui.widget.LimitlessButtonWidget;
+import me.falu.peepopractice.gui.widget.ThumbnailButtonWidget;
 import net.minecraft.client.gui.hud.BackgroundHelper;
-import net.minecraft.client.gui.screen.FatalErrorScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
+import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class CategorySelectionScreen extends Screen {
     private final Screen parent;
-    public CategoryListWidget categoryListWidget;
-    private SelectionType selectionType = PeepoPractice.SELECTION_TYPE;
-    private ButtonWidget doneButton;
-    private ButtonWidget configureButton;
 
     public CategorySelectionScreen(Screen parent) {
         super(new TranslatableText("peepopractice.title.category_selection"));
@@ -32,135 +32,126 @@ public class CategorySelectionScreen extends Screen {
     }
 
     @Override
-    public boolean shouldCloseOnEsc() {
-        if (this.categoryListWidget != null && this.categoryListWidget.getSelected() != null) {
-            this.categoryListWidget.setSelected(null);
-            return false;
-        }
-
-        return super.shouldCloseOnEsc();
-    }
-
-    public void openConfig() {
-        if (this.client != null) {
-            if (this.categoryListWidget != null && this.categoryListWidget.getSelected() != null) {
-                this.client.openScreen(new SettingsTypeSelectionScreen(this, this.categoryListWidget.getSelected().category));
-            } else {
-                this.client.openScreen(new GlobalConfigScreen(this));
-            }
-        }
-    }
-
-    public void play() {
-        if (this.client != null && this.categoryListWidget != null && this.categoryListWidget.getSelected() != null) {
-            PracticeCategory selected = this.categoryListWidget.getSelected().category;
-            if (!selected.hasConfiguredInventory()) {
-                this.client.openScreen(new FatalErrorScreen(new TranslatableText("peepopractice.no_configured_inv"), new LiteralText("")));
-                return;
-            }
-            PeepoPractice.CATEGORY = selected;
-            this.client.openScreen(new CreateWorldScreen(this));
-        }
-    }
-
-    @Override
     protected void init() {
-        this.children.clear();
-        this.buttons.clear();
+        List<PracticeCategory> cells = PeepoPractice.SELECTION_TYPE.list.stream().filter(v -> !v.getId().equals("empty")).collect(Collectors.toList());
+        int rows = (int) Math.max(1, Math.ceil(Math.sqrt(cells.size())));
+        int cols = (int) Math.max(1, Math.ceil(cells.size() / (float) rows));
+        int paddingX = 8;
+        int paddingY = 8;
+        int gridWidth = this.width - this.width / 6;
+        int gridHeight = this.height - this.height / 6;
+        int cellWidth = Math.round((float) gridWidth / cols);
+        int cellHeight = Math.round((float) gridHeight / rows);
+        int configButtonSize = 20;
 
-        this.categoryListWidget = new CategoryListWidget(this, this.client, false, false, this.selectionType) {
-            @Override
-            public void onDoubleClick(PracticeCategory category) {
-                CategorySelectionScreen.this.play();
-            }
-        };
-        this.children.add(this.categoryListWidget);
-
-        this.doneButton = this.addButton(
-                new LimitlessButtonWidget(
-                        null,
-                        null,
-                        null,
-                        this.width / 2 - 155,
-                        this.height - 50,
-                        150,
-                        40,
-                        ScreenTexts.BACK,
-                        b -> {
-                            if (this.client != null) {
-                                if (this.doneButton.getMessage().getString().equals(ScreenTexts.BACK.getString())) {
-                                    this.client.openScreen(this.parent);
-                                } else {
-                                    this.play();
+        for (int i = 0; i < cells.size(); i++) {
+            PracticeCategory category = cells.get(i);
+            int row = i / cols;
+            int col = i % cols;
+            int x = cellWidth * col + (this.width - gridWidth) / 2 + paddingX / 2;
+            int y = cellHeight * row + paddingY / 2;
+            int width = cellWidth - paddingX / 2;
+            int height = cellHeight - paddingY / 2;
+            this.addButton(
+                    new ThumbnailButtonWidget(
+                            x,
+                            y,
+                            width,
+                            height,
+                            category,
+                            this.addButton(
+                                    new ButtonWidget(
+                                            x + width - configButtonSize - 4,
+                                            y + 4,
+                                            configButtonSize,
+                                            configButtonSize,
+                                            new LiteralText(""),
+                                            b -> {
+                                                if (this.client != null) {
+                                                    this.client.openScreen(new SettingsTypeSelectionScreen(this, category));
+                                                }
+                                            },
+                                            (button, matrices, mouseX, mouseY) -> this.renderTooltip(matrices, new TranslatableText("peepopractice.button.configure"), mouseX, mouseY)
+                                    )
+                            ),
+                            b -> {
+                                if (this.client != null) {
+                                    if (!category.hasConfiguredInventory()) {
+                                        this.client.openScreen(new RealmsGenericErrorScreen(new TranslatableText("peepopractice.no_configured_inv"), new LiteralText(""), this));
+                                        return;
+                                    }
+                                    PeepoPractice.CATEGORY = category;
+                                    this.client.openScreen(new CreateWorldScreen(this));
                                 }
                             }
-                        }
-                )
-        );
-        this.configureButton = this.addButton(
-                new LimitlessButtonWidget(
-                        null,
-                        null,
-                        null,
-                        this.width / 2 - 155 + 160,
-                        this.height - 50,
-                        150,
-                        40,
-                        new TranslatableText("peepopractice.button.global_config"),
-                        b -> this.openConfig()
-                )
-        );
-        this.addButton(
-                new LimitlessButtonWidget(
-                        null,
-                        null,
-                        null,
-                        5,
-                        5,
-                        40,
-                        20,
-                        new TranslatableText(this.selectionType.title),
-                        b -> {
-                            this.selectionType = SelectionType.opposite(this.selectionType);
-                            PeepoPractice.SELECTION_TYPE = this.selectionType;
-                            this.init();
-                        }
-                )
-        );
+                    )
+            );
+        }
+
+        int minX = this.width;
+        int maxX = 0;
+        int maxY = 0;
+        for (AbstractButtonWidget button : this.buttons) {
+            if (button instanceof ThumbnailButtonWidget) {
+                if (button.x < minX) {
+                    minX = button.x;
+                } else if (button.x > maxX) {
+                    maxX = button.x + button.getWidth();
+                }
+                if (button.y > maxY) {
+                    maxY = button.y + button.getHeight();
+                }
+            }
+        }
+        Map<Text, ButtonWidget.PressAction> buttonRowItems = Maps.newLinkedHashMap();
+        buttonRowItems.put(new LiteralText("<- ").append(ScreenTexts.DONE), b -> this.onClose());
+        buttonRowItems.put(new TranslatableText("peepopractice.button.global_config"), b -> {
+            if (this.client != null) {
+                this.client.openScreen(new GlobalConfigScreen(this));
+            }
+        });
+        buttonRowItems.put(new TranslatableText(PeepoPractice.SELECTION_TYPE.opposite().title).append(" ->"), b -> {
+            if (this.client != null) {
+                PeepoPractice.SELECTION_TYPE = PeepoPractice.SELECTION_TYPE.opposite();
+                this.client.openScreen(new CategorySelectionScreen(this.parent));
+            }
+        });
+        int buttonRowWidth = maxX - minX + paddingX;
+        int buttonRowHeight = this.height - maxY;
+        int buttonRowElemWidth = Math.round((float) buttonRowWidth / buttonRowItems.size()) - 1;
+        int buttonRowElemHeight = buttonRowHeight / 2;
+        int buttonRowElemY = maxY + buttonRowElemHeight / 2;
+
+        int i = 0;
+        for (Map.Entry<Text, ButtonWidget.PressAction> entry : buttonRowItems.entrySet()) {
+            this.addButton(
+                    new LimitlessButtonWidget(
+                            minX + buttonRowElemWidth * i,
+                            buttonRowElemY,
+                            buttonRowElemWidth - paddingX / 2,
+                            buttonRowElemHeight,
+                            entry.getKey(),
+                            entry.getValue()
+                    )
+            );
+            i++;
+        }
     }
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        if (this.categoryListWidget != null) {
-            this.categoryListWidget.render(matrices, mouseX, mouseY, delta);
-            this.fillGradient(matrices, 0, 0, this.width, this.categoryListWidget.getTop(), PeepoPractice.BACKGROUND_COLOR[0], PeepoPractice.BACKGROUND_COLOR[0]);
-            this.fillGradient(matrices, 0, this.categoryListWidget.getBottom(), this.width, this.height, PeepoPractice.BACKGROUND_COLOR[1], PeepoPractice.BACKGROUND_COLOR[1]);
-        }
+        PeepoPractice.drawBackground(matrices, this);
 
-        this.drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 13, 16777215);
         String text = PeepoPractice.MOD_NAME + " v" + PeepoPractice.MOD_VERSION;
         this.textRenderer.drawWithShadow(matrices, text, this.width - this.textRenderer.getWidth(text), this.height - this.textRenderer.fontHeight, BackgroundHelper.ColorMixer.getArgb(255 / 2, 255, 255, 255));
-
-        boolean selected = this.categoryListWidget != null && this.categoryListWidget.getSelected() != null;
-        this.configureButton.setMessage(new TranslatableText("peepopractice.button." + (selected ? "configure" : "global_config")));
-        this.doneButton.setMessage(selected ? new TranslatableText("peepopractice.button.play") : ScreenTexts.BACK);
 
         super.render(matrices, mouseX, mouseY, delta);
     }
 
     @Override
     public void onClose() {
-        PracticeWriter.COMPLETIONS_WRITER.update();
-        if (PracticeWriter.PREFERENCES_WRITER.hasChanged()) {
-            PracticeWriter.PREFERENCES_WRITER.write();
-        }
-
-        if (this.categoryListWidget != null && this.categoryListWidget.getSelected() != null) {
-            this.categoryListWidget.setSelected(null);
-        } else {
-            if (this.client != null) {
-                this.client.openScreen(null);
-            }
+        if (this.client != null) {
+            this.client.openScreen(this.parent);
         }
     }
 

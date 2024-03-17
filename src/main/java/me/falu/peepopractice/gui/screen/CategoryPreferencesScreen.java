@@ -100,13 +100,6 @@ public class CategoryPreferencesScreen extends Screen {
         PracticeWriter.PREFERENCES_WRITER.write();
         if (this.client != null) {
             this.client.openScreen(this.parent);
-
-            if (this.parent instanceof CategorySelectionScreen) {
-                CategorySelectionScreen parent = ((CategorySelectionScreen) this.parent);
-                if (parent.categoryListWidget != null) {
-                    parent.categoryListWidget.setSelected(null);
-                }
-            }
         }
     }
 }

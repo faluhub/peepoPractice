@@ -6,6 +6,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import me.falu.peepopractice.PeepoPractice;
 import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import me.falu.peepopractice.gui.screen.CategorySelectionScreen;
+import me.falu.peepopractice.gui.widget.LimitlessButtonWidget;
 import me.falu.peepopractice.owner.GenerationShutdownOwner;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.WorldGenerationProgressTracker;
@@ -13,7 +14,6 @@ import net.minecraft.client.gui.screen.LevelLoadingScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
-import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -35,14 +35,14 @@ public abstract class LevelLoadingScreenMixin extends Screen {
     protected void init() {
         if (!PeepoPractice.CATEGORY.equals(PracticeCategoriesAny.EMPTY)) {
             this.addButton(
-                    new ButtonWidget(
-                            this.width / 2 - 60,
-                            this.height / 2 - 80,
-                            120,
-                            20,
+                    new LimitlessButtonWidget(
+                            0,
+                            this.height - this.height / 6,
+                            this.width,
+                            this.height / 6,
                             ScreenTexts.CANCEL,
-                            button -> {
-                                button.active = false;
+                            b -> {
+                                b.active = false;
                                 if (this.client != null) {
                                     if (this.client.getServer() != null) {
                                         ((GenerationShutdownOwner) this.client.getServer()).peepoPractice$shutdown();
@@ -71,7 +71,7 @@ public abstract class LevelLoadingScreenMixin extends Screen {
         int initialTextureWidth = 125;
         int maxTextureWidth = 320 - initialTextureWidth + this.width / 4;
         int textureWidth = (int) ((initialTextureWidth + (int) (maxTextureWidth * (percentage / 100.0F))) / 2.0F);
-        drawTexture(matrices, this.width / 2 - textureWidth / 2, this.height / 2 - textureHeight / 2 - this.textRenderer.fontHeight, 0.0F, 0.0F, textureWidth, textureHeight, textureWidth, textureHeight);
+        drawTexture(matrices, this.width / 2 - textureWidth / 2, this.height / 2 - textureHeight / 2 - this.textRenderer.fontHeight - this.height / 6 / 2, 0.0F, 0.0F, textureWidth, textureHeight, textureWidth, textureHeight);
     }
 
     @SuppressWarnings("deprecation")
@@ -84,7 +84,7 @@ public abstract class LevelLoadingScreenMixin extends Screen {
         RenderSystem.pushMatrix();
         float scale = 2.0F;
         RenderSystem.scalef(scale, scale, 1.0F);
-        this.drawCenteredString(matrices, textRenderer, s, (int) (i / scale), (int) ((this.height / 2 + textRenderer.fontHeight * scale) / scale), k);
+        this.drawCenteredString(matrices, textRenderer, s, (int) (i / scale), (int) ((this.height / 2 - this.height / 6 / 2) / scale) + textRenderer.fontHeight, k);
         RenderSystem.popMatrix();
     }
 
