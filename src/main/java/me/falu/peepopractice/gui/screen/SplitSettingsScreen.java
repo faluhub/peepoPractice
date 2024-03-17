@@ -57,7 +57,7 @@ public class SplitSettingsScreen extends Screen {
                     next = preference.getChoices().get(0);
                 }
 
-                b.setMessage(new LiteralText(b.getMessage().getString().replaceAll(value, next)));
+                b.setMessage(new LiteralText(preference.getLabel() + ": ").append(new TranslatableText(next)));
                 CategoryPreference.setValue(this.category, preference.getId(), next);
             }));
             index++;
