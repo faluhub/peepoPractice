@@ -36,8 +36,8 @@ public class NewCategorySelectionScreen extends Screen {
         int paddingY = 8;
         int gridWidth = this.width - this.width / 6;
         int gridHeight = this.height - this.height / 6;
-        int cellWidth = gridWidth / cols;
-        int cellHeight = gridHeight / rows;
+        int cellWidth = Math.round((float) gridWidth / cols);
+        int cellHeight = Math.round((float) gridHeight / rows);
         int configButtonSize = 20;
 
         for (int i = 0; i < cells.size(); i++) {
@@ -102,9 +102,9 @@ public class NewCategorySelectionScreen extends Screen {
                 this.client.openScreen(new NewCategorySelectionScreen(this.parent));
             }
         });
-        int buttonRowWidth = maxX - minX;
+        int buttonRowWidth = maxX - minX + paddingX;
         int buttonRowHeight = this.height - maxY;
-        int buttonRowElemWidth = buttonRowWidth / buttonRowItems.size();
+        int buttonRowElemWidth = Math.round((float) buttonRowWidth / buttonRowItems.size()) - 1;
         int buttonRowElemHeight = buttonRowHeight / 2;
         int buttonRowElemY = maxY + buttonRowElemHeight / 2;
 
@@ -117,7 +117,7 @@ public class NewCategorySelectionScreen extends Screen {
                             null,
                             minX + buttonRowElemWidth * i,
                             buttonRowElemY,
-                            buttonRowElemWidth,
+                            buttonRowElemWidth - paddingX / 2,
                             buttonRowElemHeight,
                             entry.getKey(),
                             entry.getValue()
