@@ -21,7 +21,6 @@ import java.util.*;
 public class PracticeCategory {
     private final List<StructureProperties> structureProperties = new ArrayList<>();
     private final List<CategoryPreference> preferences;
-    private final boolean custom;
     private final boolean aa;
     private final Map<String, Object> customValues = new HashMap<>();
     private final Map<String, Object> permaValues = new HashMap<>();
@@ -34,30 +33,12 @@ public class PracticeCategory {
     private boolean fillerCategory;
 
     public PracticeCategory() {
-        this(false, false);
+        this(false);
     }
 
     public PracticeCategory(boolean aa) {
-        this(aa, false);
-    }
-
-    public PracticeCategory(boolean aa, boolean custom) {
         this.preferences = new ArrayList<>();
         this.aa = aa;
-        this.custom = custom;
-        if (!this.custom) {
-            if (aa) {
-                PracticeCategoriesAA.ALL.add(this);
-            } else {
-                PracticeCategoriesAny.ALL.add(this);
-            }
-        }
-    }
-
-    public void register() {
-        if (this.custom) {
-            PracticeCategoriesAny.ALL.add(this);
-        }
     }
 
     public String getId() {
@@ -182,6 +163,15 @@ public class PracticeCategory {
         return this;
     }
 
+    public PracticeCategory register() {
+        if (this.aa) {
+            PracticeCategoriesAA.ALL.add(this);
+        } else {
+            PracticeCategoriesAny.ALL.add(this);
+        }
+        return this;
+    }
+
     public Object getCustomValue(String key) {
         return this.customValues.get(key);
     }
@@ -229,10 +219,11 @@ public class PracticeCategory {
         if (this.hasSplitEvent()) {
             PracticeTypes.CompareType compareType = PracticeTypes.CompareType.fromLabel(CategoryPreference.getOrDefault(this, "compare_type", PracticeTypes.CompareType.PB.getLabel()));
             if (compareType != null) {
-                boolean hasTime = compareType.equals(PracticeTypes.CompareType.PB) ? this.getSplitEvent().hasPb() : this.getSplitEvent().hasCompletedTimes();
+                boolean comparePb = compareType.equals(PracticeTypes.CompareType.PB);
+                boolean hasTime = comparePb ? this.getSplitEvent().hasPb() : this.getSplitEvent().hasCompletedTimes();
                 if (hasTime) {
-                    String timeString = compareType.equals(PracticeTypes.CompareType.PB) ? this.getSplitEvent().getPbString() : this.getSplitEvent().getAverageString();
-                    return Formatting.GREEN + " (" + timeString + ")";
+                    String timeString = comparePb ? this.getSplitEvent().getPbString() : this.getSplitEvent().getAverageString();
+                    return (comparePb ? Formatting.GREEN : Formatting.AQUA) + " (" + timeString + ")";
                 } else {
                     return Formatting.GRAY + " " + new TranslatableText("peepopractice.text.no_pb_or_avg", I18n.translate(compareType.getLabel())).getString();
                 }

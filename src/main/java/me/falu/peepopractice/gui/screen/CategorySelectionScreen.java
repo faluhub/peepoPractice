@@ -3,6 +3,7 @@ package me.falu.peepopractice.gui.screen;
 import com.google.common.collect.Maps;
 import com.mojang.realmsclient.gui.screens.RealmsGenericErrorScreen;
 import me.falu.peepopractice.PeepoPractice;
+import me.falu.peepopractice.core.category.CustomCategoryResourceManager;
 import me.falu.peepopractice.core.category.PracticeCategoriesAA;
 import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import me.falu.peepopractice.core.category.PracticeCategory;
@@ -25,17 +26,18 @@ import java.util.stream.Collectors;
 
 public class CategorySelectionScreen extends Screen {
     private final Screen parent;
+    private final List<PracticeCategory> cells;
 
     public CategorySelectionScreen(Screen parent) {
         super(new TranslatableText("peepopractice.title.category_selection"));
         this.parent = parent;
+        this.cells = PeepoPractice.SELECTION_TYPE.list.stream().filter(v -> !v.getId().equals("empty")).collect(Collectors.toList());
     }
 
     @Override
     protected void init() {
-        List<PracticeCategory> cells = PeepoPractice.SELECTION_TYPE.list.stream().filter(v -> !v.getId().equals("empty")).collect(Collectors.toList());
-        int rows = (int) Math.max(1, Math.ceil(Math.sqrt(cells.size())));
-        int cols = (int) Math.max(1, Math.ceil(cells.size() / (float) rows));
+        int rows = (int) Math.max(1, Math.ceil(Math.sqrt(this.cells.size())));
+        int cols = (int) Math.max(1, Math.ceil(this.cells.size() / (float) rows));
         int paddingX = 8;
         int paddingY = 8;
         int gridWidth = this.width - this.width / 6;
@@ -44,8 +46,8 @@ public class CategorySelectionScreen extends Screen {
         int cellHeight = Math.round((float) gridHeight / rows);
         int configButtonSize = 20;
 
-        for (int i = 0; i < cells.size(); i++) {
-            PracticeCategory category = cells.get(i);
+        for (int i = 0; i < this.cells.size(); i++) {
+            PracticeCategory category = this.cells.get(i);
             int row = i / cols;
             int col = i % cols;
             int x = cellWidth * col + (this.width - gridWidth) / 2 + paddingX / 2;
@@ -95,7 +97,8 @@ public class CategorySelectionScreen extends Screen {
             if (button instanceof ThumbnailButtonWidget) {
                 if (button.x < minX) {
                     minX = button.x;
-                } else if (button.x > maxX) {
+                }
+                if (button.x > maxX) {
                     maxX = button.x + button.getWidth();
                 }
                 if (button.y > maxY) {
@@ -110,9 +113,9 @@ public class CategorySelectionScreen extends Screen {
                 this.client.openScreen(new GlobalConfigScreen(this));
             }
         });
-        buttonRowItems.put(new TranslatableText(PeepoPractice.SELECTION_TYPE.opposite().title).append(" ->"), b -> {
+        buttonRowItems.put(new TranslatableText(PeepoPractice.SELECTION_TYPE.next().title).append(" ->"), b -> {
             if (this.client != null) {
-                PeepoPractice.SELECTION_TYPE = PeepoPractice.SELECTION_TYPE.opposite();
+                PeepoPractice.SELECTION_TYPE = PeepoPractice.SELECTION_TYPE.next();
                 this.client.openScreen(new CategorySelectionScreen(this.parent));
             }
         });
@@ -157,7 +160,9 @@ public class CategorySelectionScreen extends Screen {
 
     public enum SelectionType {
         ANY(PracticeCategoriesAny.ALL),
-        AA(PracticeCategoriesAA.ALL);
+        AA(PracticeCategoriesAA.ALL),
+        CUSTOM(CustomCategoryResourceManager.CUSTOM_CATEGORIES);
+
         public final String title;
         public final List<PracticeCategory> list;
 
@@ -166,16 +171,20 @@ public class CategorySelectionScreen extends Screen {
             this.list = list;
         }
 
-        public static SelectionType opposite(SelectionType type) {
-            if (type.equals(ANY)) {
-                return AA;
-            } else {
-                return ANY;
+        public static SelectionType next(SelectionType type) {
+            int index = type.ordinal();
+            while (true) {
+                index++;
+                int next = index >= values().length ? 0 : index;
+                SelectionType value = values()[next];
+                if (!value.list.isEmpty()) {
+                    return value;
+                }
             }
         }
 
-        public SelectionType opposite() {
-            return opposite(this);
+        public SelectionType next() {
+            return next(this);
         }
     }
 }

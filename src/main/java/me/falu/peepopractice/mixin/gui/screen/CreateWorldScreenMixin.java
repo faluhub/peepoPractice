@@ -40,7 +40,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
     @Shadow
     protected abstract void createLevel();
 
-    @Inject(method = "<init>*", at = @At("TAIL"))
+    @Inject(method = "<init>(Lnet/minecraft/client/gui/screen/Screen;Lnet/minecraft/client/gui/screen/world/MoreOptionsDialog;)V", at = @At("TAIL"))
     private void peepoPractice$setWorldProperties(CallbackInfo ci) {
         PracticeCategory category = PeepoPractice.CATEGORY;
         if (!category.equals(PracticeCategoriesAny.EMPTY)) {

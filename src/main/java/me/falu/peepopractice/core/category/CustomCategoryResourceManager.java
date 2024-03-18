@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class CustomCategoryResourceManager {
+    public static final List<PracticeCategory> CUSTOM_CATEGORIES = new ArrayList<>();
     private static final File CATEGORIES_FOLDER = FabricLoader.getInstance().getConfigDir().resolve(PeepoPractice.MOD_NAME).resolve("categories").toFile();
 
     @SuppressWarnings({ "DuplicatedCode" })
@@ -51,9 +52,7 @@ public class CustomCategoryResourceManager {
             try (DirectoryStream<Path> stream = Files.newDirectoryStream(CATEGORIES_FOLDER.toPath(), filter)) {
                 StringBuilder categories = new StringBuilder("Registered custom categories: ");
                 for (Path path : stream) {
-                    PeepoPractice.log(path.toString());
                     Object obj;
-
                     try {
                         FileReader reader = new FileReader(path.toFile());
                         JsonParser parser = new JsonParser();
@@ -66,11 +65,7 @@ public class CustomCategoryResourceManager {
                     if (obj != null && !obj.equals(JsonNull.INSTANCE)) {
                         JsonObject main = (JsonObject) obj;
 
-                        boolean aa = false;
-                        if (main.has("aa")) {
-                            aa = main.get("aa").getAsBoolean();
-                        }
-                        PracticeCategory category = new PracticeCategory(aa, true);
+                        PracticeCategory category = new PracticeCategory();
                         category = category.setFillerCategory(true);
 
                         if (main.has("id")) {
@@ -270,7 +265,7 @@ public class CustomCategoryResourceManager {
                                     break;
                             }
                         }
-                        category.register();
+                        CUSTOM_CATEGORIES.add(category);
                         categories.append(category.getName(false)).append(", ");
                     }
                 }

@@ -102,7 +102,7 @@ public class CopyInventorySelectionScreen extends Screen {
                         20,
                         new TranslatableText(this.selectionType.title),
                         b -> {
-                            this.selectionType = CategorySelectionScreen.SelectionType.opposite(this.selectionType);
+                            this.selectionType = CategorySelectionScreen.SelectionType.next(this.selectionType);
                             this.init();
                         }
                 )

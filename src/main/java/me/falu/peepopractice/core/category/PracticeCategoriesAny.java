@@ -130,7 +130,8 @@ public class PracticeCategoriesAny {
                     new InteractLootChestSplitEvent()
                             .setLootTable(LootTables.BURIED_TREASURE_CHEST)
                             .setOnClose(true)
-            );
+            )
+            .register();
     public static final PracticeCategory ISLAND_LEAVE_SPLIT = new PracticeCategory()
             .setId("island_leave_split")
             .setPlayerProperties(
@@ -173,7 +174,8 @@ public class PracticeCategoriesAny {
                     new EnterVehicleSplitEvent()
                             .setVehicle(EntityType.BOAT)
                             .setKeepItem(true)
-            );
+            )
+            .register();
     public static final PracticeCategory RAVINE_ENTER_SPLIT = new PracticeCategory()
             .setId("ravine_enter_split")
             .setPlayerProperties(
@@ -225,7 +227,8 @@ public class PracticeCategoriesAny {
                             .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
                             .setDefaultChoice(PracticeCategoryUtils.DISABLED)
                             .setIcon(new Identifier("textures/item/water_bucket.png"))
-            );
+            )
+            .register();
     public static final PracticeCategory BASTION_SPLIT = new PracticeCategory()
             .setId("bastion_split")
             .setFillerCategory(true)
@@ -273,7 +276,8 @@ public class PracticeCategoriesAny {
             .addPreference(BastionPreset.BASTION_TYPE_PREFERENCE)
             .addPreference(BastionPreset.RANKED_LOOT_TABLE_PREFERENCE)
             .addPreference(StructurePreset.SPAWN_LOCATION_PREFERENCE)
-            .addPreference(BastionPreset.ZOMBIE_PIGMEN);
+            .addPreference(BastionPreset.ZOMBIE_PIGMEN)
+            .register();
     public static final PracticeCategory FORTRESS_SPLIT = new PracticeCategory()
             .setId("fortress_split")
             .setFillerCategory(true)
@@ -312,7 +316,8 @@ public class PracticeCategoriesAny {
             )
             .addPreference(FortressPreset.GOOD_BLAZE_RATES_PREFERENCE)
             .addPreference(FortressPreset.SOUL_SAND_VALLEY_PREFERENCE)
-            .addPreference(FortressPreset.FIRE_RESISTANCE_PREFERENCE);
+            .addPreference(FortressPreset.FIRE_RESISTANCE_PREFERENCE)
+            .register();
     public static final PracticeCategory NETHER_SPLIT = new PracticeCategory()
             .setId("nether_split")
             .addStructureProperties(
@@ -375,7 +380,8 @@ public class PracticeCategoriesAny {
             .addPreference(FortressPreset.GOOD_BLAZE_RATES_PREFERENCE)
             .addPreference(StructurePreset.SPAWN_LOCATION_PREFERENCE)
             .addPreference(FortressPreset.SOUL_SAND_VALLEY_PREFERENCE)
-            .addPreference(BastionPreset.ZOMBIE_PIGMEN);
+            .addPreference(BastionPreset.ZOMBIE_PIGMEN)
+            .register();
     public static final PracticeCategory POST_BLIND_SPLIT = new PracticeCategory()
             .setId("post_blind_split")
             .setPlayerProperties(
@@ -435,7 +441,8 @@ public class PracticeCategoriesAny {
                             .setChoices(PracticeCategoryUtils.ALL_LIST)
                             .setDefaultChoice(PracticeCategoryUtils.RANDOM)
             )
-            .addPreference(FortressPreset.FIRE_RESISTANCE_PREFERENCE);
+            .addPreference(FortressPreset.FIRE_RESISTANCE_PREFERENCE)
+            .register();
     public static final PracticeCategory STRONGHOLD_SPLIT = new PracticeCategory()
             .setId("stronghold_split")
             .addStructureProperties(
@@ -503,7 +510,8 @@ public class PracticeCategoriesAny {
                             .setChoices(PracticeTypes.EyeCountType.all())
                             .setDefaultChoice(PracticeTypes.EyeCountType.RANDOM.getLabel())
                             .setIcon(new Identifier("textures/item/ender_eye.png"))
-            );
+            )
+            .register();
     public static final PracticeCategory END_SPLIT = new PracticeCategory()
             .setId("end_split")
             .setPlayerProperties(
@@ -546,5 +554,6 @@ public class PracticeCategoriesAny {
                             .setChoices(PracticeCategoryUtils.ALL_LIST)
                             .setDefaultChoice(PracticeCategoryUtils.DISABLED)
                             .setIcon(new Identifier("textures/item/brick.png"))
-            );
+            )
+            .register();
 }

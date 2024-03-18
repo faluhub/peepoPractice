@@ -41,7 +41,8 @@ public class PracticeCategoriesAA {
             .setSplitEvent(
                     new GetAdvancementSplitEvent()
                             .setAdvancement(new Identifier("nether/uneasy_alliance"))
-            );
+            )
+            .register();
     public static final PracticeCategory IGLOO_SPLIT = new PracticeCategory(true)
             .setId("igloo_split")
             .putPermaValue("guaranteeIglooBasement", true)
@@ -67,7 +68,8 @@ public class PracticeCategoriesAA {
             .setSplitEvent(
                     new GetAdvancementSplitEvent()
                             .setAdvancement(new Identifier("story/cure_zombie_villager"))
-            );
+            )
+            .register();
     public static final PracticeCategory RAID_SPLIT = new PracticeCategory(true)
             .setId("raid_split")
             .setFillerCategory(true)
@@ -88,7 +90,8 @@ public class PracticeCategoriesAA {
             .setSplitEvent(
                     new GetAdvancementSplitEvent()
                             .setAdvancement(new Identifier("adventure/hero_of_the_village"))
-            );
+            )
+            .register();
     public static final PracticeCategory END_GAME_SPLIT = new PracticeCategory(true)
             .setId("end_game_split")
             .setWorldProperties(
@@ -100,5 +103,6 @@ public class PracticeCategoriesAA {
             .setSplitEvent(
                     new GetAdvancementSplitEvent()
                             .setAdvancement(null)
-            );
+            )
+            .register();
 }
