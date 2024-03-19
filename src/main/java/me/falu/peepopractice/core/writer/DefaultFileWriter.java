@@ -16,53 +16,45 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 public class DefaultFileWriter {
+    public static final File FOLDER = FabricLoader.getInstance().getConfigDir().resolve(PeepoPractice.MOD_NAME).toFile();
     public static final DefaultFileWriter INSTANCE = new DefaultFileWriter();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-    @SuppressWarnings({ "ResultOfMethodCallIgnored" })
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public void writeDefaultFiles() {
         try {
-            File folder = FabricLoader.getInstance().getConfigDir().resolve(PeepoPractice.MOD_NAME).toFile();
-            if (!folder.exists()) {
-                folder.mkdirs();
-            }
+            FOLDER.mkdirs();
             List<String> resources = this.getResourceFiles();
             for (String resource : resources) {
-                File destination = folder.toPath().resolve(resource.replace("writer/", "")).toFile();
-                try (InputStream stream = this.getClass().getClassLoader().getResourceAsStream(resource)) {
-                    if (stream != null) {
-                        JsonParser parser = new JsonParser();
-                        JsonElement defaultElement = parser.parse(new InputStreamReader(stream, StandardCharsets.UTF_8));
-                        if (!destination.exists()) {
-                            if (!destination.getParentFile().exists()) {
-                                destination.getParentFile().mkdirs();
+                File destination = FOLDER.toPath().resolve(resource.replace("writer/", "")).toFile();
+                InputStream stream = this.getClass().getClassLoader().getResourceAsStream(resource);
+                if (stream != null) {
+                    JsonParser parser = new JsonParser();
+                    JsonElement defaultElement = parser.parse(new InputStreamReader(stream, StandardCharsets.UTF_8));
+                    if (!destination.exists()) {
+                        destination.getParentFile().mkdirs();
+                        FileUtils.writeStringToFile(destination, GSON.toJson(defaultElement), StandardCharsets.UTF_8);
+                    } else if (defaultElement.isJsonObject()) {
+                        JsonElement element = parser.parse(FileUtils.readFileToString(destination, StandardCharsets.UTF_8));
+                        if (element.isJsonObject()) {
+                            JsonObject defaultObject = defaultElement.getAsJsonObject();
+                            JsonObject object = element.getAsJsonObject();
+                            boolean hasChanged = false;
+                            for (Map.Entry<String, JsonElement> entry : defaultObject.entrySet()) {
+                                if (!object.has(entry.getKey())) {
+                                    object.add(entry.getKey(), entry.getValue());
+                                    hasChanged = true;
+                                }
                             }
-                            destination.createNewFile();
-                            FileWriter writer = new FileWriter(destination);
-                            writer.write(GSON.toJson(defaultElement));
-                            writer.flush();
-                            writer.close();
-                        } else if (defaultElement.isJsonObject()) {
-                            JsonElement element = parser.parse(FileUtils.readFileToString(destination, StandardCharsets.UTF_8));
-                            if (element.isJsonObject()) {
-                                JsonObject defaultObject = defaultElement.getAsJsonObject();
-                                JsonObject object = element.getAsJsonObject();
-                                boolean hasChanged = false;
-                                for (Map.Entry<String, JsonElement> entry : defaultObject.entrySet()) {
-                                    if (!object.has(entry.getKey())) {
-                                        object.add(entry.getKey(), entry.getValue());
-                                        hasChanged = true;
-                                    }
-                                }
-                                if (hasChanged) {
-                                    FileWriter writer = new FileWriter(destination);
-                                    writer.write(GSON.toJson(object));
-                                    writer.flush();
-                                    writer.close();
-                                }
+                            if (hasChanged) {
+                                FileWriter writer = new FileWriter(destination);
+                                writer.write(GSON.toJson(object));
+                                writer.flush();
+                                writer.close();
                             }
                         }
                     }
+                    stream.close();
                 }
             }
         } catch (IOException e) {

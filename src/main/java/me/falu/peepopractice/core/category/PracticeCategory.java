@@ -1,12 +1,15 @@
 package me.falu.peepopractice.core.category;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import lombok.Getter;
 import me.falu.peepopractice.core.category.properties.PlayerProperties;
 import me.falu.peepopractice.core.category.properties.StructureProperties;
 import me.falu.peepopractice.core.category.properties.WorldProperties;
 import me.falu.peepopractice.core.category.properties.event.SplitEvent;
 import me.falu.peepopractice.core.exception.NotInitializedException;
 import me.falu.peepopractice.core.writer.PracticeWriter;
+import me.falu.peepopractice.gui.screen.InventorySelectionScreen;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
@@ -19,18 +22,18 @@ import java.util.*;
 
 @SuppressWarnings("UnusedDeclaration")
 public class PracticeCategory {
-    private final List<StructureProperties> structureProperties = new ArrayList<>();
-    private final List<CategoryPreference> preferences;
+    @Getter private final List<StructureProperties> structureProperties = new ArrayList<>();
+    @Getter private final List<CategoryPreference> preferences;
     private final boolean aa;
     private final Map<String, Object> customValues = new HashMap<>();
     private final Map<String, Object> permaValues = new HashMap<>();
-    private String id;
-    private PlayerProperties playerProperties;
-    private WorldProperties worldProperties;
-    private SplitEvent splitEvent;
-    private boolean hidden;
+    @Getter private String id;
+    @Getter private PlayerProperties playerProperties;
+    @Getter private WorldProperties worldProperties;
+    @Getter private SplitEvent splitEvent;
+    @Getter private boolean hidden;
     private boolean canHaveEmptyInventory;
-    private boolean fillerCategory;
+    @Getter private boolean fillerCategory;
 
     public PracticeCategory() {
         this(false);
@@ -41,17 +44,9 @@ public class PracticeCategory {
         this.aa = aa;
     }
 
-    public String getId() {
-        return this.id;
-    }
-
     public PracticeCategory setId(String id) {
         this.id = id;
         return this;
-    }
-
-    public PlayerProperties getPlayerProperties() {
-        return this.playerProperties;
     }
 
     public PracticeCategory setPlayerProperties(PlayerProperties playerProperties) {
@@ -62,10 +57,6 @@ public class PracticeCategory {
 
     public boolean hasPlayerProperties() {
         return this.playerProperties != null;
-    }
-
-    public List<StructureProperties> getStructureProperties() {
-        return this.structureProperties;
     }
 
     public StructureProperties findStructureProperties(StructureFeature<?> feature) {
@@ -95,10 +86,6 @@ public class PracticeCategory {
         return this;
     }
 
-    public WorldProperties getWorldProperties() {
-        return this.worldProperties;
-    }
-
     public PracticeCategory setWorldProperties(WorldProperties worldProperties) {
         this.worldProperties = worldProperties;
         this.worldProperties.setCategory(this);
@@ -107,10 +94,6 @@ public class PracticeCategory {
 
     public boolean hasWorldProperties() {
         return this.worldProperties != null;
-    }
-
-    public SplitEvent getSplitEvent() {
-        return this.splitEvent;
     }
 
     public PracticeCategory setSplitEvent(SplitEvent splitEvent) {
@@ -123,17 +106,9 @@ public class PracticeCategory {
         return this.splitEvent != null;
     }
 
-    public boolean isHidden() {
-        return this.hidden;
-    }
-
     public PracticeCategory setHidden(boolean hidden) {
         this.hidden = hidden;
         return this;
-    }
-
-    public List<CategoryPreference> getPreferences() {
-        return this.preferences;
     }
 
     public boolean hasPreferences() {
@@ -152,10 +127,6 @@ public class PracticeCategory {
     public PracticeCategory setCanHaveEmptyInventory(boolean canHaveEmptyInventory) {
         this.canHaveEmptyInventory = canHaveEmptyInventory;
         return this;
-    }
-
-    public boolean isFillerCategory() {
-        return this.fillerCategory;
     }
 
     public PracticeCategory setFillerCategory(boolean fillerCategory) {
@@ -245,8 +216,13 @@ public class PracticeCategory {
         if (!config.has(this.getId())) {
             return false;
         }
-        JsonObject inventory = config.get(this.getId()).getAsJsonObject();
-        return inventory.size() > 0;
+        String value = CategoryPreference.getValue(this, InventorySelectionScreen.SELECTED_INVENTORY);
+        int selected = value != null ? Integer.parseInt(value) : 0;
+        JsonArray profiles = config.getAsJsonArray(this.getId());
+        if (profiles.size() <= selected) {
+            return false;
+        }
+        return profiles.get(selected).getAsJsonObject().size() > 0;
     }
 
     public void reset() {

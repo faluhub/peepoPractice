@@ -1,5 +1,7 @@
 package me.falu.peepopractice.core.category.utils;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.falu.peepopractice.PeepoPractice;
@@ -22,40 +24,46 @@ import java.util.Random;
 public class InventoryUtils {
     public static final List<ItemStack> PREVIOUS_INVENTORY = new ArrayList<>();
 
-    public static void putItems(Inventory inventory, PracticeCategory category) {
+    public static void putItems(Inventory inventory, PracticeCategory category, int profileIndex) {
         JsonObject config = PracticeWriter.INVENTORY_WRITER.get();
         if (config.has(category.getId())) {
-            JsonObject object = config.getAsJsonObject(category.getId());
-            object.entrySet().forEach(set -> {
-                try {
-                    CompoundTag tag = StringNbtReader.parse(set.getValue().getAsString());
-                    ItemStack stack = ItemStack.fromTag(tag);
-                    if (!(inventory instanceof PlayerlessInventory)) {
-                        CompoundTag blockEntityTag = stack.getSubTag("BlockEntityTag");
-                        if (blockEntityTag != null && stack.getTag() != null) {
-                            if (blockEntityTag.contains("Items")) {
-                                DefaultedList<ItemStack> containerStacks = DefaultedList.ofSize(27, ItemStack.EMPTY);
-                                DefaultedList<ItemStack> newContainerStacks = DefaultedList.ofSize(27, ItemStack.EMPTY);
-                                Inventories.fromTag(blockEntityTag, containerStacks);
-                                for (int i = 0; i < containerStacks.size(); i++) {
-                                    newContainerStacks.set(i, addItemModifiers(containerStacks.get(i)));
+            JsonElement profilesElement = config.get(category.getId());
+            if (profilesElement.isJsonArray()) {
+                JsonArray profiles = config.has(category.getId()) ? profilesElement.getAsJsonArray() : new JsonArray();
+                if (profiles.size() > profileIndex) {
+                    JsonObject object = profiles.get(profileIndex).getAsJsonObject();
+                    object.entrySet().forEach(set -> {
+                        try {
+                            CompoundTag tag = StringNbtReader.parse(set.getValue().getAsString());
+                            ItemStack stack = ItemStack.fromTag(tag);
+                            if (!(inventory instanceof PlayerlessInventory)) {
+                                CompoundTag blockEntityTag = stack.getSubTag("BlockEntityTag");
+                                if (blockEntityTag != null && stack.getTag() != null) {
+                                    if (blockEntityTag.contains("Items")) {
+                                        DefaultedList<ItemStack> containerStacks = DefaultedList.ofSize(27, ItemStack.EMPTY);
+                                        DefaultedList<ItemStack> newContainerStacks = DefaultedList.ofSize(27, ItemStack.EMPTY);
+                                        Inventories.fromTag(blockEntityTag, containerStacks);
+                                        for (int i = 0; i < containerStacks.size(); i++) {
+                                            newContainerStacks.set(i, addItemModifiers(containerStacks.get(i)));
+                                        }
+                                        Inventories.toTag(blockEntityTag, newContainerStacks);
+                                        CompoundTag stackTag = stack.getTag();
+                                        stackTag.put("BlockEntityTag", blockEntityTag);
+                                        stack.setTag(stackTag);
+                                    }
+                                } else {
+                                    stack = addItemModifiers(stack);
                                 }
-                                Inventories.toTag(blockEntityTag, newContainerStacks);
-                                CompoundTag stackTag = stack.getTag();
-                                stackTag.put("BlockEntityTag", blockEntityTag);
-                                stack.setTag(stackTag);
                             }
-                        } else {
-                            stack = addItemModifiers(stack);
+                            inventory.setStack(Integer.parseInt(set.getKey()), stack);
+                        } catch (CommandSyntaxException e) {
+                            PeepoPractice.LOGGER.error(String.format("Couldn't parse inventory contents for inventory '%s'.", category.getId()), e);
+                        } catch (NumberFormatException e) {
+                            PeepoPractice.LOGGER.error(String.format("Couldn't parse slot index: '%s' is not a valid number.", set.getKey()), e);
                         }
-                    }
-                    inventory.setStack(Integer.parseInt(set.getKey()), stack);
-                } catch (CommandSyntaxException e) {
-                    PeepoPractice.LOGGER.error(String.format("Couldn't parse inventory contents for inventory '%s'.", category.getId()), e);
-                } catch (NumberFormatException e) {
-                    PeepoPractice.LOGGER.error(String.format("Couldn't parse slot index: '%s' is not a valid number.", set.getKey()), e);
+                    });
                 }
-            });
+            }
         }
     }
 

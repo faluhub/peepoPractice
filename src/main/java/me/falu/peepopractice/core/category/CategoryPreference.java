@@ -2,6 +2,7 @@ package me.falu.peepopractice.core.category;
 
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
+import lombok.Getter;
 import me.falu.peepopractice.PeepoPractice;
 import me.falu.peepopractice.core.category.utils.PracticeCategoryUtils;
 import me.falu.peepopractice.core.writer.PracticeWriter;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Getter
 public class CategoryPreference {
     private String id;
     private List<String> choices = new ArrayList<>();
@@ -51,6 +53,10 @@ public class CategoryPreference {
             return PracticeCategoryUtils.parseBoolean(value);
         }
         return false;
+    }
+
+    public static String getValue(CategoryPreference preference) {
+        return getValue(preference.getId());
     }
 
     public static String getValue(String id) {
@@ -134,10 +140,6 @@ public class CategoryPreference {
         PracticeWriter.PREFERENCES_WRITER.put(category.getId(), categoryPreference);
     }
 
-    public String getId() {
-        return this.id;
-    }
-
     public CategoryPreference setId(String id) {
         this.id = id;
         return this;
@@ -151,33 +153,20 @@ public class CategoryPreference {
         return new TranslatableText("peepopractice.preferences." + this.id + ".info").getString();
     }
 
-    public List<String> getChoices() {
-        return this.choices;
-    }
-
     public CategoryPreference setChoices(List<String> choices) {
         this.choices = choices;
         return this;
     }
 
-    @SuppressWarnings("unused")
-    public CategoryPreference setChoices(String[] choices) {
+    public CategoryPreference setChoices(String... choices) {
         this.choices.clear();
         this.choices.addAll(Lists.newArrayList(choices));
         return this;
     }
 
-    public String getDefaultChoice() {
-        return this.defaultChoice;
-    }
-
     public CategoryPreference setDefaultChoice(String defaultChoice) {
         this.defaultChoice = defaultChoice;
         return this;
-    }
-
-    public Identifier getIcon() {
-        return this.icon;
     }
 
     public CategoryPreference setIcon(Identifier icon) {

@@ -657,10 +657,6 @@ public abstract class PlayerlessHandledScreen extends Screen {
         this.handler.onSlotClick(slot == null ? invSlot : slot.id, clickData, actionType, this.playerInventory);
     }
 
-    public boolean shouldCloseOnEsc() {
-        return false;
-    }
-
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (super.keyPressed(keyCode, scanCode, modifiers)) {
             return true;

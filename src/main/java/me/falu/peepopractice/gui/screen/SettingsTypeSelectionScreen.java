@@ -13,7 +13,7 @@ import net.minecraft.util.Identifier;
 
 public class SettingsTypeSelectionScreen extends Screen {
     private final ButtonChoice[] buttons = new ButtonChoice[] {
-            new ButtonChoice("inventory", new Identifier("textures/item/chest_minecart.png"), category -> EditInventoryScreen.create(this, category)),
+            new ButtonChoice("inventory", new Identifier("textures/item/chest_minecart.png"), category -> new InventorySelectionScreen(this, category)),
             new ButtonChoice("preferences", new Identifier("textures/item/heart_of_the_sea.png"), category -> new CategoryPreferencesScreen(this, category), new ButtonDisabledInfo() {
                 @Override
                 public boolean isDisabled(PracticeCategory category) {

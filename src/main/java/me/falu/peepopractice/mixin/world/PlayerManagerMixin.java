@@ -1,11 +1,13 @@
 package me.falu.peepopractice.mixin.world;
 
 import me.falu.peepopractice.PeepoPractice;
+import me.falu.peepopractice.core.category.CategoryPreference;
 import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import me.falu.peepopractice.core.category.properties.PlayerProperties;
 import me.falu.peepopractice.core.category.utils.InventoryUtils;
 import me.falu.peepopractice.core.exception.NotInitializedException;
 import me.falu.peepopractice.core.global.GlobalOptions;
+import me.falu.peepopractice.gui.screen.InventorySelectionScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.network.ClientConnection;
@@ -53,7 +55,9 @@ public abstract class PlayerManagerMixin {
                 }
             } else {
                 PeepoPractice.log("Using configured inventory.");
-                InventoryUtils.putItems(player.inventory, PeepoPractice.CATEGORY);
+                String value = CategoryPreference.getValue(InventorySelectionScreen.SELECTED_INVENTORY);
+                int selected = value != null ? Integer.parseInt(value) : 0;
+                InventoryUtils.putItems(player.inventory, PeepoPractice.CATEGORY, selected);
             }
             if (GlobalOptions.GIVE_SATURATION.get(client.options)) {
                 player.getHungerManager().setSaturationLevelClient(10.0F);

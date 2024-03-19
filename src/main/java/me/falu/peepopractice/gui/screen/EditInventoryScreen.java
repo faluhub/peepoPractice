@@ -3,6 +3,7 @@ package me.falu.peepopractice.gui.screen;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.datafixers.util.Pair;
@@ -61,8 +62,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
 public class EditInventoryScreen extends PlayerlessHandledScreen {
-    public static final Identifier TABS_TEXTURE = new Identifier("textures/gui/container/creative_inventory/tabs.png");
-    public static final SimpleInventory displayInv = new SimpleInventory(45);
+    private static final Identifier BARRIER_TEXTURE = new Identifier("textures/item/barrier.png");
+    private static final Identifier CHEST_MINECART_TEXTURE = new Identifier("textures/item/chest_minecart.png");
+    private static final Identifier TABS_TEXTURE = new Identifier("textures/gui/container/creative_inventory/tabs.png");
+    public static final SimpleInventory DISPLAY_INV = new SimpleInventory(45);
     private static int SELECTED_TAB = ItemGroup.BUILDING_BLOCKS.getIndex();
     private final Map<Identifier, Tag<Item>> searchResultTags = Maps.newTreeMap();
     private final Screen parent;
@@ -74,8 +77,9 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
     @Nullable private Slot deleteItemSlot;
     private boolean ignoreTypedCharacter;
     private boolean lastClickOutsideBounds;
+    private final int selectedProfile;
 
-    public EditInventoryScreen(Screen parent, PracticeCategory category) {
+    public EditInventoryScreen(Screen parent, PracticeCategory category, int selectedProfile) {
         super(new PlayerlessCreativeScreenHandler(), PeepoPractice.PLAYERLESS_INVENTORY, new TranslatableText("peepopractice.title.edit_inventory", category.getName(false)));
 
         this.backgroundHeight = 136;
@@ -83,17 +87,44 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         this.parent = parent;
         this.category = category;
 
-        InventoryUtils.putItems(PeepoPractice.PLAYERLESS_INVENTORY, this.category);
+        this.selectedProfile = selectedProfile;
+        InventoryUtils.putItems(PeepoPractice.PLAYERLESS_INVENTORY, this.category, this.selectedProfile);
     }
 
-    public static EditInventoryScreen create(Screen parent, PracticeCategory category) {
+    public static EditInventoryScreen create(Screen parent, PracticeCategory category, int selectedProfile) {
         PeepoPractice.PLAYERLESS_INVENTORY = new PlayerlessInventory();
         PeepoPractice.PLAYERLESS_PLAYER_SCREEN_HANDLER = new PlayerlessPlayerScreenHandler();
-        return new EditInventoryScreen(parent, category);
+        return new EditInventoryScreen(parent, category, selectedProfile);
     }
 
     public static int getSelectedTab() {
         return SELECTED_TAB;
+    }
+
+    @Override
+    protected void init() {
+        if (this.client == null) {
+            return;
+        }
+
+        super.init();
+        this.client.keyboard.enableRepeatEvents(true);
+        int vx = this.x + 82;
+        int vy = this.y + 6;
+        this.searchBox = new TextFieldWidget(this.textRenderer, vx, vy, 80, 9, new TranslatableText("itemGroup.search"));
+        this.searchBox.setMaxLength(50);
+        this.searchBox.setHasBorder(false);
+        this.searchBox.setVisible(false);
+        this.searchBox.setEditableColor(16777215);
+        this.children.add(this.searchBox);
+        int i = SELECTED_TAB;
+        SELECTED_TAB = -1;
+        this.setSelectedTab(ItemGroup.GROUPS[i]);
+
+        this.addButton(new LimitlessButtonWidget(null, BARRIER_TEXTURE, null, this.x - this.x / 2 - (this.width / 8) / 2, this.y, this.width / 8, this.backgroundHeight, ScreenTexts.DONE, b -> this.onClose()));
+        this.addButton(new LimitlessButtonWidget(null, CHEST_MINECART_TEXTURE, null, this.x + this.backgroundWidth + this.x / 2 - (this.width / 8) / 2, this.y, this.width / 8, this.backgroundHeight, new TranslatableText("peepopractice.button.copy_from_existing"), b -> {
+
+        }));
     }
 
     private void setSelectedTab(ItemGroup group) {
@@ -169,7 +200,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
                 this.handler.slots.add(slot);
             }
 
-            this.deleteItemSlot = new Slot(displayInv, 0, 173, 112);
+            this.deleteItemSlot = new Slot(DISPLAY_INV, 0, 173, 112);
             this.handler.slots.add(this.deleteItemSlot);
         } else if (i == ItemGroup.INVENTORY.getIndex() && this.slots != null) {
             this.handler.slots.clear();
@@ -200,17 +231,27 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
     }
 
     private void saveInventory() {
-        JsonObject object = new JsonObject();
+        JsonObject object = PracticeWriter.INVENTORY_WRITER.get();
+        JsonArray profiles = object.getAsJsonArray(this.category.getId());
+        JsonObject profile = profiles.size() <= this.selectedProfile ? new JsonObject() : profiles.get(this.selectedProfile).getAsJsonObject();
 
         for (int i = 0; i < PeepoPractice.PLAYERLESS_INVENTORY.size(); i++) {
             ItemStack stack = PeepoPractice.PLAYERLESS_INVENTORY.getStack(i);
+            String key = String.valueOf(i);
             if (stack != null && !stack.isEmpty()) {
                 CompoundTag tag = new CompoundTag();
-                object.addProperty(String.valueOf(i), stack.toTag(tag).toString());
+                profile.addProperty(key, stack.toTag(tag).toString());
+            } else if (profile.has(key)) {
+                profile.remove(key);
             }
         }
+        try {
+            profiles.set(this.selectedProfile, profile);
+        } catch (IndexOutOfBoundsException ignored) {
+            profiles.add(profile);
+        }
 
-        PracticeWriter.INVENTORY_WRITER.put(this.category.getId(), object);
+        PracticeWriter.INVENTORY_WRITER.put(this.category.getId(), profiles);
         PracticeWriter.INVENTORY_WRITER.write();
     }
 
@@ -323,7 +364,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
                 } else {
                     PeepoPractice.PLAYERLESS_PLAYER_SCREEN_HANDLER.onSlotClick(slot == null ? invSlot : ((EditInventoryScreen.CreativeSlot) slot).slot.id, clickData, actionType, PeepoPractice.PLAYERLESS_INVENTORY);
                 }
-            } else if (actionType != SlotActionType.QUICK_CRAFT && slot.inventory == displayInv) {
+            } else if (actionType != SlotActionType.QUICK_CRAFT && slot.inventory == DISPLAY_INV) {
                 PlayerlessInventory playerInventory = PeepoPractice.PLAYERLESS_INVENTORY;
                 ItemStack itemStack2 = playerInventory.getCursorStack();
                 ItemStack itemStack3 = slot.getStack();
@@ -397,36 +438,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
     }
 
     private boolean isCreativeInventorySlot(@Nullable Slot slot) {
-        return slot != null && slot.inventory == displayInv;
-    }
-
-    @Override
-    protected void init() {
-        if (this.client == null) {
-            return;
-        }
-
-        super.init();
-        this.client.keyboard.enableRepeatEvents(true);
-        int vx = this.x + 82;
-        int vy = this.y + 6;
-        this.searchBox = new TextFieldWidget(this.textRenderer, vx, vy, 80, 9, new TranslatableText("itemGroup.search"));
-        this.searchBox.setMaxLength(50);
-        this.searchBox.setHasBorder(false);
-        this.searchBox.setVisible(false);
-        this.searchBox.setEditableColor(16777215);
-        this.children.add(this.searchBox);
-        int i = SELECTED_TAB;
-        SELECTED_TAB = -1;
-        this.setSelectedTab(ItemGroup.GROUPS[i]);
-
-        this.addButton(new LimitlessButtonWidget(null, new Identifier("textures/item/barrier.png"), null, this.x - this.x / 2 - (this.width / 8) / 2, this.y, this.width / 8, this.backgroundHeight, ScreenTexts.DONE, b -> this.onClose()));
-        this.addButton(new LimitlessButtonWidget(null, new Identifier("textures/item/chest_minecart.png"), null, this.x + this.backgroundWidth + this.x / 2 - (this.width / 8) / 2, this.y, this.width / 8, this.backgroundHeight, new TranslatableText("peepopractice.button.copy_from_existing"), b -> {
-            if (this.client != null) {
-                this.saveInventory();
-                this.client.openScreen(new CopyInventorySelectionScreen(this.category));
-            }
-        }));
+        return slot != null && slot.inventory == DISPLAY_INV;
     }
 
     @Override
@@ -909,7 +921,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
 
             for (int i = 0; i < 5; i++) {
                 for (int j = 0; j < 9; j++) {
-                    this.addSlot(new EditInventoryScreen.LockableSlot(EditInventoryScreen.displayInv, i * 9 + j, 9 + j * 18, 18 + i * 18));
+                    this.addSlot(new EditInventoryScreen.LockableSlot(EditInventoryScreen.DISPLAY_INV, i * 9 + j, 9 + j * 18, 18 + i * 18));
                 }
             }
 
@@ -931,9 +943,9 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
                 for (int l = 0; l < 9; ++l) {
                     int m = l + (k + j) * 9;
                     if (m >= 0 && m < this.itemList.size()) {
-                        EditInventoryScreen.displayInv.setStack(l + k * 9, this.itemList.get(m));
+                        EditInventoryScreen.DISPLAY_INV.setStack(l + k * 9, this.itemList.get(m));
                     } else {
-                        EditInventoryScreen.displayInv.setStack(l + k * 9, ItemStack.EMPTY);
+                        EditInventoryScreen.DISPLAY_INV.setStack(l + k * 9, ItemStack.EMPTY);
                     }
                 }
             }

@@ -12,7 +12,7 @@ import java.io.IOException;
 public class PracticeWriter {
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     public static final PracticeWriter PREFERENCES_WRITER = new PracticeWriter("preferences.json");
-    public static final PracticeWriter INVENTORY_WRITER = new PracticeWriter("inventory.json");
+    public static final PracticeWriter INVENTORY_WRITER = new PracticeWriter("inventories.json");
     public static final PracticeWriter COMPLETIONS_WRITER = new PracticeWriter("completions.json");
     public static final PracticeWriter STANDARD_SETTINGS_WRITER = new PracticeWriter("standard_settings.json");
     public static final PracticeWriter GLOBAL_CONFIG = new PracticeWriter("global_config.json");
@@ -23,7 +23,6 @@ public class PracticeWriter {
 
     private final File file;
     private JsonObject local;
-    private boolean changed = false;
 
     public PracticeWriter(String fileName) {
         this.file = this.create(fileName);
@@ -96,10 +95,5 @@ public class PracticeWriter {
             this.local.remove(element);
         }
         this.local.add(element, obj);
-        this.changed = true;
-    }
-
-    public boolean hasChanged() {
-        return this.changed;
     }
 }

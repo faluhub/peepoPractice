@@ -14,9 +14,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
 public class SplitSettingsScreen extends Screen {
-    private final Screen parent;
-    private final PracticeCategory category;
-    private final CategoryPreference[] preferences = new CategoryPreference[] {
+    private static final CategoryPreference[] PREFERENCES = new CategoryPreference[] {
             new CategoryPreference()
                     .setId("compare_type")
                     .setChoices(PracticeTypes.CompareType.all())
@@ -28,6 +26,8 @@ public class SplitSettingsScreen extends Screen {
                     .setDefaultChoice(PracticeTypes.PaceTimerShowType.ALWAYS.getLabel())
                     .setIcon(new Identifier("textures/mob_effect/blindness.png"))
     };
+    private final Screen parent;
+    private final PracticeCategory category;
 
     public SplitSettingsScreen(Screen parent, PracticeCategory category) {
         super(new TranslatableText("peepopractice.title.split_settings", category.getName(false)));
@@ -40,8 +40,8 @@ public class SplitSettingsScreen extends Screen {
         int index = 0;
         int width = this.width / 2;
         int height = this.height / 5;
-        int amount = this.preferences.length + 1;
-        for (CategoryPreference preference : this.preferences) {
+        int amount = PREFERENCES.length + 1;
+        for (CategoryPreference preference : PREFERENCES) {
             String currentValue = CategoryPreference.getValue(this.category, preference);
             this.addButton(new LimitlessButtonWidget(false, preference.getIcon(), null, this.width / 2 - width / 2, this.height * (index + 1) / (amount + 1) - height / 2, width, height, new LiteralText(preference.getLabel() + ": ").append(new TranslatableText(currentValue)), b -> {
                 String value = CategoryPreference.getValue(this.category, preference);
