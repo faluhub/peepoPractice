@@ -8,6 +8,7 @@ import me.falu.peepopractice.PeepoPractice;
 import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.core.item.RandomToolItem;
 import me.falu.peepopractice.core.playerless.PlayerlessInventory;
+import me.falu.peepopractice.core.writer.DefaultFileWriter;
 import me.falu.peepopractice.core.writer.PracticeWriter;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.inventory.Inventories;
@@ -92,6 +93,23 @@ public class InventoryUtils {
                 PREVIOUS_INVENTORY.add(i, client.player.inventory.getStack(i).copy());
             }
             client.player.inventory.clear();
+        }
+    }
+
+    public static void resetToDefault(PracticeCategory category, int profileIndex) {
+        JsonObject defaultObject = DefaultFileWriter.INSTANCE.getResourceJson("writer/inventories.json").getAsJsonObject();
+        JsonArray defaultProfiles = defaultObject.has(category.getId()) ? defaultObject.getAsJsonArray(category.getId()) : new JsonArray();
+        if (defaultProfiles.size() > 0) {
+            JsonObject defaultProfile = defaultProfiles.get(0).getAsJsonObject();
+            JsonObject object = PracticeWriter.INVENTORY_WRITER.get();
+            JsonArray profiles = object.getAsJsonArray(category.getId());
+            if (profiles.size() > profileIndex) {
+                profiles.set(profileIndex, defaultProfile);
+            } else {
+                profiles.add(defaultProfile);
+            }
+            PracticeWriter.INVENTORY_WRITER.put(category.getId(), profiles);
+            PracticeWriter.INVENTORY_WRITER.write();
         }
     }
 }

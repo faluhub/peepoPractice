@@ -66,6 +66,19 @@ public class DefaultFileWriter {
         return Lists.newArrayList(resources.toArray(new String[0]));
     }
 
+    public JsonElement getResourceJson(String resourceName) {
+        JsonParser parser = new JsonParser();
+        InputStream stream = this.getClass().getClassLoader().getResourceAsStream(resourceName);
+        if (stream != null) {
+            JsonElement element = parser.parse(new InputStreamReader(stream, StandardCharsets.UTF_8));
+            try {
+                stream.close();
+            } catch (IOException ignored) {}
+            return element;
+        }
+        return null;
+    }
+
     public File getResourceAsFile(String resourcePath, String name) {
         try {
             File tempFile = new File(System.getProperty("java.io.tmpdir") + "/" + name);

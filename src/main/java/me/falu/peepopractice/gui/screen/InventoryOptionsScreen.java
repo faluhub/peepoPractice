@@ -8,11 +8,13 @@ import me.falu.peepopractice.PeepoPractice;
 import me.falu.peepopractice.core.category.CategoryPreference;
 import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.core.category.utils.InventoryUtils;
+import me.falu.peepopractice.core.category.utils.PracticeCategoryUtils;
 import me.falu.peepopractice.core.playerless.PlayerlessInventory;
 import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.gui.widget.LimitlessButtonWidget;
 import net.minecraft.client.gui.hud.BackgroundHelper;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
@@ -23,11 +25,16 @@ import net.minecraft.util.Identifier;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InventorySelectionScreen extends Screen {
+public class InventoryOptionsScreen extends Screen {
+    private static final Identifier EGG_TEXTURE = new Identifier("textures/item/egg.png");
     public static final CategoryPreference SELECTED_INVENTORY = new CategoryPreference()
             .setId("selected_inventory")
             .setChoices("0", "1", "2")
             .setDefaultChoice("0");
+    public static final CategoryPreference SCRAMBLE_INVENTORY = new CategoryPreference()
+            .setId("scramble_inventory")
+            .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
+            .setDefaultChoice(PracticeCategoryUtils.DISABLED);
     private static final Identifier WIDGETS = new Identifier("textures/gui/widgets.png");
     private final Screen parent;
     private final PracticeCategory category;
@@ -35,8 +42,8 @@ public class InventorySelectionScreen extends Screen {
     private final List<NamePositionData> namePositions;
     private final List<HotbarPositionData> hotbarPositions;
 
-    public InventorySelectionScreen(Screen parent, PracticeCategory category) {
-        super(new TranslatableText("peepopractice.title.inventory_selection"));
+    public InventoryOptionsScreen(Screen parent, PracticeCategory category) {
+        super(new TranslatableText("peepopractice.title.inventory_options", category.getName(false)));
         this.parent = parent;
         this.category = category;
         String value = CategoryPreference.getValue(this.category, SELECTED_INVENTORY);
@@ -51,38 +58,77 @@ public class InventorySelectionScreen extends Screen {
         this.hotbarPositions.clear();
 
         int containerHeight = this.height - 40;
-        int paddingX = 10;
+        int paddingX = 8;
         int paddingY = 20;
-        int rowHeight = containerHeight / 3 - paddingY;
-        int buttonWidth = 50;
+        int rowButtonSize = containerHeight / 3 - paddingY;
+        int hotbarWidth = 182;
+        int rowWidth = rowButtonSize * 2 + paddingX * 2 + hotbarWidth;
 
         JsonObject object = PracticeWriter.INVENTORY_WRITER.get();
         JsonArray profiles = object.getAsJsonArray(this.category.getId());
 
         for (int i = 0; i < 3; i++) {
-            int x = paddingX * 2;
-            int y = this.height - containerHeight + paddingY * i + rowHeight * i;
+            int x = (this.width - rowWidth) / 2;
+            int y = this.height - containerHeight + paddingY * i + rowButtonSize * i;
             boolean isCorrectBound = profiles.size() >= i;
             int finalI = i;
-            ButtonWidget editButton = this.addButton(new LimitlessButtonWidget(x, y, buttonWidth, rowHeight, new LiteralText("Edit"), b -> {
+            ButtonWidget editButton = this.addButton(new LimitlessButtonWidget(x, y, rowButtonSize, rowButtonSize, new LiteralText("Edit"), b -> {
                 if (this.client != null) {
                     this.client.openScreen(EditInventoryScreen.create(this, this.category, finalI));
                 }
             }));
             editButton.active = isCorrectBound;
-            x += buttonWidth + paddingX;
+            x += rowButtonSize + paddingX;
             this.namePositions.add(new NamePositionData(x, y, "Inventory " + (i + 1), !isCorrectBound));
-            this.hotbarPositions.add(new HotbarPositionData(x, y + rowHeight - 22, i, !isCorrectBound));
-            x += 179 + paddingX;
+            this.hotbarPositions.add(new HotbarPositionData(x, y + rowButtonSize - 22, i, !isCorrectBound));
+            x += hotbarWidth + paddingX;
             boolean isSelected = i == this.selected;
-            ButtonWidget selectButton = this.addButton(new LimitlessButtonWidget(x, y, buttonWidth, rowHeight, new LiteralText(isSelected ? "Selected" : "Select"), b -> {
+            ButtonWidget selectButton = this.addButton(new LimitlessButtonWidget(x, y, rowButtonSize, rowButtonSize, new LiteralText(isSelected ? "Selected" : "Select"), b -> {
                 CategoryPreference.setValue(this.category, SELECTED_INVENTORY.getId(), String.valueOf(finalI));
                 if (this.client != null) {
-                    this.client.openScreen(new InventorySelectionScreen(this.parent, this.category));
+                    this.client.openScreen(new InventoryOptionsScreen(this.parent, this.category));
                 }
             }));
             selectButton.active = !isSelected && isCorrectBound;
         }
+        int otherButtonWidth = (this.width - rowWidth) / 2 - paddingX * 2;
+        this.addButton(
+                new LimitlessButtonWidget(
+                        null,
+                        EditInventoryScreen.BARRIER_TEXTURE,
+                        null,
+                        (this.width - rowWidth) / 2 - otherButtonWidth - paddingX,
+                        this.height - containerHeight,
+                        otherButtonWidth,
+                        rowButtonSize * 3 + paddingY * 2,
+                        ScreenTexts.DONE,
+                        b -> this.onClose()
+                )
+        );
+        this.addButton(
+                new LimitlessButtonWidget(
+                        null,
+                        EGG_TEXTURE,
+                        null,
+                        (this.width - rowWidth) / 2 + rowWidth + paddingX,
+                        this.height - containerHeight,
+                        otherButtonWidth,
+                        rowButtonSize *  3 + paddingY * 2,
+                        CategoryPreferencesScreen.getFormattedText(SCRAMBLE_INVENTORY, CategoryPreference.getValue(this.category, SCRAMBLE_INVENTORY)),
+                        b -> {
+                            String value = CategoryPreference.getValue(this.category, SCRAMBLE_INVENTORY);
+                            int currentIndex = CategoryPreference.getIndex(value, SCRAMBLE_INVENTORY);
+                            String next;
+                            try {
+                                next = SCRAMBLE_INVENTORY.getChoices().get(currentIndex + 1);
+                            } catch (IndexOutOfBoundsException ignored) {
+                                next = SCRAMBLE_INVENTORY.getChoices().get(0);
+                            }
+                            b.setMessage(CategoryPreferencesScreen.getFormattedText(SCRAMBLE_INVENTORY, next));
+                            CategoryPreference.setValue(this.category, SCRAMBLE_INVENTORY.getId(), next);
+                        }
+                )
+        );
     }
 
     @Override

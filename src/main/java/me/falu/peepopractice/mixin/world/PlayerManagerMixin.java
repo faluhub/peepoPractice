@@ -7,9 +7,10 @@ import me.falu.peepopractice.core.category.properties.PlayerProperties;
 import me.falu.peepopractice.core.category.utils.InventoryUtils;
 import me.falu.peepopractice.core.exception.NotInitializedException;
 import me.falu.peepopractice.core.global.GlobalOptions;
-import me.falu.peepopractice.gui.screen.InventorySelectionScreen;
+import me.falu.peepopractice.gui.screen.InventoryOptionsScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
@@ -17,6 +18,7 @@ import net.minecraft.server.command.CommandOutput;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,6 +28,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -55,9 +59,25 @@ public abstract class PlayerManagerMixin {
                 }
             } else {
                 PeepoPractice.log("Using configured inventory.");
-                String value = CategoryPreference.getValue(InventorySelectionScreen.SELECTED_INVENTORY);
+                String value = CategoryPreference.getValue(InventoryOptionsScreen.SELECTED_INVENTORY);
                 int selected = value != null ? Integer.parseInt(value) : 0;
                 InventoryUtils.putItems(player.inventory, PeepoPractice.CATEGORY, selected);
+                if (CategoryPreference.getBoolValue(InventoryOptionsScreen.SCRAMBLE_INVENTORY)) {
+                    PeepoPractice.log("Scrambling inventory.");
+                    List<Integer> taken = new ArrayList<>();
+                    DefaultedList<ItemStack> newInventory = DefaultedList.ofSize(36, ItemStack.EMPTY);
+                    for (int i = 0; i < player.inventory.main.size() - 9; i++) {
+                        int newIndex = -1;
+                        while (newIndex == -1 || taken.contains(newIndex)) {
+                            newIndex = 9 + player.getRandom().nextInt(player.inventory.main.size() - 9);
+                        }
+                        taken.add(newIndex);
+                        newInventory.set(newIndex, player.inventory.main.get(9 + i));
+                    }
+                    for (int i = 0; i < newInventory.size() - 9; i++) {
+                        player.inventory.main.set(i + 9, newInventory.get(i + 9));
+                    }
+                }
             }
             if (GlobalOptions.GIVE_SATURATION.get(client.options)) {
                 player.getHungerManager().setSaturationLevelClient(10.0F);

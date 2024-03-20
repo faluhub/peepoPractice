@@ -9,7 +9,7 @@ import me.falu.peepopractice.core.category.properties.WorldProperties;
 import me.falu.peepopractice.core.category.properties.event.SplitEvent;
 import me.falu.peepopractice.core.exception.NotInitializedException;
 import me.falu.peepopractice.core.writer.PracticeWriter;
-import me.falu.peepopractice.gui.screen.InventorySelectionScreen;
+import me.falu.peepopractice.gui.screen.InventoryOptionsScreen;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
@@ -216,7 +216,7 @@ public class PracticeCategory {
         if (!config.has(this.getId())) {
             return false;
         }
-        String value = CategoryPreference.getValue(this, InventorySelectionScreen.SELECTED_INVENTORY);
+        String value = CategoryPreference.getValue(this, InventoryOptionsScreen.SELECTED_INVENTORY);
         int selected = value != null ? Integer.parseInt(value) : 0;
         JsonArray profiles = config.getAsJsonArray(this.getId());
         if (profiles.size() <= selected) {

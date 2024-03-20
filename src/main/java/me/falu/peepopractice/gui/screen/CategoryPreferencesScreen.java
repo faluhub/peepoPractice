@@ -24,7 +24,7 @@ public class CategoryPreferencesScreen extends Screen {
         this.category = category;
     }
 
-    private LiteralText getFormattedText(CategoryPreference preference, String currentValue) {
+    public static LiteralText getFormattedText(CategoryPreference preference, String currentValue) {
         String add = "";
         boolean isBoolValue = Lists.newArrayList(PracticeCategoryUtils.BOOLEAN_LIST).contains(currentValue);
         if (isBoolValue) {
@@ -59,7 +59,7 @@ public class CategoryPreferencesScreen extends Screen {
                             32 + size * row,
                             size,
                             size - offset,
-                            this.getFormattedText(preference, currentValue),
+                            getFormattedText(preference, currentValue),
                             b -> {
                                 String value = CategoryPreference.getValue(this.category, preference.getId());
                                 if (value != null) {
@@ -72,7 +72,7 @@ public class CategoryPreferencesScreen extends Screen {
                                         next = preference.getChoices().get(0);
                                     }
 
-                                    b.setMessage(this.getFormattedText(preference, next));
+                                    b.setMessage(getFormattedText(preference, next));
                                     CategoryPreference.setValue(this.category, preference.getId(), next);
                                 }
                             },

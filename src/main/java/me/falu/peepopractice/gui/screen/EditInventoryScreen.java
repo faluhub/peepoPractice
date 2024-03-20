@@ -62,7 +62,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
 public class EditInventoryScreen extends PlayerlessHandledScreen {
-    private static final Identifier BARRIER_TEXTURE = new Identifier("textures/item/barrier.png");
+    public static final Identifier BARRIER_TEXTURE = new Identifier("textures/item/barrier.png");
     private static final Identifier CHEST_MINECART_TEXTURE = new Identifier("textures/item/chest_minecart.png");
     private static final Identifier TABS_TEXTURE = new Identifier("textures/gui/container/creative_inventory/tabs.png");
     public static final SimpleInventory DISPLAY_INV = new SimpleInventory(45);
@@ -79,7 +79,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
     private boolean lastClickOutsideBounds;
     private final int selectedProfile;
 
-    public EditInventoryScreen(Screen parent, PracticeCategory category, int selectedProfile) {
+    private EditInventoryScreen(Screen parent, PracticeCategory category, int selectedProfile) {
         super(new PlayerlessCreativeScreenHandler(), PeepoPractice.PLAYERLESS_INVENTORY, new TranslatableText("peepopractice.title.edit_inventory", category.getName(false)));
 
         this.backgroundHeight = 136;
@@ -122,8 +122,11 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
         this.setSelectedTab(ItemGroup.GROUPS[i]);
 
         this.addButton(new LimitlessButtonWidget(null, BARRIER_TEXTURE, null, this.x - this.x / 2 - (this.width / 8) / 2, this.y, this.width / 8, this.backgroundHeight, ScreenTexts.DONE, b -> this.onClose()));
-        this.addButton(new LimitlessButtonWidget(null, CHEST_MINECART_TEXTURE, null, this.x + this.backgroundWidth + this.x / 2 - (this.width / 8) / 2, this.y, this.width / 8, this.backgroundHeight, new TranslatableText("peepopractice.button.copy_from_existing"), b -> {
-
+        this.addButton(new LimitlessButtonWidget(null, CHEST_MINECART_TEXTURE, null, this.x + this.backgroundWidth + this.x / 2 - (this.width / 8) / 2, this.y, this.width / 8, this.backgroundHeight, new TranslatableText("peepopractice.button.reset_to_default"), b -> {
+            InventoryUtils.resetToDefault(this.category, this.selectedProfile);
+            if (this.client != null) {
+                this.client.openScreen(create(this.parent, this.category, this.selectedProfile));
+            }
         }));
     }
 

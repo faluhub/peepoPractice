@@ -21,6 +21,10 @@ public class CategoryPreference {
     private String defaultChoice;
     private Identifier icon;
 
+    public static int getIndex(String value, CategoryPreference preference) {
+        return getIndex(value, preference.getChoices());
+    }
+
     public static int getIndex(String value, List<String> choices) {
         int index = 0;
 
@@ -41,6 +45,10 @@ public class CategoryPreference {
             }
         }
         return null;
+    }
+
+    public static boolean getBoolValue(CategoryPreference preference) {
+        return getBoolValue(preference.getId());
     }
 
     public static boolean getBoolValue(String id) {
