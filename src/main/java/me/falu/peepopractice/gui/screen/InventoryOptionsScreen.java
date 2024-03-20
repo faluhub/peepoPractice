@@ -19,7 +19,9 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
@@ -71,6 +73,7 @@ public class InventoryOptionsScreen extends Screen {
             int x = (this.width - rowWidth) / 2;
             int y = this.height - containerHeight + paddingY * i + rowButtonSize * i;
             boolean isCorrectBound = profiles.size() >= i;
+            boolean isSelected = i == this.selected;
             int finalI = i;
             ButtonWidget editButton = this.addButton(new LimitlessButtonWidget(x, y, rowButtonSize, rowButtonSize, new LiteralText("Edit"), b -> {
                 if (this.client != null) {
@@ -79,10 +82,9 @@ public class InventoryOptionsScreen extends Screen {
             }));
             editButton.active = isCorrectBound;
             x += rowButtonSize + paddingX;
-            this.namePositions.add(new NamePositionData(x, y, "Inventory " + (i + 1), !isCorrectBound));
+            this.namePositions.add(new NamePositionData(x, y, new LiteralText("Inventory " + (i + 1)).formatted(isSelected ? Formatting.BOLD : Formatting.RESET), !isCorrectBound));
             this.hotbarPositions.add(new HotbarPositionData(x, y + rowButtonSize - 22, i, !isCorrectBound));
             x += hotbarWidth + paddingX;
-            boolean isSelected = i == this.selected;
             ButtonWidget selectButton = this.addButton(new LimitlessButtonWidget(x, y, rowButtonSize, rowButtonSize, new LiteralText(isSelected ? "Selected" : "Select"), b -> {
                 CategoryPreference.setValue(this.category, SELECTED_INVENTORY.getId(), String.valueOf(finalI));
                 if (this.client != null) {
@@ -205,7 +207,7 @@ public class InventoryOptionsScreen extends Screen {
     private static class NamePositionData {
         public final int x;
         public final int y;
-        public final String name;
+        public final Text name;
         public final boolean disabled;
     }
 
