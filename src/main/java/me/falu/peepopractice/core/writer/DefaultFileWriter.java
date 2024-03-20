@@ -10,30 +10,30 @@ import org.reflections.scanners.ResourcesScanner;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 public class DefaultFileWriter {
-    public static final File FOLDER = FabricLoader.getInstance().getConfigDir().resolve(PeepoPractice.MOD_NAME).toFile();
+    public static final Path FOLDER = FabricLoader.getInstance().getConfigDir().resolve(PeepoPractice.MOD_NAME);
     public static final DefaultFileWriter INSTANCE = new DefaultFileWriter();
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public void writeDefaultFiles() {
         try {
-            FOLDER.mkdirs();
+            FOLDER.toFile().mkdirs();
             List<String> resources = this.getResourceFiles();
             for (String resource : resources) {
-                File destination = FOLDER.toPath().resolve(resource.replace("writer/", "")).toFile();
+                File destination = FOLDER.resolve(resource.replace("writer/", "")).toFile();
                 InputStream stream = this.getClass().getClassLoader().getResourceAsStream(resource);
                 if (stream != null) {
                     JsonParser parser = new JsonParser();
                     JsonElement defaultElement = parser.parse(new InputStreamReader(stream, StandardCharsets.UTF_8));
-                    if (!destination.exists()) {
+                    if (!destination.exists() || destination.length() == 0) {
                         destination.getParentFile().mkdirs();
-                        FileUtils.writeStringToFile(destination, GSON.toJson(defaultElement), StandardCharsets.UTF_8);
+                        FileUtils.writeStringToFile(destination, PracticeWriter.GSON.toJson(defaultElement), StandardCharsets.UTF_8);
                     } else if (defaultElement.isJsonObject()) {
                         JsonElement element = parser.parse(FileUtils.readFileToString(destination, StandardCharsets.UTF_8));
                         if (element.isJsonObject()) {
@@ -47,17 +47,15 @@ public class DefaultFileWriter {
                                 }
                             }
                             if (hasChanged) {
-                                FileWriter writer = new FileWriter(destination);
-                                writer.write(GSON.toJson(object));
-                                writer.flush();
-                                writer.close();
+                                destination.getParentFile().mkdirs();
+                                FileUtils.writeStringToFile(destination, PracticeWriter.GSON.toJson(object), StandardCharsets.UTF_8);
                             }
                         }
                     }
                     stream.close();
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
