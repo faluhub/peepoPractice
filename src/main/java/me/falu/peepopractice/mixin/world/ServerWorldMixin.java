@@ -3,7 +3,7 @@ package me.falu.peepopractice.mixin.world;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import me.falu.peepopractice.PeepoPractice;
-import me.falu.peepopractice.core.category.CategoryPreference;
+import me.falu.peepopractice.core.category.preferences.CategoryPreferences;
 import net.minecraft.block.Blocks;
 import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.server.world.ServerChunkManager;
@@ -23,7 +23,7 @@ public abstract class ServerWorldMixin {
 
     @Inject(method = "createEndSpawnPlatform", at = @At("TAIL"))
     private static void peepoPractice$noCage(ServerWorld world, CallbackInfo ci) {
-        if (CategoryPreference.getBoolValue("no_cage_spawn")) {
+        if (CategoryPreferences.NO_CAGE_SPAWN.getBoolValue()) {
             BlockPos blockPos = END_SPAWN_POS;
             int i = blockPos.getX();
             int j = blockPos.getY() - 2;

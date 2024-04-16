@@ -1,5 +1,6 @@
 package me.falu.peepopractice.core.category.properties;
 
+import lombok.Getter;
 import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.core.exception.NotInitializedException;
 import net.minecraft.server.world.ServerWorld;
@@ -13,20 +14,16 @@ import java.util.Random;
 
 @SuppressWarnings("UnusedDeclaration")
 public class StructureProperties extends BaseProperties {
-    private ConfiguredStructureFeature<?, ?> structure;
-    private ChunkPos chunkPos;
+    @Getter private ConfiguredStructureFeature<?, ?> structure;
+    @Getter private ChunkPos chunkPos;
     private PracticeCategory.ExecuteReturnTask<ChunkPos> chunkPosTask;
-    private Direction orientation;
-    private BlockRotation rotation;
-    private Integer structureTopY;
+    @Getter private Direction orientation;
+    @Getter private BlockRotation rotation;
+    @Getter private Integer structureTopY;
     private PracticeCategory.ExecuteReturnTask<Integer> structureTopYTask;
-    private boolean generatable = false;
+    @Getter private boolean generatable = false;
     private PracticeCategory.ExecuteReturnTask<Boolean> generatableTask;
     private boolean generated = false;
-
-    public ConfiguredStructureFeature<?, ?> getStructure() {
-        return this.structure;
-    }
 
     public StructureProperties setStructure(ConfiguredStructureFeature<?, ?> structure) {
         this.structure = structure;
@@ -45,10 +42,6 @@ public class StructureProperties extends BaseProperties {
         return this.structure != null;
     }
 
-    public ChunkPos getChunkPos() {
-        return this.chunkPos;
-    }
-
     public StructureProperties setChunkPos(ChunkPos structureChunkPos) {
         this.chunkPos = structureChunkPos;
         return this;
@@ -63,10 +56,6 @@ public class StructureProperties extends BaseProperties {
         return this.chunkPos != null;
     }
 
-    public Direction getOrientation() {
-        return this.orientation;
-    }
-
     public StructureProperties setOrientation(Direction orientation) {
         this.orientation = orientation;
         return this;
@@ -76,10 +65,6 @@ public class StructureProperties extends BaseProperties {
         return this.orientation != null;
     }
 
-    public BlockRotation getRotation() {
-        return this.rotation;
-    }
-
     public StructureProperties setRotation(BlockRotation rotation) {
         this.rotation = rotation;
         return this;
@@ -87,10 +72,6 @@ public class StructureProperties extends BaseProperties {
 
     public boolean hasRotation() {
         return this.rotation != null;
-    }
-
-    public Integer getStructureTopY() {
-        return this.structureTopY;
     }
 
     public StructureProperties setStructureTopY(int structureTopY) {
@@ -105,10 +86,6 @@ public class StructureProperties extends BaseProperties {
 
     public boolean hasStructureTopY() {
         return this.structureTopY != null;
-    }
-
-    public boolean isGeneratable() {
-        return this.generatable;
     }
 
     public StructureProperties setGeneratable(boolean generatable) {

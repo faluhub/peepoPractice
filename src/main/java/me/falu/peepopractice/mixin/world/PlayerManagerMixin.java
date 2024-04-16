@@ -1,13 +1,12 @@
 package me.falu.peepopractice.mixin.world;
 
 import me.falu.peepopractice.PeepoPractice;
-import me.falu.peepopractice.core.category.CategoryPreference;
+import me.falu.peepopractice.core.category.preferences.CategoryPreferences;
 import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import me.falu.peepopractice.core.category.properties.PlayerProperties;
 import me.falu.peepopractice.core.category.utils.InventoryUtils;
 import me.falu.peepopractice.core.exception.NotInitializedException;
 import me.falu.peepopractice.core.global.GlobalOptions;
-import me.falu.peepopractice.gui.screen.InventoryOptionsScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.ItemStack;
@@ -59,10 +58,8 @@ public abstract class PlayerManagerMixin {
                 }
             } else {
                 PeepoPractice.log("Using configured inventory.");
-                String value = CategoryPreference.getValue(InventoryOptionsScreen.SELECTED_INVENTORY);
-                int selected = value != null ? Integer.parseInt(value) : 0;
-                InventoryUtils.putItems(player.inventory, PeepoPractice.CATEGORY, selected);
-                if (CategoryPreference.getBoolValue(InventoryOptionsScreen.SCRAMBLE_INVENTORY)) {
+                InventoryUtils.putItems(player.inventory, PeepoPractice.CATEGORY, InventoryUtils.getSelectedInventory());
+                if (CategoryPreferences.SCRAMBLE_INVENTORY.getBoolValue()) {
                     PeepoPractice.log("Scrambling inventory.");
                     List<Integer> taken = new ArrayList<>();
                     DefaultedList<ItemStack> newInventory = DefaultedList.ofSize(36, ItemStack.EMPTY);

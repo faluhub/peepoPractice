@@ -1,5 +1,6 @@
 package me.falu.peepopractice.core.category.properties;
 
+import lombok.Getter;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
@@ -9,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 @SuppressWarnings("UnusedDeclaration")
 public class WorldProperties extends BaseProperties {
     private final List<BiomeModification> proBiomes = new ArrayList<>();
@@ -19,10 +21,6 @@ public class WorldProperties extends BaseProperties {
     private String seedListPath;
     private Difficulty startDifficulty = Difficulty.EASY;
 
-    public RegistryKey<World> getWorldRegistryKey() {
-        return this.worldRegistryKey;
-    }
-
     public WorldProperties setWorldRegistryKey(RegistryKey<World> worldRegistryKey) {
         this.worldRegistryKey = worldRegistryKey;
         return this;
@@ -32,17 +30,9 @@ public class WorldProperties extends BaseProperties {
         return this.worldRegistryKey != null;
     }
 
-    public boolean isSpawnChunksDisabled() {
-        return this.spawnChunksDisabled;
-    }
-
     public WorldProperties setSpawnChunksDisabled(boolean spawnChunksDisabled) {
         this.spawnChunksDisabled = spawnChunksDisabled;
         return this;
-    }
-
-    public List<BiomeModification> getAntiBiomes() {
-        return this.antiBiomes;
     }
 
     public WorldProperties addAntiBiome(BiomeModification antiBiome) {
@@ -50,17 +40,9 @@ public class WorldProperties extends BaseProperties {
         return this;
     }
 
-    public List<BiomeModification> getProBiomes() {
-        return this.proBiomes;
-    }
-
     public WorldProperties addProBiome(BiomeModification proBiome) {
         this.proBiomes.add(proBiome);
         return this;
-    }
-
-    public String getSeedListPath() {
-        return this.seedListPath;
     }
 
     public boolean hasSeedListPath() {
@@ -77,14 +59,6 @@ public class WorldProperties extends BaseProperties {
         return this;
     }
 
-    public List<String> getDataPacks() {
-        return this.dataPacks;
-    }
-
-    public Difficulty getStartDifficulty() {
-        return this.startDifficulty;
-    }
-
     public WorldProperties setStartDifficulty(Difficulty startDifficulty) {
         this.startDifficulty = startDifficulty;
         return this;
@@ -96,12 +70,8 @@ public class WorldProperties extends BaseProperties {
 
     public static class Range {
         private final List<RegistryKey<World>> validDimensions = new ArrayList<>();
-        private Integer range;
+        @Getter private Integer range;
         private ConditionTask condition = () -> true;
-
-        public Integer getRange() {
-            return this.range;
-        }
 
         public Range setRange(Integer range) {
             this.range = range;
@@ -132,14 +102,11 @@ public class WorldProperties extends BaseProperties {
         }
     }
 
+    @Getter
     public static class BiomeModification {
         private Biome biome;
         private Range range;
         private Biome replacement;
-
-        public Biome getBiome() {
-            return this.biome;
-        }
 
         public BiomeModification setBiome(Biome biome) {
             this.biome = biome;
@@ -150,10 +117,6 @@ public class WorldProperties extends BaseProperties {
             return this.biome != null;
         }
 
-        public Range getRange() {
-            return this.range;
-        }
-
         public BiomeModification setRange(@Nullable Range range) {
             this.range = range == null ? new Range().setRange(null) : range;
             return this;
@@ -161,10 +124,6 @@ public class WorldProperties extends BaseProperties {
 
         public boolean isInfinite() {
             return this.range.getRange() == null;
-        }
-
-        public Biome getReplacement() {
-            return this.replacement;
         }
 
         public BiomeModification setReplacement(Biome replacement) {

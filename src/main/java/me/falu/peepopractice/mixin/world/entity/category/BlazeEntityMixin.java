@@ -1,6 +1,6 @@
 package me.falu.peepopractice.mixin.world.entity.category;
 
-import me.falu.peepopractice.core.category.CategoryPreference;
+import me.falu.peepopractice.core.category.preferences.CategoryPreferences;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.BlazeEntity;
@@ -18,7 +18,7 @@ public abstract class BlazeEntityMixin extends MobEntityMixin {
 
     @Override
     protected void peepoPractice$onDropLoot(CallbackInfo ci) {
-        if (CategoryPreference.getBoolValue("good_blaze_rates")) {
+        if (CategoryPreferences.GOOD_BLAZE_RATES.getBoolValue()) {
             this.dropStack(new ItemStack(Items.BLAZE_ROD));
             ci.cancel();
         }

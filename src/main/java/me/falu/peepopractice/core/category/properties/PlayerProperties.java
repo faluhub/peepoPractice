@@ -1,6 +1,7 @@
 package me.falu.peepopractice.core.category.properties;
 
 import com.google.common.collect.Lists;
+import lombok.Getter;
 import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.core.exception.NotInitializedException;
 import net.minecraft.entity.Entity;
@@ -16,13 +17,13 @@ import java.util.Random;
 
 @SuppressWarnings("UnusedDeclaration")
 public class PlayerProperties extends BaseProperties {
-    private final List<String> commands = new ArrayList<>();
-    private final List<PotionEffect> potionEffects = new ArrayList<>();
+    @Getter private final List<String> commands = new ArrayList<>();
+    @Getter private final List<PotionEffect> potionEffects = new ArrayList<>();
     private BlockPos spawnPos;
     private PracticeCategory.ExecuteReturnTask<BlockPos> spawnPosTask;
     private Vec2f spawnAngle;
     private PracticeCategory.ExecuteReturnTask<Vec2f> spawnAngleTask;
-    private EntityType<? extends Entity> vehicle;
+    @Getter private EntityType<? extends Entity> vehicle;
 
     public BlockPos getSpawnPos() {
         return this.spawnPos != null ? this.spawnPos : new BlockPos(0, 62, 0);
@@ -60,10 +61,6 @@ public class PlayerProperties extends BaseProperties {
         return this;
     }
 
-    public EntityType<? extends Entity> getVehicle() {
-        return this.vehicle;
-    }
-
     public PlayerProperties setVehicle(EntityType<? extends Entity> vehicle) {
         this.vehicle = vehicle;
         return this;
@@ -71,10 +68,6 @@ public class PlayerProperties extends BaseProperties {
 
     public boolean hasVehicle() {
         return this.vehicle != null;
-    }
-
-    public List<String> getCommands() {
-        return this.commands;
     }
 
     public PlayerProperties runCommands(String[] commands) {
@@ -85,10 +78,6 @@ public class PlayerProperties extends BaseProperties {
     public PlayerProperties runCommand(String command) {
         this.commands.add(command);
         return this;
-    }
-
-    public List<PotionEffect> getPotionEffects() {
-        return this.potionEffects;
     }
 
     public PlayerProperties addPotionEffect(PotionEffect potionEffect) {
@@ -108,15 +97,12 @@ public class PlayerProperties extends BaseProperties {
         }
     }
 
+    @Getter
     public static class PotionEffect {
         private StatusEffect effect;
         private int amplifier = 0;
         private int duration = Integer.MAX_VALUE;
         private PracticeCategory.ExecuteReturnTask<Boolean> condition;
-
-        public StatusEffect getEffect() {
-            return this.effect;
-        }
 
         public PotionEffect setEffect(StatusEffect effect) {
             this.effect = effect;
@@ -127,26 +113,14 @@ public class PlayerProperties extends BaseProperties {
             return this.effect != null;
         }
 
-        public int getAmplifier() {
-            return this.amplifier;
-        }
-
         public PotionEffect setAmplifier(int amplifier) {
             this.amplifier = amplifier;
             return this;
         }
 
-        public int getDuration() {
-            return this.duration;
-        }
-
         public PotionEffect setDuration(int duration) {
             this.duration = duration;
             return this;
-        }
-
-        public PracticeCategory.ExecuteReturnTask<Boolean> getCondition() {
-            return this.condition;
         }
 
         public PotionEffect setCondition(PracticeCategory.ExecuteReturnTask<Boolean> condition) {

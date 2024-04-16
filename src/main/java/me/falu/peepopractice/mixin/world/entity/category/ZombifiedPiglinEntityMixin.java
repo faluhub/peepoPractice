@@ -1,6 +1,6 @@
 package me.falu.peepopractice.mixin.world.entity.category;
 
-import me.falu.peepopractice.core.category.CategoryPreference;
+import me.falu.peepopractice.core.category.preferences.CategoryPreferences;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.mob.ZombifiedPiglinEntity;
@@ -23,7 +23,7 @@ public class ZombifiedPiglinEntityMixin {
 
     @Inject(method = "canSpawn(Lnet/minecraft/entity/EntityType;Lnet/minecraft/world/WorldAccess;Lnet/minecraft/entity/SpawnReason;Lnet/minecraft/util/math/BlockPos;Ljava/util/Random;)Z", at = @At("RETURN"), cancellable = true)
     private static void noBastionPigmen(EntityType<ZombifiedPiglinEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random, CallbackInfoReturnable<Boolean> cir) {
-        if (!CategoryPreference.getBoolValue("zombie_pigmen") && world instanceof ServerWorld) {
+        if (!CategoryPreferences.ZOMBIE_PIGMEN.getBoolValue() && world instanceof ServerWorld) {
             if (BASTION_PREDICATE.test((ServerWorld) world, pos.getX(), pos.getY(), pos.getZ())) {
                 cir.setReturnValue(false);
             }

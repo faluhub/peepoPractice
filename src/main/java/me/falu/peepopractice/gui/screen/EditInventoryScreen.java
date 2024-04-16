@@ -63,13 +63,14 @@ import java.util.function.Predicate;
 
 public class EditInventoryScreen extends PlayerlessHandledScreen {
     public static final Identifier BARRIER_TEXTURE = new Identifier("textures/item/barrier.png");
+    public static final SimpleInventory DISPLAY_INV = new SimpleInventory(45);
     private static final Identifier CHEST_MINECART_TEXTURE = new Identifier("textures/item/chest_minecart.png");
     private static final Identifier TABS_TEXTURE = new Identifier("textures/gui/container/creative_inventory/tabs.png");
-    public static final SimpleInventory DISPLAY_INV = new SimpleInventory(45);
     private static int SELECTED_TAB = ItemGroup.BUILDING_BLOCKS.getIndex();
     private final Map<Identifier, Tag<Item>> searchResultTags = Maps.newTreeMap();
     private final Screen parent;
     private final PracticeCategory category;
+    private final int selectedProfile;
     private float scrollPosition;
     private boolean scrolling;
     private TextFieldWidget searchBox;
@@ -77,7 +78,6 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
     @Nullable private Slot deleteItemSlot;
     private boolean ignoreTypedCharacter;
     private boolean lastClickOutsideBounds;
-    private final int selectedProfile;
 
     private EditInventoryScreen(Screen parent, PracticeCategory category, int selectedProfile) {
         super(new PlayerlessCreativeScreenHandler(), PeepoPractice.PLAYERLESS_INVENTORY, new TranslatableText("peepopractice.title.edit_inventory", category.getName(false)));
@@ -99,35 +99,6 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
 
     public static int getSelectedTab() {
         return SELECTED_TAB;
-    }
-
-    @Override
-    protected void init() {
-        if (this.client == null) {
-            return;
-        }
-
-        super.init();
-        this.client.keyboard.enableRepeatEvents(true);
-        int vx = this.x + 82;
-        int vy = this.y + 6;
-        this.searchBox = new TextFieldWidget(this.textRenderer, vx, vy, 80, 9, new TranslatableText("itemGroup.search"));
-        this.searchBox.setMaxLength(50);
-        this.searchBox.setHasBorder(false);
-        this.searchBox.setVisible(false);
-        this.searchBox.setEditableColor(16777215);
-        this.children.add(this.searchBox);
-        int i = SELECTED_TAB;
-        SELECTED_TAB = -1;
-        this.setSelectedTab(ItemGroup.GROUPS[i]);
-
-        this.addButton(new LimitlessButtonWidget(null, BARRIER_TEXTURE, null, this.x - this.x / 2 - (this.width / 8) / 2, this.y, this.width / 8, this.backgroundHeight, ScreenTexts.DONE, b -> this.onClose()));
-        this.addButton(new LimitlessButtonWidget(null, CHEST_MINECART_TEXTURE, null, this.x + this.backgroundWidth + this.x / 2 - (this.width / 8) / 2, this.y, this.width / 8, this.backgroundHeight, new TranslatableText("peepopractice.button.reset_to_default"), b -> {
-            InventoryUtils.resetToDefault(this.category, this.selectedProfile);
-            if (this.client != null) {
-                this.client.openScreen(create(this.parent, this.category, this.selectedProfile));
-            }
-        }));
     }
 
     private void setSelectedTab(ItemGroup group) {
@@ -231,6 +202,35 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
 
         this.scrollPosition = 0.0F;
         ((PlayerlessCreativeScreenHandler) this.handler).scrollItems(0.0F);
+    }
+
+    @Override
+    protected void init() {
+        if (this.client == null) {
+            return;
+        }
+
+        super.init();
+        this.client.keyboard.enableRepeatEvents(true);
+        int vx = this.x + 82;
+        int vy = this.y + 6;
+        this.searchBox = new TextFieldWidget(this.textRenderer, vx, vy, 80, 9, new TranslatableText("itemGroup.search"));
+        this.searchBox.setMaxLength(50);
+        this.searchBox.setHasBorder(false);
+        this.searchBox.setVisible(false);
+        this.searchBox.setEditableColor(16777215);
+        this.children.add(this.searchBox);
+        int i = SELECTED_TAB;
+        SELECTED_TAB = -1;
+        this.setSelectedTab(ItemGroup.GROUPS[i]);
+
+        this.addButton(new LimitlessButtonWidget(null, BARRIER_TEXTURE, null, this.x - this.x / 2 - (this.width / 8) / 2, this.y, this.width / 8, this.backgroundHeight, ScreenTexts.DONE, b -> this.onClose()));
+        this.addButton(new LimitlessButtonWidget(null, CHEST_MINECART_TEXTURE, null, this.x + this.backgroundWidth + this.x / 2 - (this.width / 8) / 2, this.y, this.width / 8, this.backgroundHeight, new TranslatableText("peepopractice.button.reset_to_default"), b -> {
+            InventoryUtils.resetToDefault(this.category, this.selectedProfile);
+            if (this.client != null) {
+                this.client.openScreen(create(this.parent, this.category, this.selectedProfile));
+            }
+        }));
     }
 
     private void saveInventory() {

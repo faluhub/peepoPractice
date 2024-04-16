@@ -1,16 +1,14 @@
 package me.falu.peepopractice.gui.screen;
 
-import com.google.common.collect.Lists;
 import me.falu.peepopractice.PeepoPractice;
-import me.falu.peepopractice.core.category.CategoryPreference;
+import me.falu.peepopractice.core.category.preferences.CategoryPreference;
 import me.falu.peepopractice.core.category.PracticeCategory;
-import me.falu.peepopractice.core.category.utils.PracticeCategoryUtils;
 import me.falu.peepopractice.core.writer.PracticeWriter;
 import me.falu.peepopractice.gui.widget.LimitlessButtonWidget;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
@@ -24,15 +22,11 @@ public class CategoryPreferencesScreen extends Screen {
         this.category = category;
     }
 
-    public static LiteralText getFormattedText(CategoryPreference preference, String currentValue) {
-        String add = "";
-        boolean isBoolValue = Lists.newArrayList(PracticeCategoryUtils.BOOLEAN_LIST).contains(currentValue);
-        if (isBoolValue) {
-            add += PracticeCategoryUtils.parseBoolean(currentValue) ? Formatting.GREEN : Formatting.RED;
-        } else if (currentValue.equals(PracticeCategoryUtils.RANDOM)) {
-            add += Formatting.YELLOW;
-        }
-        return new LiteralText(Formatting.BOLD + preference.getLabel() + ":\n" + Formatting.RESET + add + I18n.translate(currentValue));
+    public static Text getFormattedText(PracticeCategory category, CategoryPreference<?> preference) {
+        return new LiteralText("" + Formatting.BOLD)
+                .append(preference.getLabel().copy())
+                .append(":\n" + Formatting.RESET)
+                .append(preference.getValueLabel(category, true));
     }
 
     @Override
@@ -48,8 +42,7 @@ public class CategoryPreferencesScreen extends Screen {
         int values = Math.max(this.category.getPreferences().size(), 3);
         int maxColumns = Math.round(this.width / (float) (size * values)) + 2;
 
-        for (CategoryPreference preference : this.category.getPreferences()) {
-            String currentValue = CategoryPreference.getValue(this.category, preference.getId());
+        for (CategoryPreference<?> preference : this.category.getPreferences()) {
             this.addButton(
                     new LimitlessButtonWidget(
                             null,
@@ -59,24 +52,12 @@ public class CategoryPreferencesScreen extends Screen {
                             32 + size * row,
                             size,
                             size - offset,
-                            getFormattedText(preference, currentValue),
+                            getFormattedText(this.category, preference),
                             b -> {
-                                String value = CategoryPreference.getValue(this.category, preference.getId());
-                                if (value != null) {
-                                    int currentIndex = CategoryPreference.getIndex(value, preference.getChoices());
-                                    String next;
-
-                                    try {
-                                        next = preference.getChoices().get(currentIndex + 1);
-                                    } catch (IndexOutOfBoundsException ignored) {
-                                        next = preference.getChoices().get(0);
-                                    }
-
-                                    b.setMessage(getFormattedText(preference, next));
-                                    CategoryPreference.setValue(this.category, preference.getId(), next);
-                                }
+                                preference.advanceValue(this.category);
+                                b.setMessage(getFormattedText(this.category, preference));
                             },
-                            (button, matrices, mouseX, mouseY) -> this.renderTooltip(matrices, new LiteralText(preference.getDescription()), mouseX, mouseY)
+                            (button, matrices, mouseX, mouseY) -> this.renderTooltip(matrices, preference.getDescription(), mouseX, mouseY)
                     )
             );
 

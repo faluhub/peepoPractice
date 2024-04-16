@@ -1,14 +1,12 @@
 package me.falu.peepopractice.core.category.properties.event;
 
+import lombok.Getter;
 import net.minecraft.util.Identifier;
 
+@Getter
 public class InteractLootChestSplitEvent extends SplitEvent {
     private Identifier lootTable;
     private boolean onClose = false;
-
-    public Identifier getLootTable() {
-        return this.lootTable;
-    }
 
     public InteractLootChestSplitEvent setLootTable(Identifier lootTable) {
         this.lootTable = lootTable;
@@ -17,10 +15,6 @@ public class InteractLootChestSplitEvent extends SplitEvent {
 
     public boolean hasLootTable() {
         return this.lootTable != null;
-    }
-
-    public boolean isOnClose() {
-        return this.onClose;
     }
 
     public InteractLootChestSplitEvent setOnClose(boolean onClose) {

@@ -1,7 +1,9 @@
 package me.falu.peepopractice.core.writer;
 
 import com.google.common.collect.Lists;
-import com.google.gson.*;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import me.falu.peepopractice.PeepoPractice;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.commons.io.FileUtils;
@@ -73,7 +75,8 @@ public class DefaultFileWriter {
             JsonElement element = parser.parse(new InputStreamReader(stream, StandardCharsets.UTF_8));
             try {
                 stream.close();
-            } catch (IOException ignored) {}
+            } catch (IOException ignored) {
+            }
             return element;
         }
         return null;

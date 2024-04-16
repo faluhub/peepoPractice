@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import me.falu.peepopractice.PeepoPractice;
+import me.falu.peepopractice.core.category.preferences.CategoryPreferences;
 import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.core.item.RandomToolItem;
 import me.falu.peepopractice.core.playerless.PlayerlessInventory;
@@ -24,6 +25,10 @@ import java.util.Random;
 
 public class InventoryUtils {
     public static final List<ItemStack> PREVIOUS_INVENTORY = new ArrayList<>();
+
+    public static int getSelectedInventory() {
+        return CategoryPreferences.SELECTED_INVENTORY.getValue().ordinal();
+    }
 
     public static void putItems(Inventory inventory, PracticeCategory category, int profileIndex) {
         JsonObject config = PracticeWriter.INVENTORY_WRITER.get();

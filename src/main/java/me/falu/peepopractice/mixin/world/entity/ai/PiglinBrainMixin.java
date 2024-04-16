@@ -2,7 +2,7 @@ package me.falu.peepopractice.mixin.world.entity.ai;
 
 import com.google.common.collect.Lists;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import me.falu.peepopractice.core.category.CategoryPreference;
+import me.falu.peepopractice.core.category.preferences.CategoryPreferences;
 import me.falu.peepopractice.core.loot.PiglinBarterState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -26,7 +26,7 @@ public abstract class PiglinBrainMixin {
 
     @ModifyReturnValue(method = "getBarteredItem", at = @At("RETURN"))
     private static List<ItemStack> peepoPractice$guaranteeTrades(List<ItemStack> barteredItems, PiglinEntity piglin) {
-        if (CategoryPreference.getBoolValue("ranked_loot_table")) {
+        if (CategoryPreferences.RANKED_LOOT_TABLE.getBoolValue()) {
             MinecraftServer server = piglin.getServer();
             if (server == null || barteredItems.isEmpty()) {
                 return barteredItems;

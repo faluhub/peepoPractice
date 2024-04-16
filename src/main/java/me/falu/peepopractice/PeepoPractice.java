@@ -10,7 +10,6 @@ import me.falu.peepopractice.core.global.GlobalOptions;
 import me.falu.peepopractice.core.item.RandomToolItem;
 import me.falu.peepopractice.core.playerless.PlayerlessInventory;
 import me.falu.peepopractice.core.playerless.PlayerlessPlayerScreenHandler;
-import me.falu.peepopractice.core.writer.DefaultFileWriter;
 import me.falu.peepopractice.gui.screen.CategorySelectionScreen;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;

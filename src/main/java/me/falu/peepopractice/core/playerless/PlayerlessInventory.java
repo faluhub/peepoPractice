@@ -1,6 +1,8 @@
 package me.falu.peepopractice.core.playerless;
 
 import com.google.common.collect.ImmutableList;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
@@ -22,7 +24,7 @@ public class PlayerlessInventory implements Inventory, Nameable {
     public final DefaultedList<ItemStack> armor;
     public final DefaultedList<ItemStack> offHand;
     private final List<DefaultedList<ItemStack>> combinedInventory;
-    private ItemStack cursorStack;
+    @Setter @Getter private ItemStack cursorStack;
 
     public PlayerlessInventory() {
         this.main = DefaultedList.ofSize(36, ItemStack.EMPTY);
@@ -261,14 +263,6 @@ public class PlayerlessInventory implements Inventory, Nameable {
     }
 
     public void markDirty() { }
-
-    public ItemStack getCursorStack() {
-        return this.cursorStack;
-    }
-
-    public void setCursorStack(ItemStack stack) {
-        this.cursorStack = stack;
-    }
 
     public boolean canPlayerUse(PlayerEntity player) {
         return true;

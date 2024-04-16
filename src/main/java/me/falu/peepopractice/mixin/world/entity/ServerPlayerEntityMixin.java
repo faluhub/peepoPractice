@@ -3,9 +3,9 @@ package me.falu.peepopractice.mixin.world.entity;
 import com.redlimerl.speedrunigt.timer.InGameTimer;
 import com.redlimerl.speedrunigt.timer.TimerStatus;
 import me.falu.peepopractice.PeepoPractice;
-import me.falu.peepopractice.core.category.CategoryPreference;
+import me.falu.peepopractice.core.category.preferences.CategoryPreferences;
+import me.falu.peepopractice.core.category.preferences.PreferenceTypes;
 import me.falu.peepopractice.core.category.PracticeCategoriesAny;
-import me.falu.peepopractice.core.category.PracticeTypes;
 import me.falu.peepopractice.core.category.properties.event.ChangeDimensionSplitEvent;
 import me.falu.peepopractice.core.category.properties.event.EnterVehicleSplitEvent;
 import me.falu.peepopractice.core.category.properties.event.SplitEvent;
@@ -43,7 +43,7 @@ import java.util.Random;
 public abstract class ServerPlayerEntityMixin extends LivingEntity {
     @Shadow private int joinInvulnerabilityTicks;
     @Unique private Long comparingTime;
-    @Unique private PracticeTypes.PaceTimerShowType showType;
+    @Unique private PreferenceTypes.PaceTimerShowType showType;
 
     protected ServerPlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
         super(entityType, world);
@@ -66,7 +66,7 @@ public abstract class ServerPlayerEntityMixin extends LivingEntity {
     @Inject(method = "moveToSpawn", at = @At("HEAD"), cancellable = true)
     private void peepoPractice$customSpawn(ServerWorld world, CallbackInfo ci) {
         if (PeepoPractice.CATEGORY.hasSplitEvent()) {
-            PracticeTypes.CompareType compareType = PracticeTypes.CompareType.valueOf(CategoryPreference.getOrDefault(PeepoPractice.CATEGORY, "compare_type", PracticeTypes.CompareType.PB.name()));
+            PreferenceTypes.CompareType compareType = CategoryPreferences.COMPARE_TYPE.getValue();
             switch (compareType) {
                 case PB:
                     this.comparingTime = PeepoPractice.CATEGORY.getSplitEvent().hasPb() ? PeepoPractice.CATEGORY.getSplitEvent().getPbLong() : null;
@@ -75,7 +75,7 @@ public abstract class ServerPlayerEntityMixin extends LivingEntity {
                     this.comparingTime = PeepoPractice.CATEGORY.getSplitEvent().hasCompletedTimes() ? PeepoPractice.CATEGORY.getSplitEvent().findAverage() : null;
                     break;
             }
-            this.showType = PracticeTypes.PaceTimerShowType.valueOf(CategoryPreference.getOrDefault(PeepoPractice.CATEGORY, "pace_timer_show_type", PracticeTypes.PaceTimerShowType.ALWAYS.name()));
+            this.showType = CategoryPreferences.PACE_TIMER_SHOW_TYPE.getValue();
         }
 
         if (PeepoPractice.CATEGORY.hasPlayerProperties()) {
@@ -160,7 +160,7 @@ public abstract class ServerPlayerEntityMixin extends LivingEntity {
 
     @Inject(method = "tick", at = @At("TAIL"))
     private void peepoPractice$setPaceMessage(CallbackInfo ci) {
-        if (this.showType == null || this.showType.equals(PracticeTypes.PaceTimerShowType.NEVER) || (this.showType.equals(PracticeTypes.PaceTimerShowType.END) && !InGameTimer.getInstance().isCompleted())) {
+        if (this.showType == null || this.showType.equals(PreferenceTypes.PaceTimerShowType.NEVER) || (this.showType.equals(PreferenceTypes.PaceTimerShowType.END) && !InGameTimer.getInstance().isCompleted())) {
             return;
         }
         long igt = InGameTimer.getInstance().getInGameTime();

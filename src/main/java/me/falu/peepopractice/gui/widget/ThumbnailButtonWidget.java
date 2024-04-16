@@ -26,7 +26,7 @@ public class ThumbnailButtonWidget extends ButtonWidget {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings({ "deprecation", "DuplicatedCode" })
     public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         MinecraftClient client = MinecraftClient.getInstance();
         int yOffset = this.getYImage(this.isHovered());

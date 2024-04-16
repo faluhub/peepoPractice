@@ -113,6 +113,7 @@ public abstract class MinecraftServerMixin implements GenerationShutdownOwner {
      * @reason Custom start dimension
      */
     @Inject(method = "createWorlds", at = @At("HEAD"), cancellable = true)
+    @SuppressWarnings("UnreachableCode")
     private void peepoPractice$createWorlds(WorldGenerationProgressListener worldGenerationProgressListener, CallbackInfo ci) {
         if (!PeepoPractice.CATEGORY.hasWorldProperties() || !PeepoPractice.CATEGORY.getWorldProperties().hasWorldRegistryKey()) {
             return;

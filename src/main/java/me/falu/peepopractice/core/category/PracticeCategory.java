@@ -3,13 +3,16 @@ package me.falu.peepopractice.core.category;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import lombok.Getter;
+import me.falu.peepopractice.core.category.preferences.CategoryPreference;
+import me.falu.peepopractice.core.category.preferences.CategoryPreferences;
+import me.falu.peepopractice.core.category.preferences.PreferenceTypes;
 import me.falu.peepopractice.core.category.properties.PlayerProperties;
 import me.falu.peepopractice.core.category.properties.StructureProperties;
 import me.falu.peepopractice.core.category.properties.WorldProperties;
 import me.falu.peepopractice.core.category.properties.event.SplitEvent;
+import me.falu.peepopractice.core.category.utils.InventoryUtils;
 import me.falu.peepopractice.core.exception.NotInitializedException;
 import me.falu.peepopractice.core.writer.PracticeWriter;
-import me.falu.peepopractice.gui.screen.InventoryOptionsScreen;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
@@ -23,7 +26,7 @@ import java.util.*;
 @SuppressWarnings("UnusedDeclaration")
 public class PracticeCategory {
     @Getter private final List<StructureProperties> structureProperties = new ArrayList<>();
-    @Getter private final List<CategoryPreference> preferences;
+    @Getter private final List<CategoryPreference<?>> preferences;
     private final boolean aa;
     private final Map<String, Object> customValues = new HashMap<>();
     private final Map<String, Object> permaValues = new HashMap<>();
@@ -115,7 +118,7 @@ public class PracticeCategory {
         return !this.preferences.isEmpty();
     }
 
-    public PracticeCategory addPreference(CategoryPreference preference) {
+    public PracticeCategory addPreference(CategoryPreference<?> preference) {
         this.preferences.add(preference);
         return this;
     }
@@ -188,14 +191,14 @@ public class PracticeCategory {
 
     public String getPbText() {
         if (this.hasSplitEvent()) {
-            PracticeTypes.CompareType compareType = PracticeTypes.getTypeValue("compare_type", PracticeTypes.CompareType.PB);
-            boolean comparePb = compareType.equals(PracticeTypes.CompareType.PB);
+            PreferenceTypes.CompareType compareType = CategoryPreferences.COMPARE_TYPE.getValue();
+            boolean comparePb = compareType.equals(PreferenceTypes.CompareType.PB);
             boolean hasTime = comparePb ? this.getSplitEvent().hasPb() : this.getSplitEvent().hasCompletedTimes();
             if (hasTime) {
                 String timeString = comparePb ? this.getSplitEvent().getPbString() : this.getSplitEvent().getAverageString();
                 return (comparePb ? Formatting.GREEN : Formatting.AQUA) + " (" + timeString + ")";
             } else {
-                return Formatting.GRAY + " " + new TranslatableText("peepopractice.text.no_pb_or_avg", I18n.translate(compareType.getLabel())).getString();
+                return Formatting.GRAY + " " + new TranslatableText("peepopractice.text.no_pb_or_avg", CategoryPreferences.COMPARE_TYPE.getValueLabel(this)).getString();
             }
         }
         return "";
@@ -214,8 +217,7 @@ public class PracticeCategory {
         if (!config.has(this.getId())) {
             return false;
         }
-        String value = CategoryPreference.getValue(this, InventoryOptionsScreen.SELECTED_INVENTORY);
-        int selected = value != null ? Integer.parseInt(value) : 0;
+        int selected = InventoryUtils.getSelectedInventory();
         JsonArray profiles = config.getAsJsonArray(this.getId());
         if (profiles.size() <= selected) {
             return false;
@@ -228,6 +230,7 @@ public class PracticeCategory {
     }
 
     public interface ExecuteReturnTask<T> {
-        @Nullable T execute(PracticeCategory category, Random random, ServerWorld world) throws NotInitializedException;
+        @Nullable
+        T execute(PracticeCategory category, Random random, ServerWorld world) throws NotInitializedException;
     }
 }

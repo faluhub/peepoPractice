@@ -31,6 +31,7 @@ public abstract class StructureFeatureMixin<C extends FeatureConfig> {
     public abstract String getName();
 
     @Unique
+    @SuppressWarnings("UnreachableCode")
     private boolean checkArtificialStructure(ChunkPos chunkPos) {
         for (StructureProperties properties : PeepoPractice.CATEGORY.getStructureProperties()) {
             if (properties.isSameStructure((StructureFeature<?>) (Object) this)) {
@@ -46,10 +47,11 @@ public abstract class StructureFeatureMixin<C extends FeatureConfig> {
     }
 
     /**
-     * @author Quesia
+     * @author falu
      * @reason Custom structure starts
      */
     @Overwrite
+    @SuppressWarnings("UnreachableCode")
     public StructureStart<?> method_28657(ChunkGenerator chunkGenerator, BiomeSource biomeSource, StructureManager structureManager, long l, ChunkPos chunkPos, Biome biome, int i, ChunkRandom chunkRandom, StructureConfig structureConfig, C featureConfig) {
         ChunkPos chunkPos2 = this.method_27218(structureConfig, l, chunkRandom, chunkPos.x, chunkPos.z);
         StructureProperties props = PeepoPractice.CATEGORY.findStructureProperties((StructureFeature<?>) (Object) this);

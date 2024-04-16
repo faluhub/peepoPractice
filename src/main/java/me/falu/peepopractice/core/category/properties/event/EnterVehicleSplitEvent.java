@@ -1,14 +1,11 @@
 package me.falu.peepopractice.core.category.properties.event;
 
+import lombok.Getter;
 import net.minecraft.entity.EntityType;
 
 public class EnterVehicleSplitEvent extends SplitEvent {
-    private EntityType<?> vehicle;
+    @Getter private EntityType<?> vehicle;
     private boolean keepItem;
-
-    public EntityType<?> getVehicle() {
-        return this.vehicle;
-    }
 
     public EnterVehicleSplitEvent setVehicle(EntityType<?> vehicle) {
         this.vehicle = vehicle;

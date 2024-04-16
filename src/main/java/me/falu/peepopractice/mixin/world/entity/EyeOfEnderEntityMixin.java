@@ -1,7 +1,7 @@
 package me.falu.peepopractice.mixin.world.entity;
 
-import me.falu.peepopractice.core.category.CategoryPreference;
-import me.falu.peepopractice.core.category.utils.PracticeCategoryUtils;
+import me.falu.peepopractice.core.category.preferences.CategoryPreferences;
+import me.falu.peepopractice.core.category.preferences.PreferenceTypes;
 import net.minecraft.entity.EyeOfEnderEntity;
 import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,9 +16,9 @@ public class EyeOfEnderEntityMixin {
 
     @Inject(method = "moveTowards", at = @At("TAIL"))
     private void peepoPractice$eyeBreakPreference(BlockPos pos, CallbackInfo ci) {
-        String value = CategoryPreference.getValue("eye_breaks");
-        if (value != null && !PracticeCategoryUtils.isRandom(value)) {
-            this.dropsItem = !PracticeCategoryUtils.parseBoolean(value);
+        PreferenceTypes.BooleanRandomType value = CategoryPreferences.EYE_BREAKS.getValue();
+        if (!value.equals(PreferenceTypes.BooleanRandomType.RANDOM)) {
+            this.dropsItem = !value.equals(PreferenceTypes.BooleanRandomType.ENABLED);
         }
     }
 }

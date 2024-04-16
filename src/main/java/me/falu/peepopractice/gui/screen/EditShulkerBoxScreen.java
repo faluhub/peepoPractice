@@ -7,13 +7,11 @@ import me.falu.peepopractice.core.playerless.PlayerlessInventory;
 import me.falu.peepopractice.core.playerless.PlayerlessShulkerBoxScreenHandler;
 import me.falu.peepopractice.gui.widget.LimitlessButtonWidget;
 import net.minecraft.client.gui.screen.ScreenTexts;
-import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
 public class EditShulkerBoxScreen extends PlayerlessHandledScreen {
@@ -24,7 +22,7 @@ public class EditShulkerBoxScreen extends PlayerlessHandledScreen {
 
     public EditShulkerBoxScreen(EditInventoryScreen parent, Slot slot, PlayerlessInventory inventory, Text title) {
         super(new PlayerlessShulkerBoxScreenHandler(inventory), inventory, title);
-        ++this.backgroundHeight;
+        this.backgroundHeight++;
         this.parent = parent;
         this.slot = slot;
         this.shulkerHandler = (PlayerlessShulkerBoxScreenHandler) this.getScreenHandler();
@@ -34,9 +32,19 @@ public class EditShulkerBoxScreen extends PlayerlessHandledScreen {
     @Override
     protected void init() {
         super.init();
-        this.addButton(new LimitlessButtonWidget(null, new Identifier("textures/item/barrier.png"), null, this.x - this.x / 2 - (this.width / 8) / 2, this.y, this.width / 8, this.backgroundHeight, ScreenTexts.DONE, b -> this.onClose()));
-        ButtonWidget copyButton = this.addButton(new LimitlessButtonWidget(null, new Identifier("textures/item/chest_minecart.png"), null, this.x + this.backgroundWidth + this.x / 2 - (this.width / 8) / 2, this.y, this.width / 8, this.backgroundHeight, new TranslatableText("peepopractice.button.copy_from_existing"), b -> { }));
-        copyButton.active = false;
+        this.addButton(
+                new LimitlessButtonWidget(
+                        null,
+                        new Identifier("textures/item/barrier.png"),
+                        null,
+                        this.x - this.x / 2 - (this.width / 8) / 2,
+                        this.y,
+                        this.width / 8,
+                        this.backgroundHeight,
+                        ScreenTexts.DONE,
+                        b -> this.onClose()
+                )
+        );
     }
 
     @Override

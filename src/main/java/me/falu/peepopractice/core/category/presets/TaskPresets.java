@@ -1,25 +1,23 @@
-package me.falu.peepopractice.core.category.properties.preset;
+package me.falu.peepopractice.core.category.presets;
 
 import me.falu.peepopractice.core.CustomPortalForcer;
-import me.falu.peepopractice.core.category.CategoryPreference;
+import me.falu.peepopractice.core.category.preferences.CategoryPreferences;
+import me.falu.peepopractice.core.category.preferences.PreferenceTypes;
 import me.falu.peepopractice.core.category.PracticeCategory;
-import me.falu.peepopractice.core.category.PracticeTypes;
 import me.falu.peepopractice.core.category.properties.StructureProperties;
-import me.falu.peepopractice.core.category.utils.PracticeCategoryUtils;
 import me.falu.peepopractice.core.exception.NotInitializedException;
 import net.minecraft.block.Blocks;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.world.gen.feature.StructureFeature;
 import net.minecraft.world.level.ServerWorldProperties;
 
-public class BastionPreset {
+public class TaskPresets {
     public static final PracticeCategory.ExecuteReturnTask<BlockPos> BASTION_SPAWN_POS = (category, random, world) -> {
         if (category.hasCustomValue("bastionType")) {
-            PracticeTypes.SpawnLocationType spawnLocation = PracticeTypes.getTypeValue("spawn_location", PracticeTypes.SpawnLocationType.STRUCTURE);
-            if (spawnLocation.equals(PracticeTypes.SpawnLocationType.STRUCTURE)) {
-                PracticeTypes.BastionType type = PracticeTypes.BastionType.fromId((int) category.getCustomValue("bastionType"));
+            PreferenceTypes.SpawnLocationType spawnLocation = CategoryPreferences.SPAWN_LOCATION.getValue();
+            if (spawnLocation.equals(PreferenceTypes.SpawnLocationType.STRUCTURE)) {
+                PreferenceTypes.BastionType type = PreferenceTypes.BastionType.fromId((int) category.getCustomValue("bastionType"));
                 if (type != null) {
                     StructureProperties properties = category.findStructureProperties(StructureFeature.BASTION_REMNANT);
                     if (properties != null && properties.getChunkPos() != null) {
@@ -42,9 +40,9 @@ public class BastionPreset {
     };
     public static final PracticeCategory.ExecuteReturnTask<Vec2f> BASTION_SPAWN_ANGLE = (category, random, world) -> {
         if (category.hasCustomValue("bastionType")) {
-            PracticeTypes.SpawnLocationType spawnLocation = PracticeTypes.getTypeValue("spawn_location", PracticeTypes.SpawnLocationType.STRUCTURE);
-            if (spawnLocation.equals(PracticeTypes.SpawnLocationType.STRUCTURE)) {
-                PracticeTypes.BastionType type = PracticeTypes.BastionType.fromId((int) category.getCustomValue("bastionType"));
+            PreferenceTypes.SpawnLocationType spawnLocation = CategoryPreferences.SPAWN_LOCATION.getValue();
+            if (spawnLocation.equals(PreferenceTypes.SpawnLocationType.STRUCTURE)) {
+                PreferenceTypes.BastionType type = PreferenceTypes.BastionType.fromId((int) category.getCustomValue("bastionType"));
                 if (type != null) {
                     return new Vec2f(type.angle, 0.0F);
                 }
@@ -54,19 +52,4 @@ public class BastionPreset {
         }
         throw new NotInitializedException();
     };
-    public static final CategoryPreference BASTION_TYPE_PREFERENCE = new CategoryPreference()
-            .setId("bastion_type")
-            .setIcon(new Identifier("textures/item/golden_helmet.png"))
-            .setChoices(PracticeTypes.BastionType.all())
-            .setDefaultChoice(PracticeTypes.BastionType.RANDOM.getLabel());
-    public static final CategoryPreference RANKED_LOOT_TABLE_PREFERENCE = new CategoryPreference()
-            .setId("ranked_loot_table")
-            .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
-            .setDefaultChoice(PracticeCategoryUtils.ENABLED)
-            .setIcon(new Identifier("textures/item/ender_pearl.png"));
-    public static final CategoryPreference ZOMBIE_PIGMEN = new CategoryPreference()
-            .setId("zombie_pigmen")
-            .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
-            .setDefaultChoice(PracticeCategoryUtils.ENABLED)
-            .setIcon(new Identifier("textures/item/rotten_flesh.png"));
 }

@@ -13,30 +13,9 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.WorldChunk;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 
 public class PracticeCategoryUtils {
-    public static final String ENABLED = "peepopractice.text.enabled";
-    public static final String DISABLED = "peepopractice.text.disabled";
-    public static final String RANDOM = "peepopractice.text.random";
-    public static final String[] BOOLEAN_LIST = new String[] { ENABLED, DISABLED };
-    public static final String[] ALL_LIST = new String[] { ENABLED, DISABLED, RANDOM };
-
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public static boolean isRandom(String string) {
-        return string.equals(RANDOM);
-    }
-
-    public static boolean parseBoolean(String value) {
-        List<String> list = Arrays.asList(BOOLEAN_LIST);
-        if (!list.contains(value)) {
-            return true;
-        }
-        return value.equals(ENABLED);
-    }
-
     public static void quit(boolean close) {
         MinecraftClient client = MinecraftClient.getInstance();
 

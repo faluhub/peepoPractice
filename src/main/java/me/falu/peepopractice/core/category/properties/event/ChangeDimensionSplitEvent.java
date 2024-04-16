@@ -1,15 +1,13 @@
 package me.falu.peepopractice.core.category.properties.event;
 
+import lombok.Getter;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 
+@Getter
 public class ChangeDimensionSplitEvent extends SplitEvent {
     private RegistryKey<World> toDimension;
     private RegistryKey<World> fromDimension;
-
-    public RegistryKey<World> getToDimension() {
-        return this.toDimension;
-    }
 
     public ChangeDimensionSplitEvent setToDimension(RegistryKey<World> toDimension) {
         this.toDimension = toDimension;
@@ -18,10 +16,6 @@ public class ChangeDimensionSplitEvent extends SplitEvent {
 
     public boolean hasToDimension() {
         return this.toDimension != null;
-    }
-
-    public RegistryKey<World> getFromDimension() {
-        return this.fromDimension;
     }
 
     public ChangeDimensionSplitEvent setFromDimension(RegistryKey<World> fromDimension) {

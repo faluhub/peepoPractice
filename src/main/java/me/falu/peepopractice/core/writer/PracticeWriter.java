@@ -11,16 +11,16 @@ import java.io.IOException;
 
 public class PracticeWriter {
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-
-    static {
-        DefaultFileWriter.INSTANCE.writeDefaultFiles();
-    }
-
     public static final PracticeWriter PREFERENCES_WRITER = new PracticeWriter("preferences.json");
     public static final PracticeWriter INVENTORY_WRITER = new PracticeWriter("inventories.json");
     public static final PracticeWriter COMPLETIONS_WRITER = new PracticeWriter("completions.json");
     public static final PracticeWriter STANDARD_SETTINGS_WRITER = new PracticeWriter("standard_settings.json");
     public static final PracticeWriter GLOBAL_CONFIG = new PracticeWriter("global_config.json");
+
+    static {
+        DefaultFileWriter.INSTANCE.writeDefaultFiles();
+    }
+
     private final File file;
     private JsonObject local;
 

@@ -162,7 +162,6 @@ public class CategorySelectionScreen extends Screen {
         ANY(PracticeCategoriesAny.ALL),
         AA(PracticeCategoriesAA.ALL),
         CUSTOM(CustomCategoryResourceManager.CUSTOM_CATEGORIES);
-
         public final String title;
         public final List<PracticeCategory> list;
 

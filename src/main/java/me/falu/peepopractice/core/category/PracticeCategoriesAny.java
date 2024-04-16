@@ -2,13 +2,14 @@ package me.falu.peepopractice.core.category;
 
 import com.google.common.collect.Lists;
 import me.falu.peepopractice.core.CustomPortalForcer;
+import me.falu.peepopractice.core.category.preferences.CategoryPreferences;
+import me.falu.peepopractice.core.category.preferences.PreferenceTypes;
+import me.falu.peepopractice.core.category.presets.MiscPresets;
+import me.falu.peepopractice.core.category.presets.TaskPresets;
 import me.falu.peepopractice.core.category.properties.PlayerProperties;
 import me.falu.peepopractice.core.category.properties.StructureProperties;
 import me.falu.peepopractice.core.category.properties.WorldProperties;
 import me.falu.peepopractice.core.category.properties.event.*;
-import me.falu.peepopractice.core.category.properties.preset.BastionPreset;
-import me.falu.peepopractice.core.category.properties.preset.FortressPreset;
-import me.falu.peepopractice.core.category.properties.preset.StructurePreset;
 import me.falu.peepopractice.core.category.utils.PracticeCategoryUtils;
 import me.falu.peepopractice.core.exception.NotInitializedException;
 import net.minecraft.block.BlockState;
@@ -221,13 +222,7 @@ public class PracticeCategoriesAny {
                     new ChangeDimensionSplitEvent()
                             .setToDimension(World.NETHER)
             )
-            .addPreference(
-                    new CategoryPreference()
-                            .setId("fix_ghost_buckets")
-                            .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
-                            .setDefaultChoice(PracticeCategoryUtils.DISABLED)
-                            .setIcon(new Identifier("textures/item/water_bucket.png"))
-            )
+            .addPreference(CategoryPreferences.FIX_GHOST_BUCKETS)
             .register();
     public static final PracticeCategory BASTION_SPLIT = new PracticeCategory()
             .setId("bastion_split")
@@ -236,8 +231,8 @@ public class PracticeCategoriesAny {
                     new StructureProperties()
                             .setStructure(DefaultBiomeFeatures.BASTION_REMNANT)
                             .setChunkPos((category, random, world) -> {
-                                PracticeTypes.SpawnLocationType spawnLocation = PracticeTypes.getTypeValue("spawn_location", PracticeTypes.SpawnLocationType.STRUCTURE);
-                                if (spawnLocation.equals(PracticeTypes.SpawnLocationType.TERRAIN)) {
+                                PreferenceTypes.SpawnLocationType spawnLocation = CategoryPreferences.SPAWN_LOCATION.getValue();
+                                if (spawnLocation.equals(PreferenceTypes.SpawnLocationType.TERRAIN)) {
                                     int mx = random.nextBoolean() ? 1 : -1;
                                     int mz = random.nextBoolean() ? 1 : -1;
                                     return new ChunkPos(random.nextInt(3, 4) * mx, random.nextInt(3, 4) * mz);
@@ -254,8 +249,8 @@ public class PracticeCategoriesAny {
             )
             .setPlayerProperties(
                     new PlayerProperties()
-                            .setSpawnPos(BastionPreset.BASTION_SPAWN_POS)
-                            .setSpawnAngle(BastionPreset.BASTION_SPAWN_ANGLE)
+                            .setSpawnPos(TaskPresets.BASTION_SPAWN_POS)
+                            .setSpawnAngle(TaskPresets.BASTION_SPAWN_ANGLE)
             )
             .setWorldProperties(
                     new WorldProperties()
@@ -273,10 +268,10 @@ public class PracticeCategoriesAny {
                     new ThrowEntitySplitEvent()
                             .setItem(Items.ENDER_PEARL)
             )
-            .addPreference(BastionPreset.BASTION_TYPE_PREFERENCE)
-            .addPreference(BastionPreset.RANKED_LOOT_TABLE_PREFERENCE)
-            .addPreference(StructurePreset.SPAWN_LOCATION_PREFERENCE)
-            .addPreference(BastionPreset.ZOMBIE_PIGMEN)
+            .addPreference(CategoryPreferences.BASTION_TYPE)
+            .addPreference(CategoryPreferences.RANKED_LOOT_TABLE)
+            .addPreference(CategoryPreferences.SPAWN_LOCATION)
+            .addPreference(CategoryPreferences.ZOMBIE_PIGMEN)
             .register();
     public static final PracticeCategory FORTRESS_SPLIT = new PracticeCategory()
             .setId("fortress_split")
@@ -295,7 +290,7 @@ public class PracticeCategoriesAny {
             .setPlayerProperties(
                     new PlayerProperties()
                             .setSpawnPos((category, random, world) -> CustomPortalForcer.getPortalPosition(new BlockPos(random.nextInt(5, 15) * (random.nextBoolean() ? -1 : 1), 64, random.nextInt(5, 15) * (random.nextBoolean() ? -1 : 1)), world))
-                            .addPotionEffect(FortressPreset.FIRE_RESISTANCE_EFFECT)
+                            .addPotionEffect(MiscPresets.FIRE_RESISTANCE_EFFECT)
             )
             .setWorldProperties(
                     new WorldProperties()
@@ -306,7 +301,7 @@ public class PracticeCategoriesAny {
                                                  .setRange(new WorldProperties.Range()
                                                                    .setRange(null)
                                                                    .addValidDimension(World.NETHER)
-                                                                   .setCondition(() -> CategoryPreference.getBoolValue("ssv"))
+                                                                   .setCondition(CategoryPreferences.SOUL_SAND_VALLEY::getBoolValue)
                                                  )
                             )
             )
@@ -314,9 +309,9 @@ public class PracticeCategoriesAny {
                     new ChangeDimensionSplitEvent()
                             .setToDimension(World.OVERWORLD)
             )
-            .addPreference(FortressPreset.GOOD_BLAZE_RATES_PREFERENCE)
-            .addPreference(FortressPreset.SOUL_SAND_VALLEY_PREFERENCE)
-            .addPreference(FortressPreset.FIRE_RESISTANCE_PREFERENCE)
+            .addPreference(CategoryPreferences.GOOD_BLAZE_RATES)
+            .addPreference(CategoryPreferences.SOUL_SAND_VALLEY)
+            .addPreference(CategoryPreferences.FIRE_RESISTANCE)
             .register();
     public static final PracticeCategory NETHER_SPLIT = new PracticeCategory()
             .setId("nether_split")
@@ -347,8 +342,8 @@ public class PracticeCategoriesAny {
             )
             .setPlayerProperties(
                     new PlayerProperties()
-                            .setSpawnPos(BastionPreset.BASTION_SPAWN_POS)
-                            .setSpawnAngle(BastionPreset.BASTION_SPAWN_ANGLE)
+                            .setSpawnPos(TaskPresets.BASTION_SPAWN_POS)
+                            .setSpawnAngle(TaskPresets.BASTION_SPAWN_ANGLE)
             )
             .setWorldProperties(
                     new WorldProperties()
@@ -367,7 +362,7 @@ public class PracticeCategoriesAny {
                                                  .setRange(new WorldProperties.Range()
                                                                    .setRange(null)
                                                                    .addValidDimension(World.NETHER)
-                                                                   .setCondition(() -> CategoryPreference.getBoolValue("ssv"))
+                                                                   .setCondition(CategoryPreferences.SOUL_SAND_VALLEY::getBoolValue)
                                                  )
                             )
             )
@@ -375,19 +370,19 @@ public class PracticeCategoriesAny {
                     new ChangeDimensionSplitEvent()
                             .setToDimension(World.OVERWORLD)
             )
-            .addPreference(BastionPreset.BASTION_TYPE_PREFERENCE)
-            .addPreference(BastionPreset.RANKED_LOOT_TABLE_PREFERENCE)
-            .addPreference(FortressPreset.GOOD_BLAZE_RATES_PREFERENCE)
-            .addPreference(StructurePreset.SPAWN_LOCATION_PREFERENCE)
-            .addPreference(FortressPreset.SOUL_SAND_VALLEY_PREFERENCE)
-            .addPreference(BastionPreset.ZOMBIE_PIGMEN)
+            .addPreference(CategoryPreferences.BASTION_TYPE)
+            .addPreference(CategoryPreferences.RANKED_LOOT_TABLE)
+            .addPreference(CategoryPreferences.GOOD_BLAZE_RATES)
+            .addPreference(CategoryPreferences.SPAWN_LOCATION)
+            .addPreference(CategoryPreferences.SOUL_SAND_VALLEY)
+            .addPreference(CategoryPreferences.ZOMBIE_PIGMEN)
             .register();
     public static final PracticeCategory POST_BLIND_SPLIT = new PracticeCategory()
             .setId("post_blind_split")
             .setPlayerProperties(
                     new PlayerProperties()
                             .setSpawnPos((category, random, world) -> {
-                                PracticeTypes.StrongholdDistanceType distanceType = PracticeTypes.StrongholdDistanceType.valueOf(CategoryPreference.getValue(category, "stronghold_distance", PracticeTypes.StrongholdDistanceType.AVERAGE.name()));
+                                PreferenceTypes.StrongholdDistanceType distanceType = CategoryPreferences.STRONGHOLD_DISTANCE.getValue(category);
                                 ChunkGenerator chunkGenerator = world.getChunkManager().getChunkGenerator();
                                 chunkGenerator.method_28509();
                                 List<ChunkPos> strongholds = chunkGenerator.field_24749;
@@ -398,7 +393,7 @@ public class PracticeCategoriesAny {
                                 blockPos = CustomPortalForcer.createPortal(blockPos, world).down(2);
                                 return blockPos;
                             })
-                            .addPotionEffect(FortressPreset.FIRE_RESISTANCE_EFFECT)
+                            .addPotionEffect(MiscPresets.FIRE_RESISTANCE_EFFECT)
             )
             .addStructureProperties(
                     new StructureProperties()
@@ -426,21 +421,9 @@ public class PracticeCategoriesAny {
                     new GetAdvancementSplitEvent()
                             .setAdvancement(new Identifier("story/follow_ender_eye"))
             )
-            .addPreference(
-                    new CategoryPreference()
-                            .setId("stronghold_distance")
-                            .setIcon(new Identifier("textures/mob_effect/speed.png"))
-                            .setChoices(PracticeTypes.StrongholdDistanceType.all())
-                            .setDefaultChoice(PracticeTypes.StrongholdDistanceType.AVERAGE.getLabel())
-            )
-            .addPreference(
-                    new CategoryPreference()
-                            .setId("eye_breaks")
-                            .setIcon(new Identifier("textures/item/ender_eye.png"))
-                            .setChoices(PracticeCategoryUtils.ALL_LIST)
-                            .setDefaultChoice(PracticeCategoryUtils.RANDOM)
-            )
-            .addPreference(FortressPreset.FIRE_RESISTANCE_PREFERENCE)
+            .addPreference(CategoryPreferences.STRONGHOLD_DISTANCE)
+            .addPreference(CategoryPreferences.EYE_BREAKS)
+            .addPreference(CategoryPreferences.FIRE_RESISTANCE)
             .register();
     public static final PracticeCategory STRONGHOLD_SPLIT = new PracticeCategory()
             .setId("stronghold_split")
@@ -478,38 +461,20 @@ public class PracticeCategoriesAny {
             .addStructureProperties(
                     new StructureProperties()
                             .setStructure(DefaultBiomeFeatures.NORMAL_MINESHAFT)
-                            .setGeneratable((category, random, world) -> !CategoryPreference.getBoolValue(category, "disable_mineshafts"))
+                            .setGeneratable((category, random, world) -> !CategoryPreferences.DISABLE_MINESHAFTS.getBoolValue(category))
             )
             .addStructureProperties(
                     new StructureProperties()
                             .setStructure(DefaultBiomeFeatures.MESA_MINESHAFT)
-                            .setGeneratable((category, random, world) -> !CategoryPreference.getBoolValue(category, "disable_mineshafts"))
+                            .setGeneratable((category, random, world) -> !CategoryPreferences.DISABLE_MINESHAFTS.getBoolValue(category))
             )
             .setSplitEvent(
                     new ChangeDimensionSplitEvent()
                             .setToDimension(World.END)
             )
-            .addPreference(
-                    new CategoryPreference()
-                            .setId("disable_mineshafts")
-                            .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
-                            .setDefaultChoice(PracticeCategoryUtils.DISABLED)
-                            .setIcon(new Identifier("textures/item/string.png"))
-            )
-            .addPreference(
-                    new CategoryPreference()
-                            .setId("disable_dungeons")
-                            .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
-                            .setDefaultChoice(PracticeCategoryUtils.DISABLED)
-                            .setIcon(new Identifier("textures/item/spawn_egg.png"))
-            )
-            .addPreference(
-                    new CategoryPreference()
-                            .setId("eye_count")
-                            .setChoices(PracticeTypes.EyeCountType.all())
-                            .setDefaultChoice(PracticeTypes.EyeCountType.RANDOM.getLabel())
-                            .setIcon(new Identifier("textures/item/ender_eye.png"))
-            )
+            .addPreference(CategoryPreferences.DISABLE_MINESHAFTS)
+            .addPreference(CategoryPreferences.DISABLE_DUNGEONS)
+            .addPreference(CategoryPreferences.EYE_COUNT)
             .register();
     public static final PracticeCategory END_SPLIT = new PracticeCategory()
             .setId("end_split")
@@ -526,40 +491,10 @@ public class PracticeCategoriesAny {
                     new ChangeDimensionSplitEvent()
                             .setToDimension(World.OVERWORLD)
             )
-            .addPreference(
-                    new CategoryPreference()
-                            .setId("no_early_flyaway")
-                            .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
-                            .setDefaultChoice(PracticeCategoryUtils.ENABLED)
-                            .setIcon(new Identifier("textures/mob_effect/levitation.png"))
-            )
-            .addPreference(
-                    new CategoryPreference()
-                            .setId("no_cage_spawn")
-                            .setChoices(PracticeCategoryUtils.BOOLEAN_LIST)
-                            .setDefaultChoice(PracticeCategoryUtils.DISABLED)
-                            .setIcon(new Identifier("textures/mob_effect/jump_boost.png"))
-            )
-            .addPreference(
-                    new CategoryPreference()
-                            .setId("start_node")
-                            .setChoices(PracticeTypes.StartNodeType.all())
-                            .setDefaultChoice(PracticeTypes.StartNodeType.RANDOM.getLabel())
-                            .setIcon(new Identifier("textures/block/obsidian.png"))
-            )
-            .addPreference(
-                    new CategoryPreference()
-                            .setId("one_in_eight")
-                            .setChoices(PracticeCategoryUtils.ALL_LIST)
-                            .setDefaultChoice(PracticeCategoryUtils.DISABLED)
-                            .setIcon(new Identifier("textures/item/brick.png"))
-            )
-            .addPreference(
-                    new CategoryPreference()
-                            .setId("tower")
-                            .setChoices(PracticeTypes.EndTowerHeights.all())
-                            .setDefaultChoice(PracticeTypes.EndTowerHeights.RANDOM.getLabel())
-                            .setIcon(new Identifier("textures/item/end_crystal.png"))
-            )
+            .addPreference(CategoryPreferences.NO_EARLY_FLYAWAY)
+            .addPreference(CategoryPreferences.NO_CAGE_SPAWN)
+            .addPreference(CategoryPreferences.START_NODE)
+            .addPreference(CategoryPreferences.ONE_IN_EIGHT)
+            .addPreference(CategoryPreferences.TOWER_HEIGHT)
             .register();
 }
