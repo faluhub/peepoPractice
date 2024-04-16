@@ -66,18 +66,16 @@ public abstract class ServerPlayerEntityMixin extends LivingEntity {
     @Inject(method = "moveToSpawn", at = @At("HEAD"), cancellable = true)
     private void peepoPractice$customSpawn(ServerWorld world, CallbackInfo ci) {
         if (PeepoPractice.CATEGORY.hasSplitEvent()) {
-            PracticeTypes.CompareType compareType = PracticeTypes.CompareType.fromLabel(CategoryPreference.getOrDefault(PeepoPractice.CATEGORY, "compare_type", PracticeTypes.CompareType.PB.getLabel()));
-            if (compareType != null) {
-                switch (compareType) {
-                    case PB:
-                        this.comparingTime = PeepoPractice.CATEGORY.getSplitEvent().hasPb() ? PeepoPractice.CATEGORY.getSplitEvent().getPbLong() : null;
-                        break;
-                    case AVERAGE:
-                        this.comparingTime = PeepoPractice.CATEGORY.getSplitEvent().hasCompletedTimes() ? PeepoPractice.CATEGORY.getSplitEvent().findAverage() : null;
-                        break;
-                }
+            PracticeTypes.CompareType compareType = PracticeTypes.CompareType.valueOf(CategoryPreference.getOrDefault(PeepoPractice.CATEGORY, "compare_type", PracticeTypes.CompareType.PB.name()));
+            switch (compareType) {
+                case PB:
+                    this.comparingTime = PeepoPractice.CATEGORY.getSplitEvent().hasPb() ? PeepoPractice.CATEGORY.getSplitEvent().getPbLong() : null;
+                    break;
+                case AVERAGE:
+                    this.comparingTime = PeepoPractice.CATEGORY.getSplitEvent().hasCompletedTimes() ? PeepoPractice.CATEGORY.getSplitEvent().findAverage() : null;
+                    break;
             }
-            this.showType = PracticeTypes.PaceTimerShowType.fromLabel(CategoryPreference.getOrDefault(PeepoPractice.CATEGORY, "pace_timer_show_type", PracticeTypes.PaceTimerShowType.ALWAYS.getLabel()));
+            this.showType = PracticeTypes.PaceTimerShowType.valueOf(CategoryPreference.getOrDefault(PeepoPractice.CATEGORY, "pace_timer_show_type", PracticeTypes.PaceTimerShowType.ALWAYS.name()));
         }
 
         if (PeepoPractice.CATEGORY.hasPlayerProperties()) {

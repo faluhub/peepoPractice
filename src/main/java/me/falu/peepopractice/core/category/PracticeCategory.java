@@ -188,16 +188,14 @@ public class PracticeCategory {
 
     public String getPbText() {
         if (this.hasSplitEvent()) {
-            PracticeTypes.CompareType compareType = PracticeTypes.CompareType.fromLabel(CategoryPreference.getOrDefault(this, "compare_type", PracticeTypes.CompareType.PB.getLabel()));
-            if (compareType != null) {
-                boolean comparePb = compareType.equals(PracticeTypes.CompareType.PB);
-                boolean hasTime = comparePb ? this.getSplitEvent().hasPb() : this.getSplitEvent().hasCompletedTimes();
-                if (hasTime) {
-                    String timeString = comparePb ? this.getSplitEvent().getPbString() : this.getSplitEvent().getAverageString();
-                    return (comparePb ? Formatting.GREEN : Formatting.AQUA) + " (" + timeString + ")";
-                } else {
-                    return Formatting.GRAY + " " + new TranslatableText("peepopractice.text.no_pb_or_avg", I18n.translate(compareType.getLabel())).getString();
-                }
+            PracticeTypes.CompareType compareType = PracticeTypes.getTypeValue("compare_type", PracticeTypes.CompareType.PB);
+            boolean comparePb = compareType.equals(PracticeTypes.CompareType.PB);
+            boolean hasTime = comparePb ? this.getSplitEvent().hasPb() : this.getSplitEvent().hasCompletedTimes();
+            if (hasTime) {
+                String timeString = comparePb ? this.getSplitEvent().getPbString() : this.getSplitEvent().getAverageString();
+                return (comparePb ? Formatting.GREEN : Formatting.AQUA) + " (" + timeString + ")";
+            } else {
+                return Formatting.GRAY + " " + new TranslatableText("peepopractice.text.no_pb_or_avg", I18n.translate(compareType.getLabel())).getString();
             }
         }
         return "";

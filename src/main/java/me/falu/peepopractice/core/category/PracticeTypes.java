@@ -1,11 +1,29 @@
 package me.falu.peepopractice.core.category;
 
+import lombok.Getter;
+import me.falu.peepopractice.PeepoPractice;
+import me.falu.peepopractice.core.category.utils.PracticeCategoryUtils;
 import net.minecraft.util.math.Vec3i;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PracticeTypes {
+    @SuppressWarnings("unchecked")
+    public static <T extends Enum<?>> T getTypeValue(PracticeCategory category, String id, T def) {
+        String value = CategoryPreference.getValue(category, id, def.toString());
+        for (Enum<?> v : def.getDeclaringClass().getEnumConstants()) {
+            if (v.toString().equals(value) && v.getDeclaringClass().equals(def.getDeclaringClass())) {
+                return (T) v;
+            }
+        }
+        return def;
+    }
+
+    public static <T extends Enum<?>> T getTypeValue(String id, T def) {
+        return getTypeValue(PeepoPractice.CATEGORY, id, def);
+    }
+
     private static String translate(String type, String key) {
         return "peepopractice.types." + type + "." + key;
     }
@@ -13,6 +31,21 @@ public class PracticeTypes {
     @SuppressWarnings("SameReturnValue")
     private static String random() {
         return "peepopractice.text.random";
+    }
+
+    public static String getNameFromId(String id) {
+        StringBuilder name = new StringBuilder();
+        boolean capitalize = true;
+        for (char i : id.toLowerCase().toCharArray()) {
+            if (i == '_') {
+                capitalize = true;
+                name.append(" ");
+                continue;
+            }
+            name.append(capitalize ? Character.toUpperCase(i) : i);
+            capitalize = false;
+        }
+        return name.toString();
     }
 
     public enum BastionType {
@@ -48,15 +81,6 @@ public class PracticeTypes {
             return labels;
         }
 
-        public static BastionType fromLabel(String label) {
-            for (BastionType type : BastionType.values()) {
-                if (type.getLabel().equals(label)) {
-                    return type;
-                }
-            }
-            return null;
-        }
-
         public String getLabel() {
             return this != RANDOM ? translate("bastion", this.name().toLowerCase()) : random();
         }
@@ -72,15 +96,6 @@ public class PracticeTypes {
                 labels.add(type.getLabel());
             }
             return labels;
-        }
-
-        public static CompareType fromLabel(String label) {
-            for (CompareType type : CompareType.values()) {
-                if (type.getLabel().equals(label)) {
-                    return type;
-                }
-            }
-            return null;
         }
 
         public String getLabel() {
@@ -101,15 +116,6 @@ public class PracticeTypes {
             return labels;
         }
 
-        public static PaceTimerShowType fromLabel(String label) {
-            for (PaceTimerShowType type : PaceTimerShowType.values()) {
-                if (type.getLabel().equals(label)) {
-                    return type;
-                }
-            }
-            return null;
-        }
-
         public String getLabel() {
             return translate("pace_timer_show", this.name().toLowerCase());
         }
@@ -128,20 +134,12 @@ public class PracticeTypes {
             return labels;
         }
 
-        public static EyeCountType fromLabel(String label) {
-            for (EyeCountType type : EyeCountType.values()) {
-                if (type.getLabel().equals(label)) {
-                    return type;
-                }
-            }
-            return null;
-        }
-
         public String getLabel() {
             return this != RANDOM ? translate("eye_count", this.name().toLowerCase()) : random();
         }
     }
 
+    @Getter
     public enum StrongholdDistanceType {
         CLOSE(200, 500),
         AVERAGE(700, 1000),
@@ -163,23 +161,6 @@ public class PracticeTypes {
             return labels;
         }
 
-        public static StrongholdDistanceType fromLabel(String label) {
-            for (StrongholdDistanceType type : StrongholdDistanceType.values()) {
-                if (type.getLabel().equals(label)) {
-                    return type;
-                }
-            }
-            return null;
-        }
-
-        public int getMin() {
-            return this.min;
-        }
-
-        public int getMax() {
-            return this.max;
-        }
-
         public String getLabel() {
             return this != RANDOM ? translate("stronghold_distance", this.name().toLowerCase()) : random();
         }
@@ -196,15 +177,6 @@ public class PracticeTypes {
                 labels.add(type.getLabel());
             }
             return labels;
-        }
-
-        public static StartNodeType fromLabel(String label) {
-            for (StartNodeType type : StartNodeType.values()) {
-                if (type.getLabel().equals(label)) {
-                    return type;
-                }
-            }
-            return null;
         }
 
         public String getLabel() {
@@ -224,17 +196,53 @@ public class PracticeTypes {
             return labels;
         }
 
-        public static SpawnLocationType fromLabel(String label) {
-            for (SpawnLocationType type : SpawnLocationType.values()) {
-                if (type.getLabel().equals(label)) {
-                    return type;
-                }
+        public String getLabel() {
+            return translate("spawn_location", this.name().toLowerCase());
+        }
+    }
+
+    public enum EndTowerHeights {
+        RANDOM(),
+        SMALL_BOY_76(76),
+        SMALL_CAGE_79(79, true),
+        TALL_CAGE_82(82, true),
+        M85(85),
+        M88(88),
+        M91(91),
+        T94(94),
+        T97(97),
+        T100(100),
+        TALL_BOY_103(103);
+        private final String name;
+        public final int height;
+        public final boolean caged;
+
+        EndTowerHeights(int height, boolean caged) {
+            this.name = getNameFromId(this.name());
+            this.height = height;
+            this.caged = caged;
+        }
+
+        EndTowerHeights(int height) {
+            this(height, false);
+        }
+
+        EndTowerHeights() {
+            this.name = PracticeCategoryUtils.RANDOM;
+            this.height = -1;
+            this.caged = false;
+        }
+
+        public static List<String> all() {
+            List<String> labels = new ArrayList<>();
+            for (EndTowerHeights type : EndTowerHeights.values()) {
+                labels.add(type.getLabel());
             }
-            return null;
+            return labels;
         }
 
         public String getLabel() {
-            return translate("spawn_location", this.name().toLowerCase());
+            return this.name;
         }
     }
 }

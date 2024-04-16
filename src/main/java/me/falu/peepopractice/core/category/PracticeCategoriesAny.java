@@ -236,8 +236,8 @@ public class PracticeCategoriesAny {
                     new StructureProperties()
                             .setStructure(DefaultBiomeFeatures.BASTION_REMNANT)
                             .setChunkPos((category, random, world) -> {
-                                PracticeTypes.SpawnLocationType spawnLocation = PracticeTypes.SpawnLocationType.fromLabel(CategoryPreference.getValue(category, "spawn_location"));
-                                if (spawnLocation != null && spawnLocation.equals(PracticeTypes.SpawnLocationType.TERRAIN)) {
+                                PracticeTypes.SpawnLocationType spawnLocation = PracticeTypes.getTypeValue("spawn_location", PracticeTypes.SpawnLocationType.STRUCTURE);
+                                if (spawnLocation.equals(PracticeTypes.SpawnLocationType.TERRAIN)) {
                                     int mx = random.nextBoolean() ? 1 : -1;
                                     int mz = random.nextBoolean() ? 1 : -1;
                                     return new ChunkPos(random.nextInt(3, 4) * mx, random.nextInt(3, 4) * mz);
@@ -387,8 +387,7 @@ public class PracticeCategoriesAny {
             .setPlayerProperties(
                     new PlayerProperties()
                             .setSpawnPos((category, random, world) -> {
-                                PracticeTypes.StrongholdDistanceType distanceType = PracticeTypes.StrongholdDistanceType.fromLabel(CategoryPreference.getValue(category, "stronghold_distance"));
-                                distanceType = distanceType == null ? PracticeTypes.StrongholdDistanceType.AVERAGE : distanceType;
+                                PracticeTypes.StrongholdDistanceType distanceType = PracticeTypes.StrongholdDistanceType.valueOf(CategoryPreference.getValue(category, "stronghold_distance", PracticeTypes.StrongholdDistanceType.AVERAGE.name()));
                                 ChunkGenerator chunkGenerator = world.getChunkManager().getChunkGenerator();
                                 chunkGenerator.method_28509();
                                 List<ChunkPos> strongholds = chunkGenerator.field_24749;
@@ -554,6 +553,13 @@ public class PracticeCategoriesAny {
                             .setChoices(PracticeCategoryUtils.ALL_LIST)
                             .setDefaultChoice(PracticeCategoryUtils.DISABLED)
                             .setIcon(new Identifier("textures/item/brick.png"))
+            )
+            .addPreference(
+                    new CategoryPreference()
+                            .setId("tower")
+                            .setChoices(PracticeTypes.EndTowerHeights.all())
+                            .setDefaultChoice(PracticeTypes.EndTowerHeights.RANDOM.getLabel())
+                            .setIcon(new Identifier("textures/item/end_crystal.png"))
             )
             .register();
 }

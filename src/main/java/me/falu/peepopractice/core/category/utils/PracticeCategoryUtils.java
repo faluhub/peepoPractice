@@ -1,7 +1,5 @@
 package me.falu.peepopractice.core.category.utils;
 
-import me.falu.peepopractice.core.category.PracticeCategoriesAny;
-import me.falu.peepopractice.core.category.PracticeCategory;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.SaveLevelScreen;
@@ -14,7 +12,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.WorldChunk;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -108,14 +105,5 @@ public class PracticeCategoryUtils {
             newPos = new BlockPos(blockPos.getX() + adj, blockPos.getY(), blockPos.getZ() + opp);
         } while (newPos.isWithinDistance(blockPos, min));
         return newPos;
-    }
-
-    public static boolean hasAnyConfiguredInventories(@Nullable PracticeCategory except) {
-        for (PracticeCategory category : PracticeCategoriesAny.ALL) {
-            if (!category.equals(except) && !category.getCanHaveEmptyInventory() && category.hasConfiguredInventory()) {
-                return true;
-            }
-        }
-        return false;
     }
 }

@@ -21,17 +21,10 @@ public abstract class BastionRemnantFeatureConfigMixin {
     @ModifyReturnValue(method = "getRandom", at = @At("RETURN"))
     private StructurePoolFeatureConfig peepoPractice$bastionType(StructurePoolFeatureConfig config) {
         if (PeepoPractice.CATEGORY.findStructureProperties(StructureFeature.BASTION_REMNANT) != null) {
-            PracticeTypes.BastionType bastionType = PracticeTypes.BastionType.fromLabel(CategoryPreference.getValue("bastion_type"));
-            if (bastionType != null) {
-                int index;
-                if (bastionType == PracticeTypes.BastionType.RANDOM) {
-                    index = this.possibleConfigs.indexOf(config);
-                } else {
-                    index = bastionType.id;
-                }
-                PeepoPractice.CATEGORY.putCustomValue("bastionType", index);
-                return this.possibleConfigs.get(index);
-            }
+            PracticeTypes.BastionType bastionType = PracticeTypes.getTypeValue("bastion_type", PracticeTypes.BastionType.RANDOM);
+            int index = bastionType.equals(PracticeTypes.BastionType.RANDOM) ? this.possibleConfigs.indexOf(config) : bastionType.id;
+            PeepoPractice.CATEGORY.putCustomValue("bastionType", index);
+            return this.possibleConfigs.get(index);
         }
         PeepoPractice.CATEGORY.putCustomValue("bastionType", this.possibleConfigs.indexOf(config));
         return config;

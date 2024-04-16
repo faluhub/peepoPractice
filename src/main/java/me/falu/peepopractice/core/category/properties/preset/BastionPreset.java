@@ -17,8 +17,8 @@ import net.minecraft.world.level.ServerWorldProperties;
 public class BastionPreset {
     public static final PracticeCategory.ExecuteReturnTask<BlockPos> BASTION_SPAWN_POS = (category, random, world) -> {
         if (category.hasCustomValue("bastionType")) {
-            PracticeTypes.SpawnLocationType spawnLocation = PracticeTypes.SpawnLocationType.fromLabel(CategoryPreference.getValue(category, "spawn_location"));
-            if (spawnLocation == null || spawnLocation.equals(PracticeTypes.SpawnLocationType.STRUCTURE)) {
+            PracticeTypes.SpawnLocationType spawnLocation = PracticeTypes.getTypeValue("spawn_location", PracticeTypes.SpawnLocationType.STRUCTURE);
+            if (spawnLocation.equals(PracticeTypes.SpawnLocationType.STRUCTURE)) {
                 PracticeTypes.BastionType type = PracticeTypes.BastionType.fromId((int) category.getCustomValue("bastionType"));
                 if (type != null) {
                     StructureProperties properties = category.findStructureProperties(StructureFeature.BASTION_REMNANT);
@@ -42,8 +42,8 @@ public class BastionPreset {
     };
     public static final PracticeCategory.ExecuteReturnTask<Vec2f> BASTION_SPAWN_ANGLE = (category, random, world) -> {
         if (category.hasCustomValue("bastionType")) {
-            PracticeTypes.SpawnLocationType spawnLocation = PracticeTypes.SpawnLocationType.fromLabel(CategoryPreference.getValue(category, "spawn_location"));
-            if (spawnLocation == null || spawnLocation.equals(PracticeTypes.SpawnLocationType.STRUCTURE)) {
+            PracticeTypes.SpawnLocationType spawnLocation = PracticeTypes.getTypeValue("spawn_location", PracticeTypes.SpawnLocationType.STRUCTURE);
+            if (spawnLocation.equals(PracticeTypes.SpawnLocationType.STRUCTURE)) {
                 PracticeTypes.BastionType type = PracticeTypes.BastionType.fromId((int) category.getCustomValue("bastionType"));
                 if (type != null) {
                     return new Vec2f(type.angle, 0.0F);
