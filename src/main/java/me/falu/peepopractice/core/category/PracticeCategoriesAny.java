@@ -220,6 +220,7 @@ public class PracticeCategoriesAny {
             )
             .setSplitEvent(
                     new ChangeDimensionSplitEvent()
+                            .setFromDimension(World.OVERWORLD)
                             .setToDimension(World.NETHER)
             )
             .addPreference(CategoryPreferences.FIX_GHOST_BUCKETS)
@@ -307,6 +308,7 @@ public class PracticeCategoriesAny {
             )
             .setSplitEvent(
                     new ChangeDimensionSplitEvent()
+                            .setFromDimension(World.NETHER)
                             .setToDimension(World.OVERWORLD)
             )
             .addPreference(CategoryPreferences.GOOD_BLAZE_RATES)
@@ -368,6 +370,7 @@ public class PracticeCategoriesAny {
             )
             .setSplitEvent(
                     new ChangeDimensionSplitEvent()
+                            .setFromDimension(World.NETHER)
                             .setToDimension(World.OVERWORLD)
             )
             .addPreference(CategoryPreferences.BASTION_TYPE)
@@ -383,38 +386,30 @@ public class PracticeCategoriesAny {
                     new PlayerProperties()
                             .setSpawnPos((category, random, world) -> {
                                 PreferenceTypes.StrongholdDistanceType distanceType = CategoryPreferences.STRONGHOLD_DISTANCE.getValue(category);
-                                ChunkGenerator chunkGenerator = world.getChunkManager().getChunkGenerator();
+                                boolean isNetherSpawn = CategoryPreferences.POST_BLIND_SPAWN_DIMENSION.getValue().equals(PreferenceTypes.PostBlindSpawnDimensionType.NETHER);
+                                ServerWorld overworld = world.getServer().getWorld(World.OVERWORLD);
+                                if (overworld == null) {
+                                    throw new NotInitializedException();
+                                }
+                                ChunkGenerator chunkGenerator = overworld.getChunkManager().getChunkGenerator();
                                 chunkGenerator.method_28509();
                                 List<ChunkPos> strongholds = chunkGenerator.field_24749;
                                 int maxStrongholds = 3;
                                 BlockPos blockPos = strongholds.get(random.nextInt(maxStrongholds)).toBlockPos(4, 0, 4);
                                 blockPos = PracticeCategoryUtils.getRandomBlockInRadius(distanceType.getMax(), distanceType.getMin(), blockPos, random);
-                                blockPos = new BlockPos(blockPos.getX(), PracticeCategoryUtils.findTopPos(world, blockPos), blockPos.getZ());
+                                if (!isNetherSpawn) {
+                                    blockPos = new BlockPos(blockPos.getX(), PracticeCategoryUtils.findTopPos(world, blockPos), blockPos.getZ());
+                                } else {
+                                    blockPos = new BlockPos(blockPos.getX() / 8, blockPos.getY(), blockPos.getZ() / 8);
+                                }
                                 blockPos = CustomPortalForcer.createPortal(blockPos, world).down(2);
                                 return blockPos;
                             })
                             .addPotionEffect(MiscPresets.FIRE_RESISTANCE_EFFECT)
             )
-            .addStructureProperties(
-                    new StructureProperties()
-                            .setStructure(DefaultBiomeFeatures.FORTRESS)
-                            .setChunkPos((category, random, world) -> {
-                                if (category.hasPlayerProperties()) {
-                                    PlayerProperties properties = category.getPlayerProperties();
-                                    if (properties.hasSpawnPos()) {
-                                        BlockPos pos = properties.getSpawnPos();
-                                        BlockPos netherPos = new BlockPos(pos.getX() / 8, pos.getY(), pos.getZ() / 8);
-                                        netherPos = PracticeCategoryUtils.getRandomBlockInRadius(20, netherPos, random);
-                                        return new ChunkPos(netherPos);
-                                    }
-                                }
-                                throw new NotInitializedException();
-                            })
-                            .setGeneratable(false)
-            )
             .setWorldProperties(
                     new WorldProperties()
-                            .setWorldRegistryKey(World.OVERWORLD)
+                            .setWorldRegistryKey((category, random, world) -> CategoryPreferences.POST_BLIND_SPAWN_DIMENSION.getValue().key)
                             .setSpawnChunksDisabled(true)
             )
             .setSplitEvent(
@@ -424,6 +419,7 @@ public class PracticeCategoriesAny {
             .addPreference(CategoryPreferences.STRONGHOLD_DISTANCE)
             .addPreference(CategoryPreferences.EYE_BREAKS)
             .addPreference(CategoryPreferences.FIRE_RESISTANCE)
+            .addPreference(CategoryPreferences.POST_BLIND_SPAWN_DIMENSION)
             .register();
     public static final PracticeCategory STRONGHOLD_SPLIT = new PracticeCategory()
             .setId("stronghold_split")
@@ -470,6 +466,7 @@ public class PracticeCategoriesAny {
             )
             .setSplitEvent(
                     new ChangeDimensionSplitEvent()
+                            .setFromDimension(World.OVERWORLD)
                             .setToDimension(World.END)
             )
             .addPreference(CategoryPreferences.DISABLE_MINESHAFTS)
@@ -489,6 +486,7 @@ public class PracticeCategoriesAny {
             )
             .setSplitEvent(
                     new ChangeDimensionSplitEvent()
+                            .setFromDimension(World.END)
                             .setToDimension(World.OVERWORLD)
             )
             .addPreference(CategoryPreferences.NO_EARLY_FLYAWAY)

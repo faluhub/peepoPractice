@@ -122,6 +122,8 @@ public abstract class PlayerManagerMixin {
                     }
                 }
             }
+            player.getRecipeBook().setGuiOpen(InventoryUtils.BOOK_OPEN);
+            player.getRecipeBook().setFilteringCraftable(InventoryUtils.FILTERING_CRAFTABLE);
         }
     }
 }

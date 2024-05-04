@@ -6,6 +6,7 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import me.falu.peepopractice.PeepoPractice;
 import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import me.falu.peepopractice.core.category.properties.StructureProperties;
+import me.falu.peepopractice.core.category.utils.InventoryUtils;
 import me.falu.peepopractice.core.exception.NotInitializedException;
 import me.falu.peepopractice.owner.GenerationShutdownOwner;
 import net.minecraft.command.DataCommandStorage;
@@ -111,6 +112,7 @@ public abstract class MinecraftServerMixin implements GenerationShutdownOwner {
     /**
      * @author falu, contaria
      * @reason Custom start dimension
+     * TODO: Needs a rewrite LULE
      */
     @Inject(method = "createWorlds", at = @At("HEAD"), cancellable = true)
     @SuppressWarnings("UnreachableCode")
@@ -124,6 +126,12 @@ public abstract class MinecraftServerMixin implements GenerationShutdownOwner {
         GeneratorOptions generatorOptions = this.saveProperties.getGeneratorOptions();
         boolean bl = generatorOptions.isDebugWorld();
         long l = generatorOptions.getSeed();
+        try {
+            PeepoPractice.CATEGORY.getWorldProperties().reset(new Random(l), null);
+        } catch (NotInitializedException e) {
+            // this will never happen I think
+            throw new RuntimeException(e);
+        }
         long m = BiomeAccess.hashSeed(l);
         ImmutableList<Spawner> list = ImmutableList.of(new PhantomSpawner(), new PillagerSpawner(), new CatSpawner(), new ZombieSiegeManager(), new WanderingTraderManager(serverWorldProperties));
         SimpleRegistry<DimensionOptions> simpleRegistry = generatorOptions.getDimensionMap();
@@ -238,6 +246,8 @@ public abstract class MinecraftServerMixin implements GenerationShutdownOwner {
 
     @Override
     public void peepoPractice$shutdown() {
+        PeepoPractice.CATEGORY = PracticeCategoriesAny.EMPTY;
+        InventoryUtils.PREVIOUS_INVENTORY.clear();
         LOGGER.info("Stopping server");
         if (this.getNetworkIo() != null) {
             this.getNetworkIo().stop();

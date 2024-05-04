@@ -1,6 +1,9 @@
 package me.falu.peepopractice.core.category.properties;
 
 import lombok.Getter;
+import me.falu.peepopractice.core.category.PracticeCategory;
+import me.falu.peepopractice.core.exception.NotInitializedException;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
@@ -9,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Getter
 @SuppressWarnings("UnusedDeclaration")
@@ -17,12 +21,18 @@ public class WorldProperties extends BaseProperties {
     private final List<BiomeModification> antiBiomes = new ArrayList<>();
     private final List<String> dataPacks = new ArrayList<>();
     private RegistryKey<World> worldRegistryKey = World.OVERWORLD;
+    private PracticeCategory.ExecuteReturnTask<RegistryKey<World>> worldRegistryKeyTask;
     private boolean spawnChunksDisabled = false;
     private String seedListPath;
     private Difficulty startDifficulty = Difficulty.EASY;
 
     public WorldProperties setWorldRegistryKey(RegistryKey<World> worldRegistryKey) {
         this.worldRegistryKey = worldRegistryKey;
+        return this;
+    }
+
+    public WorldProperties setWorldRegistryKey(PracticeCategory.ExecuteReturnTask<RegistryKey<World>> task) {
+        this.worldRegistryKeyTask = task;
         return this;
     }
 
@@ -62,6 +72,12 @@ public class WorldProperties extends BaseProperties {
     public WorldProperties setStartDifficulty(Difficulty startDifficulty) {
         this.startDifficulty = startDifficulty;
         return this;
+    }
+
+    public void reset(Random random, ServerWorld world) throws NotInitializedException {
+        if (this.worldRegistryKeyTask != null) {
+            this.worldRegistryKey = this.worldRegistryKeyTask.execute(this.getCategory(), random, world);
+        }
     }
 
     public interface ConditionTask {

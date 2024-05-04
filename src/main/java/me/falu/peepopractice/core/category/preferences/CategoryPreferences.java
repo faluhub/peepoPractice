@@ -89,4 +89,8 @@ public class CategoryPreferences {
     public static final CategoryPreference<PreferenceTypes.BooleanType> SCRAMBLE_INVENTORY = new CategoryPreference<PreferenceTypes.BooleanType>()
             .setId("scramble_inventory")
             .setDefaultValue(PreferenceTypes.BooleanType.DISABLED);
+    public static final CategoryPreference<PreferenceTypes.PostBlindSpawnDimensionType> POST_BLIND_SPAWN_DIMENSION = new CategoryPreference<PreferenceTypes.PostBlindSpawnDimensionType>()
+            .setId("post_blind_spawn_dimension")
+            .setDefaultValue(PreferenceTypes.PostBlindSpawnDimensionType.OVERWORLD)
+            .setIcon(new Identifier("textures/item/magma_cream.png"));
 }

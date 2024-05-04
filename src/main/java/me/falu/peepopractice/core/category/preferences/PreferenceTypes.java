@@ -2,6 +2,8 @@ package me.falu.peepopractice.core.category.preferences;
 
 import lombok.Getter;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.World;
 
 public class PreferenceTypes {
     public enum BooleanType {
@@ -158,6 +160,21 @@ public class PreferenceTypes {
         ONE,
         TWO,
         THREE
+    }
+
+    public enum PostBlindSpawnDimensionType implements ConfigTypeBase {
+        OVERWORLD(World.OVERWORLD),
+        NETHER(World.NETHER);
+        public final RegistryKey<World> key;
+
+        PostBlindSpawnDimensionType(RegistryKey<World> key) {
+            this.key = key;
+        }
+
+        @Override
+        public String getIdentifier() {
+            return "post_blind_spawn_dimension";
+        }
     }
 
     public interface ConfigTypeBase {

@@ -25,6 +25,8 @@ import java.util.Random;
 
 public class InventoryUtils {
     public static final List<ItemStack> PREVIOUS_INVENTORY = new ArrayList<>();
+    public static boolean BOOK_OPEN;
+    public static boolean FILTERING_CRAFTABLE;
 
     public static int getSelectedInventory() {
         return CategoryPreferences.SELECTED_INVENTORY.getValue().ordinal();
