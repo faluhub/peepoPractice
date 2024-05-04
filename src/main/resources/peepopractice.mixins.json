@@ -53,6 +53,7 @@
     "world.entity.category.ZombifiedPiglinEntityMixin",
 
     "world.entity.ClientPlayerEntityMixin",
+    "world.entity.EyeOfEnderEntityMixin",
     "world.entity.MobEntityMixin",
     "world.entity.ServerPlayerEntityMixin",
     "world.entity.ThrownItemEntityMixin",
