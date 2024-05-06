@@ -42,7 +42,7 @@ public class SettingsTypeSelectionScreen extends Screen {
     private final PracticeCategory category;
 
     public SettingsTypeSelectionScreen(Screen parent, PracticeCategory category) {
-        super(new TranslatableText("peepopractice.title.settings_type_selection", category.getName(false)));
+        super(new TranslatableText("peepopractice.title.settings_type_selection", category.getSimpleName()));
         this.parent = parent;
         this.category = category;
     }

@@ -80,7 +80,7 @@ public class EditInventoryScreen extends PlayerlessHandledScreen {
     private boolean lastClickOutsideBounds;
 
     private EditInventoryScreen(Screen parent, PracticeCategory category, int selectedProfile) {
-        super(new PlayerlessCreativeScreenHandler(), PeepoPractice.PLAYERLESS_INVENTORY, new TranslatableText("peepopractice.title.edit_inventory", category.getName(false)));
+        super(new PlayerlessCreativeScreenHandler(), PeepoPractice.PLAYERLESS_INVENTORY, new TranslatableText("peepopractice.title.edit_inventory", category.getSimpleName()));
 
         this.backgroundHeight = 136;
         this.backgroundWidth = 195;

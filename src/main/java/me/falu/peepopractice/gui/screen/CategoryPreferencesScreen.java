@@ -17,15 +17,15 @@ public class CategoryPreferencesScreen extends Screen {
     private final PracticeCategory category;
 
     public CategoryPreferencesScreen(Screen parent, PracticeCategory category) {
-        super(new TranslatableText("peepopractice.title.category_preferences", category.getName(false)));
+        super(new TranslatableText("peepopractice.title.category_preferences", category.getSimpleName()));
         this.parent = parent;
         this.category = category;
     }
 
     public static Text getFormattedText(PracticeCategory category, CategoryPreference<?> preference) {
-        return new LiteralText("" + Formatting.BOLD)
-                .append(preference.getLabel().copy())
-                .append(":\n" + Formatting.RESET)
+        return new LiteralText(Formatting.BOLD.toString())
+                .append(preference.getLabel().copy().append(":\n").formatted(Formatting.BOLD))
+                .append(Formatting.RESET.toString())
                 .append(preference.getValueLabel(category, true));
     }
 

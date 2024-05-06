@@ -266,7 +266,7 @@ public class CustomCategoryResourceManager {
                             }
                         }
                         CUSTOM_CATEGORIES.add(category);
-                        categories.append(category.getName(false)).append(", ");
+                        categories.append(category.getSimpleName()).append(", ");
                     }
                 }
                 PeepoPractice.log(categories);

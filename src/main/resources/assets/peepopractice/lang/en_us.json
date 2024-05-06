@@ -52,6 +52,7 @@
   "peepopractice.global_options.change_window_title.info": "If enabled, the text '(Practice)' will be appended to the game's window title.",
   "peepopractice.global_options.give_saturation.info": "If enabled, you'll get 10 saturation when you spawn in.",
   "peepopractice.preferences.scramble_inventory": "Scramble",
+  "peepopractice.preferences.random_inventory": "Random",
   "peepopractice.preferences.compare_type": "Split Comparison",
   "peepopractice.preferences.compare_type.info": "Which type of time the split is compared against.",
   "peepopractice.preferences.pace_timer_show_type": "Show Pace Timer",

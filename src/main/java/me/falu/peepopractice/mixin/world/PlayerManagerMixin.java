@@ -57,8 +57,15 @@ public abstract class PlayerManagerMixin {
                     player.inventory.setStack(i, InventoryUtils.PREVIOUS_INVENTORY.get(i).copy());
                 }
             } else {
-                PeepoPractice.log("Using configured inventory.");
-                InventoryUtils.putItems(player.inventory, PeepoPractice.CATEGORY, InventoryUtils.getSelectedInventory());
+                int inventory;
+                if (CategoryPreferences.RANDOM_INVENTORY.getBoolValue()) {
+                    PeepoPractice.log("Using random inventory.");
+                    inventory = InventoryUtils.randomInventory(PeepoPractice.CATEGORY);
+                } else {
+                    PeepoPractice.log("Using configured inventory.");
+                    inventory = InventoryUtils.getSelectedInventory(PeepoPractice.CATEGORY);
+                }
+                InventoryUtils.putItems(player.inventory, PeepoPractice.CATEGORY, inventory);
                 if (CategoryPreferences.SCRAMBLE_INVENTORY.getBoolValue()) {
                     PeepoPractice.log("Scrambling inventory.");
                     List<Integer> taken = new ArrayList<>();

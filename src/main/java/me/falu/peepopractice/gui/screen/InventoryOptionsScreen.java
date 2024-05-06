@@ -5,9 +5,9 @@ import com.google.gson.JsonObject;
 import com.mojang.blaze3d.systems.RenderSystem;
 import lombok.RequiredArgsConstructor;
 import me.falu.peepopractice.PeepoPractice;
+import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.core.category.preferences.CategoryPreferences;
 import me.falu.peepopractice.core.category.preferences.PreferenceTypes;
-import me.falu.peepopractice.core.category.PracticeCategory;
 import me.falu.peepopractice.core.category.utils.InventoryUtils;
 import me.falu.peepopractice.core.playerless.PlayerlessInventory;
 import me.falu.peepopractice.core.writer.PracticeWriter;
@@ -29,6 +29,7 @@ import java.util.List;
 
 public class InventoryOptionsScreen extends Screen {
     private static final Identifier EGG_TEXTURE = new Identifier("textures/item/egg.png");
+    private static final Identifier BREWING_STAND_TEXTURE = new Identifier("textures/item/brewing_stand.png");
     private static final Identifier WIDGETS = new Identifier("textures/gui/widgets.png");
     private final Screen parent;
     private final PracticeCategory category;
@@ -36,7 +37,7 @@ public class InventoryOptionsScreen extends Screen {
     private final List<HotbarPositionData> hotbarPositions;
 
     public InventoryOptionsScreen(Screen parent, PracticeCategory category) {
-        super(new TranslatableText("peepopractice.title.inventory_options", category.getName(false)));
+        super(new TranslatableText("peepopractice.title.inventory_options", category.getSimpleName()));
         this.parent = parent;
         this.category = category;
         this.namePositions = new ArrayList<>();
@@ -62,7 +63,8 @@ public class InventoryOptionsScreen extends Screen {
             int x = (this.width - rowWidth) / 2;
             int y = this.height - containerHeight + paddingY * i + rowButtonSize * i;
             boolean isCorrectBound = profiles.size() >= i;
-            boolean isSelected = i == InventoryUtils.getSelectedInventory();
+            boolean isRandomInventory = CategoryPreferences.RANDOM_INVENTORY.getBoolValue(this.category);
+            boolean isSelected = i == InventoryUtils.getSelectedInventory(this.category) && !isRandomInventory;
             int finalI = i;
             ButtonWidget editButton = this.addButton(new LimitlessButtonWidget(x, y, rowButtonSize, rowButtonSize, new LiteralText("Edit"), b -> {
                 if (this.client != null) {
@@ -80,7 +82,7 @@ public class InventoryOptionsScreen extends Screen {
                     this.client.openScreen(new InventoryOptionsScreen(this.parent, this.category));
                 }
             }));
-            selectButton.active = !isSelected && isCorrectBound;
+            selectButton.active = !isSelected && isCorrectBound && !isRandomInventory;
         }
         int otherButtonWidth = (this.width - rowWidth) / 2 - paddingX * 2;
         this.addButton(
@@ -115,7 +117,7 @@ public class InventoryOptionsScreen extends Screen {
         this.addButton(
                 new LimitlessButtonWidget(
                         null,
-                        EGG_TEXTURE,
+                        BREWING_STAND_TEXTURE,
                         null,
                         scrambleButton.x,
                         scrambleButton.y + scrambleButton.getHeight(),
@@ -125,6 +127,9 @@ public class InventoryOptionsScreen extends Screen {
                         b -> {
                             CategoryPreferences.RANDOM_INVENTORY.advanceValue(this.category);
                             b.setMessage(CategoryPreferencesScreen.getFormattedText(this.category, CategoryPreferences.RANDOM_INVENTORY));
+                            if (this.client != null) {
+                                this.client.openScreen(new InventoryOptionsScreen(this.parent, this.category));
+                            }
                         }
                 )
         );

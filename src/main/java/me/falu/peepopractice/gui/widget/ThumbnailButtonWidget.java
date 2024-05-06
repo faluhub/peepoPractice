@@ -61,7 +61,7 @@ public class ThumbnailButtonWidget extends ButtonWidget {
         drawTexture(matrices, this.configButton.x + 2, this.configButton.y + 2, 0.0F, 0.0F, 16, 16, 16, 16);
 
         fill(matrices, this.x, this.y + this.height, this.x + this.width, this.y + this.height - this.height / 2 + 5, BackgroundHelper.ColorMixer.getArgb(150, 0, 0, 0));
-        this.drawCenteredString(
+        this.drawCenteredText(
                 matrices,
                 client.textRenderer,
                 this.category.getName(false),

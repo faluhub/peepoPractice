@@ -32,7 +32,7 @@ public class StandardSettingsScreen extends Screen {
     private TextFieldWidget pieChartDirectoryField;
 
     public StandardSettingsScreen(Screen parent, PracticeCategory category) {
-        super(new TranslatableText("peepopractice.title.standard_settings", category.getName(false)));
+        super(new TranslatableText("peepopractice.title.standard_settings", category.getSimpleName()));
         this.parent = parent;
         PeepoPractice.CONFIGURING_CATEGORY = category;
     }

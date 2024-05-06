@@ -21,7 +21,7 @@ public class SplitSettingsScreen extends Screen {
     private final PracticeCategory category;
 
     public SplitSettingsScreen(Screen parent, PracticeCategory category) {
-        super(new TranslatableText("peepopractice.title.split_settings", category.getName(false)));
+        super(new TranslatableText("peepopractice.title.split_settings", category.getSimpleName()));
         this.parent = parent;
         this.category = category;
     }

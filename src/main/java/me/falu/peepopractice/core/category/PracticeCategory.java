@@ -13,7 +13,6 @@ import me.falu.peepopractice.core.category.properties.event.SplitEvent;
 import me.falu.peepopractice.core.category.utils.InventoryUtils;
 import me.falu.peepopractice.core.exception.NotInitializedException;
 import me.falu.peepopractice.core.writer.PracticeWriter;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
@@ -180,16 +179,21 @@ public class PracticeCategory {
         }
     }
 
-    public String getTranslatedName() {
-        return I18n.translate("peepopractice.categories." + this.id);
+    public String getSimpleName() {
+        return this.getTranslatedName().getString();
     }
 
-    public String getName(boolean showPb) {
-        StringBuilder text = new StringBuilder((this.isFillerCategory() ? Formatting.ITALIC : "") + this.getTranslatedName() + (showPb || this.isFillerCategory() ? Formatting.RESET : ""));
+    public Text getTranslatedName() {
+        return new TranslatableText("peepopractice.categories." + this.id);
+    }
+
+    public Text getName(boolean showPb) {
+        MutableText text = this.getTranslatedName().copy().formatted(this.isFillerCategory() ? Formatting.ITALIC : Formatting.RESET);
         if (showPb) {
+            text.append(" ");
             text.append(this.getPbText());
         }
-        return text.toString();
+        return text;
     }
 
     public Text getPbText() {
@@ -227,7 +231,7 @@ public class PracticeCategory {
     }
 
     public boolean hasConfiguredInventory() {
-        if (this.canHaveEmptyInventory) {
+        if (this.canHaveEmptyInventory || CategoryPreferences.RANDOM_INVENTORY.getBoolValue(this)) {
             return true;
         }
         PracticeWriter writer = PracticeWriter.INVENTORY_WRITER;
@@ -235,7 +239,7 @@ public class PracticeCategory {
         if (!config.has(this.getId())) {
             return false;
         }
-        int selected = InventoryUtils.getSelectedInventory();
+        int selected = InventoryUtils.getSelectedInventory(this);
         JsonArray profiles = config.getAsJsonArray(this.getId());
         if (profiles.size() <= selected) {
             return false;

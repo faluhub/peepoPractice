@@ -28,8 +28,17 @@ public class InventoryUtils {
     public static boolean BOOK_OPEN;
     public static boolean FILTERING_CRAFTABLE;
 
-    public static int getSelectedInventory() {
-        return CategoryPreferences.SELECTED_INVENTORY.getValue().ordinal();
+    public static int getSelectedInventory(PracticeCategory category) {
+        return CategoryPreferences.SELECTED_INVENTORY.getValue(category).ordinal();
+    }
+
+    public static int randomInventory(PracticeCategory category) {
+        JsonObject config = PracticeWriter.INVENTORY_WRITER.get();
+        JsonElement profilesElement = config.get(category.getId());
+        if (profilesElement.isJsonArray()) {
+            return new Random().nextInt(profilesElement.getAsJsonArray().size());
+        }
+        return 0;
     }
 
     public static void putItems(Inventory inventory, PracticeCategory category, int profileIndex) {
