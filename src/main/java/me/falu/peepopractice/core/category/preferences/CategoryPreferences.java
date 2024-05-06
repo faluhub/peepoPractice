@@ -86,6 +86,9 @@ public class CategoryPreferences {
     public static final CategoryPreference<PreferenceTypes.SelectedInventoryType> SELECTED_INVENTORY = new CategoryPreference<PreferenceTypes.SelectedInventoryType>()
             .setId("selected_inventory")
             .setDefaultValue(PreferenceTypes.SelectedInventoryType.ONE);
+    public static final CategoryPreference<PreferenceTypes.BooleanType> RANDOM_INVENTORY = new CategoryPreference<PreferenceTypes.BooleanType>()
+            .setId("random_inventory")
+            .setDefaultValue(PreferenceTypes.BooleanType.DISABLED);
     public static final CategoryPreference<PreferenceTypes.BooleanType> SCRAMBLE_INVENTORY = new CategoryPreference<PreferenceTypes.BooleanType>()
             .setId("scramble_inventory")
             .setDefaultValue(PreferenceTypes.BooleanType.DISABLED);

@@ -69,10 +69,10 @@ public class ThumbnailButtonWidget extends ButtonWidget {
                 this.y + this.height - this.height / 4 - client.textRenderer.fontHeight - 2 + 4,
                 0xFFFFFF
         );
-        this.drawCenteredString(
+        this.drawCenteredText(
                 matrices,
                 client.textRenderer,
-                this.category.getPbText(),
+                this.isHovered() ? this.category.getStatsText() : this.category.getPbText(),
                 this.x + this.width / 2,
                 this.y + this.height - this.height / 4 + 4,
                 0xFFFFFF

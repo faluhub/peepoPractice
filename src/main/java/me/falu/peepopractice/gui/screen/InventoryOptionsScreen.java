@@ -96,7 +96,7 @@ public class InventoryOptionsScreen extends Screen {
                         b -> this.onClose()
                 )
         );
-        this.addButton(
+        ButtonWidget scrambleButton = this.addButton(
                 new LimitlessButtonWidget(
                         null,
                         EGG_TEXTURE,
@@ -104,11 +104,27 @@ public class InventoryOptionsScreen extends Screen {
                         (this.width - rowWidth) / 2 + rowWidth + paddingX,
                         this.height - containerHeight,
                         otherButtonWidth,
-                        rowButtonSize * 3 + paddingY * 2,
+                        (rowButtonSize * 3 + paddingY * 2) / 2,
                         CategoryPreferencesScreen.getFormattedText(this.category, CategoryPreferences.SCRAMBLE_INVENTORY),
                         b -> {
                             CategoryPreferences.SCRAMBLE_INVENTORY.advanceValue(this.category);
                             b.setMessage(CategoryPreferencesScreen.getFormattedText(this.category, CategoryPreferences.SCRAMBLE_INVENTORY));
+                        }
+                )
+        );
+        this.addButton(
+                new LimitlessButtonWidget(
+                        null,
+                        EGG_TEXTURE,
+                        null,
+                        scrambleButton.x,
+                        scrambleButton.y + scrambleButton.getHeight(),
+                        scrambleButton.getWidth(),
+                        scrambleButton.getHeight(),
+                        CategoryPreferencesScreen.getFormattedText(this.category, CategoryPreferences.RANDOM_INVENTORY),
+                        b -> {
+                            CategoryPreferences.RANDOM_INVENTORY.advanceValue(this.category);
+                            b.setMessage(CategoryPreferencesScreen.getFormattedText(this.category, CategoryPreferences.RANDOM_INVENTORY));
                         }
                 )
         );

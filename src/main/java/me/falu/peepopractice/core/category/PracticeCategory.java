@@ -15,6 +15,9 @@ import me.falu.peepopractice.core.exception.NotInitializedException;
 import me.falu.peepopractice.core.writer.PracticeWriter;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
@@ -189,19 +192,34 @@ public class PracticeCategory {
         return text.toString();
     }
 
-    public String getPbText() {
+    public Text getPbText() {
         if (this.hasSplitEvent()) {
             PreferenceTypes.CompareType compareType = CategoryPreferences.COMPARE_TYPE.getValue();
             boolean comparePb = compareType.equals(PreferenceTypes.CompareType.PB);
             boolean hasTime = comparePb ? this.getSplitEvent().hasPb() : this.getSplitEvent().hasCompletedTimes();
             if (hasTime) {
                 String timeString = comparePb ? this.getSplitEvent().getPbString() : this.getSplitEvent().getAverageString();
-                return (comparePb ? Formatting.GREEN : Formatting.AQUA) + " (" + timeString + ")";
+                return new LiteralText("(" + timeString + ")").formatted(comparePb ? Formatting.GREEN : Formatting.AQUA);
             } else {
-                return Formatting.GRAY + " " + new TranslatableText("peepopractice.text.no_pb_or_avg", CategoryPreferences.COMPARE_TYPE.getValueLabel(this)).getString();
+                return new TranslatableText("peepopractice.text.no_pb_or_avg", CategoryPreferences.COMPARE_TYPE.getValueLabel(this)).formatted(Formatting.GRAY);
             }
         }
-        return "";
+        return new LiteralText("");
+    }
+
+    public Text getStatsText() {
+        if (this.hasSplitEvent()) {
+            SplitEvent event = this.getSplitEvent();
+            MutableText text = new LiteralText("(").formatted(Formatting.GRAY);
+            text.append(new LiteralText("" + event.getAttempts()).formatted(Formatting.WHITE));
+            text.append(new LiteralText("/").formatted(Formatting.GRAY));
+            text.append(new LiteralText("" + event.getCompletionCount()).formatted(Formatting.GREEN));
+            text.append(new LiteralText("/").formatted(Formatting.GRAY));
+            text.append(new LiteralText("" + event.getFailCount()).formatted(Formatting.RED));
+            text.append(new LiteralText(")").formatted(Formatting.GRAY));
+            return text;
+        }
+        return new LiteralText("");
     }
 
     public boolean isAA() {
