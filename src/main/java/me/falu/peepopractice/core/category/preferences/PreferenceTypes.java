@@ -152,7 +152,7 @@ public class PreferenceTypes {
 
         @Override
         public String getIdentifier() {
-            return "tower_height";
+            return "end_tower_heights";
         }
     }
 
