@@ -71,9 +71,9 @@ public class CategoryPreferences {
             .setId("one_in_eight")
             .setDefaultValue(PreferenceTypes.BooleanRandomType.DISABLED)
             .setIcon(new Identifier("textures/item/brick.png"));
-    public static final CategoryPreference<PreferenceTypes.TowerHeightType> TOWER_HEIGHT = new CategoryPreference<PreferenceTypes.TowerHeightType>()
+    public static final CategoryPreference<PreferenceTypes.EndTowerHeightType> TOWER_HEIGHT = new CategoryPreference<PreferenceTypes.EndTowerHeightType>()
             .setId("tower_height")
-            .setDefaultValue(PreferenceTypes.TowerHeightType.RANDOM)
+            .setDefaultValue(PreferenceTypes.EndTowerHeightType.RANDOM)
             .setIcon(new Identifier("textures/item/end_crystal.png"));
     public static final CategoryPreference<PreferenceTypes.CompareType> COMPARE_TYPE = new CategoryPreference<PreferenceTypes.CompareType>()
             .setId("compare_type")

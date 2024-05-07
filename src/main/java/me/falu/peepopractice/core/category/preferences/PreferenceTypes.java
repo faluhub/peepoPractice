@@ -121,7 +121,7 @@ public class PreferenceTypes {
         }
     }
 
-    public enum TowerHeightType implements ConfigTypeBase {
+    public enum EndTowerHeightType implements ConfigTypeBase {
         RANDOM(),
         SMALL_BOY_76(76),
         SMALL_CAGE_79(79, true),
@@ -136,23 +136,23 @@ public class PreferenceTypes {
         public final int height;
         public final boolean caged;
 
-        TowerHeightType(int height, boolean caged) {
+        EndTowerHeightType(int height, boolean caged) {
             this.height = height;
             this.caged = caged;
         }
 
-        TowerHeightType(int height) {
+        EndTowerHeightType(int height) {
             this(height, false);
         }
 
-        TowerHeightType() {
+        EndTowerHeightType() {
             this.height = -1;
             this.caged = false;
         }
 
         @Override
         public String getIdentifier() {
-            return "end_tower_heights";
+            return "end_tower_height";
         }
     }
 

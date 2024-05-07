@@ -44,25 +44,6 @@ public class PlayerlessShulkerBoxScreenHandler extends PlayerlessScreenHandler {
         }
     }
 
-    @Override
-    public ItemStack transferSlot(int index) {
-        ItemStack itemStack = ItemStack.EMPTY;
-        Slot slot = this.slots.get(index);
-        if (slot != null && slot.hasStack()) {
-            ItemStack itemStack2 = slot.getStack();
-            itemStack = itemStack2.copy();
-            if (index < this.inventory.size() ? !this.insertItem(itemStack2, this.inventory.size(), this.slots.size(), true) : !this.insertItem(itemStack2, 0, this.inventory.size(), false)) {
-                return ItemStack.EMPTY;
-            }
-            if (itemStack2.isEmpty()) {
-                slot.setStack(ItemStack.EMPTY);
-            } else {
-                slot.markDirty();
-            }
-        }
-        return itemStack;
-    }
-
     public ListTag getItemsTag() {
         DefaultedList<ItemStack> list = DefaultedList.ofSize(this.inventory.size(), ItemStack.EMPTY);
         for (int i = 0; i < this.inventory.size(); i++) {

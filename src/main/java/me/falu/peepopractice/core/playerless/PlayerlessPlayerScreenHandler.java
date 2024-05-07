@@ -81,7 +81,6 @@ public class PlayerlessPlayerScreenHandler extends PlayerlessScreenHandler {
         });
     }
 
-    @Override
     public ItemStack transferSlot(int index) {
         ItemStack itemStack = ItemStack.EMPTY;
         Slot slot;

@@ -208,7 +208,7 @@ public abstract class PlayerlessHandledScreen extends Screen {
         Iterator<Map.Entry<Slot, List<ButtonWidget>>> iterator = this.slotToButtonsMap.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<Slot, List<ButtonWidget>> entry = iterator.next();
-            if (this.focusedSlot == null || entry.getKey().id != this.focusedSlot.id || !PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack().isEmpty()) {
+            if (this.focusedSlot == null || entry.getKey().getStack().isEmpty() || entry.getKey().id != this.focusedSlot.id || !PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack().isEmpty()) {
                 for (ButtonWidget button : entry.getValue()) {
                     this.buttons.remove(button);
                     this.children.remove(button);
@@ -480,12 +480,11 @@ public abstract class PlayerlessHandledScreen extends Screen {
     }
 
     private void method_30107(int i) {
-        if (this.focusedSlot != null && PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack().isEmpty()) {
-            if (this.client != null && this.client.options.keySwapHands.matchesMouse(i)) {
+        if (this.focusedSlot != null && PeepoPractice.PLAYERLESS_INVENTORY.getCursorStack().isEmpty() && this.client != null) {
+            if (this.client.options.keySwapHands.matchesMouse(i)) {
                 this.onMouseClick(this.focusedSlot, this.focusedSlot.id, 40, SlotActionType.SWAP);
                 return;
             }
-
             for (int j = 0; j < 9; ++j) {
                 if (this.client.options.keysHotbar[j].matchesMouse(i)) {
                     this.onMouseClick(this.focusedSlot, this.focusedSlot.id, j, SlotActionType.SWAP);

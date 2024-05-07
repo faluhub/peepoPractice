@@ -6,7 +6,6 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import me.falu.peepopractice.PeepoPractice;
 import me.falu.peepopractice.core.category.PracticeCategoriesAny;
 import me.falu.peepopractice.core.category.properties.StructureProperties;
-import me.falu.peepopractice.core.category.utils.InventoryUtils;
 import me.falu.peepopractice.core.exception.NotInitializedException;
 import me.falu.peepopractice.owner.GenerationShutdownOwner;
 import net.minecraft.command.DataCommandStorage;
@@ -246,8 +245,7 @@ public abstract class MinecraftServerMixin implements GenerationShutdownOwner {
 
     @Override
     public void peepoPractice$shutdown() {
-        PeepoPractice.CATEGORY = PracticeCategoriesAny.EMPTY;
-        InventoryUtils.PREVIOUS_INVENTORY.clear();
+        PeepoPractice.RESET_CATEGORY = true;
         LOGGER.info("Stopping server");
         if (this.getNetworkIo() != null) {
             this.getNetworkIo().stop();

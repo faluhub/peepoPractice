@@ -23,8 +23,8 @@ public abstract class SpikeCacheMixin {
             towers.set(0, towers.get(5));
             towers.set(5, temp);
         }
-        PreferenceTypes.TowerHeightType towerHeight = CategoryPreferences.TOWER_HEIGHT.getValue();
-        if (towerHeight.equals(PreferenceTypes.TowerHeightType.RANDOM)) {
+        PreferenceTypes.EndTowerHeightType towerHeight = CategoryPreferences.TOWER_HEIGHT.getValue();
+        if (towerHeight.equals(PreferenceTypes.EndTowerHeightType.RANDOM)) {
             return;
         }
         towers.set(startNode.equals(PreferenceTypes.StartNodeType.FRONT) ? 9 : 4, (towerHeight.height - 76) / 3);
