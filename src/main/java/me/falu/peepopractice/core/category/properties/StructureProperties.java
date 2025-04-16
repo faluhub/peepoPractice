@@ -31,11 +31,11 @@ public class StructureProperties extends BaseProperties {
     }
 
     public boolean isSameStructure(ConfiguredStructureFeature<?, ?> feature) {
-        return this.hasStructure() && feature.field_24835.getName().equals(this.structure.field_24835.getName());
+        return this.hasStructure() && feature.structureFeature.getName().equals(this.structure.structureFeature.getName());
     }
 
     public boolean isSameStructure(StructureFeature<?> feature) {
-        return this.hasStructure() && feature.getName().equals(this.structure.field_24835.getName());
+        return this.hasStructure() && feature.getName().equals(this.structure.structureFeature.getName());
     }
 
     public boolean hasStructure() {

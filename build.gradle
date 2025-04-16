@@ -1,5 +1,5 @@
 plugins {
-	id "fabric-loom" version "1.4-SNAPSHOT"
+	id "fabric-loom" version "1.10-SNAPSHOT"
 	id "io.freefair.lombok" version "8.6"
 }
 
@@ -22,17 +22,18 @@ loom {
 
 configurations {
 	modIncludeImplementation
-	include.extendsFrom modIncludeImplementation
-	modImplementation.extendsFrom modIncludeImplementation
+	includeImplementation
+	include.extendsFrom(modIncludeImplementation, includeImplementation)
+	modImplementation.extendsFrom(modIncludeImplementation, includeImplementation)
 }
 
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	mappings "com.github.RedLime:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	modImplementation "com.github.RedLime:SpeedRunIGT:${project.minecraft_version}-SNAPSHOT"
-	include implementation("org.reflections:reflections:0.9.10")
+	includeImplementation "org.reflections:reflections:0.9.10"
 
 	modIncludeImplementation(fabricApi.module("fabric-api-base", project.fabric_version))
 	modIncludeImplementation(fabricApi.module("fabric-resource-loader-v0", project.fabric_version))

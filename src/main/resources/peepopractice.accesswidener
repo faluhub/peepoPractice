@@ -5,11 +5,11 @@ accessible method net/minecraft/client/gui/widget/EntryListWidget getMaxScroll (
 accessible method net/minecraft/client/gui/widget/EntryListWidget getRowBottom (I)I
 accessible method net/minecraft/world/biome/layer/BiomeLayers isOcean (I)Z
 accessible method net/minecraft/client/gui/screen/world/MoreOptionsDialog setGeneratorOptions (Lnet/minecraft/world/gen/GeneratorOptions;)V
-accessible method net/minecraft/client/world/GeneratorType method_29079 (Lnet/minecraft/world/gen/GeneratorOptions;Lnet/minecraft/client/world/GeneratorType;Lnet/minecraft/world/biome/Biome;)Lnet/minecraft/world/gen/GeneratorOptions;
+accessible method net/minecraft/client/world/GeneratorType createFixedBiomeOptions (Lnet/minecraft/world/gen/GeneratorOptions;Lnet/minecraft/client/world/GeneratorType;Lnet/minecraft/world/biome/Biome;)Lnet/minecraft/world/gen/GeneratorOptions;
 accessible method net/minecraft/entity/mob/PiglinBrain getBarteredItem (Lnet/minecraft/entity/mob/PiglinEntity;)Ljava/util/List;
 accessible method net/minecraft/client/gui/DrawableHelper fillGradient (Lnet/minecraft/client/util/math/MatrixStack;IIIIII)V
 accessible method net/minecraft/server/network/ServerPlayerEntity getPermissionLevel ()I
-accessible method net/minecraft/world/gen/chunk/ChunkGenerator method_28509 ()V
+accessible method net/minecraft/world/gen/chunk/ChunkGenerator generateStrongholdPositions ()V
 accessible method net/minecraft/util/thread/ThreadExecutor runTasks ()V
 
 accessible field net/minecraft/state/property/EnumProperty values Lcom/google/common/collect/ImmutableSet;
@@ -17,12 +17,12 @@ accessible field net/minecraft/client/gui/widget/EntryListWidget renderHeader Z
 accessible field net/minecraft/client/gui/widget/EntryListWidget renderSelection Z
 accessible field net/minecraft/client/render/debug/DebugRenderer showChunkBorder Z
 accessible field net/minecraft/client/world/GeneratorType SINGLE_BIOME_SURFACE Lnet/minecraft/client/world/GeneratorType;
-accessible field net/minecraft/client/gui/screen/world/MoreOptionsDialog field_25049 Ljava/util/Optional;
+accessible field net/minecraft/client/gui/screen/world/MoreOptionsDialog generatorType Ljava/util/Optional;
 accessible field net/minecraft/world/gen/chunk/FlatChunkGeneratorConfig STRUCTURE_TO_FEATURES Ljava/util/Map;
 accessible field net/minecraft/client/network/ClientAdvancementManager advancementProgresses Ljava/util/Map;
 accessible field net/minecraft/client/gui/widget/ButtonWidget onPress Lnet/minecraft/client/gui/widget/ButtonWidget$PressAction;
-accessible field net/minecraft/world/gen/chunk/ChunkGenerator field_24748 J
-accessible field net/minecraft/world/gen/chunk/ChunkGenerator field_24749 Ljava/util/List;
+accessible field net/minecraft/world/gen/chunk/ChunkGenerator seed J
+accessible field net/minecraft/world/gen/chunk/ChunkGenerator strongholdPositions Ljava/util/List;
 accessible field net/minecraft/client/options/KeyBinding categoryOrderMap Ljava/util/Map;
 accessible field net/minecraft/client/MinecraftClient openProfilerSection Ljava/lang/String;
 accessible field net/minecraft/server/world/ServerWorld inEntityTick Z

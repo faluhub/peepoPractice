@@ -147,14 +147,14 @@ public abstract class MinecraftServerMixin implements GenerationShutdownOwner {
         PeepoPractice.CATEGORY.reset();
         if (PeepoPractice.CATEGORY.hasPlayerProperties()) {
             try {
-                PeepoPractice.CATEGORY.getPlayerProperties().reset(new Random(chunkGenerator.field_24748), serverWorld);
+                PeepoPractice.CATEGORY.getPlayerProperties().reset(new Random(chunkGenerator.seed), serverWorld);
             } catch (NotInitializedException ignored) {
                 try {
                     for (StructureProperties properties : PeepoPractice.CATEGORY.getStructureProperties()) {
-                        properties.reset(new Random(chunkGenerator.field_24748), serverWorld);
+                        properties.reset(new Random(chunkGenerator.seed), serverWorld);
                     }
                     initializedStructures = true;
-                    PeepoPractice.CATEGORY.getPlayerProperties().reset(new Random(chunkGenerator.field_24748), serverWorld);
+                    PeepoPractice.CATEGORY.getPlayerProperties().reset(new Random(chunkGenerator.seed), serverWorld);
                 } catch (NotInitializedException ignored1) {
                     PeepoPractice.log(PeepoPractice.CATEGORY.getId() + " in an infinite loop, retrying at spawn. (Occurrence 1)");
                     PeepoPractice.RETRY_PLAYER_INITIALIZATION = true;
@@ -164,7 +164,7 @@ public abstract class MinecraftServerMixin implements GenerationShutdownOwner {
         if (!initializedStructures) {
             for (StructureProperties properties : PeepoPractice.CATEGORY.getStructureProperties()) {
                 try {
-                    properties.reset(new Random(chunkGenerator.field_24748), serverWorld);
+                    properties.reset(new Random(chunkGenerator.seed), serverWorld);
                 } catch (NotInitializedException ignored) {
                     PeepoPractice.log(PeepoPractice.CATEGORY.getId() + " in an infinite loop. (Occurrence 2)");
                 }

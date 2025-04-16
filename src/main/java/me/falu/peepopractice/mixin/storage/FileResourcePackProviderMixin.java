@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 
 @Mixin(FileResourcePackProvider.class)
 public abstract class FileResourcePackProviderMixin {
-    @Shadow @Final private ResourcePackSource field_25345;
+    @Shadow @Final private ResourcePackSource source;
 
     @Shadow
     protected abstract Supplier<ResourcePack> createResourcePack(File file);
@@ -33,7 +33,7 @@ public abstract class FileResourcePackProviderMixin {
                 String string = "peepoPractice/" + dataPack;
                 String suffix = ".zip";
                 File file = DefaultFileWriter.INSTANCE.getResourceAsFile("datapacks/" + dataPack + suffix, dataPack + suffix);
-                T profile = ResourcePackProfile.of(string, true, this.createResourcePack(file), factory, ResourcePackProfile.InsertionPosition.TOP, this.field_25345);
+                T profile = ResourcePackProfile.of(string, true, this.createResourcePack(file), factory, ResourcePackProfile.InsertionPosition.TOP, this.source);
                 if (profile == null) {
                     continue;
                 }

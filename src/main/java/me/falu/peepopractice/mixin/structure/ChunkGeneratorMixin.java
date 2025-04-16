@@ -25,11 +25,11 @@ import java.util.List;
 
 @Mixin(ChunkGenerator.class)
 public abstract class ChunkGeneratorMixin {
-    @Shadow @Final public List<ChunkPos> field_24749;
+    @Shadow @Final public List<ChunkPos> strongholdPositions;
     @Shadow @Final protected BiomeSource biomeSource;
 
     @Shadow
-    protected abstract void method_28508(ConfiguredStructureFeature<?, ?> configuredStructureFeature, StructureAccessor structureAccessor, Chunk chunk, StructureManager structureManager, long l, ChunkPos chunkPos, Biome biome);
+    protected abstract void setStructureStart(ConfiguredStructureFeature<?, ?> configuredStructureFeature, StructureAccessor structureAccessor, Chunk chunk, StructureManager structureManager, long l, ChunkPos chunkPos, Biome biome);
 
     @Unique
     private StructureProperties getUniqueStronghold() {
@@ -49,18 +49,18 @@ public abstract class ChunkGeneratorMixin {
                 if (client.world != null && properties.getChunkPos() != null) {
                     ChunkPos chunkPos = client.world.getChunk(properties.getChunkPos().x, properties.getChunkPos().z, ChunkStatus.BIOMES).getPos();
                     Biome biome = this.biomeSource.getBiomeForNoiseGen((chunkPos.x << 2) + 2, 0, (chunkPos.z << 2) + 2);
-                    this.method_28508(properties.getStructure(), structureAccessor, chunk, structureManager, l, chunkPos, biome);
+                    this.setStructureStart(properties.getStructure(), structureAccessor, chunk, structureManager, l, chunkPos, biome);
                 }
             }
         }
     }
 
-    @Inject(method = "method_28509", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "generateStrongholdPositions", at = @At("HEAD"), cancellable = true)
     private void peepoPractice$cancelStrongholdLocations(CallbackInfo ci) {
         StructureProperties properties = this.getUniqueStronghold();
         if (properties != null) {
             if (properties.hasChunkPos()) {
-                this.field_24749.add(properties.getChunkPos());
+                this.strongholdPositions.add(properties.getChunkPos());
             }
             ci.cancel();
         }

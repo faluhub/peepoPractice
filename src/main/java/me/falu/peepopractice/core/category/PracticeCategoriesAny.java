@@ -392,8 +392,8 @@ public class PracticeCategoriesAny {
                                     throw new NotInitializedException();
                                 }
                                 ChunkGenerator chunkGenerator = overworld.getChunkManager().getChunkGenerator();
-                                chunkGenerator.method_28509();
-                                List<ChunkPos> strongholds = chunkGenerator.field_24749;
+                                chunkGenerator.generateStrongholdPositions();
+                                List<ChunkPos> strongholds = chunkGenerator.strongholdPositions;
                                 int maxStrongholds = 3;
                                 BlockPos blockPos = strongholds.get(random.nextInt(maxStrongholds)).toBlockPos(4, 0, 4);
                                 blockPos = PracticeCategoryUtils.getRandomBlockInRadius(distanceType.getMax(), distanceType.getMin(), blockPos, random);

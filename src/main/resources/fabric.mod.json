@@ -40,6 +40,8 @@
     "standardsettings": "<1.2.2",
     "stronghold-trainer": "*",
     "areessgee": "*",
-    "atum": "*"
+    "atum": "*",
+    "fast_reset": "*",
+    "seedqueue": "*"
   }
 }

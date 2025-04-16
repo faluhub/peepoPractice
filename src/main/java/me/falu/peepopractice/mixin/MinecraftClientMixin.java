@@ -91,13 +91,13 @@ public abstract class MinecraftClientMixin {
         }
     }
 
-    @Inject(method = "method_29607", at = @At("HEAD"))
+    @Inject(method = "createWorld", at = @At("HEAD"))
     private void peepoPractice$resetSettings1(CallbackInfo ci) {
         PeepoPractice.log("Triggered first standard settings call for " + PeepoPractice.CATEGORY.getId());
         StandardSettingsUtils.triggerStandardSettings(PeepoPractice.CATEGORY);
     }
 
-    @Inject(method = "method_29607", at = @At("TAIL"))
+    @Inject(method = "createWorld", at = @At("TAIL"))
     private void peepoPractice$resetSettings2(CallbackInfo ci) {
         if (!PeepoPractice.HAS_STANDARD_SETTINGS) {
             PeepoPractice.log("Triggered second standard settings call for " + PeepoPractice.CATEGORY.getId());

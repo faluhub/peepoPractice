@@ -27,8 +27,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class CreateWorldScreenMixin extends Screen {
     @Shadow @Final public MoreOptionsDialog moreOptionsDialog;
     @Shadow public boolean hardcore;
-    @Shadow private Difficulty field_24289;
-    @Shadow private Difficulty field_24290;
+    @Shadow private Difficulty difficulty;
+    @Shadow private Difficulty safeDifficulty;
     @Shadow private boolean cheatsEnabled;
     @Shadow private boolean tweakedCheats;
     @Shadow private String levelName;
@@ -44,7 +44,7 @@ public abstract class CreateWorldScreenMixin extends Screen {
     private void peepoPractice$setWorldProperties(CallbackInfo ci) {
         PracticeCategory category = PeepoPractice.CATEGORY;
         if (!category.equals(PracticeCategoriesAny.EMPTY)) {
-            this.field_24289 = this.field_24290 = category.hasWorldProperties() ? category.getWorldProperties().getStartDifficulty() : Difficulty.EASY;
+            this.difficulty = this.safeDifficulty = category.hasWorldProperties() ? category.getWorldProperties().getStartDifficulty() : Difficulty.EASY;
             this.cheatsEnabled = this.tweakedCheats = true;
             this.levelName = category.getTranslatedName().getString();
         }
@@ -55,8 +55,8 @@ public abstract class CreateWorldScreenMixin extends Screen {
         if (PeepoPractice.CATEGORY.hasWorldProperties()) {
             for (WorldProperties.BiomeModification entry : PeepoPractice.CATEGORY.getWorldProperties().getProBiomes()) {
                 if (entry.isInfinite() && entry.getRange().shouldPlace() && BiomeLayers.isOcean(Registry.BIOME.getRawId(entry.getBiome()))) {
-                    this.moreOptionsDialog.field_25049 = java.util.Optional.of(GeneratorType.SINGLE_BIOME_SURFACE);
-                    this.moreOptionsDialog.setGeneratorOptions(GeneratorType.method_29079(this.moreOptionsDialog.getGeneratorOptions(this.hardcore), GeneratorType.SINGLE_BIOME_SURFACE, entry.getBiome()));
+                    this.moreOptionsDialog.generatorType = java.util.Optional.of(GeneratorType.SINGLE_BIOME_SURFACE);
+                    this.moreOptionsDialog.setGeneratorOptions(GeneratorType.createFixedBiomeOptions(this.moreOptionsDialog.getGeneratorOptions(this.hardcore), GeneratorType.SINGLE_BIOME_SURFACE, entry.getBiome()));
                     break;
                 }
             }
